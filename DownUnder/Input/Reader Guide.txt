@@ -1,0 +1,38 @@
+﻿This set of instructions is designed for interfacing with controller, keyboard,
+and any other kind of input.
+
+InputSystem is meant to be used as the main class. It will automatically handle
+which controller is 'Player 1' or any other player based on which controller the
+player is pressing buttons on first ('Player 2' being whoever hits the button
+second). Calling Reset* will allow the system to reorder the controllers.
+
+Instead of reading buttons, you can read actions, and check whether they have been
+triggered or not (float values are supplied alongside each bool in case the 
+given button is analog).
+
+Usage;
+----
+// Create the InputSystem object
+InputSystem input_system = new InputSystem();
+
+// The mode will be set to StandardMultiPlayer by default, but you can change it with
+InputSystem.input_mode = InputMode.StandardSinglePlayer();
+
+// For the sake of copy-pasters, I'll change it back to default.
+InputSystem.input_mode = InputMode.StandardMultiPlayer();
+
+// (You can also create your own InputMode object and change the settings however you like)
+// This is meant to help transition between things such as a multiplayer character
+// select screen and a menu that all players can interact and annoy you with.
+
+// To add bindings;
+todo
+
+// The ActionType enum defines each and every action you will be writing natively into your
+// code. Find it and edit it under "Input/User Defined Actions.cs".
+
+// Read input with
+bool menu_item_selected = input_system.GetAction(0, ActionType.menu_select);
+
+PS4 input by Mystborn
+https://www.psxhax.com/threads/ps4mono-dualshock-4-ps4-controller-library-for-monogame-by-mystborn.1995/
