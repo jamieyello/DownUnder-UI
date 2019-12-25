@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace DownUnder.UI
 {
@@ -216,6 +217,8 @@ namespace DownUnder.UI
 
         public bool DebugOutputEnabled { get; set; } = true;
 
+        public bool UICursorsEnabled { get; set; } = true;
+
         #endregion Properties
 
         #region Constructors
@@ -345,7 +348,7 @@ namespace DownUnder.UI
 
             return Children[Children.Count - 1];
         }
-        Input.BufferedBool test = new Input.BufferedBool();
+        
         protected void UpdateDWindow(GameTime game_time)
         {
             _area_cache = Area;
@@ -372,6 +375,7 @@ namespace DownUnder.UI
             Layout.Update(game_time, InputState);
             InputState.Back = false;
             InputState.Confirm = false;
+            
         }
 
         #endregion Protected Methods

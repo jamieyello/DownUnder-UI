@@ -20,7 +20,7 @@ namespace DownUnder.Input
         public float InitialWait { get; set; } = 0.5f;
 
         [DataMember]
-        public float ConsecutiveWait { get; set; } = 0.05f;
+        public float ConsecutiveWait { get; set; } = 0.0165f;
 
         public BufferedBool() { }
         public BufferedBool(float initial_wait, int consecutive_wait)

@@ -100,12 +100,34 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public void Update()
         {
             if (!Active) return;
+            
+            // Movement of the caret
+            if (label.UpdateData.UIInputState.TextCursorMovement.Left && caret_position != 0)
+            {
+                caret_position--;
+                highlight_position = caret_position;
+                highlight_length = 0;
+                caret_blink_timer = 0f;
+            }
 
+            if (label.UpdateData.UIInputState.TextCursorMovement.Right && caret_position != edit_text.Length)
+            {
+                caret_position++;
+                highlight_position = caret_position;
+                highlight_length = 0;
+                caret_blink_timer = 0f;
+            }
+
+            // Editting the text
             if (label.UpdateData.UIInputState.Back)
             {
-                if (edit_text.Length > 0)
+                if (edit_text.Length > 0 && caret_position != 0)
                 {
-                    edit_text.Remove(edit_text.Length - 1, 1);
+                    edit_text.Remove(caret_position - 1, 1);
+                    caret_position--;
+                    highlight_position = caret_position;
+                    highlight_length = 0;
+                    caret_blink_timer = 0f;
                 }
             }
 
@@ -145,7 +167,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (_CaretCurrentlyDrawn)
             {
-                Vector2 position = label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position, true) + offset;
+                Vector2 position = label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position, true) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
                 label.DrawingData.sprite_batch.DrawLine(position, position2, Color.Black);
             }
