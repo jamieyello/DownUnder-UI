@@ -1,5 +1,5 @@
 # DownUnder
-A collection of UI creation libraries for MonoGame.
+A collection of UI libraries for MonoGame.
 
 Not much yet!
 
