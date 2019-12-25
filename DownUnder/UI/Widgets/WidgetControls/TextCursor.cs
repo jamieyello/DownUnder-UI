@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace DownUnder.UI.Widgets.WidgetControls
 {
@@ -100,7 +101,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public void Update()
         {
             if (!Active) return;
-            
+            Vector2 offset = label.PositionInWindow.ToVector2().Floored();
+
             // Movement of the caret
             if (label.UpdateData.UIInputState.TextCursorMovement.Left && caret_position != 0)
             {
@@ -131,11 +133,36 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-            label.TextEntryRules.CheckAndAppend(edit_text, label.UpdateData.UIInputState.Text);
+            int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
+            if (added_chars != 0)
+            {
+                caret_position += added_chars;
+                highlight_position = caret_position;
+                highlight_length = 0;
+                caret_blink_timer = 0f;
+            }
 
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
             highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), highlight_position, highlight_length);
             caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
+
+            bool over_text = false;
+            foreach (RectangleF text in text_area)
+            {
+                text.Offset(offset);
+                if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_text = true;
+            }
+            bool over_highlighted_text = false;
+            foreach (RectangleF text in highlight_area)
+            {
+                text.Offset(offset);
+                if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_highlighted_text = true;
+            }
+            
+            if (over_text && !over_highlighted_text)
+            {
+                label.ParentWindow.UICursor = MouseCursor.IBeam;
+            }
 
             if (caret_blink_timer >= _CaretBlinkTime)
             {

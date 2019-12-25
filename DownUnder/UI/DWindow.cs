@@ -217,6 +217,14 @@ namespace DownUnder.UI
 
         public bool DebugOutputEnabled { get; set; } = true;
 
+        /// <summary>
+        /// Used by the UI to set the mouse cursor. Resets every frame. Disable with UICursorsEnabled.
+        /// </summary>
+        internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
+
+        /// <summary>
+        /// Set to false to disable UI mouse cursor changes.
+        /// </summary>
         public bool UICursorsEnabled { get; set; } = true;
 
         #endregion Properties
@@ -373,6 +381,8 @@ namespace DownUnder.UI
                 HoveredWidgets.Reset();
             }
             Layout.Update(game_time, InputState);
+            if (UICursorsEnabled) Mouse.SetCursor(UICursor);
+            UICursor = MouseCursor.Arrow;
             InputState.Back = false;
             InputState.Confirm = false;
             

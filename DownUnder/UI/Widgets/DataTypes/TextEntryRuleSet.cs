@@ -13,12 +13,41 @@ namespace DownUnder.UI.Widgets.DataTypes
         public bool AllowLeadingZeros { get; set; } = true;
         public bool EmptyResultBecomesZero { get; set; } = false;
 
-        public void CheckAndAppend(StringBuilder string_builder, string text)
+        /// <summary>
+        /// Inserts text into a stringbuilder if it follows the rules. Returns the number of inserted characters.
+        /// </summary>
+        /// <param name="string_builder"></param>
+        /// <param name="text"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public int CheckAndInsert(StringBuilder string_builder, string text, int index)
         {
+            int result = 0;
             foreach (char c in text)
             {
-                if (IsCharAllowed(c, string_builder)) string_builder.Append(c);
+                if (IsCharAllowed(c, string_builder, index))
+                {
+                    string_builder.Insert(index++, c);
+                    result++;
+                }
             }
+            return result;
+        }
+
+        public bool IsCharAllowed(char c, StringBuilder text, int index)
+        {
+            if ( // Don't allow leading 0s (005.5)
+                c == '0'
+                && !AllowLeadingZeros
+                && text.Length >= 1
+                && text[0] == '0'
+                && (index == 0 || index == 1)
+                ) return false;
+
+            if (c == '.' && AllowDecimal && !text.ToString().Contains('.')) return true;
+            if (!char.IsNumber(c) && !AllowNonNumbers) return false;
+
+            return true;
         }
 
         public void ApplyFinalCheck(StringBuilder string_builder, out string text)
@@ -29,21 +58,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
 
             text = string_builder.ToString();
-        }
-
-        public bool IsCharAllowed(char c, StringBuilder text)
-        {
-            if ( // Don't allow leading 0s (005.5)
-                c == '0'
-                && !AllowLeadingZeros
-                && text.Length == 1
-                && text.ToString() == "0"
-                ) return false;
-
-            if (c == '.' && AllowDecimal && !text.ToString().Contains('.')) return true;
-            if (!char.IsNumber(c) && !AllowNonNumbers) return false;
-            
-            return true;
         }
 
         public static TextEntryRuleSet Integer

@@ -237,8 +237,7 @@ namespace DownUnder.UI.Widgets
             }
 
             _edit_text.Clear();
-            TextEntryRules.CheckAndAppend(_edit_text, Text);
-            TextEntryRules.CheckAndAppend(_edit_text, UpdateData.UIInputState.Text); // Meta defining responsiveness
+            TextEntryRules.CheckAndInsert(_edit_text, Text, 0);
             _is_being_edited = true;
             _text_cursor.ActivateAndHighlight();
         }
