@@ -17,7 +17,7 @@ using System.Threading;
 //      Ctrl-M, Ctrl-L will expand all of the code (actually, this one toggles it).
 //      Ctrl-M, Ctrl-M will expand or collapse a single region
 
-// Todo: Always remember to update Clone.
+// tip: Always remember to update Clone.
 
 // Todo: Change some methods to properties.
 // Combine slots with widget.
@@ -431,6 +431,18 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        public bool IsSelected
+        {
+            get
+            {
+                if (ParentWindow == null)
+                {
+                    return false;
+                }
+                return ParentWindow.SelectedWidgets.IsWidgetFocused(this);
+            }
+        }
+        
         #endregion Other various non-serialized properties
 
         #endregion Public/Internal Properties
@@ -506,16 +518,25 @@ namespace DownUnder.UI.Widgets
                 {
                     if (ui_input.Control)  // Multi-select if the defined control is held down
                     {
-                        update_added_to_focused = true;
+                        if (!IsSelected)
+                        {
+                            update_added_to_focused = true;
+                        }
                     }
                     else
                     {
-                        update_set_as_focused = true;
+                        if (!IsSelected)
+                        {
+                            update_set_as_focused = true;
+                        }
                     }
                     if (_double_click_countdown > 0)
                     {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
-                        update_set_as_focused = true;
+                        if (!IsSelected)
+                        {
+                            update_set_as_focused = true;
+                        }
                         update_double_clicked = true;
                     }
                     _double_click_countdown = _double_click_timing_backing;
@@ -732,15 +753,45 @@ namespace DownUnder.UI.Widgets
 
         #region EventsHandlers
 
+        /// <summary>
+        /// Invoked when this widget is clicked on.
+        /// </summary>
         public event EventHandler OnClick;
+        /// <summary>
+        /// Invoked when this widget is double clicked.
+        /// </summary>
         public event EventHandler OnDoubleClick;
+        /// <summary>
+        /// Invoked when the mouse hovers over this widget.
+        /// </summary>
         public event EventHandler OnHover;
+        /// <summary>
+        /// Invoked when the mouse hovers off this widget.
+        /// </summary>
         public event EventHandler OnHoverOff;
+        /// <summary>
+        /// Invoked after graphics have been initialized and are ready to use.
+        /// </summary>
         public event EventHandler OnGraphicsInitialized;
+        /// <summary>
+        /// Invoked after this widget has been drawn.
+        /// </summary>
         public event EventHandler OnDraw;
+        /// <summary>
+        /// Invoked after this widget updates.
+        /// </summary>
         public event EventHandler OnUpdate;
-        public event EventHandler OnSelection; // What is this again?
+        /// <summary>
+        /// Invoked when this widget is selected.
+        /// </summary>
+        public event EventHandler OnSelection;
+        /// <summary>
+        /// Invoked when this widget is un-selected.
+        /// </summary>
         public event EventHandler OnSelectOff;
+        /// <summary>
+        /// Invoked whwn the user confirms this widget (Such as pressing enter with this widget selected).
+        /// </summary>
         public event EventHandler OnConfirm;
 
         #endregion EventsHandlers
@@ -986,12 +1037,3 @@ namespace DownUnder.UI.Widgets
         #endregion Cloning
     }
 }
-
-// Formatting notes;
-//  - int is generally not used for fields/properties defining anything spacial.
-//    float should be used due to scaling.
-//  - All values representing size/space are relative to pixels
-//    on a 1080p monitor. All values representing time are relative
-//    a second.
-//  - All fields need to be protected/private, only public properties/methods.
-//  - No fields should be serializable/included in Clone().

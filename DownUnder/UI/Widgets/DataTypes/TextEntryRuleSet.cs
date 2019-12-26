@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -50,14 +47,12 @@ namespace DownUnder.UI.Widgets.DataTypes
             return true;
         }
 
-        public void ApplyFinalCheck(StringBuilder string_builder, out string text)
+        public void ApplyFinalCheck(StringBuilder string_builder)
         {
             if (string_builder.Length == 0 && EmptyResultBecomesZero)
             {
                 string_builder.Append('0');
             }
-
-            text = string_builder.ToString();
         }
 
         public static TextEntryRuleSet Integer

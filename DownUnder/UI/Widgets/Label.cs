@@ -7,7 +7,6 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 // Todo: add TextArea property
 
@@ -17,10 +16,8 @@ namespace DownUnder.UI.Widgets
     public class Label : Widget
     {
         #region Fields
-
-        private bool _is_being_edited;
+        
         private string _text_backing = "";
-        private readonly StringBuilder _edit_text = new StringBuilder();
         private bool _text_edit_enabled = false;
         private readonly UIPalette _text_edit_background_pallete = new UIPalette();
         private TextCursor _text_cursor;
@@ -34,7 +31,7 @@ namespace DownUnder.UI.Widgets
             get => _text_edit_enabled;
             set
             {
-                _is_being_edited = value ? false : _is_being_edited;
+                _text_cursor.Active = value ? false : _text_cursor.Active;
                 _text_edit_enabled = value;
             }
         }
@@ -43,9 +40,9 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                if (_is_being_edited)
+                if (_text_cursor.Active)
                 {
-                    return _edit_text.ToString();
+                    return _text_cursor.Text;
                 }
                 else
                 {
@@ -89,7 +86,11 @@ namespace DownUnder.UI.Widgets
 
         public bool IsBeingEdited
         {
-            get => _is_being_edited;
+            get
+            {
+                if (_text_cursor == null) return false;
+                return _text_cursor.Active;
+            }
         }
 
         #endregion Public Properties
@@ -138,12 +139,12 @@ namespace DownUnder.UI.Widgets
             _text_edit_background_pallete.ForceComplete();
             Area = new RectangleF(0, 0, 50, 20);
 
-            OnDoubleClick += ActivateEditing;
+            OnDoubleClick += DoubleClickAction;
             OnDraw += DrawText;
             OnSelectOff += DisableEditing;
             OnUpdate += Update;
-            OnConfirm += Confirm;
-            OnGraphicsInitialized += InitializeTextCursor;
+            OnConfirm += ConfirmEdit;
+            OnGraphicsInitialized += InitializeGraphics;
         }
 
         #endregion Constructors
@@ -154,7 +155,7 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                if (_is_being_edited)
+                if (IsBeingEdited)
                 {
                     return _text_edit_background_pallete;
                 }
@@ -170,7 +171,7 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                if (_is_being_edited)
+                if (IsBeingEdited)
                 {
                     return true;
                 }
@@ -201,8 +202,10 @@ namespace DownUnder.UI.Widgets
 
         #region Event Handlers
 
-        // unused atm
-        public EventHandler<EventArgs> TextEdited;
+        /// <summary>
+        /// Invoked when the text has been edited.
+        /// </summary>
+        public EventHandler<EventArgs> OnTextEdited;
 
         #endregion
 
@@ -215,12 +218,7 @@ namespace DownUnder.UI.Widgets
 
         private void DisableEditing(object sender, EventArgs args)
         {
-            if (!_is_being_edited)
-            {
-                return;
-            }
-
-            _is_being_edited = false;
+            _text_cursor.Active = false;
         }
 
         private void DrawText(object sender, EventArgs args)
@@ -229,33 +227,40 @@ namespace DownUnder.UI.Widgets
             DrawingData.sprite_batch.DrawString(DrawingData.sprite_font, Text, PositionInWindow.ToVector2().Floored(), TextColor.CurrentColor);
         }
 
-        private void ActivateEditing(object sender, EventArgs args)
+        /// <summary>
+        /// Is called when this widget is double clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void DoubleClickAction(object sender, EventArgs args)
         {
             if (!EditingEnabled)
             {
                 return;
             }
 
-            _edit_text.Clear();
-            TextEntryRules.CheckAndInsert(_edit_text, Text, 0);
-            _is_being_edited = true;
-            _text_cursor.ActivateAndHighlight();
+            if (_text_cursor.Active)
+            {
+                return;
+            }
+
+            _text_cursor.Active = true;
         }
 
-        private void Confirm(object sender, EventArgs args)
+        private void ConfirmEdit(object sender, EventArgs args)
         {
-            if (_is_being_edited)
+            if (IsBeingEdited)
             {
-                TextEntryRules.ApplyFinalCheck(_edit_text, out string result);
-                Text = result;
-                _edit_text.Clear();
+                _text_cursor.ApplyFinalCheck();
+                Text = _text_cursor.Text;
                 DisableEditing(this, EventArgs.Empty);
+                OnTextEdited?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        private void InitializeTextCursor(object sender, EventArgs args)
+        private void InitializeGraphics(object sender, EventArgs args)
         {
-            _text_cursor = new TextCursor(this, _edit_text);
+            _text_cursor = new TextCursor(this);
         }
 
         #endregion

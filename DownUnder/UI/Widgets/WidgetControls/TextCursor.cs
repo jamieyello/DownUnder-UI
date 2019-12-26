@@ -1,13 +1,9 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MonoGame.Extended;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace DownUnder.UI.Widgets.WidgetControls
@@ -63,13 +59,30 @@ namespace DownUnder.UI.Widgets.WidgetControls
             get => active_backing;
             set
             {
-
-                active_backing = value;
-                if (!value)
+                if (active_backing && value)
                 {
+                    return;
+                }
+                if (value)
+                {
+                    ActivateAndHighlight();
+                }
+                else
+                {
+                    edit_text.Clear();
                     caret_blink_timer = 0f;
                     allow_draw = false;
                 }
+                active_backing = value;
+            }
+        }
+
+        public string Text
+        {
+            get
+            {
+                if (edit_text == null) return "";
+                return edit_text.ToString();
             }
         }
 
@@ -89,14 +102,17 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #endregion
 
-        #region Public Methods
+        #region Constructors
 
-        public TextCursor(Label label, StringBuilder edit_text)
+        public TextCursor(Label label)
         {
             this.label = label;
             Console.WriteLine($"blink time = {_CaretBlinkTime}");
-            this.edit_text = edit_text;
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void Update()
         {
@@ -181,6 +197,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         {
             if (!Active) return;
             if (!label.IsBeingEdited) return;
+            if (!allow_draw) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
 
             if (highlight_length > 0)
@@ -200,12 +217,20 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        public void ActivateAndHighlight()
+        /// <summary>
+        /// Called when Active is set to true.
+        /// </summary>
+        private void ActivateAndHighlight()
         {
-            Active = true;
+            edit_text = new StringBuilder(label.Text);
             caret_position = edit_text.Length;
             highlight_position = 0;
             highlight_length = edit_text.Length;
+        }
+
+        public void ApplyFinalCheck()
+        {
+            label.TextEntryRules.ApplyFinalCheck(edit_text);
         }
 
         #endregion
