@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 
+// Todo: Check MeasureStrings offset parameter, it's broken maybe
+
 namespace DownUnder.UI.Widgets.WidgetControls
 {
     /// <summary>
@@ -69,7 +71,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
                 else
                 {
-                    edit_text.Clear();
+                    edit_text?.Clear();
                     caret_blink_timer = 0f;
                     allow_draw = false;
                 }
@@ -211,7 +213,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (_CaretCurrentlyDrawn)
             {
-                Vector2 position = label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position, true) + offset + new Vector2(1, 0);
+                Vector2 position = label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
                 label.DrawingData.sprite_batch.DrawLine(position, position2, Color.Black);
             }

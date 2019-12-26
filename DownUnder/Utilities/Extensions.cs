@@ -70,9 +70,9 @@ namespace DownUnder
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureStringAreas(this SpriteFont sprite_font, string text)
+        public static List<RectangleF> MeasureStringAreas(this SpriteFont sprite_font, string text, Point2? offset = null)
         {
-            return MeasureTrimmedString(sprite_font, text, 0, 0);
+            return MeasureTrimmedString(sprite_font, text, 0, 0, offset);
         }
 
         /// <summary>
@@ -80,12 +80,12 @@ namespace DownUnder
         /// </summary>
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
-        /// <param name="position"></param>
+        /// <param name="index"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int position, int length)
+        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length, Point2? offset = null)
         {
-            return MeasureTrimmedString(sprite_font, text, position, text.Length - length);
+            return MeasureTrimmedString(sprite_font, text, index, text.Length - length, offset);
         }
 
         /// <summary>
@@ -96,17 +96,15 @@ namespace DownUnder
         /// <param name="ltrim">How many characters should be removed from the start of the string.</param>
         /// <param name="rtrim">How many characters should be removed from the end of the string.</param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim, bool debug = false)
+        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim, Point2? offset = null)
         {
-            List<string> lines = text.Split('\n').ToList();
-
             List<RectangleF> result = new List<RectangleF>();
 
             RectangleF area = new RectangleF();
             float y = 0f;
             int length_processed = 0;
             bool initial = true;
-            foreach (string line in lines)
+            foreach (string line in text.Split('\n').ToList())
             {
                 if (length_processed + line.Length >= ltrim)
                 {
@@ -114,7 +112,7 @@ namespace DownUnder
                     if (initial && ltrim != 0)
                     {
                         initial = false;
-                        area = MeasureSubString(sprite_font, line, ltrim - length_processed, line.Length - (ltrim - length_processed));
+                        area = MeasureSingleLineSubString(sprite_font, line, ltrim - length_processed, line.Length - (ltrim - length_processed));
                         area.Y = y;
                     }
                     else
@@ -138,6 +136,14 @@ namespace DownUnder
                 length_processed += line.Length + 1; // Add one to account for the removed \n
             }
 
+            if (offset != null)
+            {
+                foreach (RectangleF result_area in result)
+                {
+                    area.Offset((Point2)offset);
+                }
+            }
+            
             return result;
         }
 
@@ -147,22 +153,49 @@ namespace DownUnder
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static RectangleF MeasureSubString(this SpriteFont sprite_font, string line, int index, int length)
+        private static RectangleF MeasureSingleLineSubString(SpriteFont sprite_font, string line, int index, int length)
         {
-            string cut_text = line.Substring(0, index);
-            string uncut_text = line.Substring(index, length);
-            float cut_length = sprite_font.MeasureString(cut_text).X;
-            float uncut_length = sprite_font.MeasureString(uncut_text).X;
-            float text_height = sprite_font.MeasureString("|").Y;
-            RectangleF result = new RectangleF(cut_length, 0f, uncut_length, text_height);
-            return result;
+            return new RectangleF(
+                sprite_font.MeasureString(line.Substring(0, index)).X, 
+                0f, 
+                sprite_font.MeasureString(line.Substring(index, length)).X, 
+                sprite_font.MeasureString("|").Y
+                );
         }
 
-        public static Vector2 GetCharacterPosition(this SpriteFont sprite_font, string text, int index, bool debug = false)
+        /// <summary>
+        /// Get the position of a character in a string.
+        /// </summary>
+        /// <param name="sprite_font"></param>
+        /// <param name="text"></param>
+        /// <param name="index"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
+        public static Vector2 GetCharacterPosition(this SpriteFont sprite_font, string text, int index)
         {
-            List<RectangleF> area = MeasureTrimmedString(sprite_font, text, index, 0, debug);
-            return area[0].Position;
+            return MeasureTrimmedString(sprite_font, text, index, 0)[0].Position;
         }
-            
+
+        /// <summary>
+        /// Converts Monogame Texture2D to System.Drawing.Image.
+        /// </summary>
+        /// <param name="texture">Texture2D to convert.</param>
+        /// <returns>Converted Image.</returns>
+        public static System.Drawing.Image ToImage(this Texture2D texture)
+        {
+            if (texture == null) { return null; }
+
+            byte[] textureData = new byte[4 * texture.Width * texture.Height];
+            texture.GetData<byte>(textureData);
+
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, texture.Width, texture.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            IntPtr safePtr = bmpData.Scan0;
+
+            System.Runtime.InteropServices.Marshal.Copy(textureData, 0, safePtr, textureData.Length);
+            bmp.UnlockBits(bmpData);
+
+            return bmp;
+        }
     }
 }
