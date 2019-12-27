@@ -70,9 +70,9 @@ namespace DownUnder
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureStringAreas(this SpriteFont sprite_font, string text, Point2? offset = null)
+        public static List<RectangleF> MeasureStringAreas(this SpriteFont sprite_font, string text)
         {
-            return MeasureTrimmedString(sprite_font, text, 0, 0, offset);
+            return MeasureTrimmedString(sprite_font, text, 0, 0);
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace DownUnder
         /// <param name="index"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length, Point2? offset = null)
+        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length)
         {
-            return MeasureTrimmedString(sprite_font, text, index, text.Length - length, offset);
+            return MeasureTrimmedString(sprite_font, text, index, text.Length - length);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace DownUnder
         /// <param name="ltrim">How many characters should be removed from the start of the string.</param>
         /// <param name="rtrim">How many characters should be removed from the end of the string.</param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim, Point2? offset = null)
+        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim)
         {
             List<RectangleF> result = new List<RectangleF>();
 
@@ -134,14 +134,6 @@ namespace DownUnder
                 y += sprite_font.MeasureString("|").Y;
                 area.Y = y;
                 length_processed += line.Length + 1; // Add one to account for the removed \n
-            }
-
-            if (offset != null)
-            {
-                foreach (RectangleF result_area in result)
-                {
-                    area.Offset((Point2)offset);
-                }
             }
             
             return result;
