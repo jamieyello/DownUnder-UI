@@ -34,21 +34,42 @@ namespace DownUnder
             return new Size2(v.X, v.Y);
         }
 
+        /// <summary>
+        /// Returns a new Point2 with the highest X and Y values of both given Points.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         public static Point2 Max(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Max(p.X, p2.X), MathHelper.Max(p.Y, p2.Y));
         }
 
+        /// <summary>
+        /// Returns an integer rounded to the nearest integer value.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         public static int Rounded(this float f)
         {
             return (int)(f + 0.5f);
         }
 
+        /// <summary>
+        /// Returns a new Rectangle without the position values.
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public static Rectangle SizeOnly(this Rectangle r)
         {
             return new Rectangle(new Point(), r.Size);
         }
 
+        /// <summary>
+        /// Returns a new RectangleF without the position values.
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public static RectangleF SizeOnly(this RectangleF r)
         {
             return new RectangleF(new Point2(), r.Size);
@@ -59,6 +80,11 @@ namespace DownUnder
             return new System.Drawing.Size(p.X, p.Y);
         }
 
+        /// <summary>
+        /// Returns a Vector2 with both the X and Y values rounded down.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
         public static Vector2 Floored(this Vector2 v)
         {
             return new Vector2((int)v.X, (int)v.Y);
