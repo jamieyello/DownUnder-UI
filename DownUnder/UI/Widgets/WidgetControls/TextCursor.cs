@@ -271,7 +271,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private void ClickAction(object sender, EventArgs args)
         {
             if (!Active) return;
-            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition));
+            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
         }
 
         #endregion

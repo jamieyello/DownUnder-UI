@@ -155,7 +155,7 @@ namespace DownUnder
                         int snip_index;
                         if (first_line)
                         {
-                            snip_index = ltrim + text.Length - rtrim;
+                            snip_index = text.Length - ltrim - rtrim;
                         }
                         else
                         {
