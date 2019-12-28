@@ -161,12 +161,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
             highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), highlight_position, highlight_length);
             caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
 
-            bool over_text = false;
-            foreach (RectangleF text in text_area)
-            {
-                text.Offset(offset);
-                if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_text = true;
-            }
             bool over_highlighted_text = false;
             foreach (RectangleF text in highlight_area)
             {
@@ -174,7 +168,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_highlighted_text = true;
             }
             
-            if (over_text && !over_highlighted_text)
+            if (label.IsPrimaryHovered && !over_highlighted_text)
             {
                 label.ParentWindow.UICursor = MouseCursor.IBeam;
             }

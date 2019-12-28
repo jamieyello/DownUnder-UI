@@ -159,7 +159,8 @@ namespace DownUnder
                         }
                         else
                         {
-                            snip_index = line.Length + length_processed - rtrim;
+                            snip_index = text.Length - rtrim;
+                            //snip_index = line.Length + length_processed - rtrim;
                         }
                         string snip = text.Substring(snip_index);
                         area.Width -= sprite_font.MeasureString(snip).X;
