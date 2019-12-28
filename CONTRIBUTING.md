@@ -5,3 +5,4 @@ Formatting notes;
   - No fields should be serializable/included in Clone().
   - Due to the complexity of UI related code, all UI related code should be seperated into regions. It should *generally* be Fields, Properties, Constructors, Methods, Events, and Cloning respectively. This is not strict but it does help. See Widget.cs as an example.
   - Comments, all non-generic classes/methods/properties/fields need a /// \<summary\>
+  - Methods should be static if they do not access anything not passed to them.
