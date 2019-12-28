@@ -111,7 +111,7 @@ namespace DownUnder
         /// <returns></returns>
         public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length)
         {
-            return MeasureTrimmedString(sprite_font, text, index, text.Length - length);
+            return MeasureTrimmedString(sprite_font, text, index, text.Length - length - index);
         }
 
         /// <summary>
@@ -130,6 +130,7 @@ namespace DownUnder
             float y = 0f;
             int length_processed = 0;
             bool initial = true;
+            bool first_line = true;
             foreach (string line in text.Split('\n').ToList())
             {
                 if (length_processed + line.Length >= ltrim)
@@ -150,13 +151,25 @@ namespace DownUnder
                     // If this is the line where the end trim is
                     if (line.Length + length_processed >= text.Length - rtrim)
                     {
-                        area.Width -= sprite_font.MeasureString(line.Substring(line.Length - rtrim)).X;
+                        int snip_index;
+                        if (first_line)
+                        {
+                            snip_index = ltrim + text.Length - rtrim;
+                        }
+                        else
+                        {
+                            snip_index = line.Length + length_processed - rtrim;
+                        }
+                        string snip = text.Substring(snip_index);
+                        area.Width -= sprite_font.MeasureString(snip).X;
 
                         result.Add(area);
                         break;
                     }
+                    
                     result.Add(area);
                 }
+                first_line = false;
                 y += sprite_font.MeasureString("|").Y;
                 area.Y = y;
                 length_processed += line.Length + 1; // Add one to account for the removed \n
@@ -179,6 +192,25 @@ namespace DownUnder
                 sprite_font.MeasureString(line.Substring(index, length)).X, 
                 sprite_font.MeasureString("|").Y
                 );
+        }
+
+        public static int IndexFromPoint(this SpriteFont sprite_font, string text, Point2 point)
+        {
+            // Calculate the line the char is on
+            float line_height = sprite_font.MeasureString("|").Y;
+            int line_count = text.Count(f => f == '\n');
+            int line;
+            if (point.Y < 0)
+            {
+                line = 0;
+            }
+            else
+            {
+                line = (int)(point.Y / line_height);
+                if (line > line_count) line = line_count;
+            }
+
+            return 0;
         }
 
         /// <summary>
