@@ -50,7 +50,7 @@ namespace DownUnder.Utility.Serialization
             String dependencies_string = StringManipulation.StringListToString(dependencies);
             StringBuilder code = new StringBuilder($"{comment}\n\n{dependencies_string}\n{namespace_start}{class_start}{constructors_string}\n{initialize_function}{class_end}{namespace_end}");
             StringManipulation.IndentCSCode(code);
-
+            
             Debug.WriteLine(code);
             return code.ToString();
         }
@@ -147,11 +147,11 @@ namespace DownUnder.Utility.Serialization
             else if (field_type.Name == "Char") { return $"'{StringManipulation.InsertLiterals(value.ToString())}'"; }
             else if (value.GetType().BaseType.Name == "ValueType")
             { // Handle basic C# types
-                if (GeneralMethods.IsFloat((ValueType)value))
+                if (((ValueType)value).IsFloat())
                 {
                     return value.ToString() + "f";
                 }
-                else if (GeneralMethods.IsNumeric((ValueType)value))
+                else if (((ValueType)value).IsNumeric())
                 {
                     return value.ToString();
                 }

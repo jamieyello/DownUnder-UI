@@ -42,7 +42,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 _text_editable = true;
                 TextEntryRules = TextEntryRuleSet.String;
             }
-            else if (obj.GetType().IsNumericType())
+            else if (obj.GetType().IsNumeric())
             {
                 _text_editable = true;
                 if (obj.GetType().IsIntegral())

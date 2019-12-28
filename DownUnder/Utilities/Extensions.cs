@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
@@ -194,23 +195,59 @@ namespace DownUnder
                 );
         }
 
-        public static int IndexFromPoint(this SpriteFont sprite_font, string text, Point2 point)
+        /// <summary>
+        /// Returns the character index in a spacial point in a string.
+        /// </summary>
+        /// <param name="sprite_font"></param>
+        /// <param name="text"></param>
+        /// <param name="point"></param>
+        /// <param name="round_up">Set to true if you want to select the nearest space in between chars.</param>
+        /// <returns></returns>
+        public static int IndexFromPoint(this SpriteFont sprite_font, string text, Point2 point, bool round_up = false)
         {
             // Calculate the line the char is on
             float line_height = sprite_font.MeasureString("|").Y;
-            int line_count = text.Count(f => f == '\n');
-            int line;
+            List<string> lines = text.Split('\n').ToList();
+            int line_y;
             if (point.Y < 0)
             {
-                line = 0;
+                line_y = 0;
             }
             else
             {
-                line = (int)(point.Y / line_height);
-                if (line > line_count) line = line_count;
+                line_y = (int)(point.Y / line_height);
+                if (line_y >= lines.Count) line_y = lines.Count - 1;
             }
 
-            return 0;
+            // Calculate the index of the line the char is on
+            int line_x = 0;
+            float counted_length = 0f;
+            float char_length;
+            foreach (char c in lines[line_y])
+            {
+                char_length = sprite_font.MeasureString(c.ToString()).X;
+                counted_length += char_length;
+                if (round_up)
+                {
+                    if (point.X + char_length / 2 < counted_length) break;
+                }
+                else
+                {
+                    if (point.X + char_length < counted_length) break;
+                }
+                
+                line_x++;
+            }
+
+            // Calculate the index given the line_x and the line_y
+            int result = 0;
+            for (int i = 0; i < line_y; i++)
+            {
+                result += lines[i].Length + 1; // Add one for the removed /n
+            }
+            result += line_x;
+
+            return result;
         }
 
         /// <summary>
@@ -246,6 +283,189 @@ namespace DownUnder
             bmp.UnlockBits(bmpData);
 
             return bmp;
+        }
+
+        /// <summary>
+        /// Calculates the distance between a point and a rectangle.
+        /// </summary>
+        public static double DistanceFrom(this RectangleF rectangle, Point point)
+        {
+            var dx = Math.Max(Math.Max(rectangle.X - point.X, point.X - rectangle.Right), 0);
+            var dy = Math.Max(Math.Max(rectangle.Top - point.Y, point.Y - rectangle.Bottom), 0);
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
+        /// <summary>
+        /// Returns new Point2 with the sum of each.
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
+        public static Point2 AddPoint2(this Point2 p1, Point2 p2)
+        {
+            return new Point2(p1.X + p2.X, p1.Y + p2.Y);
+        }
+
+        /// <summary>
+        /// Returns rectangle as if it's been applied to the containing rectangle.
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public static RectangleF RectAnd(this RectangleF rectangle, RectangleF container)
+        {
+            RectangleF result = rectangle;
+            result.Position = new Point2(
+                result.Position.X + container.Position.X,
+                result.Position.Y + container.Position.Y
+                );
+            return result;
+        }
+
+        public static RectangleF SnapInsideRectangle(this RectangleF inner, RectangleF outer, DiagonalDirections2D snapping_policy)
+        {
+            inner.Position = outer.Position.AddPoint2(inner.Position);
+
+            Directions2D snapping = snapping_policy.ToPerpendicular();
+
+            // left
+            if (snapping.Left && !snapping.Right)
+            {
+                inner.X = outer.X;
+            }
+
+            // right
+            if (!snapping.Left && snapping.Right)
+            {
+                inner.X = outer.X + outer.Width - inner.Width;
+            }
+
+            // left and right
+            if (snapping.Left && snapping.Right)
+            {
+                inner.X = outer.X;
+                inner.Width = outer.Width;
+            }
+
+            // up
+            if (snapping.Up && !snapping.Down)
+            {
+                inner.Y = outer.Y;
+            }
+
+            // down
+            if (!snapping.Up && snapping.Down)
+            {
+                inner.Y = outer.Y + outer.Height - inner.Height;
+            }
+
+            // up and down
+            if (snapping.Up && snapping.Down)
+            {
+                inner.Y = outer.Y;
+                inner.Height = outer.Height;
+            }
+
+            return inner;
+        }
+
+        public enum NumericRelationship
+        {
+            GreaterThan = 1,
+            EqualTo = 0,
+            LessThan = -1
+        };
+
+        public static NumericRelationship Compare(this ValueType value1, ValueType value2)
+        {
+            if (!IsNumeric(value1))
+                throw new ArgumentException("value1 is not a number.");
+            else if (!IsNumeric(value2))
+                throw new ArgumentException("value2 is not a number.");
+
+            // Use BigInteger as common integral type
+            if (IsInteger(value1) && IsInteger(value2))
+            {
+                System.Numerics.BigInteger bigint1 = (System.Numerics.BigInteger)value1;
+                System.Numerics.BigInteger bigint2 = (System.Numerics.BigInteger)value2;
+                return (NumericRelationship)System.Numerics.BigInteger.Compare(bigint1, bigint2);
+            }
+            // At least one value is floating point; use Double.
+            else
+            {
+                Double dbl1 = 0;
+                Double dbl2 = 0;
+                try
+                {
+                    dbl1 = Convert.ToDouble(value1);
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("value1 is outside the range of a Double.");
+                }
+                try
+                {
+                    dbl2 = Convert.ToDouble(value2);
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("value2 is outside the range of a Double.");
+                }
+                return (NumericRelationship)dbl1.CompareTo(dbl2);
+            }
+        }
+
+        public static bool IsInteger(this ValueType value)
+        {
+            return (value is SByte || value is Int16 || value is Int32
+                    || value is Int64 || value is Byte || value is UInt16
+                    || value is UInt32 || value is UInt64
+                    || value is System.Numerics.BigInteger);
+        }
+
+        public static bool IsNumeric(this ValueType value)
+        {
+            return (value is Byte ||
+                    value is Int16 ||
+                    value is Int32 ||
+                    value is Int64 ||
+                    value is SByte ||
+                    value is UInt16 ||
+                    value is UInt32 ||
+                    value is UInt64 ||
+                    value is System.Numerics.BigInteger ||
+                    value is Decimal ||
+                    value is Double ||
+                    value is Single);
+        }
+
+        public static bool IsFloat(this ValueType value)
+        {
+            return (value is float | value is double | value is Decimal);
+        }
+
+        private static HashSet<Type> NumericTypes = new HashSet<Type>
+        {
+            typeof(int),  typeof(double),  typeof(decimal),
+            typeof(long), typeof(short),   typeof(sbyte),
+            typeof(byte), typeof(ulong),   typeof(ushort),
+            typeof(uint), typeof(float)
+        };
+
+        public static bool IsNumeric(this Type type)
+        {
+            return NumericTypes.Contains(type) ||
+                   NumericTypes.Contains(Nullable.GetUnderlyingType(type));
+        }
+
+        private static HashSet<Type> NonIntegralTypes = new HashSet<Type>
+        {
+            typeof(float),  typeof(double),  typeof(decimal)
+        };
+
+        internal static bool IsIntegral(this Type type)
+        {
+            return !(NonIntegralTypes.Contains(type) || NonIntegralTypes.Contains(Nullable.GetUnderlyingType(type)));
         }
     }
 }

@@ -109,7 +109,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public TextCursor(Label label)
         {
             this.label = label;
-            Console.WriteLine($"blink time = {_CaretBlinkTime}");
+            label.OnDoubleClick += DoubleClickAction;
+            label.OnClick += ClickAction;
         }
 
         #endregion
@@ -121,21 +122,23 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!Active) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
 
+            Console.WriteLine(
+                "Hovered index = " +
+                label.DrawingData.sprite_font.IndexFromPoint
+                (
+                edit_text.ToString(), 
+                label.UpdateData.UIInputState.CursorPosition
+                ));
+
             // Movement of the caret
             if (label.UpdateData.UIInputState.TextCursorMovement.Left && caret_position != 0)
             {
-                caret_position--;
-                highlight_position = caret_position;
-                highlight_length = 0;
-                caret_blink_timer = 0f;
+                MoveCaretTo(caret_position - 1);
             }
 
             if (label.UpdateData.UIInputState.TextCursorMovement.Right && caret_position != edit_text.Length)
             {
-                caret_position++;
-                highlight_position = caret_position;
-                highlight_length = 0;
-                caret_blink_timer = 0f;
+                MoveCaretTo(caret_position + 1);
             }
 
             // Editting the text
@@ -144,20 +147,14 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 if (edit_text.Length > 0 && caret_position != 0)
                 {
                     edit_text.Remove(caret_position - 1, 1);
-                    caret_position--;
-                    highlight_position = caret_position;
-                    highlight_length = 0;
-                    caret_blink_timer = 0f;
+                    MoveCaretTo(caret_position - 1);
                 }
             }
 
             int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
             if (added_chars != 0)
             {
-                caret_position += added_chars;
-                highlight_position = caret_position;
-                highlight_length = 0;
-                caret_blink_timer = 0f;
+                MoveCaretTo(caret_position + added_chars);
             }
 
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
@@ -238,7 +235,45 @@ namespace DownUnder.UI.Widgets.WidgetControls
         #endregion
 
         #region Private Methods
-        
+
+        private void MoveCaretTo(int index)
+        {
+            caret_position = index;
+            highlight_position = caret_position;
+            highlight_length = 0;
+            caret_blink_timer = 0f;
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Is called when this widget is double clicked. Activates editing (if enabled)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void DoubleClickAction(object sender, EventArgs args)
+        {
+            if (!label.EditingEnabled)
+            {
+                return;
+            }
+
+            if (Active)
+            {
+                return;
+            }
+
+            Active = true;
+        }
+
+        private void ClickAction(object sender, EventArgs args)
+        {
+            if (!Active) return;
+            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition));
+        }
+
         #endregion
 
     }

@@ -122,7 +122,6 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
-    <Compile Include="Utilities\GeneralMethods.cs" />
     <Compile Include="Utilities\Vector.cs" />
   </ItemGroup>
   <ItemGroup>

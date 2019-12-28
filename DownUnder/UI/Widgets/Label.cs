@@ -138,8 +138,7 @@ namespace DownUnder.UI.Widgets
             _text_edit_background_pallete.HoveredColor = Color.Yellow;
             _text_edit_background_pallete.ForceComplete();
             Area = new RectangleF(0, 0, 50, 20);
-
-            OnDoubleClick += DoubleClickAction;
+            
             OnDraw += DrawText;
             OnSelectOff += DisableEditing;
             OnUpdate += Update;
@@ -225,26 +224,6 @@ namespace DownUnder.UI.Widgets
         {
             _text_cursor.Draw();
             DrawingData.sprite_batch.DrawString(DrawingData.sprite_font, Text, PositionInWindow.ToVector2().Floored(), TextColor.CurrentColor);
-        }
-
-        /// <summary>
-        /// Is called when this widget is double clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void DoubleClickAction(object sender, EventArgs args)
-        {
-            if (!EditingEnabled)
-            {
-                return;
-            }
-
-            if (_text_cursor.Active)
-            {
-                return;
-            }
-
-            _text_cursor.Active = true;
         }
 
         private void ConfirmEdit(object sender, EventArgs args)
