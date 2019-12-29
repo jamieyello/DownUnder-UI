@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 // Todo: Check MeasureStrings offset parameter, it's broken maybe
 
@@ -102,6 +103,31 @@ namespace DownUnder.UI.Widgets.WidgetControls
             get => caret_blink_timer / _CaretBlinkTime < 0.5f;
         }
 
+        int _CaretLine
+        {
+            get
+            {
+                if (caret_position == 0) return 0;
+                string source = edit_text.ToString().Substring(0, caret_position);
+                int count = 0;
+                foreach (char c in source)
+                    if (c == '\n') count++;
+                return count;
+            }
+        }
+
+        int _NumOfLines
+        {
+            get
+            {
+                string source = edit_text.ToString();
+                int count = 0;
+                foreach (char c in source)
+                    if (c == '\n') count++;
+                return count;
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -122,13 +148,13 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!Active) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
 
-            Console.WriteLine(
-                "Hovered index = " +
-                label.DrawingData.sprite_font.IndexFromPoint
-                (
-                edit_text.ToString(), 
-                label.UpdateData.UIInputState.CursorPosition
-                ));
+            //Console.WriteLine(
+            //    "Hovered index = " +
+            //    label.DrawingData.sprite_font.IndexFromPoint
+            //    (
+            //    edit_text.ToString(), 
+            //    label.UpdateData.UIInputState.CursorPosition
+            //    ));
 
             // Movement of the caret
             if (label.UpdateData.UIInputState.TextCursorMovement.Left && caret_position != 0)
@@ -140,9 +166,47 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 MoveCaretTo(caret_position + 1);
             }
+            
+            if (label.UpdateData.UIInputState.TextCursorMovement.Up)
+            {
+                if (_CaretLine == 0)
+                {
+                    MoveCaretTo(0);
+                }
+                else
+                {
+                    MoveCaretTo(
+                        label.DrawingData.sprite_font.IndexFromPoint
+                        (
+                            edit_text.ToString(), 
+                            label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, label.DrawingData.sprite_font.MeasureString("|").Y), 
+                            true
+                        )
+                    );
+                }
+            }
+
+            if (label.UpdateData.UIInputState.TextCursorMovement.Down)
+            {
+                if (_CaretLine == _NumOfLines)
+                {
+                    MoveCaretTo(edit_text.Length);
+                }
+                else
+                {
+                    MoveCaretTo(
+                        label.DrawingData.sprite_font.IndexFromPoint
+                        (
+                            edit_text.ToString(),
+                            label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) + new Vector2(0f, label.DrawingData.sprite_font.MeasureString("|").Y),
+                            true
+                        )
+                    );
+                }
+            }
 
             // Editting the text
-            if (label.UpdateData.UIInputState.Back)
+            if (label.UpdateData.UIInputState.BackSpace)
             {
                 if (edit_text.Length > 0 && caret_position != 0)
                 {
@@ -151,7 +215,16 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-            int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
+            if (label.UpdateData.UIInputState.Delete)
+            {
+                if (edit_text.Length > 0 && caret_position != edit_text.Length)
+                {
+                    edit_text.Remove(caret_position, 1);
+                    MoveCaretTo(caret_position);
+                }
+            }
+
+                int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
             if (added_chars != 0)
             {
                 MoveCaretTo(caret_position + added_chars);

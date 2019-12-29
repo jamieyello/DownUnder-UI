@@ -18,6 +18,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         private KeyboardState _keyboard_state = Keyboard.GetState();
         private KeyboardState _previous_keyboard_state = Keyboard.GetState();
         private BufferedKeyboard buffered_keyboard = new BufferedKeyboard();
+        private bool _insert_key_down = false;
+        private bool _previous_insert_key_down = false;
 
         /// <summary>
         /// Used for selecting widgets.
@@ -46,12 +48,12 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary>
         /// Used for backspacing text.
         /// </summary>
-        public bool Back { get; set; }
+        public bool BackSpace { get; set; }
 
         /// <summary>
-        /// Used for confirming selection/text entry.
+        /// Used to represent the Enter key.
         /// </summary>
-        public bool Confirm { get; set; }
+        public bool Enter { get; set; }
 
         /// <summary>
         /// The mouse position relative to the parent window.
@@ -65,6 +67,41 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public Vector2 Scroll { get; set; } = new Vector2();
         
+        /// <summary>
+        /// Represents the shift key.
+        /// </summary>
+        public bool Shift { get; set; }
+
+        /// <summary>
+        /// Represents the DEL delete key.
+        /// </summary>
+        public bool Delete { get; set; }
+
+        /// <summary>
+        /// Represents the INS insert key.
+        /// </summary>
+        public bool Insert { get; set; }
+
+        /// <summary>
+        /// Represents the home key.
+        /// </summary>
+        public bool Home { get; set; }
+
+        /// <summary>
+        /// Represents the end key.
+        /// </summary>
+        public bool End { get; set; }
+
+        /// <summary>
+        /// Represents the state of Caps Lock.
+        /// </summary>
+        public bool CapsLock { get; set; }
+
+        /// <summary>
+        /// Represents the state of Num Lock.
+        /// </summary>
+        public bool NumLock { get; set; }
+
         /// <summary>
         /// Set this UIUnputState to the typical input from a mouse + keyboard.
         /// </summary>
@@ -98,18 +135,33 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
 
             CursorPosition = _mouse_state.Position;
-            Control = _keyboard_state.IsKeyDown(Keys.Up | Keys.RightControl);
-            Text = text_input;
 
+            Scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue) - _previous_mouse_wheel_scroll;
+            _previous_mouse_wheel_scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue);
+            
+
+            Text = text_input;
             buffered_keyboard.Update(game_time.GetElapsedSeconds());
 
             TextCursorMovement.Left = buffered_keyboard.IsKeyTriggered(Keys.Left);
             TextCursorMovement.Right = buffered_keyboard.IsKeyTriggered(Keys.Right);
             TextCursorMovement.Up = buffered_keyboard.IsKeyTriggered(Keys.Up);
             TextCursorMovement.Down = buffered_keyboard.IsKeyTriggered(Keys.Down);
-            
-            Scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue) - _previous_mouse_wheel_scroll;
-            _previous_mouse_wheel_scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue);
+
+            Shift = _keyboard_state.IsKeyDown(Keys.LeftShift) || _keyboard_state.IsKeyDown(Keys.RightShift);
+            Control = _keyboard_state.IsKeyDown(Keys.LeftControl) || _keyboard_state.IsKeyDown(Keys.RightControl);
+            Delete = buffered_keyboard.IsKeyTriggered(Keys.Delete);
+            Home = buffered_keyboard.IsKeyTriggered(Keys.Home);
+            End = buffered_keyboard.IsKeyTriggered(Keys.End);
+            CapsLock = _keyboard_state.CapsLock;
+            NumLock = _keyboard_state.NumLock;
+
+            _previous_insert_key_down = _insert_key_down;
+            _insert_key_down = buffered_keyboard.IsKeyTriggered(Keys.Insert);
+            if (_insert_key_down && !_previous_insert_key_down)
+            {
+                Insert = !Insert;
+            }
         }
     }
 }

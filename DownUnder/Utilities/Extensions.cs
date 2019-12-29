@@ -180,6 +180,7 @@ namespace DownUnder
             return result;
         }
 
+
         /// <summary>
         /// Returns the area of a single substring. A method used above. 
         /// </summary>

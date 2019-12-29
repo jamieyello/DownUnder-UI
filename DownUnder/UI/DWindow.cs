@@ -279,11 +279,11 @@ namespace DownUnder.UI
         {
             if (e.Character == 8) // If the key press is BackSpace
             {
-                InputState.Back = true;
+                InputState.BackSpace = true;
             }
             else if (e.Character == 10 || e.Character == 13)
             {
-                InputState.Confirm = true;
+                InputState.Enter = true;
 
                 SelectedWidgets.Primary?.SignalConfirm();
             }
@@ -383,8 +383,8 @@ namespace DownUnder.UI
             Layout.Update(game_time, InputState);
             if (UICursorsEnabled) Mouse.SetCursor(UICursor);
             UICursor = MouseCursor.Arrow;
-            InputState.Back = false;
-            InputState.Confirm = false;
+            InputState.BackSpace = false;
+            InputState.Enter = false;
             
         }
 
