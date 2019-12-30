@@ -48,6 +48,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         bool allow_draw = false;
 
+        bool clicking = false;
+
         #endregion
 
         #region Public Properties
@@ -183,6 +185,37 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
+        /// <summary>
+        /// Returns the start and end index of the word the caret is over. Includes the following space.
+        /// </summary>
+        Tuple<int, int> _CurrentWord
+        {
+            get
+            {
+                int start = 0;
+
+                for (int i = caret_position - 1; i >= 0; i--)
+                {
+                    if (edit_text[i] == '\n' || edit_text[i] == ' ')
+                    {
+                        start = i + 1;
+                        break;
+                    }
+                }
+
+                for (int i = caret_position; i < edit_text.Length; i++)
+                {
+                    if (edit_text[i] == '\n' || edit_text[i] == ' ')
+                    {
+                        if (edit_text[i] == ' ') i++;
+                        return new Tuple<int, int>(start, i);
+                    }
+                }
+
+                return new Tuple<int, int>(start, edit_text.Length);
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -190,8 +223,9 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public TextCursor(Label label)
         {
             this.label = label;
-            label.OnDoubleClick += DoubleClickAction;
             label.OnClick += ClickAction;
+            label.OnDoubleClick += DoubleClickAction;
+            label.OnTripleClick += TripleClickAction;
         }
 
         #endregion
@@ -200,10 +234,16 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         public void Update()
         {
+            if (!label.UpdateData.UIInputState.PrimaryClick) clicking = false;
             if (!Active) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
             UIInputState inp = label.UpdateData.UIInputState;
             //Console.WriteLine("_HighlightPosition = " + _HighlightPosition + " _HighlightLength = " + _HighlightLength);
+
+            if (clicking)
+            {
+                MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
+            }
 
             // Movement of the caret
             if (inp.TextCursorMovement.Left && caret_position != 0)
@@ -300,7 +340,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_highlighted_text = true;
             }
             
-            if (label.IsPrimaryHovered && !over_highlighted_text)
+            if (label.IsPrimaryHovered && (!over_highlighted_text || clicking))
             {
                 label.ParentWindow.UICursor = MouseCursor.IBeam;
             }
@@ -348,9 +388,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private void ActivateAndHighlight()
         {
             edit_text = new StringBuilder(label.Text);
-            caret_position = edit_text.Length;
-            highlight_start = 0;
-            highlight_end = edit_text.Length;
+            HighlightRange(0, edit_text.Length);
         }
 
         public void ApplyFinalCheck()
@@ -364,9 +402,17 @@ namespace DownUnder.UI.Widgets.WidgetControls
         
         private void MoveCaretTo(int index)
         {
+            if (caret_position != index) caret_blink_timer = 0f;
             caret_position = index;
-            if (!label.UpdateData.UIInputState.Shift) highlight_start = caret_position;
+            if (!label.UpdateData.UIInputState.Shift && !clicking) highlight_start = caret_position;
             highlight_end = caret_position;
+        }
+
+        private void HighlightRange(int start, int end)
+        {
+            caret_position = end;
+            highlight_start = start;
+            highlight_end = end;
             caret_blink_timer = 0f;
         }
 
@@ -374,33 +420,47 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #region Events
 
+        private void ClickAction(object sender, EventArgs args)
+        {
+            if (!Active) return;
+            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
+            clicking = true;
+        }
+
         /// <summary>
-        /// Is called when this widget is double clicked. Activates editing (if enabled)
+        /// Is called when the label is double clicked.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void DoubleClickAction(object sender, EventArgs args)
         {
-            if (!label.EditingEnabled)
-            {
-                return;
-            }
-
             if (Active)
             {
+                clicking = false;
+                Tuple<int, int> word = _CurrentWord;
+                Console.WriteLine(word);
+                HighlightRange(word.Item1, word.Item2);
                 return;
             }
 
             Active = true;
         }
 
-        private void ClickAction(object sender, EventArgs args)
+        /// <summary>
+        /// Is called when the label is triple clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void TripleClickAction(object sender, EventArgs args)
         {
-            if (!Active) return;
-            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
+            if (Active)
+            {
+                clicking = false;
+                HighlightRange(_BeginningOfCurrentLine, _EndOfCurrentLine);
+                return;
+            }
         }
 
         #endregion
-
     }
 }
