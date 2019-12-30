@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
+using DownUnder.UI.Widgets.DataTypes;
 
 // Todo: Check MeasureStrings offset parameter, it's broken maybe
 
@@ -28,15 +29,9 @@ namespace DownUnder.UI.Widgets.WidgetControls
         /// </summary>
         int caret_position = 0;
 
-        /// <summary>
-        /// The start of the highlighted text (if active).
-        /// </summary>
-        int highlight_position = 0;
+        int highlight_start = 0;
 
-        /// <summary>
-        /// The length of the highlighted text (if active).
-        /// </summary>
-        int highlight_length = 0;
+        int highlight_end = 0;
 
         /// <summary>
         /// If this is less than half _CaretBlinkTime then the caret won't be drawn.
@@ -93,6 +88,42 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #region Private Properties
 
+        /// <summary>
+        /// The start of the highlighted text (if active).
+        /// </summary>
+        int _HighlightPosition
+        {
+            get
+            {
+                if (highlight_start > highlight_end)
+                {
+                    return highlight_end;
+                }
+                else
+                {
+                    return highlight_start;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The length of the highlighted text (if active).
+        /// </summary>
+        int _HighlightLength
+        {
+            get
+            {
+                if (highlight_start > highlight_end)
+                {
+                    return highlight_start - highlight_end;
+                }
+                else
+                {
+                    return highlight_end - highlight_start;
+                }
+            }
+        }
+
         float _CaretBlinkTime
         {
             get => SystemInformation.CaretBlinkTime / 500f;
@@ -128,6 +159,30 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
+        int _BeginningOfCurrentLine
+        {
+            get
+            {
+                for (int i = caret_position - 1; i >= 0; i--)
+                {
+                    if (edit_text[i] == '\n') return i + 1;
+                }
+                return 0;
+            }
+        }
+        
+        int _EndOfCurrentLine
+        {
+            get
+            {
+                for (int i = caret_position; i < edit_text.Length; i++)
+                {
+                    if (edit_text[i] == '\n') return i;
+                }
+                return edit_text.Length;
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -147,27 +202,21 @@ namespace DownUnder.UI.Widgets.WidgetControls
         {
             if (!Active) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
-
-            //Console.WriteLine(
-            //    "Hovered index = " +
-            //    label.DrawingData.sprite_font.IndexFromPoint
-            //    (
-            //    edit_text.ToString(), 
-            //    label.UpdateData.UIInputState.CursorPosition
-            //    ));
+            UIInputState inp = label.UpdateData.UIInputState;
+            //Console.WriteLine("_HighlightPosition = " + _HighlightPosition + " _HighlightLength = " + _HighlightLength);
 
             // Movement of the caret
-            if (label.UpdateData.UIInputState.TextCursorMovement.Left && caret_position != 0)
+            if (inp.TextCursorMovement.Left && caret_position != 0)
             {
                 MoveCaretTo(caret_position - 1);
             }
 
-            if (label.UpdateData.UIInputState.TextCursorMovement.Right && caret_position != edit_text.Length)
+            if (inp.TextCursorMovement.Right && caret_position != edit_text.Length)
             {
                 MoveCaretTo(caret_position + 1);
             }
             
-            if (label.UpdateData.UIInputState.TextCursorMovement.Up)
+            if (inp.TextCursorMovement.Up)
             {
                 if (_CaretLine == 0)
                 {
@@ -186,7 +235,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-            if (label.UpdateData.UIInputState.TextCursorMovement.Down)
+            if (inp.TextCursorMovement.Down)
             {
                 if (_CaretLine == _NumOfLines)
                 {
@@ -205,8 +254,18 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-            // Editting the text
-            if (label.UpdateData.UIInputState.BackSpace)
+            if (inp.Home)
+            {
+                MoveCaretTo(_BeginningOfCurrentLine);
+            }
+
+            if (inp.End)
+            {
+                MoveCaretTo(_EndOfCurrentLine);
+            }
+
+            // Editing the text
+            if (inp.BackSpace)
             {
                 if (edit_text.Length > 0 && caret_position != 0)
                 {
@@ -215,7 +274,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-            if (label.UpdateData.UIInputState.Delete)
+            if (inp.Delete)
             {
                 if (edit_text.Length > 0 && caret_position != edit_text.Length)
                 {
@@ -224,14 +283,14 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
-                int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
+            int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
             if (added_chars != 0)
             {
                 MoveCaretTo(caret_position + added_chars);
             }
 
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
-            highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), highlight_position, highlight_length);
+            highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
             caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
 
             bool over_highlighted_text = false;
@@ -266,7 +325,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!allow_draw) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
 
-            if (highlight_length > 0)
+            if (_HighlightLength > 0)
             {
                 foreach (var rect in highlight_area)
                 {
@@ -290,8 +349,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
         {
             edit_text = new StringBuilder(label.Text);
             caret_position = edit_text.Length;
-            highlight_position = 0;
-            highlight_length = edit_text.Length;
+            highlight_start = 0;
+            highlight_end = edit_text.Length;
         }
 
         public void ApplyFinalCheck()
@@ -302,12 +361,12 @@ namespace DownUnder.UI.Widgets.WidgetControls
         #endregion
 
         #region Private Methods
-
+        
         private void MoveCaretTo(int index)
         {
             caret_position = index;
-            highlight_position = caret_position;
-            highlight_length = 0;
+            if (!label.UpdateData.UIInputState.Shift) highlight_start = caret_position;
+            highlight_end = caret_position;
             caret_blink_timer = 0f;
         }
 

@@ -110,9 +110,9 @@ namespace DownUnder
         /// <param name="index"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length)
+        public static List<RectangleF> MeasureSubStringAreas(this SpriteFont sprite_font, string text, int index, int length, bool debug = false)
         {
-            return MeasureTrimmedString(sprite_font, text, index, text.Length - length - index);
+            return MeasureTrimmedString(sprite_font, text, index, text.Length - length - index, debug);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace DownUnder
         /// <param name="ltrim">How many characters should be removed from the start of the string.</param>
         /// <param name="rtrim">How many characters should be removed from the end of the string.</param>
         /// <returns></returns>
-        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim)
+        public static List<RectangleF> MeasureTrimmedString(this SpriteFont sprite_font, string text, int ltrim, int rtrim, bool debug = false)
         {
             List<RectangleF> result = new List<RectangleF>();
 
@@ -131,7 +131,6 @@ namespace DownUnder
             float y = 0f;
             int length_processed = 0;
             bool initial = true;
-            bool first_line = true;
             foreach (string line in text.Split('\n').ToList())
             {
                 if (length_processed + line.Length >= ltrim)
@@ -152,26 +151,13 @@ namespace DownUnder
                     // If this is the line where the end trim is
                     if (line.Length + length_processed >= text.Length - rtrim)
                     {
-                        int snip_index;
-                        if (first_line)
-                        {
-                            snip_index = text.Length - ltrim - rtrim;
-                        }
-                        else
-                        {
-                            snip_index = text.Length - rtrim;
-                            //snip_index = line.Length + length_processed - rtrim;
-                        }
-                        string snip = text.Substring(snip_index);
-                        area.Width -= sprite_font.MeasureString(snip).X;
-
+                        area.Width -= sprite_font.MeasureString(text.Substring(text.Length - rtrim).Split(new char[] { '\n' })[0]).X;
                         result.Add(area);
                         break;
                     }
                     
                     result.Add(area);
                 }
-                first_line = false;
                 y += sprite_font.MeasureString("|").Y;
                 area.Y = y;
                 length_processed += line.Length + 1; // Add one to account for the removed \n

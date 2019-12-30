@@ -66,9 +66,14 @@ namespace DownUnder.UI.Widgets
         private float _double_click_timing_backing = 0.5f;
 
         /// <summary>
-        /// Used to track the period of time where a secondary click would be considered a double click. (If this value is > 0)
+        /// Used to track the period of time where a second click would be considered a double click. (If this value is > 0)
         /// </summary>
         private float _double_click_countdown = 0f;
+
+        /// <summary>
+        /// Used to track the period of time where a third click would be considered a triple click. (If this value is > 0)
+        /// </summary>
+        private float _triple_click_countdown = 0f;
 
         private bool _is_hovered_over_backing;
 
@@ -101,10 +106,11 @@ namespace DownUnder.UI.Widgets
         // by reading them.
         bool update_clicked;
         bool update_double_clicked;
+        bool update_triple_clicked;
         bool update_added_to_focused;
         bool update_set_as_focused;
         bool update_hovered_over;
-
+        
         #endregion Fields/Delegates
 
         #region Public/Internal Properties
@@ -180,7 +186,7 @@ namespace DownUnder.UI.Widgets
         #region Non-auto properties
 
         /// <summary>
-        /// Minimum time (in seconds) in-between two clicks needed for a double-click to register with this widget. Default (and Windows standard) is 0.5f.
+        /// Minimum time (in seconds) in-between two clicks needed for a double/triple-click to register with this widget. Default (and Windows standard) is 0.5f.
         /// </summary>
         [DataMember] public float DoubleClickTiming
         {
@@ -493,6 +499,7 @@ namespace DownUnder.UI.Widgets
         {
             update_clicked = false;
             update_double_clicked = false;
+            update_triple_clicked = false;
             update_added_to_focused = false;
             update_set_as_focused = false;
             update_hovered_over = false;
@@ -501,6 +508,7 @@ namespace DownUnder.UI.Widgets
             if (ui_input.CursorPosition != _previous_cursor_position)
             {
                 _double_click_countdown = 0f; // Do not allow double clicks where the mouse has been moved in-between clicks.
+                _triple_click_countdown = 0f;
             }
 
             _previous_clicking = ui_input.PrimaryClick;
@@ -530,6 +538,12 @@ namespace DownUnder.UI.Widgets
                             update_set_as_focused = true;
                         }
                     }
+                    if (_triple_click_countdown > 0)
+                    {
+                        _double_click_countdown = 0f;
+                        _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
+                        update_triple_clicked = true;
+                    }
                     if (_double_click_countdown > 0)
                     {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
@@ -538,6 +552,7 @@ namespace DownUnder.UI.Widgets
                             update_set_as_focused = true;
                         }
                         update_double_clicked = true;
+                        _triple_click_countdown = _double_click_timing_backing;
                     }
                     _double_click_countdown = _double_click_timing_backing;
                 }
@@ -561,8 +576,9 @@ namespace DownUnder.UI.Widgets
                 if (update_set_as_focused) SetAsFocused();
                 if (update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
                 if (update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                if (update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
             }
-            
+
             IsHoveredOver = update_hovered_over;
             UpdatePalette(game_time);
 
@@ -761,6 +777,10 @@ namespace DownUnder.UI.Widgets
         /// Invoked when this widget is double clicked.
         /// </summary>
         public event EventHandler OnDoubleClick;
+        /// <summary>
+        /// Invoked when this widget is triple clicked.
+        /// </summary>
+        public event EventHandler OnTripleClick;
         /// <summary>
         /// Invoked when the mouse hovers over this widget.
         /// </summary>
