@@ -19,8 +19,8 @@ namespace DownUnder.UI.Widgets
         
         private string _text_backing = "";
         private bool _text_edit_enabled = false;
-        private readonly UIPalette _text_edit_background_pallete = new UIPalette();
         private TextCursor _text_cursor;
+        //private UIPalette _edit_text
 
         #endregion Fields
 
@@ -93,6 +93,11 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary>
+        /// Palette of the background while editing text.
+        /// </summary>
+        public UIPalette TextEditBackgroundPalette { get; internal set; } = new UIPalette();
+
         #endregion Public Properties
 
         #region Constructors
@@ -133,10 +138,11 @@ namespace DownUnder.UI.Widgets
         private void SetDefaults()
         {
             DrawBackground = true;
+            EnterConfirms = false;
             BackgroundColor.DefaultColor = Color.LightGray;
-            _text_edit_background_pallete.DefaultColor = Color.White;
-            _text_edit_background_pallete.HoveredColor = Color.Yellow;
-            _text_edit_background_pallete.ForceComplete();
+            TextEditBackgroundPalette.DefaultColor = Color.White;
+            TextEditBackgroundPalette.HoveredColor = Color.White;
+            TextEditBackgroundPalette.ForceComplete();
             Area = new RectangleF(0, 0, 50, 20);
             
             OnDraw += DrawText;
@@ -156,14 +162,14 @@ namespace DownUnder.UI.Widgets
             {
                 if (IsBeingEdited)
                 {
-                    return _text_edit_background_pallete;
+                    return TextEditBackgroundPalette;
                 }
                 else
                 {
                     return base.BackgroundColor;
                 }
             }
-            protected set => base.BackgroundColor = value;
+            internal set => base.BackgroundColor = value;
         }
 
         public override bool DrawBackground
@@ -184,11 +190,14 @@ namespace DownUnder.UI.Widgets
 
         protected override object DerivedClone()
         {
-            Label result = new Label
-            {
-                Text = Text,
-                Name = Name
-            };
+            Label result = new Label();
+                
+            result.Text = Text;
+            result.Name = Name;
+            result.TextEntryRules = (TextEntryRuleSet)TextEntryRules.Clone();
+            result.EditingEnabled = EditingEnabled;
+            result.TextEditBackgroundPalette = (UIPalette)TextEditBackgroundPalette.Clone();
+
             return result;
         }
 
@@ -196,7 +205,7 @@ namespace DownUnder.UI.Widgets
         {
             return new List<Widget>();
         }
-
+        
         #endregion Overrides
 
         #region Event Handlers

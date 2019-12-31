@@ -152,9 +152,9 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
-        [DataMember] public virtual UIPalette BackgroundColor { get; protected set; } = new UIPalette(Color.CornflowerBlue, Color.White);
-        [DataMember] public virtual UIPalette TextColor { get; protected set; } = new UIPalette(Color.Black, Color.Gray);
-        [DataMember] public virtual UIPalette OutlineColor { get; protected set; } = new UIPalette();
+        [DataMember] public virtual UIPalette BackgroundColor { get; internal set; } = new UIPalette(Color.CornflowerBlue, Color.White);
+        [DataMember] public virtual UIPalette TextColor { get; internal set; } = new UIPalette(Color.Black, Color.Gray);
+        [DataMember] public virtual UIPalette OutlineColor { get; internal set; } = new UIPalette();
 
         /// <summary>
         /// Represents the corners this widget will snap to.
@@ -437,6 +437,19 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        public bool IsPrimarySelected
+        {
+            get
+            {
+                if (ParentWindow == null)
+                {
+                    return false;
+                }
+
+                return ParentWindow.SelectedWidgets.Primary == this;
+            }
+        }
+
         public bool IsSelected
         {
             get
@@ -448,7 +461,9 @@ namespace DownUnder.UI.Widgets
                 return ParentWindow.SelectedWidgets.IsWidgetFocused(this);
             }
         }
-        
+
+        protected bool EnterConfirms { get; set; } = true;
+
         #endregion Other various non-serialized properties
 
         #endregion Public/Internal Properties
@@ -577,6 +592,11 @@ namespace DownUnder.UI.Widgets
                 if (update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
                 if (update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
                 if (update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (ui_input.Enter && IsPrimarySelected && EnterConfirms)
+            {
+                OnConfirm?.Invoke(this, EventArgs.Empty);
             }
 
             IsHoveredOver = update_hovered_over;

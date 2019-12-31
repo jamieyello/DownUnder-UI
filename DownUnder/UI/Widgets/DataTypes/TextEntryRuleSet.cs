@@ -5,10 +5,12 @@ namespace DownUnder.UI.Widgets.DataTypes
 {
     public class TextEntryRuleSet
     {
+        // Update Clone when adding new properties
         public bool AllowNonNumbers { get; set; } = false;
         public bool AllowDecimal { get; set; } = true;
         public bool AllowLeadingZeros { get; set; } = true;
         public bool EmptyResultBecomesZero { get; set; } = false;
+        public bool IsSingleLine { get; set; } = false;
 
         /// <summary>
         /// Inserts text into a stringbuilder if it follows the rules. Returns the number of inserted characters.
@@ -43,6 +45,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
             if (c == '.' && AllowDecimal && !text.ToString().Contains('.')) return true;
             if (!char.IsNumber(c) && !AllowNonNumbers) return false;
+            if (IsSingleLine && c == '\n') return false;
 
             return true;
         }
@@ -95,6 +98,19 @@ namespace DownUnder.UI.Widgets.DataTypes
                     EmptyResultBecomesZero = false
                 };
             }
+        }
+
+        public object Clone()
+        {
+            TextEntryRuleSet result = new TextEntryRuleSet();
+
+            result.AllowNonNumbers = AllowNonNumbers;
+            result.AllowDecimal = AllowDecimal;
+            result.AllowLeadingZeros = AllowLeadingZeros;
+            result.EmptyResultBecomesZero = EmptyResultBecomesZero;
+            result.IsSingleLine = IsSingleLine;
+
+            return result;
         }
     }
 }

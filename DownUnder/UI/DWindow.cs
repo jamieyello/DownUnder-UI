@@ -283,14 +283,12 @@ namespace DownUnder.UI
             }
             else if (e.Character == 10 || e.Character == 13)
             {
+                InputText.Append('\n');
                 InputState.Enter = true;
-
-                SelectedWidgets.Primary?.SignalConfirm();
             }
             else
             {
-                // (For users with 20 million keys to press at once)
-                if (InputText.Length < 20000000) { InputText.Append(e.Character); }
+                InputText.Append(e.Character);
             }
         }
 

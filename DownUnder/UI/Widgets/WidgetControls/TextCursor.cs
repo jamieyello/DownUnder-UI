@@ -238,7 +238,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!Active) return;
             Vector2 offset = label.PositionInWindow.ToVector2().Floored();
             UIInputState inp = label.UpdateData.UIInputState;
-            //Console.WriteLine("_HighlightPosition = " + _HighlightPosition + " _HighlightLength = " + _HighlightLength);
 
             if (clicking)
             {

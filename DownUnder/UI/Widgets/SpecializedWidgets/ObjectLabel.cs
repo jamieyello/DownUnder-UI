@@ -36,6 +36,8 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         private void SetDefaults(object obj)
         {
             OnConfirm += Confirm;
+            TextEntryRules.IsSingleLine = true;
+            EnterConfirms = true;
 
             if (obj is string)
             {
