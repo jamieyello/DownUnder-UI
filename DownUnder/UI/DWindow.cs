@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Interop;
 
 namespace DownUnder.UI
 {
@@ -247,6 +248,7 @@ namespace DownUnder.UI
             IsMouseVisible = true;
             Window.ClientSizeChanged += SetLayoutAreaToWindowArea;
             Window.TextInput += ProcessKeys;
+
             Exiting += ExitAll;
             System.Windows.Forms.Control.FromHandle(Window.Handle).MinimumSize = _minimum_size.ToSystemSize();
         }

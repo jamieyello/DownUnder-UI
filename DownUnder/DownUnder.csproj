@@ -127,7 +127,7 @@
   <ItemGroup>
     <Content Include="Application Notes.txt" />
     <Content Include="Input\Reader Guide.txt" />
-    <Content Include="UI\blurred_circle.png" />
+    <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

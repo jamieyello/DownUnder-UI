@@ -306,7 +306,11 @@ namespace DownUnder.UI.Widgets.WidgetControls
             // Editing the text
             if (inp.BackSpace)
             {
-                if (edit_text.Length > 0 && caret_position != 0)
+                if (_HighlightLength != 0)
+                {
+                    DeleteHighlightedText();
+                }
+                else if (edit_text.Length > 0 && caret_position != 0)
                 {
                     edit_text.Remove(caret_position - 1, 1);
                     MoveCaretTo(caret_position - 1);
@@ -315,18 +319,19 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (inp.Delete)
             {
-                if (edit_text.Length > 0 && caret_position != edit_text.Length)
+                if (_HighlightLength != 0)
+                {
+                    DeleteHighlightedText();
+                }
+                else if (edit_text.Length > 0 && caret_position != edit_text.Length)
                 {
                     edit_text.Remove(caret_position, 1);
                     MoveCaretTo(caret_position);
                 }
             }
 
-            int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, label.UpdateData.UIInputState.Text, caret_position);
-            if (added_chars != 0)
-            {
-                MoveCaretTo(caret_position + added_chars);
-            }
+            // Insert typed text
+            InsertText(label.UpdateData.UIInputState.Text, caret_position);
 
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
             highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
@@ -413,6 +418,28 @@ namespace DownUnder.UI.Widgets.WidgetControls
             highlight_start = start;
             highlight_end = end;
             caret_blink_timer = 0f;
+        }
+
+        private void InsertText(string text, int index)
+        {
+            if (text == "") return;
+            DeleteHighlightedText();
+            int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, text, index);
+            if (added_chars != 0)
+            {
+                MoveCaretTo(index + added_chars);
+            }
+        }
+
+        private void DeleteHighlightedText()
+        {
+            int highlight_length = _HighlightLength;
+            if (highlight_length == 0) return;
+            int highlight_position = _HighlightPosition;
+            edit_text.Remove(highlight_position, highlight_length);
+            highlight_start = highlight_position;
+            highlight_end = highlight_position;
+            caret_position = highlight_position;
         }
 
         #endregion

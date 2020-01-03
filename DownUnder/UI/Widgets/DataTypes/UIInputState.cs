@@ -8,7 +8,7 @@ using System;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary>
-    /// Used to update widgets with mouse/keyboard information.
+    /// Used to communicate to widgets input. Can be updated or set manually.
     /// </summary>
     public class UIInputState
     {
@@ -24,21 +24,21 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary>
         /// Used for selecting widgets.
         /// </summary>
-        public bool PrimaryClick { get; set; }
+        public bool PrimaryClick { get; set; } = false;
 
-        public bool PrimaryClickTriggered { get; set; }
+        public bool PrimaryClickTriggered { get; set; } = false;
 
         /// <summary>
         /// Used to create right-click menus.
         /// </summary>
-        public bool SecondaryClick { get; set; }
+        public bool SecondaryClick { get; set; } = false;
 
-        public bool SecondaryClickTriggered { get; set; }
+        public bool SecondaryClickTriggered { get; set; } = false;
 
         /// <summary>
         /// Used for selecting multiple widgets.
         /// </summary>
-        public bool Control { get; set; }
+        public bool Control { get; set; } = false;
 
         /// <summary>
         /// Used to move the cursor.
@@ -48,17 +48,17 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary>
         /// Used for backspacing text.
         /// </summary>
-        public bool BackSpace { get; set; }
+        public bool BackSpace { get; set; } = false;
 
         /// <summary>
         /// Used to represent the Enter key.
         /// </summary>
-        public bool Enter { get; set; }
+        public bool Enter { get; set; } = false;
 
         /// <summary>
         /// The mouse position relative to the parent window.
         /// </summary>
-        public Point2 CursorPosition { get; set; }
+        public Point2 CursorPosition { get; set; } = new Point2();
 
         /// <summary>
         /// Used for text input.
@@ -70,40 +70,48 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary>
         /// Represents the shift key.
         /// </summary>
-        public bool Shift { get; set; }
+        public bool Shift { get; set; } = false;
 
         /// <summary>
         /// Represents the DEL delete key.
         /// </summary>
-        public bool Delete { get; set; }
+        public bool Delete { get; set; } = false;
 
         /// <summary>
         /// Represents the INS insert key.
         /// </summary>
-        public bool Insert { get; set; }
+        public bool Insert { get; set; } = false;
 
         /// <summary>
         /// Represents the home key.
         /// </summary>
-        public bool Home { get; set; }
+        public bool Home { get; set; } = false;
 
         /// <summary>
         /// Represents the end key.
         /// </summary>
-        public bool End { get; set; }
+        public bool End { get; set; } = false;
 
         /// <summary>
         /// Represents the state of Caps Lock.
         /// </summary>
-        public bool CapsLock { get; set; }
+        public bool CapsLock { get; set; } = false;
 
         /// <summary>
         /// Represents the state of Num Lock.
         /// </summary>
-        public bool NumLock { get; set; }
+        public bool NumLock { get; set; } = false;
+
+        public bool SelectAll { get; set; } = false;
+
+        public bool Copy { get; set; } = false;
+
+        public bool Cut { get; set; } = false;
+
+        public bool Paste { get; set; } = false;
 
         /// <summary>
-        /// Set this UIUnputState to the typical input from a mouse + keyboard.
+        /// Set this UIUnputState's values to the typical input from a mouse + keyboard.
         /// </summary>
         /// <param name="window"></param>
         /// <returns></returns>
@@ -138,9 +146,17 @@ namespace DownUnder.UI.Widgets.DataTypes
 
             Scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue) - _previous_mouse_wheel_scroll;
             _previous_mouse_wheel_scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue);
-            
 
-            Text = text_input;
+            UpdateKeyboardInput(text_input, game_time);
+        }
+
+        /// <summary>
+        /// Set this UIUnputState's values to the typical input from a keyboard. Doesn't update cursor values.
+        /// </summary>
+        /// <param name="text_input"></param>
+        /// <param name="game_time"></param>
+        public void UpdateKeyboardInput(string text_input, GameTime game_time)
+        {
             buffered_keyboard.Update(game_time.GetElapsedSeconds());
 
             TextCursorMovement.Left = buffered_keyboard.IsKeyTriggered(Keys.Left);
@@ -155,6 +171,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             End = buffered_keyboard.IsKeyTriggered(Keys.End);
             CapsLock = _keyboard_state.CapsLock;
             NumLock = _keyboard_state.NumLock;
+            
+            Text = text_input;
 
             _previous_insert_key_down = _insert_key_down;
             _insert_key_down = buffered_keyboard.IsKeyTriggered(Keys.Insert);
