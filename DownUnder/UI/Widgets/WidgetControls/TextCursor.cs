@@ -331,7 +331,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
 
             // Insert typed text
-            InsertText(label.UpdateData.UIInputState.Text, caret_position);
+            InsertText(label.UpdateData.UIInputState.Text, caret_position, true);
 
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
             highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
@@ -404,11 +404,11 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #region Private Methods
         
-        private void MoveCaretTo(int index)
+        private void MoveCaretTo(int index, bool no_highlight = false)
         {
             if (caret_position != index) caret_blink_timer = 0f;
             caret_position = index;
-            if (!label.UpdateData.UIInputState.Shift && !clicking) highlight_start = caret_position;
+            if (!label.UpdateData.UIInputState.Shift && !clicking || no_highlight) highlight_start = caret_position;
             highlight_end = caret_position;
         }
 
@@ -420,14 +420,14 @@ namespace DownUnder.UI.Widgets.WidgetControls
             caret_blink_timer = 0f;
         }
 
-        private void InsertText(string text, int index)
+        private void InsertText(string text, int index, bool no_highlight = false)
         {
             if (text == "") return;
             DeleteHighlightedText();
             int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, text, index);
             if (added_chars != 0)
             {
-                MoveCaretTo(index + added_chars);
+                MoveCaretTo(index + added_chars, no_highlight);
             }
         }
 
