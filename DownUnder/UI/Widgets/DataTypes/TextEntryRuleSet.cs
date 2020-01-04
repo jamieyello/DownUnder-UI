@@ -56,6 +56,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             {
                 string_builder.Append('0');
             }
+
+            if (!AllowNonNumbers && string_builder.Length > 0 && string_builder[0] == '.')
+            {
+                string_builder.Insert(0, '0');
+            }
         }
 
         public static TextEntryRuleSet Integer
