@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 
+//Todo: Trigger inputs shopuld not have set parameters
+//Todo: look into turning this into a struct
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary>
@@ -22,14 +24,14 @@ namespace DownUnder.UI.Widgets.DataTypes
         private bool _previous_insert_key_down = false;
 
         /// <summary>
-        /// Used for selecting widgets.
+        /// Used when primary input is held down.
         /// </summary>
         public bool PrimaryClick { get; set; } = false;
 
         public bool PrimaryClickTriggered { get; set; } = false;
 
         /// <summary>
-        /// Used to create right-click menus.
+        /// Used when secondary input is held down.
         /// </summary>
         public bool SecondaryClick { get; set; } = false;
 

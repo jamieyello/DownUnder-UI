@@ -181,6 +181,22 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         public DrawingData DrawingData { get; set; } = new DrawingData();
 
+        /// <summary>
+        /// Position of the cursor relative to this widgdet.
+        /// </summary>
+        public Point2 CursorPosition
+        {
+            get
+            {
+                if (UpdateData.UIInputState == null) return new Point2();
+                if (this is IScrollableWidget)
+                {
+                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
+                }
+                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
+            }
+        }
+
         #endregion Auto properties
 
         #region Non-auto properties

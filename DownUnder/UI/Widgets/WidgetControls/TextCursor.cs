@@ -242,7 +242,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (clicking)
             {
-                MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
+                MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
             }
 
             // Movement of the caret
@@ -363,7 +363,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             foreach (RectangleF text in highlight_area)
             {
                 text.Offset(offset);
-                if (text.Contains(label.UpdateData.UIInputState.CursorPosition)) over_highlighted_text = true;
+                if (text.Contains(label.CursorPosition)) over_highlighted_text = true;
             }
             
             if (label.IsPrimaryHovered && (!over_highlighted_text || clicking))
@@ -472,7 +472,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private void ClickAction(object sender, EventArgs args)
         {
             if (!Active) return;
-            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.UpdateData.UIInputState.CursorPosition, true));
+            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
             clicking = true;
         }
 
