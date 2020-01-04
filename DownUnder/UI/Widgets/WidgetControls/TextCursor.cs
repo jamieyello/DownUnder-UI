@@ -7,6 +7,7 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.Utilities;
 
 // Todo: Check MeasureStrings offset parameter, it's broken maybe
 
@@ -330,9 +331,30 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
             }
 
+            if (inp.SelectAll)
+            {
+                HighlightRange(0, edit_text.Length);
+            }
+
+            if (inp.Copy || inp.Cut)
+            {
+                if (_HighlightLength > 0)
+                {
+                    char[] t = new char[_HighlightLength];
+                    edit_text.CopyTo(_HighlightPosition, t, 0, _HighlightLength);
+                    OSInterface.CopyToClipBoard(new string(t));
+                }
+                if (inp.Cut) DeleteHighlightedText();
+            }
+
+            if (inp.Paste)
+            {
+                InsertText(OSInterface.GetTextFromClipboard(), caret_position, true);
+            }
+
             // Insert typed text
             InsertText(label.UpdateData.UIInputState.Text, caret_position, true);
-
+            
             text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
             highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
             caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
@@ -423,7 +445,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private void InsertText(string text, int index, bool no_highlight = false)
         {
             if (text == "") return;
-            DeleteHighlightedText();
+            if (DeleteHighlightedText()) index = caret_position;
             int added_chars = label.TextEntryRules.CheckAndInsert(edit_text, text, index);
             if (added_chars != 0)
             {
@@ -431,15 +453,16 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        private void DeleteHighlightedText()
+        private bool DeleteHighlightedText()
         {
             int highlight_length = _HighlightLength;
-            if (highlight_length == 0) return;
+            if (highlight_length == 0) return false;
             int highlight_position = _HighlightPosition;
             edit_text.Remove(highlight_position, highlight_length);
             highlight_start = highlight_position;
             highlight_end = highlight_position;
             caret_position = highlight_position;
+            return true;
         }
 
         #endregion

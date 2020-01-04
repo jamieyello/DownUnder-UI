@@ -83,9 +83,14 @@ namespace DownUnder.UI
         public UIInputState InputState { get; } = new UIInputState();
 
         /// <summary>
-        /// Used for text input.
+        /// Used for text input. Typed text is added here.
         /// </summary>
         public StringBuilder InputText { get; } = new StringBuilder();
+
+        /// <summary>
+        /// Typed CTRL + key combination chars are added here.
+        /// </summary>
+        public StringBuilder CommandText { get; } = new StringBuilder();
 
         /// <summary>
         /// The Layout Widget of this window.
@@ -290,7 +295,15 @@ namespace DownUnder.UI
             }
             else
             {
-                InputText.Append(e.Character);
+                KeyboardState state = Keyboard.GetState();
+                if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl))
+                {
+                    CommandText.Append(e.Character);
+                }
+                else
+                {
+                    InputText.Append(e.Character);
+                }
             }
         }
 
@@ -368,13 +381,14 @@ namespace DownUnder.UI
             }
             ProcessQueuedEvents();
             HoveredWidgets.Reset();
-            InputState.UpdateAll(Window, InputText.ToString(), game_time);
+            InputState.UpdateAll(this, game_time);
             //Console.WriteLine($"_keyboard_state.IsKeyDown(Keys.Left) = {Keyboard.GetState().IsKeyDown(Keys.Left)}");
             //Console.WriteLine(InputState.TextCursorMovement.Down);
             //Input.BufferedKeyboard o = new Input.BufferedKeyboard();
             //Input.BufferedKeyboard.Test();
 
             InputText.Clear();
+            CommandText.Clear();
             Layout.UpdatePriority(game_time, InputState);
             if (!Window.ClientBounds.Contains(InputState.CursorPosition + Window.ClientBounds.Location))
             {
@@ -385,7 +399,6 @@ namespace DownUnder.UI
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;
             InputState.Enter = false;
-            
         }
 
         #endregion Protected Methods

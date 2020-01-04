@@ -118,6 +118,7 @@
     <Compile Include="Utilities\Images\ImageSetIndex.cs" />
     <Compile Include="Utilities\Interpolation.cs" />
     <Compile Include="Utilities\Orientation.cs" />
+    <Compile Include="Utilities\OSInterface.cs" />
     <Compile Include="Utilities\Serialization\CSCreator.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />

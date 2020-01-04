@@ -102,23 +102,55 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// </summary>
         public bool NumLock { get; set; } = false;
 
+        /// <summary>
+        /// Used to select all items/text.
+        /// </summary>
         public bool SelectAll { get; set; } = false;
 
+        /// <summary>
+        /// Used to copy items/text.
+        /// </summary>
         public bool Copy { get; set; } = false;
 
+        /// <summary>
+        /// Used to cut items/text.
+        /// </summary>
         public bool Cut { get; set; } = false;
 
+        /// <summary>
+        /// Used to paste items/text.
+        /// </summary>
         public bool Paste { get; set; } = false;
+
+        /// <summary>
+        /// Used to save the current state/project to file.
+        /// </summary>
+        public bool Save { get; set; } = false;
+
+        /// <summary>
+        /// Used to create a new project.
+        /// </summary>
+        public bool New { get; set; } = false;
+
+        /// <summary>
+        /// Used to undo changes to items/text.
+        /// </summary>
+        public bool Undo { get; set; } = false;
+
+        /// <summary>
+        /// Used to redo changes to items/text.
+        /// </summary>
+        public bool Redo { get; set; } = false;
 
         /// <summary>
         /// Set this UIUnputState's values to the typical input from a mouse + keyboard.
         /// </summary>
         /// <param name="window"></param>
         /// <returns></returns>
-        public void UpdateAll(GameWindow window, string text_input, GameTime game_time)
+        public void UpdateAll(DWindow dwindow, GameTime game_time)
         {
             _previous_mouse_state = _mouse_state;
-            _mouse_state = Mouse.GetState(window);
+            _mouse_state = Mouse.GetState(dwindow.Window);
             _previous_keyboard_state = _keyboard_state;
             _keyboard_state = Keyboard.GetState();
 
@@ -147,7 +179,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             Scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue) - _previous_mouse_wheel_scroll;
             _previous_mouse_wheel_scroll = new Vector2(_mouse_state.HorizontalScrollWheelValue, _mouse_state.ScrollWheelValue);
 
-            UpdateKeyboardInput(text_input, game_time);
+            UpdateKeyboardInput(dwindow, game_time);
         }
 
         /// <summary>
@@ -155,7 +187,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// </summary>
         /// <param name="text_input"></param>
         /// <param name="game_time"></param>
-        public void UpdateKeyboardInput(string text_input, GameTime game_time)
+        public void UpdateKeyboardInput(DWindow dwindow, GameTime game_time)
         {
             buffered_keyboard.Update(game_time.GetElapsedSeconds());
 
@@ -172,7 +204,27 @@ namespace DownUnder.UI.Widgets.DataTypes
             CapsLock = _keyboard_state.CapsLock;
             NumLock = _keyboard_state.NumLock;
             
-            Text = text_input;
+            Text = dwindow.InputText.ToString();
+            SelectAll = false;
+            Copy = false;
+            Cut = false;
+            Paste = false;
+            Save = false;
+            New = false;
+            Undo = false;
+            Redo = false;
+            foreach (char c in dwindow.CommandText.ToString())
+            {
+                //Console.WriteLine((int)c);
+                if (c == 1) SelectAll = true;
+                if (c == 3) Copy = true;
+                if (c == 24) Cut = true;
+                if (c == 22) Paste = true;
+                if (c == 19) Save = true;
+                if (c == 14) New = true;
+                if (c == 26) Undo = true;
+                if (c == 25) Redo = true;
+            }
 
             _previous_insert_key_down = _insert_key_down;
             _insert_key_down = buffered_keyboard.IsKeyTriggered(Keys.Insert);
