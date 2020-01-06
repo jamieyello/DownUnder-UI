@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// Todo: Duplicate RectanglF extensions for Rectangle
+
 namespace DownUnder
 {
     public static class Extensions
@@ -79,6 +81,11 @@ namespace DownUnder
         public static RectangleF WithPosition(this RectangleF r, Point2 p)
         {
             return new RectangleF(p, r.Size);
+        }
+
+        public static RectangleF WithSize(this RectangleF r, Size2 s)
+        {
+            return new RectangleF(r.Position, s);
         }
 
         public static System.Drawing.Size ToSystemSize(this Point p)

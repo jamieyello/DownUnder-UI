@@ -28,15 +28,15 @@ namespace DownUnder.UI
         /// <param name="new_window"></param>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
 
-        private Layout _layout;
+        private Layout _layout_backing;
 
         private Point _minimum_size = new Point(100, 100);
 
         protected readonly GraphicsDeviceManager GraphicsManager;
 
-        // Used to communicate with a spawned window in CreateWindow().
-        // Set to 0 when child window is spawned, 1 after it activates, and -1
-        // once the operation is completed.
+        /// <summary>
+        /// Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed.
+        /// </summary>
         private int _spawned_window_is_active = -1;
 
         private static int _thread_id;
@@ -97,7 +97,7 @@ namespace DownUnder.UI
         /// </summary>
         public Layout Layout
         {
-            get => _layout;
+            get => _layout_backing;
             set
             {
                 if (value != null)
@@ -106,7 +106,7 @@ namespace DownUnder.UI
                     value.Area = GraphicsDevice.Viewport.Bounds;
                 }
 
-                _layout = value;
+                _layout_backing = value;
             }
         }
 

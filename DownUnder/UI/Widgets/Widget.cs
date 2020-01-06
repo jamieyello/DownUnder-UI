@@ -17,12 +17,14 @@ using System.Threading;
 //      Ctrl-M, Ctrl-M will expand or collapse a single region
 
 // tip: Always remember to update Clone.
+// 109775241084051484
 
 // Todo: Change some methods to properties.
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // Remove white_dot and use Extended drawing methods instead.
 // Optimize those property derivitaves
+// Make more properties compact.
 
 namespace DownUnder.UI.Widgets
 {
@@ -637,7 +639,7 @@ namespace DownUnder.UI.Widgets
         {
             if (GraphicsDevice == null)
             {
-                throw new Exception($"{GetType().Name}.InitializeGrasphics: GraphicsDevice cannot be null.");
+                throw new Exception($"{GetType().Name}.InitializeGraphics: GraphicsDevice cannot be null.");
             }
 
             white_dot = DrawingTools.WhiteDot(GraphicsDevice);
@@ -721,21 +723,20 @@ namespace DownUnder.UI.Widgets
 
         internal void SetOwnership(IWidgetParent parent)
         {
-            Widget parent_widget = parent as Widget;
-            DWindow parent_window = parent as DWindow;
-
             // If the parent is a widget
-            if (parent_widget != null)
+            if (parent is Widget parent_widget)
             {
                 ParentWidget = parent_widget;
             }
 
             // If the parent is a window
-            else if (parent_window != null)
+            else if (parent is DWindow parent_window)
             {
                 ParentWidget = null;
                 ParentWindow = parent_window;
             }
+
+            throw new Exception("This IWidgetParent is not implemented or valid.");
         }
 
         /// <summary>
@@ -905,8 +906,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Widget child in Children)
             {
-                List<Widget> child_widgets = child.GetAllWidgets();
-                foreach (Widget child_widget in child_widgets)
+                foreach (Widget child_widget in child.GetAllWidgets())
                 {
                     result.Add(child_widget);
                 }
@@ -939,20 +939,13 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Set this widget as the only focused widget.
         /// </summary>
-        protected void SetAsFocused()
-        {
-            //Debug.WriteLine($"Focusing off {Name}, null parent = {_parent_window_reference == null}");
-            _parent_window_reference?.SelectedWidgets.SetFocus(this);
-        }
+        protected void SetAsFocused() => _parent_window_reference?.SelectedWidgets.SetFocus(this);
 
         /// <summary>
         /// Add this widget to the group of selected widgets.
         /// </summary>
-        protected void AddToFocused()
-        {
-            _parent_window_reference?.SelectedWidgets.AddFocus(this);
-        }
-
+        protected void AddToFocused() => _parent_window_reference?.SelectedWidgets.AddFocus(this);
+        
         /// <summary>
         /// A function called by a widget to update both itself and its parent's area.
         /// </summary>
