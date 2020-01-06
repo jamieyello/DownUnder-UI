@@ -242,7 +242,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (clicking)
             {
-                MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
+                MoveCaretTo(label.SpriteFont.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
             }
 
             // Movement of the caret
@@ -265,10 +265,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 else
                 {
                     MoveCaretTo(
-                        label.DrawingData.sprite_font.IndexFromPoint
+                        label.SpriteFont.IndexFromPoint
                         (
                             edit_text.ToString(), 
-                            label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, label.DrawingData.sprite_font.MeasureString("|").Y), 
+                            label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, label.SpriteFont.MeasureString("|").Y), 
                             true
                         )
                     );
@@ -284,10 +284,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 else
                 {
                     MoveCaretTo(
-                        label.DrawingData.sprite_font.IndexFromPoint
+                        label.SpriteFont.IndexFromPoint
                         (
                             edit_text.ToString(),
-                            label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) + new Vector2(0f, label.DrawingData.sprite_font.MeasureString("|").Y),
+                            label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + new Vector2(0f, label.SpriteFont.MeasureString("|").Y),
                             true
                         )
                     );
@@ -355,8 +355,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
             // Insert typed text
             InsertText(label.UpdateData.UIInputState.Text, caret_position, true);
             
-            text_area = label.DrawingData.sprite_font.MeasureStringAreas(edit_text.ToString());
-            highlight_area = label.DrawingData.sprite_font.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
+            text_area = label.SpriteFont.MeasureStringAreas(edit_text.ToString());
+            highlight_area = label.SpriteFont.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
             caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
 
             bool over_highlighted_text = false;
@@ -396,15 +396,15 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 foreach (var rect in highlight_area)
                 {
                     rect.Offset(offset);
-                    label.DrawingData.sprite_batch.FillRectangle(rect, Color.LightBlue);
+                    label.sprite_batch.FillRectangle(rect, Color.LightBlue);
                 }
             }
 
             if (_CaretCurrentlyDrawn)
             {
-                Vector2 position = label.DrawingData.sprite_font.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
+                Vector2 position = label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                label.DrawingData.sprite_batch.DrawLine(position, position2, Color.Black);
+                label.sprite_batch.DrawLine(position, position2, Color.Black);
             }
         }
 
@@ -472,7 +472,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private void ClickAction(object sender, EventArgs args)
         {
             if (!Active) return;
-            MoveCaretTo(label.DrawingData.sprite_font.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
+            MoveCaretTo(label.SpriteFont.IndexFromPoint(edit_text.ToString(), label.CursorPosition, true));
             clicking = true;
         }
 

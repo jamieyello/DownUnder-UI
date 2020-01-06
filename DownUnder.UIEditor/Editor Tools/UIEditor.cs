@@ -18,23 +18,35 @@ namespace DownUnder.UIEditor.Editor_Tools
     /// </summary>
     class UIEditorLayout : Layout
     {
+        enum CommonWidgets
+        {
+            Label,
+            Grid,
+            Layout
+        }
+
         // What made the first UI that made the first UI? This.
         /// <param name="sprite_font"></param>
         /// <param name="editor_objects">Shortcut to several widgets relevant to editting UI.</param>
         /// <returns></returns>
-        public UIEditorLayout(DWindow parent, SpriteFont sprite_font, out EditorObjects editor_objects)
+        public UIEditorLayout(DWindow parent, out EditorObjects editor_objects)
             : base(parent)
         { 
             Grid main_grid = new Grid(parent, 2, 1);
 
-            Layout project = DefaultProject(parent, sprite_font);
+            Layout project = DefaultProject(parent);
 
             ((Layout)main_grid.widgets[0][0]).AddWidget(project);
             AddWidget(main_grid);
+            
+            Grid sidebar = new Grid(main_grid, 1, 2);
+            Label test = new Label(sidebar, "Whoop");
+            PropertyGrid property_grid = new PropertyGrid(sidebar, project);
+            sidebar.SetCell(0, 0, test);
+            sidebar.SetCell(0, 1, property_grid);
+            main_grid.AddToCell(1, 0, sidebar);
 
-            PropertyGrid property_grid = new PropertyGrid(main_grid, sprite_font, project);
             property_grid.EditingEnabled = true;
-            main_grid.AddToCell(1, 0, property_grid);
             var grid_layout = main_grid.GetCell(1, 0);
             grid_layout.Name = "Grid Container";
             property_grid.Name = "Property grid";
@@ -44,7 +56,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             //editor_objects.fields = fields;
         }
 
-        static Layout DefaultProject(DWindow parent, SpriteFont sprite_font)
+        static Layout DefaultProject(DWindow parent)
         {
             // Create taskbar
             Layout project = new Layout(parent);

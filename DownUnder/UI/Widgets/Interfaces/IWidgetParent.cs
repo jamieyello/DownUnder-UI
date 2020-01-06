@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,8 @@ namespace DownUnder.UI.Widgets.Interfaces
 {
     public interface IWidgetParent
     {
+        SpriteFont SpriteFont { get; }
+        GraphicsDevice GraphicsDevice { get; }
+        RenderTarget2D LocalRenderTarget { get; }
     }
 }

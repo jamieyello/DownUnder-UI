@@ -159,7 +159,7 @@ namespace DownUnder.UI.Widgets
 
         private void DrawScrollbars(object sender, EventArgs args)
         {
-            _scroll_bar.Draw(DrawingData.sprite_batch);
+            _scroll_bar.Draw(sprite_batch);
         }
 
         protected override void UpdateArea(bool update_parent)
@@ -176,7 +176,7 @@ namespace DownUnder.UI.Widgets
         
         private void InitializeScrollbars(object sender, EventArgs args)
         {
-            _scroll_bar = new ScrollBars(this, DrawingData.graphics_device);
+            _scroll_bar = new ScrollBars(this, GraphicsDevice);
         }
 
         #endregion

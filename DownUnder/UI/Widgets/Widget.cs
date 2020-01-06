@@ -40,6 +40,10 @@ namespace DownUnder.UI.Widgets
     {
         #region Fields/Delegates
 
+        //temporary
+        public Texture2D white_dot;
+        public SpriteBatch sprite_batch;
+
         /// <summary>
         /// A reference to the Widget that owns this one, if one exists.
         /// </summary>
@@ -51,19 +55,16 @@ namespace DownUnder.UI.Widgets
         [NonSerialized] protected DWindow _parent_window_reference;
 
         /// <summary>
-        /// Backing field for the ContainerArea property.
-        /// </summary>
-        protected RectangleF area_backing = new RectangleF();
-
-        /// <summary>
         /// The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press)
         /// </summary>
         private bool _previous_clicking;
 
-        /// <summary>
-        /// Backing field for the DoubleClickTiming property.
-        /// </summary>
+        // Various property backing fields.
+        protected RectangleF area_backing = new RectangleF();
         private float _double_click_timing_backing = 0.5f;
+        private Point2 _minimum_area_backing = new Point2(1f, 1f);
+        private SpriteFont _sprite_font_backing;
+        private GraphicsDevice _graphics_backing;
 
         /// <summary>
         /// Used to track the period of time where a second click would be considered a double click. (If this value is > 0)
@@ -95,11 +96,6 @@ namespace DownUnder.UI.Widgets
         /// How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings.
         /// </summary>
         private readonly int _MAX_WAIT_TIME = 100;
-
-        /// <summary>
-        /// Minimum size allowed for this widget when setting Area.
-        /// </summary>
-        private Point2 _minimum_area_backing = new Point2(1f, 1f);
 
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
@@ -176,10 +172,25 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
-        /// <summary>
-        /// An object containing various monogame graphics related objects used by this widget.
-        /// </summary>
-        public DrawingData DrawingData { get; set; } = new DrawingData();
+        public SpriteFont SpriteFont
+        {
+            get
+            {
+                return Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
+            }
+            set => _sprite_font_backing = value;
+        }
+        
+        public GraphicsDevice GraphicsDevice
+        {
+            get
+            {
+                return Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
+            }
+            set => _graphics_backing = value;
+        }
+
+        public RenderTarget2D LocalRenderTarget { get; protected set; }
 
         /// <summary>
         /// Position of the cursor relative to this widgdet.
@@ -344,8 +355,13 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.)
         /// </summary>
-        public bool IsGraphicsInitialized => DrawingData.graphics_device != null;
-
+        public bool IsGraphicsInitialized
+        {
+            get
+            {
+                return GraphicsDevice != null;
+            }
+        }
         /// <summary>
         /// The area of this widget relative to the parent window.
         /// </summary>
@@ -398,11 +414,11 @@ namespace DownUnder.UI.Widgets
                     return;
                 }
 
-                DrawingData.graphics_device = value.GraphicsDevice;
-                if (DrawingData.sprite_font == null)
-                {
-                    DrawingData.sprite_font = value.DefaultSpriteFont;
-                }
+                //GraphicsDevice = value.GraphicsDevice;
+                //if (DrawingData.SpriteFont == null)
+                //{
+                //    DrawingData.SpriteFont = value.DefaultSpriteFont;
+                //}
 
                 ConnectEvents(value);
 
@@ -420,7 +436,7 @@ namespace DownUnder.UI.Widgets
             set
             {
                 _parent_widget_reference = value;
-                if (value != null && DrawingData.sprite_font == null) { DrawingData.sprite_font = value.DrawingData.sprite_font; }
+                if (value != null && SpriteFont == null) { SpriteFont = value.SpriteFont; }
                 if (value != null) { ParentWindow = value.ParentWindow; }
             }
         }
@@ -499,7 +515,8 @@ namespace DownUnder.UI.Widgets
 
         ~Widget()
         {
-            DrawingData.Dispose();
+            white_dot.Dispose();
+            LocalRenderTarget?.Dispose();
         }
 
         #endregion Constructors
@@ -639,28 +656,28 @@ namespace DownUnder.UI.Widgets
                 return;
             }
 
-            DrawingData.sprite_batch = sprite_batch;
+            this.sprite_batch = sprite_batch;
 
-            if (render_target == null) { render_target = DrawingData.local_render_target; }
+            if (render_target == null) { render_target = LocalRenderTarget; }
 
             // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
-            RenderTargetBinding[] previous_render_targets = DrawingData.graphics_device.GetRenderTargets();
+            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
 
             // Set the graphics device to render to this widget's local render target.
-            DrawingData.graphics_device.SetRenderTarget(render_target);
-            DrawingData.graphics_device.Clear(Color.Transparent);
+            GraphicsDevice.SetRenderTarget(render_target);
+            GraphicsDevice.Clear(Color.Transparent);
 
             if (DrawBackground)
             {
-                sprite_batch.Draw(DrawingData.white_dot, AreaInWindow.ToRectangle(), BackgroundColor.CurrentColor);
+                sprite_batch.Draw(white_dot, AreaInWindow.ToRectangle(), BackgroundColor.CurrentColor);
             }
 
-            DrawingData.graphics_device.SetRenderTarget(DrawingData.local_render_target);
+            GraphicsDevice.SetRenderTarget(LocalRenderTarget);
 
             List<Widget> widgets = GetChildren();
             foreach (Widget widget in widgets)
             {
-                widget.Draw(sprite_batch, DrawingData.local_render_target);
+                widget.Draw(sprite_batch, LocalRenderTarget);
             }
 
             OnDraw?.Invoke(this, EventArgs.Empty);
@@ -668,7 +685,7 @@ namespace DownUnder.UI.Widgets
             DrawOverlay(sprite_batch);
 
             // Restore the original render targets.
-            DrawingData.graphics_device.SetRenderTargets(previous_render_targets);
+            GraphicsDevice.SetRenderTargets(previous_render_targets);
             _graphics_in_use = false;
         }
 
@@ -688,15 +705,15 @@ namespace DownUnder.UI.Widgets
         // internal
         internal void InitializeGraphics()
         {
-            if (DrawingData.graphics_device == null)
+            if (GraphicsDevice == null)
             {
                 throw new Exception($"{GetType().Name}.InitializeGrasphics: GraphicsDevice cannot be null.");
             }
 
-            DrawingData.white_dot = DrawingTools.WhiteDot(DrawingData.graphics_device);
-            if (DrawingData.sprite_font == null)
+            white_dot = DrawingTools.WhiteDot(GraphicsDevice);
+            if (SpriteFont == null)
             {
-                DrawingData.sprite_font = ParentWindow.DefaultSpriteFont;
+                SpriteFont = ParentWindow.DefaultSpriteFont;
             }
 
             foreach (Widget child in GetChildren())
@@ -985,7 +1002,7 @@ namespace DownUnder.UI.Widgets
             {
                 RectangleF rectangle_f = AreaInWindow;
                 Rectangle rectangle = new Rectangle((int)rectangle_f.X, (int)rectangle_f.Y, (int)rectangle_f.Width, (int)rectangle_f.Height);
-                DrawingTools.DrawBorder(DrawingData.white_dot, sprite_batch, rectangle, OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(white_dot, sprite_batch, rectangle, OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
             }
         }
 
@@ -1038,14 +1055,14 @@ namespace DownUnder.UI.Widgets
             //throw new Exception($"{GetType().Name}.LocalArea: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
 
             // Dispose of previous render target
-            if (DrawingData.local_render_target != null)
+            if (LocalRenderTarget != null)
             {
-                DrawingData.local_render_target.Dispose();
-                while (!DrawingData.local_render_target.IsDisposed) { }
+                LocalRenderTarget.Dispose();
+                while (!LocalRenderTarget.IsDisposed) { }
             }
 
-            DrawingData.local_render_target = new RenderTarget2D(
-                DrawingData.graphics_device,
+            LocalRenderTarget = new RenderTarget2D(
+                GraphicsDevice,
                 (int)area.Width,
                 (int)area.Height,
                 false,

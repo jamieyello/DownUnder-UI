@@ -67,7 +67,7 @@ namespace DownUnder.UI.Widgets
             {
                 if (IsGraphicsInitialized)
                 {
-                    return new RectangleF(Position, DrawingData.sprite_font.MeasureString(Text));
+                    return new RectangleF(Position, SpriteFont.MeasureString(Text));
                 }
                 
                 return new RectangleF(Position, new Point2(1, 1));
@@ -115,7 +115,7 @@ namespace DownUnder.UI.Widgets
         public Label(IWidgetParent parent, SpriteFont sprite_font, string text = "")
             : base(parent)
         {
-            DrawingData.sprite_font = sprite_font;
+            SpriteFont = sprite_font;
             SetDefaults();
             Text = text;
             if (IsGraphicsInitialized)
@@ -232,7 +232,7 @@ namespace DownUnder.UI.Widgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            DrawingData.sprite_batch.DrawString(DrawingData.sprite_font, Text, PositionInWindow.ToVector2().Floored(), TextColor.CurrentColor);
+            sprite_batch.DrawString(SpriteFont, Text, PositionInWindow.ToVector2().Floored(), TextColor.CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)

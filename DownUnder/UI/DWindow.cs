@@ -20,6 +20,8 @@ namespace DownUnder.UI
     {
         #region Fields/Delegates
 
+        public SpriteBatch sprite_batch;
+
         /// <summary>
         /// This delegate is meant to grant the main thread's method to spawn
         /// new windows.
@@ -32,7 +34,7 @@ namespace DownUnder.UI
 
         private Point _minimum_size = new Point(100, 100);
 
-        protected readonly GraphicsDeviceManager Graphics;
+        protected readonly GraphicsDeviceManager GraphicsManager;
 
         // Used to communicate with a spawned window in CreateWindow().
         // Set to 0 when child window is spawned, 1 after it activates, and -1
@@ -233,6 +235,14 @@ namespace DownUnder.UI
         /// </summary>
         public bool UICursorsEnabled { get; set; } = true;
 
+        //public DrawingData DrawingData { get; } = new DrawingData();
+
+        public SpriteFont SpriteFont { get; protected set; }
+
+        public GraphicsDevice Graphics { get; protected set; }
+
+        public RenderTarget2D LocalRenderTarget { get; protected set; }
+
         #endregion Properties
 
         #region Constructors
@@ -247,7 +257,7 @@ namespace DownUnder.UI
                 parent.Children.Add(this);
             }
 
-            Graphics = new GraphicsDeviceManager(this);
+            GraphicsManager = new GraphicsDeviceManager(this);
             FirstUpdate += SetThreadID;
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
@@ -332,12 +342,12 @@ namespace DownUnder.UI
 
         private void AreaSet(Rectangle value)
         {
-            Graphics.PreferredBackBufferWidth = value.Width;
-            Graphics.PreferredBackBufferHeight = value.Height;
+            GraphicsManager.PreferredBackBufferWidth = value.Width;
+            GraphicsManager.PreferredBackBufferHeight = value.Height;
 
             try
             {
-                Graphics.ApplyChanges();
+                GraphicsManager.ApplyChanges();
                 ((System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle))
                     .Location = new System.Drawing.Point(value.X, value.Y);
             }

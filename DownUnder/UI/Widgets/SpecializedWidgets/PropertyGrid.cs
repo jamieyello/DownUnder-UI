@@ -39,7 +39,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 
         #region Constructors
 
-        public PropertyGrid(IWidgetParent parent, SpriteFont sprite_font, object obj) 
+        public PropertyGrid(IWidgetParent parent, object obj) 
             : base(parent, 2, obj.GetType().GetProperties().Length)
         {
             
@@ -50,7 +50,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
             {
                 SetCell(0, i, new Label(
                     parent,
-                    sprite_font,
+                    parent.SpriteFont,
                     properties[i].Name)
                 {
                     DrawOutline = true,
@@ -62,7 +62,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 {
                     SetCell(1, i, new Label(
                         parent,
-                        sprite_font, "null"
+                        parent.SpriteFont, "null"
                         )
                     {
                         DrawOutline = true,
@@ -75,7 +75,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 {
                     SetCell(1, i, new ObjectLabel(
                         parent,
-                        sprite_font,
+                        parent.SpriteFont,
                         properties[i].GetValue(obj)
                         )
                     {

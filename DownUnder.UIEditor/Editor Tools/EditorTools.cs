@@ -24,6 +24,7 @@ namespace DownUnder.UIEditor
             //var test = parent;
             //var widget = new PropertyGrid(layout, sprite_font, test);
             Label widget = new Label(layout, sprite_font, "Test text. First line.\nSecond line.\nThird line.") { EditingEnabled = true };
+            
 
             layout.AddWidget(widget);
 

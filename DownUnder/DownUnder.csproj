@@ -89,7 +89,6 @@
     <Compile Include="SpriteEngine\SpriteEngine.cs" />
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DWindow.cs" />
-    <Compile Include="UI\Widgets\DataTypes\DrawingData.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\Palette.cs" />
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />

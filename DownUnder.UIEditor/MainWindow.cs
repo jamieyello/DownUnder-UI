@@ -17,11 +17,6 @@ namespace DownUnder.Widgets
     ///
     public class MainWindow : DWindow
     {
-        private SpriteBatch spriteBatch;
-        private SpriteFont sprite_font;
-
-        UIPalette test_palette = new UIPalette();
-
         /// <summary>
         /// Contains all widgets relevant to this editor. (When the editor supports slots this won't be proper)
         /// </summary>
@@ -58,10 +53,10 @@ namespace DownUnder.Widgets
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(Graphics.GraphicsDevice);
-            sprite_font = Content.Load<SpriteFont>("font");
+            sprite_batch = new SpriteBatch(GraphicsManager.GraphicsDevice);
+            SpriteFont = Content.Load<SpriteFont>("font");
 
-            Layout = new UIEditorLayout(this, sprite_font, out editor_objects);
+            Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout(this, sprite_font, out editor_objects);
 
             //DownUnder.Utilities.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
@@ -96,9 +91,9 @@ namespace DownUnder.Widgets
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            Layout.Draw(spriteBatch);
-            spriteBatch.End();
+            sprite_batch.Begin();
+            Layout.Draw(sprite_batch);
+            sprite_batch.End();
             base.Draw(gameTime);
         }
 
