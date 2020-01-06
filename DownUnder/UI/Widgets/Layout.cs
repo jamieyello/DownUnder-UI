@@ -103,7 +103,7 @@ namespace DownUnder.UI.Widgets
                 int db = 0;
                 RectangleF result = Area;
                 result.Position = new Point2(0, 0);
-                foreach (var child in GetChildren())
+                foreach (var child in Children)
                 {
                     //Debug.WriteLine($"child[{db}].Area = {child.Area}");
                     db++;
@@ -132,7 +132,7 @@ namespace DownUnder.UI.Widgets
             {
                 //value.Offset(Scroll.ToVector2());
                 base.Area = value;
-                foreach (var child in GetChildren())
+                foreach (var child in Children)
                 {
                     child.EmbedIn(value);
                 }
@@ -165,7 +165,7 @@ namespace DownUnder.UI.Widgets
         protected override void UpdateArea(bool update_parent)
         {
             RectangleF result = new RectangleF();
-            foreach (var child in GetChildren())
+            foreach (var child in Children)
             {
                 result = result.Union(child.Area);
             }
@@ -193,9 +193,9 @@ namespace DownUnder.UI.Widgets
             return c;
         }
 
-        public override List<Widget> GetChildren()
+        public override List<Widget> Children
         {
-            return widgets;
+            get => widgets;
         }
 
         #endregion Overrides

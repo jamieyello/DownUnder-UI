@@ -12,6 +12,5 @@ namespace DownUnder.UI.Widgets.Interfaces
     {
         SpriteFont SpriteFont { get; }
         GraphicsDevice GraphicsDevice { get; }
-        RenderTarget2D LocalRenderTarget { get; }
     }
 }

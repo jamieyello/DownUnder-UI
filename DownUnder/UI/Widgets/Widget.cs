@@ -7,7 +7,6 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-//using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -21,12 +20,9 @@ using System.Threading;
 
 // Todo: Change some methods to properties.
 // Combine slots with widget.
-// .Set extensions behave differently and should be removed (Point2.Set)
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// Constructors need to be redone, GraphicsDevice/SpriteFont constructors need to 
-// be removed. It should be fieldless, all graphics can be initialized when setting
-// ownership.
-
+// Remove white_dot and use Extended drawing methods instead.
+// Optimize those property derivitaves
 
 namespace DownUnder.UI.Widgets
 {
@@ -106,7 +102,12 @@ namespace DownUnder.UI.Widgets
         bool update_added_to_focused;
         bool update_set_as_focused;
         bool update_hovered_over;
-        
+
+        /// <summary>
+        /// The render target this Widget uses to draw to.
+        /// </summary>
+        private RenderTarget2D local_render_target;
+
         #endregion Fields/Delegates
 
         #region Public/Internal Properties
@@ -172,26 +173,24 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
+        /// <summary>
+        /// The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used.
+        /// </summary>
         public SpriteFont SpriteFont
         {
-            get
-            {
-                return Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
-            }
+            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
             set => _sprite_font_backing = value;
         }
-        
+
+        /// <summary>
+        /// The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used.
+        /// </summary>
         public GraphicsDevice GraphicsDevice
         {
-            get
-            {
-                return Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
-            }
+            get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
             set => _graphics_backing = value;
         }
-
-        public RenderTarget2D LocalRenderTarget { get; protected set; }
-
+        
         /// <summary>
         /// Position of the cursor relative to this widgdet.
         /// </summary>
@@ -243,7 +242,7 @@ namespace DownUnder.UI.Widgets
                         i += _WAIT_TIME;
                         if (i > _MAX_WAIT_TIME)
                         {
-                            //this.PrintDebug($"Hanging in Area.Set waiting for graphics to not be in use.");
+                            Console.WriteLine($"Hanging in Area.Set waiting for graphics to not be in use.");
                         }
 
                         Thread.Sleep(_WAIT_TIME);
@@ -413,17 +412,10 @@ namespace DownUnder.UI.Widgets
                 {
                     return;
                 }
-
-                //GraphicsDevice = value.GraphicsDevice;
-                //if (DrawingData.SpriteFont == null)
-                //{
-                //    DrawingData.SpriteFont = value.DefaultSpriteFont;
-                //}
-
+                
                 ConnectEvents(value);
-
-                List<Widget> children = GetChildren();
-                foreach (Widget child in children)
+                
+                foreach (Widget child in Children)
                 {
                     child.ParentWindow = value;
                 }
@@ -516,7 +508,7 @@ namespace DownUnder.UI.Widgets
         ~Widget()
         {
             white_dot.Dispose();
-            LocalRenderTarget?.Dispose();
+            local_render_target?.Dispose();
         }
 
         #endregion Constructors
@@ -536,7 +528,7 @@ namespace DownUnder.UI.Widgets
 
             UpdateCursorInput(game_time, ui_input);
             if (IsHoveredOver) ParentWindow?.HoveredWidgets.AddFocus(this);
-            foreach (Widget widget in GetChildren())
+            foreach (Widget widget in Children)
             {
                 widget.UpdatePriority(game_time, ui_input);
             }
@@ -637,7 +629,7 @@ namespace DownUnder.UI.Widgets
 
             OnUpdate?.Invoke(this, EventArgs.Empty);
 
-            foreach (Widget widget in GetChildren())
+            foreach (Widget widget in Children)
             {
                 widget.Update(game_time, ui_input);
             }
@@ -658,7 +650,7 @@ namespace DownUnder.UI.Widgets
 
             this.sprite_batch = sprite_batch;
 
-            if (render_target == null) { render_target = LocalRenderTarget; }
+            if (render_target == null) { render_target = local_render_target; }
 
             // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
@@ -672,12 +664,11 @@ namespace DownUnder.UI.Widgets
                 sprite_batch.Draw(white_dot, AreaInWindow.ToRectangle(), BackgroundColor.CurrentColor);
             }
 
-            GraphicsDevice.SetRenderTarget(LocalRenderTarget);
-
-            List<Widget> widgets = GetChildren();
-            foreach (Widget widget in widgets)
+            GraphicsDevice.SetRenderTarget(local_render_target);
+            
+            foreach (Widget widget in Children)
             {
-                widget.Draw(sprite_batch, LocalRenderTarget);
+                widget.Draw(sprite_batch, local_render_target);
             }
 
             OnDraw?.Invoke(this, EventArgs.Empty);
@@ -716,7 +707,7 @@ namespace DownUnder.UI.Widgets
                 SpriteFont = ParentWindow.DefaultSpriteFont;
             }
 
-            foreach (Widget child in GetChildren())
+            foreach (Widget child in Children)
             {
                 child.InitializeGraphics();
             }
@@ -734,7 +725,7 @@ namespace DownUnder.UI.Widgets
             ParentWindow = parent_window;
             ParentWidget = parent_widget;
 
-            foreach (Widget child in GetChildren())
+            foreach (Widget child in Children)
             {
                 child.InitializeAllReferences(parent_window, this);
             }
@@ -973,7 +964,7 @@ namespace DownUnder.UI.Widgets
         {
             List<Widget> result = new List<Widget> { this };
 
-            foreach (Widget child in GetChildren())
+            foreach (Widget child in Children)
             {
                 List<Widget> child_widgets = child.GetAllWidgets();
                 foreach (Widget child_widget in child_widgets)
@@ -989,7 +980,7 @@ namespace DownUnder.UI.Widgets
         /// All widgets this widget owns.
         /// </summary>
         /// <returns></returns>
-        public abstract List<Widget> GetChildren();
+        public abstract List<Widget> Children { get; }
 
         /// <summary>
         /// Draw anything that should be drawn on top of the content in this widget.
@@ -1055,13 +1046,13 @@ namespace DownUnder.UI.Widgets
             //throw new Exception($"{GetType().Name}.LocalArea: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
 
             // Dispose of previous render target
-            if (LocalRenderTarget != null)
+            if (local_render_target != null)
             {
-                LocalRenderTarget.Dispose();
-                while (!LocalRenderTarget.IsDisposed) { }
+                local_render_target.Dispose();
+                while (!local_render_target.IsDisposed) { }
             }
 
-            LocalRenderTarget = new RenderTarget2D(
+            local_render_target = new RenderTarget2D(
                 GraphicsDevice,
                 (int)area.Width,
                 (int)area.Height,

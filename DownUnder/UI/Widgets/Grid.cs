@@ -302,18 +302,21 @@ namespace DownUnder.UI.Widgets
             throw new NotImplementedException();
         }
 
-        public override List<Widget> GetChildren()
+        public override List<Widget> Children
         {
-            List<Widget> children = new List<Widget>();
-            Point2 dimensions = Dimensions;
-            for (int x = 0; x < dimensions.X; x++)
+            get
             {
-                for (int y = 0; y < dimensions.Y; y++)
+                List<Widget> children = new List<Widget>();
+                Point2 dimensions = Dimensions;
+                for (int x = 0; x < dimensions.X; x++)
                 {
-                    children.Add(widgets[x][y]);
+                    for (int y = 0; y < dimensions.Y; y++)
+                    {
+                        children.Add(widgets[x][y]);
+                    }
                 }
+                return children;
             }
-            return children;
         }
 
         #endregion Overrides

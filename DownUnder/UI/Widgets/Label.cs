@@ -201,9 +201,9 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public override List<Widget> GetChildren()
+        public override List<Widget> Children
         {
-            return new List<Widget>();
+            get => new List<Widget>();
         }
         
         #endregion Overrides
