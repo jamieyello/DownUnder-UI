@@ -1,12 +1,9 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
 
 namespace DownUnder.UIEditor
 {

@@ -3,13 +3,7 @@ using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
@@ -40,10 +34,10 @@ namespace DownUnder.UIEditor.Editor_Tools
             AddWidget(main_grid);
             
             Grid sidebar = new Grid(main_grid, 1, 2);
-            Label test = new Label(sidebar, "Whoop");
+            Label test = new Label(sidebar, "Future area for CommonControls.");
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
-            sidebar.SetCell(0, 0, test);
-            sidebar.SetCell(0, 1, property_grid);
+            sidebar.AddToCell(0, 0, test);
+            sidebar.AddToCell(0, 1, property_grid);
             main_grid.AddToCell(1, 0, sidebar);
 
             property_grid.EditingEnabled = true;

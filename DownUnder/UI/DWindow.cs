@@ -2,17 +2,15 @@
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
-using System.Windows.Interop;
 
 namespace DownUnder.UI
 {
@@ -265,7 +263,9 @@ namespace DownUnder.UI
             Window.TextInput += ProcessKeys;
 
             Exiting += ExitAll;
+            
             System.Windows.Forms.Control.FromHandle(Window.Handle).MinimumSize = _minimum_size.ToSystemSize();
+            OSInterface.SetMinimumWindowSize(Window, _minimum_size);
         }
 
         #endregion Constructors

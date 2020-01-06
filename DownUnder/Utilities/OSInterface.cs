@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
 namespace DownUnder.Utilities
 {
@@ -16,6 +12,11 @@ namespace DownUnder.Utilities
         public static string GetTextFromClipboard()
         {
             return System.Windows.Forms.Clipboard.GetText();
+        }
+
+        public static void SetMinimumWindowSize(GameWindow window, Point size)
+        {
+            System.Windows.Forms.Control.FromHandle(window.Handle).MinimumSize = size.ToSystemSize();
         }
     }
 }

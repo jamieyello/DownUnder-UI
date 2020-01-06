@@ -9,8 +9,6 @@ using System.Linq;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 
-// Todo: Check MeasureStrings offset parameter, it's broken maybe
-
 namespace DownUnder.UI.Widgets.WidgetControls
 {
     /// <summary>
@@ -150,7 +148,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        int _NumOfLines
+        /// <summary>
+        /// The number of lines in this text.
+        /// </summary>
+        public int NumOfLines
         {
             get
             {
@@ -189,7 +190,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         /// <summary>
         /// Returns the start and end index of the word the caret is over. Includes the following space.
         /// </summary>
-        Tuple<int, int> _CurrentWord
+        public Tuple<int, int> CurrentWord
         {
             get
             {
@@ -277,7 +278,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (inp.TextCursorMovement.Down)
             {
-                if (_CaretLine == _NumOfLines)
+                if (_CaretLine == NumOfLines)
                 {
                     MoveCaretTo(edit_text.Length);
                 }
@@ -486,7 +487,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (Active)
             {
                 clicking = false;
-                Tuple<int, int> word = _CurrentWord;
+                Tuple<int, int> word = CurrentWord;
                 Console.WriteLine(word);
                 HighlightRange(word.Item1, word.Item2);
                 return;

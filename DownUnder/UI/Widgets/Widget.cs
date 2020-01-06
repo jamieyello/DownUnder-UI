@@ -342,65 +342,24 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Returns true if this widget is being hovered over as well as on top of all the other widgets being hovered over.
         /// </summary>
-        public bool IsPrimaryHovered
-        {
-            get
-            {
-                if (ParentWindow == null) return false;
-                return ParentWindow.HoveredWidgets.Primary == this;
-            }
-        }
+        public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
 
         /// <summary>
         /// Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.)
         /// </summary>
-        public bool IsGraphicsInitialized
-        {
-            get
-            {
-                return GraphicsDevice != null;
-            }
-        }
+        public bool IsGraphicsInitialized => GraphicsDevice != null;
+
         /// <summary>
         /// The area of this widget relative to the parent window.
         /// </summary>
-        public virtual RectangleF AreaInWindow
-        {
-            get
-            {
-                RectangleF result = Area;
-                result.Position = PositionInWindow;
-                return result;
-            }
-        }
+        public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
         /// <summary>
         /// The position of this widget relative to its window.
         /// </summary>
-        public Point2 PositionInWindow
-        {
-            get
-            {
-                if (_parent_widget_reference == null) { return Position; }
-                return Position.AddPoint2(_parent_widget_reference.PositionInWindow);
-            }
-        }
+        public Point2 PositionInWindow => ParentWidget == null ? Position : Position.AddPoint2(ParentWidget.PositionInWindow);
 
-        public IWidgetParent Parent
-        {
-            get
-            {
-                if (_parent_widget_reference != null)
-                {
-                    return _parent_widget_reference;
-                }
-                if (_parent_window_reference != null)
-                {
-                    return _parent_window_reference;
-                }
-                return null;
-            }
-        }
+        public IWidgetParent Parent => _parent_widget_reference != null ? (IWidgetParent)_parent_widget_reference : _parent_window_reference;
 
         public DWindow ParentWindow
         {
@@ -428,7 +387,6 @@ namespace DownUnder.UI.Widgets
             set
             {
                 _parent_widget_reference = value;
-                if (value != null && SpriteFont == null) { SpriteFont = value.SpriteFont; }
                 if (value != null) { ParentWindow = value.ParentWindow; }
             }
         }
@@ -438,28 +396,9 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Area relative to the screen. (not the window)
         /// </summary>
-        public RectangleF AreaOnScreen
-        {
-            get
-            {
-                if (ParentWindow == null) return new RectangleF();
-                return new RectangleF(ParentWindow.Area.Location + AreaInWindow.Position.ToPoint(), Area.Size);
-            }
-        }
+        public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Location + AreaInWindow.Position.ToPoint(), Area.Size);
 
-        public UIInputState InputState
-        {
-            get
-            {
-                if (ParentWindow == null)
-                {
-                    return null;
-                    //throw new Exception("Can't access the input state because this widget is not owned by any window.");
-                }
-
-                return ParentWindow.InputState;
-            }
-        }
+        public UIInputState InputState => ParentWindow?.InputState;
 
         public bool IsPrimarySelected
         {

@@ -76,6 +76,11 @@ namespace DownUnder
             return new RectangleF(new Point2(), r.Size);
         }
 
+        public static RectangleF WithPosition(this RectangleF r, Point2 p)
+        {
+            return new RectangleF(p, r.Size);
+        }
+
         public static System.Drawing.Size ToSystemSize(this Point p)
         {
             return new System.Drawing.Size(p.X, p.Y);
