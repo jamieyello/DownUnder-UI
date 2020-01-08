@@ -17,7 +17,6 @@ using System.Threading;
 //      Ctrl-M, Ctrl-M will expand or collapse a single region
 
 // tip: Always remember to update Clone.
-// 109775241084051484
 
 // Todo: Change some methods to properties.
 // Combine slots with widget.
@@ -108,7 +107,7 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// The render target this Widget uses to draw to.
         /// </summary>
-        private RenderTarget2D local_render_target;
+        public RenderTarget2D local_render_target;
 
         #endregion Fields/Delegates
 
@@ -611,9 +610,9 @@ namespace DownUnder.UI.Widgets
             {
                 widget.Draw(sprite_batch, local_render_target);
             }
-
+            
             OnDraw?.Invoke(this, EventArgs.Empty);
-
+            
             DrawOverlay(sprite_batch);
 
             // Restore the original render targets.
@@ -736,7 +735,11 @@ namespace DownUnder.UI.Widgets
                 ParentWindow = parent_window;
             }
 
-            throw new Exception("This IWidgetParent is not implemented or valid.");
+            else if (parent == null)
+            {
+                ParentWidget = null;
+                ParentWindow = null;
+            }
         }
 
         /// <summary>

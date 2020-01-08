@@ -47,6 +47,7 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             editor_objects = new EditorObjects();
             editor_objects.project = project;
+            editor_objects.property_grid = property_grid;
             //editor_objects.fields = fields;
         }
 

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Reflection;
 
 namespace DownUnder.UI
 {
@@ -264,8 +265,8 @@ namespace DownUnder.UI
 
             Exiting += ExitAll;
             
-            System.Windows.Forms.Control.FromHandle(Window.Handle).MinimumSize = _minimum_size.ToSystemSize();
             OSInterface.SetMinimumWindowSize(Window, _minimum_size);
+
         }
 
         #endregion Constructors
@@ -409,6 +410,11 @@ namespace DownUnder.UI
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;
             InputState.Enter = false;
+        }
+
+        protected void DrawDWindow()
+        {
+
         }
 
         #endregion Protected Methods
