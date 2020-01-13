@@ -18,7 +18,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
     /// Scrollbars used commonly in widgets with inner areas. Modifies ScrollX and ScrollY,.
     /// </summary>
     [DataContract]
-    internal class ScrollBars
+    public class ScrollBars
     {
         private IScrollableWidget _owning_widget;
         private Texture2D _white_dot;

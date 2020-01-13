@@ -306,22 +306,6 @@ namespace DownUnder
             return new Point2(p1.X + p2.X, p1.Y + p2.Y);
         }
 
-        /// <summary>
-        /// Returns rectangle as if it's been applied to the containing rectangle.
-        /// </summary>
-        /// <param name="rectangle"></param>
-        /// <param name="container"></param>
-        /// <returns></returns>
-        public static RectangleF RectAnd(this RectangleF rectangle, RectangleF container)
-        {
-            RectangleF result = rectangle;
-            result.Position = new Point2(
-                result.Position.X + container.Position.X,
-                result.Position.Y + container.Position.Y
-                );
-            return result;
-        }
-
         public static RectangleF SnapInsideRectangle(this RectangleF inner, RectangleF outer, DiagonalDirections2D snapping_policy)
         {
             inner.Position = outer.Position.AddPoint2(inner.Position);

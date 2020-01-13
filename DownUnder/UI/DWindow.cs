@@ -266,7 +266,8 @@ namespace DownUnder.UI
             Exiting += ExitAll;
             
             OSInterface.SetMinimumWindowSize(Window, _minimum_size);
-
+            
+            IsFixedTimeStep = false;
         }
 
         #endregion Constructors
@@ -397,6 +398,7 @@ namespace DownUnder.UI
             //Console.WriteLine(InputState.TextCursorMovement.Down);
             //Input.BufferedKeyboard o = new Input.BufferedKeyboard();
             //Input.BufferedKeyboard.Test();
+            Console.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
 
             InputText.Clear();
             CommandText.Clear();

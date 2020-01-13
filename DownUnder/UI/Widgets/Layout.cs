@@ -18,8 +18,7 @@ namespace DownUnder.UI.Widgets
         #region Private Fields
 
         [DataMember] public List<Widget> widgets = new List<Widget>();
-        private ScrollBars _scroll_bar;
-
+        
         #endregion Private Fields
 
         #region Constructors
@@ -44,8 +43,6 @@ namespace DownUnder.UI.Widgets
         {
             Size = new Point2(100, 100);
             OnGraphicsInitialized += InitializeScrollbars;
-            OnDraw += DrawScrollbars;
-            OnUpdate += UpdateScrollbars;
         }
         
         #endregion Constructors
@@ -63,6 +60,8 @@ namespace DownUnder.UI.Widgets
         #endregion Public Methods
 
         #region Properties
+
+        public ScrollBars ScrollBars { get; private set; }
 
         /// <summary>
         /// How wide this widget's content is.
@@ -152,16 +151,6 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        private void UpdateScrollbars(object sender, EventArgs args)
-        {
-            _scroll_bar.Update(UpdateData.GameTime.GetElapsedSeconds(), UpdateData.UIInputState);
-        }
-
-        private void DrawScrollbars(object sender, EventArgs args)
-        {
-            _scroll_bar.Draw(sprite_batch);
-        }
-
         protected override void UpdateArea(bool update_parent)
         {
             RectangleF result = new RectangleF();
@@ -176,7 +165,7 @@ namespace DownUnder.UI.Widgets
         
         private void InitializeScrollbars(object sender, EventArgs args)
         {
-            _scroll_bar = new ScrollBars(this, GraphicsDevice);
+            ScrollBars = new ScrollBars(this, GraphicsDevice);
         }
 
         #endregion

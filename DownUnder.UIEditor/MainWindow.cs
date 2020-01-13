@@ -77,7 +77,7 @@ namespace DownUnder.Widgets
             }
             
             UpdateDWindow(gameTime);
-            Console.WriteLine($"{editor_objects.property_grid.local_render_target.Bounds}");
+            //Console.WriteLine($"{editor_objects.property_grid.local_render_target.Bounds}");
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -93,9 +93,10 @@ namespace DownUnder.Widgets
 
             // TODO: Add your drawing code here
 
-            sprite_batch.Begin();
-            Layout.Draw(sprite_batch);
-            sprite_batch.End();
+            //sprite_batch.Begin();
+            //Layout.Draw(sprite_batch);
+            //sprite_batch.End();
+            Layout.Draw2();
             base.Draw(gameTime);
         }
 

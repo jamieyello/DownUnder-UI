@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.WidgetControls;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.Interfaces
@@ -8,6 +9,7 @@ namespace DownUnder.UI.Widgets.Interfaces
     /// </summary>
     public interface IScrollableWidget
     {
+        ScrollBars ScrollBars { get; }
         RectangleF ContentArea { get; set; }
         float ContentWidth { get; set; }
         float ContentHeight { get; set; }
