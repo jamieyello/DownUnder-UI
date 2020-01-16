@@ -27,6 +27,11 @@ namespace DownUnder
             return new Point((int)size2.Width, (int)size2.Height);
         }
 
+        public static Point2 ToPoint2(this Size2 s)
+        {
+            return new Point2(s.Width, s.Height);
+        }
+
         public static Rectangle ToMonoRectangle(this System.Drawing.Rectangle rect)
         {
             return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
@@ -91,6 +96,23 @@ namespace DownUnder
         public static System.Drawing.Size ToSystemSize(this Point p)
         {
             return new System.Drawing.Size(p.X, p.Y);
+        }
+
+        /// <summary>
+        /// Returns a new RectangleF that's been resized by X pixels. (On both sides)
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static RectangleF Resized(this RectangleF r, float x, float y)
+        {
+            RectangleF result = r;
+            result.X -= x;
+            result.Y -= y;
+            result.Width += x * 2;
+            result.Height += y * 2;
+            return result;
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Reflection;
+using MonoGame.Extended;
 
 namespace DownUnder.UI
 {
@@ -242,6 +243,12 @@ namespace DownUnder.UI
 
         public RenderTarget2D LocalRenderTarget { get; protected set; }
 
+        public float Width => GraphicsDevice.Viewport.Bounds.Width;
+
+        public float Height => GraphicsDevice.Viewport.Bounds.Height;
+
+        Point2 IWidgetParent.Size => GraphicsDevice.Viewport.Bounds.Size;
+
         #endregion Properties
 
         #region Constructors
@@ -255,7 +262,7 @@ namespace DownUnder.UI
                 Parent = parent;
                 parent.Children.Add(this);
             }
-
+            
             GraphicsManager = new GraphicsDeviceManager(this);
             FirstUpdate += SetThreadID;
             Window.AllowUserResizing = true;
@@ -398,8 +405,8 @@ namespace DownUnder.UI
             //Console.WriteLine(InputState.TextCursorMovement.Down);
             //Input.BufferedKeyboard o = new Input.BufferedKeyboard();
             //Input.BufferedKeyboard.Test();
-            Console.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
-
+            //Console.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
+            
             InputText.Clear();
             CommandText.Clear();
             Layout.UpdatePriority(game_time, InputState);

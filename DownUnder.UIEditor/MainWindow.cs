@@ -6,6 +6,7 @@ using DownUnder.UIEditor.Editor_Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using System;
 using System.Diagnostics;
 
@@ -78,6 +79,8 @@ namespace DownUnder.Widgets
             
             UpdateDWindow(gameTime);
             //Console.WriteLine($"{editor_objects.property_grid.local_render_target.Bounds}");
+            Console.WriteLine(editor_objects.property_grid.DisplayArea);
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);

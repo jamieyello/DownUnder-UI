@@ -232,7 +232,7 @@ namespace DownUnder.UI.Widgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            sprite_batch.DrawString(SpriteFont, Text, PositionInWindow.ToVector2().Floored(), TextColor.CurrentColor);
+            sprite_batch.DrawString(SpriteFont, Text, new Vector2(), TextColor.CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)

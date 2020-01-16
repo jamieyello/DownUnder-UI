@@ -1,10 +1,5 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.Interfaces
 {
@@ -12,5 +7,8 @@ namespace DownUnder.UI.Widgets.Interfaces
     {
         SpriteFont SpriteFont { get; }
         GraphicsDevice GraphicsDevice { get; }
+        float Width { get; }
+        float Height { get; }
+        Point2 Size { get; }
     }
 }

@@ -275,7 +275,13 @@ namespace DownUnder.UI.Widgets
                 area_backing = value;
                 if (IsGraphicsInitialized)
                 {
-                    UpdateRenderTarget(value);
+                    //UpdateRenderTarget
+                    //    (
+                    //    ParentWidget == null || !ParentWidget.IsGraphicsInitialized ?
+                    //    value.Size :
+                    //    value.Intersection(ParentWidget.AreaInWindow).Size
+                    //    );
+                    UpdateRenderTarget(value.Size);
                 }
                 _graphics_updating = false;
             }
@@ -679,7 +685,7 @@ namespace DownUnder.UI.Widgets
         {
             sprite_batch.Begin();
             sprite_batch.Draw(base_render_target, DisplayArea.ToRectangle(), Color.White);
-            //sprite_batch.Draw(overlay_render_target, AreaInWindow.ToRectangle(), Color.White);
+            sprite_batch.Draw(overlay_render_target, AreaInWindow.ToRectangle(), Color.White);
             sprite_batch.End();
 
             foreach (Widget widget in Children)
@@ -981,10 +987,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Widget child in Children)
             {
-                foreach (Widget child_widget in child.GetAllWidgets())
-                {
-                    result.Add(child_widget);
-                }
+                result.AddRange(child.GetAllWidgets());
             }
 
             return result;
@@ -1001,13 +1004,11 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         /// <param name="sprite_batch"></param>
         /// <param name="container"></param>
-        protected void DrawOverlay(SpriteBatch sprite_batch)
+        private void DrawOverlay(SpriteBatch sprite_batch)
         {
             if (DrawOutline)
             {
-                RectangleF rectangle_f = AreaInWindow;
-                Rectangle rectangle = new Rectangle((int)rectangle_f.X, (int)rectangle_f.Y, (int)rectangle_f.Width, (int)rectangle_f.Height);
-                DrawingTools.DrawBorder(white_dot, sprite_batch, rectangle, OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(white_dot, sprite_batch, Area.Resized(-1, -1).ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -1048,15 +1049,24 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         private void UpdateRenderTarget()
         {
-            UpdateRenderTarget(Area);
+            UpdateRenderTarget(DisplayArea.Size);
         }
-        private void UpdateRenderTarget(RectangleF area)
+        private void UpdateRenderTarget(Point2 size)
         {
-            if (Math.Max((int)area.Width, (int)area.Height) > _MAXIMUM_WIDGET_SIZE)
+            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
             {
-                return;
+                throw new Exception($"Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
             }
-            //throw new Exception($"{GetType().Name}.LocalArea: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
+
+            if (size.X < 1)
+            {
+                size.X = 1;
+            }
+
+            if (size.Y < 1)
+            {
+                size.Y = 1;
+            }
 
             // Dispose of previous render target
             if (base_render_target != null)
@@ -1067,8 +1077,8 @@ namespace DownUnder.UI.Widgets
 
             base_render_target = new RenderTarget2D(
                 GraphicsDevice,
-                (int)area.Width,
-                (int)area.Height,
+                (int)size.X,
+                (int)size.Y,
                 false,
                 SurfaceFormat.Vector4,
                 DepthFormat.Depth24,
@@ -1083,8 +1093,8 @@ namespace DownUnder.UI.Widgets
 
             overlay_render_target = new RenderTarget2D(
                 GraphicsDevice,
-                (int)area.Width,
-                (int)area.Height,
+                (int)size.X,
+                (int)size.Y,
                 false,
                 SurfaceFormat.Vector4,
                 DepthFormat.Depth24,
