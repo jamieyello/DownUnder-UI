@@ -241,13 +241,13 @@ namespace DownUnder.UI
 
         public GraphicsDevice Graphics { get; protected set; }
 
-        public RenderTarget2D LocalRenderTarget { get; protected set; }
-
         public float Width => GraphicsDevice.Viewport.Bounds.Width;
 
         public float Height => GraphicsDevice.Viewport.Bounds.Height;
 
         Point2 IWidgetParent.Size => GraphicsDevice.Viewport.Bounds.Size;
+
+        public RenderTarget2D RenderTarget { get; set; }
 
         #endregion Properties
 

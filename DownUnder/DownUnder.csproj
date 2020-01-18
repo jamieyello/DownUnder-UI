@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Communication\Communicator.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Input\Binding.cs" />
     <Compile Include="Input\Bindings.cs" />
     <Compile Include="Input\BindingsSet.cs" />

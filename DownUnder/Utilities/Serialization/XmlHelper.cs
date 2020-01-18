@@ -38,7 +38,6 @@ namespace DownUnder.Content.Utilities.Serialization
         /// </summary>
         public static string ToXml(object obj)
         {
-            object r;
             var ns = new XmlSerializerNamespaces();
             ns.Add("", "");
             return ToXml(obj, ns);

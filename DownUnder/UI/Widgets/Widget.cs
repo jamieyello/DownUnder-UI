@@ -107,7 +107,7 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// The render target this Widget uses to draw to.
         /// </summary>
-        public RenderTarget2D base_render_target;
+        public RenderTarget2D RenderTarget { get; private set; }
         public RenderTarget2D overlay_render_target;
 
         #endregion Fields/Delegates
@@ -275,12 +275,6 @@ namespace DownUnder.UI.Widgets
                 area_backing = value;
                 if (IsGraphicsInitialized)
                 {
-                    //UpdateRenderTarget
-                    //    (
-                    //    ParentWidget == null || !ParentWidget.IsGraphicsInitialized ?
-                    //    value.Size :
-                    //    value.Intersection(ParentWidget.AreaInWindow).Size
-                    //    );
                     UpdateRenderTarget(value.Size);
                 }
                 _graphics_updating = false;
@@ -460,7 +454,7 @@ namespace DownUnder.UI.Widgets
         ~Widget()
         {
             white_dot.Dispose();
-            base_render_target?.Dispose();
+            RenderTarget?.Dispose();
             overlay_render_target?.Dispose();
         }
 
@@ -607,7 +601,7 @@ namespace DownUnder.UI.Widgets
 
             this.sprite_batch = sprite_batch;
 
-            if (render_target == null) { render_target = base_render_target; }
+            if (render_target == null) { render_target = RenderTarget; }
 
             // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
@@ -625,10 +619,10 @@ namespace DownUnder.UI.Widgets
 
             foreach (Widget widget in Children)
             {
-                widget.Draw(sprite_batch, base_render_target);
+                widget.Draw(sprite_batch, RenderTarget);
             }
             
-            DrawOverlay(sprite_batch);
+            DrawOverlay();
 
             // Restore the original render targets.
             GraphicsDevice.SetRenderTargets(previous_render_targets);
@@ -638,7 +632,11 @@ namespace DownUnder.UI.Widgets
         public void Draw2()
         {
             DrawToRenderTargets();
-            DrawRenderTargets();
+            GetRender();
+
+            sprite_batch.Begin();
+            sprite_batch.Draw(RenderTarget, Area.ToRectangle(), Color.White);
+            sprite_batch.End();
         }
 
         private void DrawToRenderTargets()
@@ -650,11 +648,8 @@ namespace DownUnder.UI.Widgets
                 return;
             }
             
-            // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-
-            // Set the graphics device to render to this widget's local render target.
-            GraphicsDevice.SetRenderTarget(base_render_target);
+            GraphicsDevice.SetRenderTarget(RenderTarget);
 
             sprite_batch.Begin();
 
@@ -668,7 +663,7 @@ namespace DownUnder.UI.Widgets
             
             sprite_batch.Begin();
             GraphicsDevice.SetRenderTarget(overlay_render_target);
-            DrawOverlay(sprite_batch);
+            DrawOverlay();
             sprite_batch.End();
 
             foreach (Widget widget in Children)
@@ -681,17 +676,31 @@ namespace DownUnder.UI.Widgets
             _graphics_in_use = false;
         }
 
-        private void DrawRenderTargets()
+        private RenderTarget2D GetRender()
         {
-            sprite_batch.Begin();
-            sprite_batch.Draw(base_render_target, DisplayArea.ToRectangle(), Color.White);
-            sprite_batch.Draw(overlay_render_target, AreaInWindow.ToRectangle(), Color.White);
-            sprite_batch.End();
+            List<RenderTarget2D> renders = new List<RenderTarget2D>();
+            List<Point2> positions = new List<Point2>();
 
-            foreach (Widget widget in Children)
+            foreach (Widget child in Children)
             {
-                widget.DrawRenderTargets();
+                renders.Add(child.GetRender());
+                positions.Add(child.Position);
             }
+
+            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
+            GraphicsDevice.SetRenderTarget(RenderTarget);
+            sprite_batch.Begin();
+
+            for (int i = 0; i < renders.Count; i++)
+            {
+                sprite_batch.Draw(renders[i], positions[i], Color.White);
+            }
+            sprite_batch.Draw(overlay_render_target, new Vector2(), Color.White);
+
+            sprite_batch.End();
+            GraphicsDevice.SetRenderTargets(previous_render_targets);
+
+            return RenderTarget;
         }
 
         /// <summary>
@@ -711,15 +720,11 @@ namespace DownUnder.UI.Widgets
         {
             if (GraphicsDevice == null)
             {
-                throw new Exception($"{GetType().Name}.InitializeGraphics: GraphicsDevice cannot be null.");
+                throw new Exception($"GraphicsDevice cannot be null.");
             }
 
             sprite_batch = new SpriteBatch(GraphicsDevice);
             white_dot = DrawingTools.WhiteDot(GraphicsDevice);
-            if (SpriteFont == null)
-            {
-                SpriteFont = ParentWindow.DefaultSpriteFont;
-            }
 
             foreach (Widget child in Children)
             {
@@ -1004,7 +1009,7 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         /// <param name="sprite_batch"></param>
         /// <param name="container"></param>
-        private void DrawOverlay(SpriteBatch sprite_batch)
+        private void DrawOverlay()
         {
             if (DrawOutline)
             {
@@ -1049,7 +1054,7 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         private void UpdateRenderTarget()
         {
-            UpdateRenderTarget(DisplayArea.Size);
+            UpdateRenderTarget(Area.Size);
         }
         private void UpdateRenderTarget(Point2 size)
         {
@@ -1069,13 +1074,13 @@ namespace DownUnder.UI.Widgets
             }
 
             // Dispose of previous render target
-            if (base_render_target != null)
+            if (RenderTarget != null)
             {
-                base_render_target.Dispose();
-                while (!base_render_target.IsDisposed) { }
+                RenderTarget.Dispose();
+                while (!RenderTarget.IsDisposed) { }
             }
 
-            base_render_target = new RenderTarget2D(
+            RenderTarget = new RenderTarget2D(
                 GraphicsDevice,
                 (int)size.X,
                 (int)size.Y,

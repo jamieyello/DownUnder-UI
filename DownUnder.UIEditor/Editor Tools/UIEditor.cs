@@ -45,30 +45,35 @@ namespace DownUnder.UIEditor.Editor_Tools
             grid_layout.Name = "Grid Container";
             property_grid.Name = "Property grid";
 
-            editor_objects = new EditorObjects();
-            editor_objects.project = project;
-            editor_objects.property_grid = property_grid;
+            editor_objects = new EditorObjects
+            {
+                project = project,
+                property_grid = property_grid
+            };
             //editor_objects.fields = fields;
         }
 
         static Layout DefaultProject(DWindow parent)
         {
             // Create taskbar
-            Layout project = new Layout(parent);
-            project.Width = 200;
-            project.Height = 140;
+            Layout project = new Layout(parent)
+            {
+                Width = 200,
+                Height = 140,
 
-            project.Spacing = new Size2(30, 30);
-            project.SnappingPolicy = DiagonalDirections2D.TopLeft;
-            project.DrawOutline = true;
-            project.DrawBackground = true;
-            project.ChangeColorOnMouseOver = true;
+                Spacing = new Size2(30, 30),
+                SnappingPolicy = DiagonalDirections2D.TopLeft,
+                DrawOutline = true,
+                DrawBackground = true,
+                ChangeColorOnMouseOver = true
+            };
             project.BackgroundColor.DefaultColor = Color.White;
 
-            Grid grid = new Grid(parent, 2, 3);
-
-            grid.SnappingPolicy = DiagonalDirections2D.TopRight;
-            grid.Spacing = new Size2(10, 10);
+            Grid grid = new Grid(parent, 2, 3)
+            {
+                SnappingPolicy = DiagonalDirections2D.TopRight,
+                Spacing = new Size2(10, 10)
+            };
             //grid.Spacing = new Size2(10, 10);
 
             project.AddWidget(grid);

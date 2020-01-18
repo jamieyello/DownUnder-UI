@@ -12,6 +12,9 @@ namespace DownUnder.UI.Widgets.DataTypes
         selection
     }
 
+    /// <summary>
+    /// Keeps track of widgets that are focused by either hover or selection.
+    /// </summary>
     public class Focus
     {
         private List<Widget> _focused_widgets = new List<Widget>();

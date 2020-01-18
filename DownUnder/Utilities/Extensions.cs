@@ -93,6 +93,11 @@ namespace DownUnder
             return new RectangleF(r.Position, s);
         }
 
+        public static RectangleF AsRectangleSize(this Point2 p)
+        {
+            return new RectangleF(new Point2(), p);
+        }
+
         public static System.Drawing.Size ToSystemSize(this Point p)
         {
             return new System.Drawing.Size(p.X, p.Y);
@@ -310,7 +315,7 @@ namespace DownUnder
         /// <summary>
         /// Calculates the distance between a point and a rectangle.
         /// </summary>
-        public static double DistanceFrom(this RectangleF rectangle, Point point)
+        public static double DistanceFrom(this RectangleF rectangle, Point2 point)
         {
             var dx = Math.Max(Math.Max(rectangle.X - point.X, point.X - rectangle.Right), 0);
             var dy = Math.Max(Math.Max(rectangle.Top - point.Y, point.Y - rectangle.Bottom), 0);

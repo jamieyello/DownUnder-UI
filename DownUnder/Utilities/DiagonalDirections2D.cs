@@ -2,6 +2,9 @@
 
 namespace DownUnder.Utility
 {
+    /// <summary>
+    /// Represents four diagonal directions.
+    /// </summary>
     public class DiagonalDirections2D : ICloneable
     {
         public bool top_right;

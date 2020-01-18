@@ -21,7 +21,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
     public class ScrollBars
     {
         private IScrollableWidget _owning_widget;
-        private Texture2D _white_dot;
+        private readonly Texture2D _white_dot;
         private bool _BottomVisible { get; set; } = false;
         private bool _SideVisible { get; set; } = false;
         private RectangleF _outer_bar_bottom_area = new RectangleF();
