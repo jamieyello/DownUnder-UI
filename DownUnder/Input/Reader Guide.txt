@@ -1,5 +1,7 @@
 ﻿This set of instructions is designed for interfacing with controller, keyboard,
-and any other kind of input.
+and any other kind of input. It's main purpose is to interface with multiple
+kinds of controllers at the same time, reading from actions instead of keys directly
+in your code.
 
 InputSystem is meant to be used as the main class. It will automatically handle
 which controller is 'Player 1' or any other player based on which controller the
