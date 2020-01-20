@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     [DataContract]
     public class UIPalette
     {
-        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>();
+        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 2f };
         private bool _special_color_enabled_backing = false;
 
         /// <summary>

@@ -23,7 +23,6 @@ using System.Threading;
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // Remove white_dot and use Extended drawing methods instead.
 // Optimize those property derivitaves
-// Make more properties compact.
 
 namespace DownUnder.UI.Widgets
 {
@@ -33,7 +32,7 @@ namespace DownUnder.UI.Widgets
     /// A visible window object.
     /// </summary>
     [DataContract]
-    public abstract class Widget : IWidgetParent//, IDebugFeatures
+    public abstract class Widget : IWidgetParent
     {
         #region Fields/Delegates
 
@@ -107,7 +106,7 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// The render target this Widget uses to draw to.
         /// </summary>
-        public RenderTarget2D RenderTarget { get; private set; }
+        private RenderTarget2D render_target;
         public RenderTarget2D overlay_render_target;
 
         #endregion Fields/Delegates
@@ -151,8 +150,8 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
-        [DataMember] public virtual UIPalette BackgroundColor { get; internal set; } = new UIPalette(Color.CornflowerBlue, Color.White);
-        [DataMember] public virtual UIPalette TextColor { get; internal set; } = new UIPalette(Color.Black, Color.Gray);
+        [DataMember] public virtual UIPalette BackgroundColor { get; internal set; } = new UIPalette(Color.CornflowerBlue, Color.CornflowerBlue.ShiftBrightness(1.1f));
+        [DataMember] public virtual UIPalette TextColor { get; internal set; } = new UIPalette(Color.Black, Color.Black);
         [DataMember] public virtual UIPalette OutlineColor { get; internal set; } = new UIPalette();
 
         /// <summary>
@@ -454,7 +453,7 @@ namespace DownUnder.UI.Widgets
         ~Widget()
         {
             white_dot.Dispose();
-            RenderTarget?.Dispose();
+            render_target?.Dispose();
             overlay_render_target?.Dispose();
         }
 
@@ -601,7 +600,7 @@ namespace DownUnder.UI.Widgets
 
             this.sprite_batch = sprite_batch;
 
-            if (render_target == null) { render_target = RenderTarget; }
+            if (render_target == null) { render_target = this.render_target; }
 
             // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
@@ -619,7 +618,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Widget widget in Children)
             {
-                widget.Draw(sprite_batch, RenderTarget);
+                widget.Draw(sprite_batch, this.render_target);
             }
             
             DrawOverlay();
@@ -635,7 +634,7 @@ namespace DownUnder.UI.Widgets
             GetRender();
 
             sprite_batch.Begin();
-            sprite_batch.Draw(RenderTarget, Area.ToRectangle(), Color.White);
+            sprite_batch.Draw(render_target, Area.ToRectangle(), Color.White);
             sprite_batch.End();
         }
 
@@ -649,7 +648,7 @@ namespace DownUnder.UI.Widgets
             }
             
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-            GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.SetRenderTarget(render_target);
 
             sprite_batch.Begin();
 
@@ -679,28 +678,44 @@ namespace DownUnder.UI.Widgets
         private RenderTarget2D GetRender()
         {
             List<RenderTarget2D> renders = new List<RenderTarget2D>();
-            List<Point2> positions = new List<Point2>();
+            List<RectangleF> areas = new List<RectangleF>();
 
             foreach (Widget child in Children)
             {
                 renders.Add(child.GetRender());
-                positions.Add(child.Position);
+                if (child is IScrollableWidget s_widget)
+                {
+                    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
+                }
+                else
+                {
+                    areas.Add(child.Area);
+                }
             }
 
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-            GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.SetRenderTarget(render_target);
             sprite_batch.Begin();
 
-            for (int i = 0; i < renders.Count; i++)
+            int i = 0;
+            foreach (Widget child in Children)
             {
-                sprite_batch.Draw(renders[i], positions[i], Color.White);
+                if (this is IScrollableWidget s_this)
+                {
+                    sprite_batch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()), Color.White);
+                }
+                else
+                {
+                    sprite_batch.Draw(renders[i], areas[i].Position, Color.White);
+                }
+                i++;
             }
-            sprite_batch.Draw(overlay_render_target, new Vector2(), Color.White);
+            //sprite_batch.Draw(overlay_render_target, new Vector2(), Color.White);
 
             sprite_batch.End();
             GraphicsDevice.SetRenderTargets(previous_render_targets);
 
-            return RenderTarget;
+            return render_target;
         }
 
         /// <summary>
@@ -1054,7 +1069,14 @@ namespace DownUnder.UI.Widgets
         /// </summary>
         private void UpdateRenderTarget()
         {
-            UpdateRenderTarget(Area.Size);
+            if (this is IScrollableWidget s_this)
+            {
+                UpdateRenderTarget(s_this.ContentSize);
+            }
+            else
+            {
+                UpdateRenderTarget(Size);
+            }
         }
         private void UpdateRenderTarget(Point2 size)
         {
@@ -1074,13 +1096,13 @@ namespace DownUnder.UI.Widgets
             }
 
             // Dispose of previous render target
-            if (RenderTarget != null)
+            if (render_target != null)
             {
-                RenderTarget.Dispose();
-                while (!RenderTarget.IsDisposed) { }
+                render_target.Dispose();
+                while (!render_target.IsDisposed) { }
             }
 
-            RenderTarget = new RenderTarget2D(
+            render_target = new RenderTarget2D(
                 GraphicsDevice,
                 (int)size.X,
                 (int)size.Y,

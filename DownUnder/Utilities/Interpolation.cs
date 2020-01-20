@@ -44,8 +44,7 @@ namespace DownUnder.Utility
                 // Add new cases here.
 
                 default: // A float will be returned.
-                         // If error is thrown *below*, contact jamieyello@yahoo.com.
-                         // Cases need to be made for types that can't be converted to 'System.Single'
+                         // If error is thrown *below*, cases need to be made for types that can't be converted to 'System.Single'
 
                     return // start + (target - start) * interpolated_progress
                         (T)Convert.ChangeType(

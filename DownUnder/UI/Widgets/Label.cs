@@ -139,11 +139,11 @@ namespace DownUnder.UI.Widgets
         {
             DrawBackground = true;
             EnterConfirms = false;
-            BackgroundColor.DefaultColor = Color.LightGray;
+            BackgroundColor.DefaultColor = Color.White.ShiftBrightness(0.84f);
+            BackgroundColor.HoveredColor = Color.White;
             TextEditBackgroundPalette.DefaultColor = Color.White;
             TextEditBackgroundPalette.HoveredColor = Color.White;
             TextEditBackgroundPalette.ForceComplete();
-            Area = new RectangleF(0, 0, 50, 20);
             
             OnDraw += DrawText;
             OnSelectOff += DisableEditing;

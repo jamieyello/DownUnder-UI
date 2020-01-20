@@ -42,6 +42,11 @@ namespace DownUnder
             return new Size2(v.X, v.Y);
         }
 
+        public static Point2 Inverted(this Point2 p)
+        {
+            return new Point2(-p.X, -p.Y);
+        }
+
         /// <summary>
         /// Returns a new Point2 with the highest X and Y values of both given Points.
         /// </summary>
@@ -93,6 +98,13 @@ namespace DownUnder
             return new RectangleF(r.Position, s);
         }
 
+        public static RectangleF WithOffset(this RectangleF r, Point2 p)
+        {
+            RectangleF result = r;
+            result.Offset(p);
+            return result;
+        }
+
         public static RectangleF AsRectangleSize(this Point2 p)
         {
             return new RectangleF(new Point2(), p);
@@ -128,6 +140,36 @@ namespace DownUnder
         public static Vector2 Floored(this Vector2 v)
         {
             return new Vector2((int)v.X, (int)v.Y);
+        }
+
+        /// <summary>
+        /// Returns new Color with brightness shifted by a percentage.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="percentage"></param>
+        /// <returns></returns>
+        public static Color ShiftBrightness(this Color c, float percentage)
+        {
+            if (percentage > 1)
+            {
+                return new Color
+                    (
+                    (byte)(c.R + (255 - c.R) * (percentage - 1)),
+                    (byte)(c.G + (255 - c.G) * (percentage - 1)),
+                    (byte)(c.B + (255 - c.B) * (percentage - 1)),
+                    c.A
+                    );
+            }
+            else
+            {
+                return new Color
+                    (
+                    (byte)(c.R * percentage),
+                    (byte)(c.G * percentage),
+                    (byte)(c.B * percentage),
+                    c.A
+                    );
+            }
         }
 
         /// <summary>

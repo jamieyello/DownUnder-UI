@@ -5,7 +5,6 @@ namespace DownUnder.UI.Widgets.Interfaces
 {
     public interface IWidgetParent
     {
-        RenderTarget2D RenderTarget { get; }
         SpriteFont SpriteFont { get; }
         GraphicsDevice GraphicsDevice { get; }
         float Width { get; }
