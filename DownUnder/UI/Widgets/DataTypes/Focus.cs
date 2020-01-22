@@ -67,13 +67,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             return _focused_widgets.Contains(widget);
         }
 
-        public Widget Primary
-        {
-            get {
-                if (_focused_widgets.Count > 0)
-                    return _focused_widgets[_focused_widgets.Count - 1];
-                return null;
-            }
-        }
+        public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[_focused_widgets.Count - 1] : null;
     }
 }

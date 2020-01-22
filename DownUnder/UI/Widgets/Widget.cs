@@ -106,7 +106,7 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// The render target this Widget uses to draw to.
         /// </summary>
-        private RenderTarget2D render_target;
+        public RenderTarget2D render_target;
         public RenderTarget2D overlay_render_target;
 
         #endregion Fields/Delegates
@@ -270,12 +270,8 @@ namespace DownUnder.UI.Widgets
                 {
                     value.Height = MinimumHeight;
                 }
-
+                 
                 area_backing = value;
-                if (IsGraphicsInitialized)
-                {
-                    UpdateRenderTarget(value.Size);
-                }
                 _graphics_updating = false;
             }
         }
@@ -630,9 +626,11 @@ namespace DownUnder.UI.Widgets
 
         public void Draw2()
         {
+            UpdateRenderTarget();
             DrawToRenderTargets();
             GetRender();
 
+            GraphicsDevice.SetRenderTarget(null);
             sprite_batch.Begin();
             sprite_batch.Draw(render_target, Area.ToRectangle(), Color.White);
             sprite_batch.End();
@@ -647,7 +645,6 @@ namespace DownUnder.UI.Widgets
                 return;
             }
             
-            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
             GraphicsDevice.SetRenderTarget(render_target);
 
             sprite_batch.Begin();
@@ -670,8 +667,6 @@ namespace DownUnder.UI.Widgets
                 widget.DrawToRenderTargets();
             }
             
-            // Restore the original render targets.
-            GraphicsDevice.SetRenderTargets(previous_render_targets);
             _graphics_in_use = false;
         }
 
@@ -693,7 +688,7 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
-            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
+            //RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
             GraphicsDevice.SetRenderTarget(render_target);
             sprite_batch.Begin();
 
@@ -713,7 +708,7 @@ namespace DownUnder.UI.Widgets
             //sprite_batch.Draw(overlay_render_target, new Vector2(), Color.White);
 
             sprite_batch.End();
-            GraphicsDevice.SetRenderTargets(previous_render_targets);
+            //GraphicsDevice.SetRenderTargets(previous_render_targets);
 
             return render_target;
         }
@@ -1055,7 +1050,7 @@ namespace DownUnder.UI.Widgets
         {
             if (IsGraphicsInitialized)
             {
-                UpdateRenderTarget();
+                //UpdateRenderTarget();
             }
 
             if (update_parent)
@@ -1067,8 +1062,13 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Resize the render target to match the current area.
         /// </summary>
-        private void UpdateRenderTarget()
+        internal void UpdateRenderTarget()
         {
+            foreach (Widget child in Children)
+            {
+                child.UpdateRenderTarget();
+            }
+
             if (this is IScrollableWidget s_this)
             {
                 UpdateRenderTarget(s_this.ContentSize);
@@ -1095,39 +1095,46 @@ namespace DownUnder.UI.Widgets
                 size.Y = 1;
             }
 
-            // Dispose of previous render target
-            if (render_target != null)
+            if (size != render_target?.Size())
             {
-                render_target.Dispose();
-                while (!render_target.IsDisposed) { }
+                // Dispose of previous render target
+                if (render_target != null)
+                {
+                    render_target.Dispose();
+                    while (!render_target.IsDisposed) { }
+                }
+
+                render_target = new RenderTarget2D(
+                    GraphicsDevice,
+                    (int)size.X,
+                    (int)size.Y,
+                    false,
+                    SurfaceFormat.Vector4,
+                    DepthFormat.Depth24,
+                    0,
+                    RenderTargetUsage.PreserveContents);
             }
 
-            render_target = new RenderTarget2D(
-                GraphicsDevice,
-                (int)size.X,
-                (int)size.Y,
-                false,
-                SurfaceFormat.Vector4,
-                DepthFormat.Depth24,
-                0,
-                RenderTargetUsage.PreserveContents);
-
-            if (overlay_render_target != null)
+            if (size != overlay_render_target?.Size())
             {
-                overlay_render_target.Dispose();
-                while (!overlay_render_target.IsDisposed) { }
-            }
+                if (overlay_render_target != null)
+                {
+                    overlay_render_target.Dispose();
+                    while (!overlay_render_target.IsDisposed) { }
+                }
 
-            overlay_render_target = new RenderTarget2D(
-                GraphicsDevice,
-                (int)size.X,
-                (int)size.Y,
-                false,
-                SurfaceFormat.Vector4,
-                DepthFormat.Depth24,
-                0,
-                RenderTargetUsage.PreserveContents);
+                overlay_render_target = new RenderTarget2D(
+                    GraphicsDevice,
+                    (int)size.X,
+                    (int)size.Y,
+                    false,
+                    SurfaceFormat.Vector4,
+                    DepthFormat.Depth24,
+                    0,
+                    RenderTargetUsage.PreserveContents);
+            }
         }
+
 
         #endregion Private/Protected Methods
 

@@ -43,7 +43,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             property_grid.EditingEnabled = true;
             var grid_layout = main_grid.GetCell(1, 0);
             grid_layout.Name = "Grid Container";
-            property_grid.Name = "Property grid";
+            property_grid.Name = "DownUnderDebug";
 
             editor_objects = new EditorObjects
             {

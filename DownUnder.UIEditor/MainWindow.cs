@@ -79,8 +79,9 @@ namespace DownUnder.Widgets
             
             UpdateDWindow(gameTime);
             //Console.WriteLine($"{editor_objects.property_grid.local_render_target.Bounds}");
-            Console.WriteLine(editor_objects.property_grid.DisplayArea);
-            
+            //Console.WriteLine($"property_grid.render_target.Bounds {editor_objects.property_grid.render_target.Bounds}");
+            //Console.WriteLine($"property_grid.Area {editor_objects.property_grid.Area}");
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);

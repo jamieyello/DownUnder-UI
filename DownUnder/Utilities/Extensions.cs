@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 // Todo: Duplicate RectanglF extensions for Rectangle
+// Todo: Turn some extensions to properties when C# 8 arrives
 
 namespace DownUnder
 {
@@ -45,6 +46,11 @@ namespace DownUnder
         public static Point2 Inverted(this Point2 p)
         {
             return new Point2(-p.X, -p.Y);
+        }
+
+        public static Point2 Size(this RenderTarget2D r)
+        {
+            return new Point2(r.Width, r.Height);
         }
 
         /// <summary>
