@@ -390,7 +390,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!Active) return;
             if (!label.IsBeingEdited) return;
             if (!allow_draw) return;
-            Vector2 offset = label.PositionInWindow.ToVector2().Floored();
+            Vector2 offset = label.Position.ToVector2().Floored();
 
             if (_HighlightLength > 0)
             {

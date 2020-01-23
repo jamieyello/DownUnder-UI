@@ -38,12 +38,13 @@ namespace DownUnder.UIEditor.Editor_Tools
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
             sidebar.AddToCell(0, 0, test);
             sidebar.AddToCell(0, 1, property_grid);
+            sidebar.GetCell(0, 1).debug_output = true;
             main_grid.AddToCell(1, 0, sidebar);
 
             property_grid.EditingEnabled = true;
             var grid_layout = main_grid.GetCell(1, 0);
             grid_layout.Name = "Grid Container";
-            property_grid.Name = "DownUnderDebug";
+            property_grid.Name = "Property grid";
 
             editor_objects = new EditorObjects
             {

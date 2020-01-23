@@ -34,6 +34,8 @@ namespace DownUnder.UI.Widgets
     [DataContract]
     public abstract class Widget : IWidgetParent
     {
+        public bool debug_output = false;
+
         #region Fields/Delegates
 
         //temporary
@@ -233,23 +235,6 @@ namespace DownUnder.UI.Widgets
             get => area_backing;
             set
             {
-                _graphics_updating = true;
-
-                if (_graphics_in_use)
-                {
-                    int i = 0;
-                    while (_graphics_in_use)
-                    {
-                        i += _WAIT_TIME;
-                        if (i > _MAX_WAIT_TIME)
-                        {
-                            Console.WriteLine($"Hanging in Area.Set waiting for graphics to not be in use.");
-                        }
-
-                        Thread.Sleep(_WAIT_TIME);
-                    }
-                }
-
                 // Prevent the widget's area from being set to something the render target can't draw. (A zero/negative value)
                 if ((int)value.Width < 1)
                 {
@@ -272,7 +257,6 @@ namespace DownUnder.UI.Widgets
                 }
                  
                 area_backing = value;
-                _graphics_updating = false;
             }
         }
 
@@ -450,7 +434,6 @@ namespace DownUnder.UI.Widgets
         {
             white_dot.Dispose();
             render_target?.Dispose();
-            overlay_render_target?.Dispose();
         }
 
         #endregion Constructors
@@ -626,7 +609,7 @@ namespace DownUnder.UI.Widgets
 
         public void Draw2()
         {
-            UpdateRenderTarget();
+            UpdateRenderTargetSize();
             DrawToRenderTargets();
             GetRender();
 
@@ -655,13 +638,9 @@ namespace DownUnder.UI.Widgets
             }
 
             OnDraw?.Invoke(this, EventArgs.Empty);
+            //DrawOverlay();
             sprite_batch.End();
             
-            sprite_batch.Begin();
-            GraphicsDevice.SetRenderTarget(overlay_render_target);
-            DrawOverlay();
-            sprite_batch.End();
-
             foreach (Widget widget in Children)
             {
                 widget.DrawToRenderTargets();
@@ -687,8 +666,7 @@ namespace DownUnder.UI.Widgets
                     areas.Add(child.Area);
                 }
             }
-
-            //RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
+            
             GraphicsDevice.SetRenderTarget(render_target);
             sprite_batch.Begin();
 
@@ -705,10 +683,9 @@ namespace DownUnder.UI.Widgets
                 }
                 i++;
             }
-            //sprite_batch.Draw(overlay_render_target, new Vector2(), Color.White);
+            DrawOverlay();
 
             sprite_batch.End();
-            //GraphicsDevice.SetRenderTargets(previous_render_targets);
 
             return render_target;
         }
@@ -1023,7 +1000,7 @@ namespace DownUnder.UI.Widgets
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(white_dot, sprite_batch, Area.Resized(-1, -1).ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(white_dot, sprite_batch, Area.SizeOnly().ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -1062,24 +1039,41 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// Resize the render target to match the current area.
         /// </summary>
-        internal void UpdateRenderTarget()
+        private void UpdateRenderTargetSize()
         {
             foreach (Widget child in Children)
             {
-                child.UpdateRenderTarget();
+                child.UpdateRenderTargetSize();
             }
 
             if (this is IScrollableWidget s_this)
             {
-                UpdateRenderTarget(s_this.ContentSize);
+                UpdateRenderTargetSize(s_this.ContentSize);
             }
             else
             {
-                UpdateRenderTarget(Size);
+                UpdateRenderTargetSize(Size);
             }
         }
-        private void UpdateRenderTarget(Point2 size)
+        private void UpdateRenderTargetSize(Point2 size)
         {
+            _graphics_updating = true;
+
+            if (_graphics_in_use)
+            {
+                int i = 0;
+                while (_graphics_in_use)
+                {
+                    i += _WAIT_TIME;
+                    if (i > _MAX_WAIT_TIME)
+                    {
+                        Console.WriteLine($"Hanging in UpdateRenderTarget waiting for graphics to not be in use.");
+                    }
+
+                    Thread.Sleep(_WAIT_TIME);
+                }
+            }
+            
             if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
             {
                 throw new Exception($"Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
@@ -1095,7 +1089,7 @@ namespace DownUnder.UI.Widgets
                 size.Y = 1;
             }
 
-            if (size != render_target?.Size())
+            if (size.ToPoint() != render_target?.Size().ToPoint())
             {
                 // Dispose of previous render target
                 if (render_target != null)
@@ -1115,24 +1109,7 @@ namespace DownUnder.UI.Widgets
                     RenderTargetUsage.PreserveContents);
             }
 
-            if (size != overlay_render_target?.Size())
-            {
-                if (overlay_render_target != null)
-                {
-                    overlay_render_target.Dispose();
-                    while (!overlay_render_target.IsDisposed) { }
-                }
-
-                overlay_render_target = new RenderTarget2D(
-                    GraphicsDevice,
-                    (int)size.X,
-                    (int)size.Y,
-                    false,
-                    SurfaceFormat.Vector4,
-                    DepthFormat.Depth24,
-                    0,
-                    RenderTargetUsage.PreserveContents);
-            }
+            _graphics_updating = false;
         }
 
 
@@ -1163,6 +1140,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).Spacing = Spacing;
             ((Widget)c).Area = Area;
 
+            ((Widget)c).debug_output = debug_output;
             return c;
         }
 

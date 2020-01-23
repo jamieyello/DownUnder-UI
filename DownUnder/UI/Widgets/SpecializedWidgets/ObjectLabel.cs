@@ -49,12 +49,12 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 _text_editable = true;
                 if (obj.GetType().IsIntegral())
                 {
-                    Console.WriteLine($"object {obj} was detected as integral");
+                    //Console.WriteLine($"object {obj} was detected as integral");
                     TextEntryRules = TextEntryRuleSet.Integer;
                 }
                 else
                 {
-                    Console.WriteLine($"object {obj} was detected a non-integral number");
+                    //Console.WriteLine($"object {obj} was detected a non-integral number");
                     TextEntryRules = TextEntryRuleSet.Double;
                 }
             }
