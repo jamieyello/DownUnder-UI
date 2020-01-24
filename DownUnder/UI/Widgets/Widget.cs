@@ -497,9 +497,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Draws this widget (and all children) to the screen. Currently clears the screen on calling. </summary>
         public void Draw()
         {
-            UpdateRenderTargetSizes();
-            DrawToRenderTargets();
-            GetRender();
+            Render();
 
             GraphicsDevice.SetRenderTarget(null);
             SpriteBatch.Begin();
@@ -507,44 +505,25 @@ namespace DownUnder.UI.Widgets
             SpriteBatch.End();
         }
 
-        private void DrawToRenderTargets()
+        /// <summary> Renders this widget with all the children inside. </summary>
+        /// <returns> This widget's render. </returns>
+        private RenderTarget2D Render()
         {
+            UpdateRenderTargetSizes();
+
             _graphics_in_use = true;
             if (_graphics_updating)
             {
                 _graphics_in_use = false;
-                return;
-            }
-            
-            GraphicsDevice.SetRenderTarget(_render_target);
-
-            SpriteBatch.Begin();
-
-            if (DrawBackground)
-            {
-                GraphicsDevice.Clear(BackgroundColor.CurrentColor);
+                return _render_target;
             }
 
-            OnDraw?.Invoke(this, EventArgs.Empty);
-
-            SpriteBatch.End();
-            
-            foreach (Widget widget in Children)
-            {
-                widget.DrawToRenderTargets();
-            }
-            
-            _graphics_in_use = false;
-        }
-
-        private RenderTarget2D GetRender()
-        {
             List<RenderTarget2D> renders = new List<RenderTarget2D>();
             List<RectangleF> areas = new List<RectangleF>();
 
             foreach (Widget child in Children)
             {
-                renders.Add(child.GetRender());
+                renders.Add(child.Render());
                 if (child is IScrollableWidget s_widget)
                 {
                     areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
@@ -558,22 +537,31 @@ namespace DownUnder.UI.Widgets
             GraphicsDevice.SetRenderTarget(_render_target);
             SpriteBatch.Begin();
 
+            if (DrawBackground)
+            {
+                GraphicsDevice.Clear(BackgroundColor.CurrentColor);
+            }
+
+            OnDraw?.Invoke(this, EventArgs.Empty);
+
             int i = 0;
             foreach (Widget child in Children)
             {
                 if (this is IScrollableWidget s_this)
                 {
-                    SpriteBatch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()), Color.White);
+                    SpriteBatch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()).Floored(), Color.White);
                 }
                 else
                 {
-                    SpriteBatch.Draw(renders[i], areas[i].Position, Color.White);
+                    SpriteBatch.Draw(renders[i], areas[i].Position.Floored(), Color.White);
                 }
                 i++;
             }
             DrawOverlay();
 
             SpriteBatch.End();
+
+            _graphics_in_use = false;
 
             return _render_target;
         }
@@ -913,7 +901,7 @@ namespace DownUnder.UI.Widgets
                     SurfaceFormat.Vector4,
                     DepthFormat.Depth24,
                     0,
-                    RenderTargetUsage.PreserveContents);
+                    RenderTargetUsage.DiscardContents);
             }
 
             _graphics_updating = false;

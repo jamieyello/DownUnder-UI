@@ -120,6 +120,16 @@ namespace DownUnder
             return new Point2(p.X, y);
         }
 
+        public static Point2 Floored(this Point2 p)
+        {
+            return new Point2((int)p.X, (int)p.Y);
+        }
+
+        public static Point2 Rounded(this Point2 p)
+        {
+            return new Point2((int)(p.X + 0.5f), (int)(p.Y + 0.5f));
+        }
+
         /// <summary>
         /// Returns true if this Point2's X or Y field is larger than the given one's.
         /// </summary>
