@@ -393,7 +393,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 foreach (var rect in highlight_area)
                 {
                     rect.Offset(offset);
-                    label.sprite_batch.FillRectangle(rect, Color.LightBlue);
+                    label.SpriteBatch.FillRectangle(rect, Color.LightBlue);
                 }
             }
 
@@ -401,7 +401,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Vector2 position = label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                label.sprite_batch.DrawLine(position, position2, Color.Black, 1);
+                label.SpriteBatch.DrawLine(position, position2, Color.Black, 1);
             }
         }
 

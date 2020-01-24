@@ -23,6 +23,58 @@ namespace DownUnder
             return new Vector2(p.X, p.Y);
         }
 
+        public static RectangleF ToRectSize(this Vector2 v, Point2? position = null)
+        {
+            if (position == null)
+            {
+                return new RectangleF(0, 0, v.X, v.Y);
+            }
+            return new RectangleF(position.Value.X, position.Value.Y, v.X, v.Y);
+        }
+        public static RectangleF ToRectSize(this Vector2 v, float x, float y)
+        {
+            return new RectangleF(x, y, v.X, v.Y);
+        }
+
+        public static RectangleF ToRectSize(this Point2 p, Point2? position = null)
+        {
+            if (position == null)
+            {
+                return new RectangleF(0, 0, p.X, p.Y);
+            }
+            return new RectangleF(position.Value.X, position.Value.Y, p.X, p.Y);
+        }
+        public static RectangleF ToRectSize(this Point2 p, float x, float y)
+        {
+            return new RectangleF(x, y, p.X, p.Y);
+        }
+
+        public static RectangleF ToRectPosition(this Point2 p, Point2? size = null)
+        {
+            if (size == null)
+            {
+                return new RectangleF(p.X, p.Y, 0, 0);
+            }
+            return new RectangleF(p.X, p.Y, size.Value.X, size.Value.Y);
+        }
+        public static RectangleF ToRectPosition(this Point2 p, float width, float height)
+        {
+            return new RectangleF(p.X, p.Y, width, height);
+        }
+
+        public static RectangleF ToRectPosition(this Vector2 v, Point2? size = null)
+        {
+            if (size == null)
+            {
+                return new RectangleF(v.X, v.Y, 0, 0);
+            }
+            return new RectangleF(v.X, v.Y, size.Value.X, size.Value.Y);
+        }
+        public static RectangleF ToRectPosition(this Vector2 v, float width, float height)
+        {
+            return new RectangleF(v.X, v.Y, width, height);
+        }
+        
         public static Point ToPoint(this Size2 size2)
         {
             return new Point((int)size2.Width, (int)size2.Height);
@@ -51,6 +103,16 @@ namespace DownUnder
         public static Point2 Size(this RenderTarget2D r)
         {
             return new Point2(r.Width, r.Height);
+        }
+
+        public static Point2 WithX(this Point2 p, float x)
+        {
+            return new Point2(x, p.Y);
+        }
+
+        public static Point2 WithY(this Point2 p, float y)
+        {
+            return new Point2(p.X, y);
         }
 
         /// <summary>
@@ -103,6 +165,26 @@ namespace DownUnder
         public static RectangleF SizeOnly(this RectangleF r)
         {
             return new RectangleF(new Point2(), r.Size);
+        }
+
+        public static RectangleF WithX(this RectangleF r, float x)
+        {
+            return new RectangleF(x, r.Y, r.Width, r.Height);
+        }
+
+        public static RectangleF WithY(this RectangleF r, float y)
+        {
+            return new RectangleF(r.X, y, r.Width, r.Height);
+        }
+
+        public static RectangleF WithWidth(this RectangleF r, float width)
+        {
+            return new RectangleF(r.X, r.Y, width, r.Height);
+        }
+
+        public static RectangleF WithHeight(this RectangleF r, float height)
+        {
+            return new RectangleF(r.X, r.Y, r.Width, height);
         }
 
         public static RectangleF WithPosition(this RectangleF r, Point2 p)

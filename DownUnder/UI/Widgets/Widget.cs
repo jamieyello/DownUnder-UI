@@ -20,8 +20,6 @@ using System.Threading;
 // Todo: Change some methods to properties.
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// Remove white_dot and use Extended drawing methods instead.
-// Optimize those property derivitaves
 
 namespace DownUnder.UI.Widgets
 {
@@ -35,10 +33,10 @@ namespace DownUnder.UI.Widgets
         #region Fields/Delegates
 
         /// <summary> Used by some drawing code. </summary>
-        private Texture2D white_dot;
+        private Texture2D _white_dot;
 
-        /// <summary> The local sprite batch used by this widget. </summary>
-        public SpriteBatch sprite_batch;
+        /// <summary> The render target this Widget uses to draw to. </summary>
+        private RenderTarget2D _render_target;
 
         /// <summary> A reference to the Widget that owns this one, if one exists. </summary>
         private Widget _parent_widget_reference;
@@ -48,14 +46,6 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
-
-        // Various property backing fields.
-        protected RectangleF area_backing = new RectangleF();
-        private float _double_click_timing_backing = 0.5f;
-        private Point2 _minimum_area_backing = new Point2(1f, 1f);
-        private SpriteFont _sprite_font_backing;
-        private GraphicsDevice _graphics_backing;
-        private bool _is_hovered_over_backing;
         
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
@@ -90,8 +80,13 @@ namespace DownUnder.UI.Widgets
         private bool _update_set_as_focused;
         private bool _update_hovered_over;
 
-        /// <summary> The render target this Widget uses to draw to. </summary>
-        public RenderTarget2D render_target;
+        // Various property backing fields.
+        protected RectangleF area_backing = new RectangleF();
+        private float _double_click_timing_backing = 0.5f;
+        private Point2 _minimum_area_backing = new Point2(1f, 1f);
+        private SpriteFont _sprite_font_backing;
+        private GraphicsDevice _graphics_backing;
+        private bool _is_hovered_over_backing;
 
         #endregion Fields/Delegates
 
@@ -141,6 +136,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
+        /// <summary> The local sprite batch used by this widget. </summary>
+        public SpriteBatch SpriteBatch { get; private set; }
+
         #endregion Auto properties
 
         #region Non-auto properties
@@ -163,7 +161,7 @@ namespace DownUnder.UI.Widgets
             set => area_backing = value;
         }
 
-        /// <summary> Minimum size allowed when setting this widget's area. </summary>
+        /// <summary> Minimum size allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
         [DataMember] public virtual Point2 MinimumSize
         {
             get => _minimum_area_backing;
@@ -182,52 +180,26 @@ namespace DownUnder.UI.Widgets
             }
         }
         
-        /// <summary> The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
-        public SpriteFont SpriteFont
-        {
-            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
-            set => _sprite_font_backing = value;
-        }
-
-        /// <summary> The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used. </summary>
-        public GraphicsDevice GraphicsDevice
-        {
-            get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
-            set => _graphics_backing = value;
-        }
-
-        /// <summary> Position of the cursor relative to this widgdet. </summary>
-        public Point2 CursorPosition
-        {
-            get
-            {
-                if (UpdateData.UIInputState == null) return new Point2();
-                if (this is IScrollableWidget)
-                {
-                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
-                }
-                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
-            }
-        }
-
         #endregion Non-auto properties
 
         #region Derivatives of previous properties
 
-        public float Width
-        {
-            get => Area.Width;
-            set => Area = new RectangleF(Area.X, Area.Y, value, Area.Height);
-        }
-        public float Height
-        {
-            get => Area.Height; set => Area = new RectangleF(Area.X, Area.Y, Area.Width, value); }
-        public Point2 Position { get => Area.Position; set => Area = new RectangleF(value, Area.Size); }
-        public Point2 Size { get => Area.Size; set => Area = new RectangleF(Area.Position, value); }
-        public float X { get => Area.X; set => Area = new RectangleF(value, Area.Y, Area.Width, Area.Height); }
-        public float Y { get => Area.Y; set => Area = new RectangleF(Area.X, value, Area.Width, Area.Height); }
-        public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = new Point2(MinimumSize.X, value); }
-        public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = new Point2(value, MinimumSize.Y); }
+        /// <summary> The width of this widget (in terms of pixels on a 1080p monitor) </summary>
+        public float Width { get => Area.Width; set => Area = Area.WithWidth(value); }
+        /// <summary> The height of this widget (in terms of pixels on a 1080p monitor) </summary>
+        public float Height { get => Area.Height; set => Area = Area.WithHeight(value); }
+        /// <summary> The position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        public Point2 Position { get => Area.Position; set => Area = Area.WithPosition(value); }
+        /// <summary> The size of this widget (in terms of pixels on a 1080p monitor) </summary>
+        public Point2 Size { get => Area.Size; set => Area = Area.WithSize(value); }
+        /// <summary> The x position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        public float X { get => Area.X; set => Area = Area.WithX(value); }
+        /// <summary> The y position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        public float Y { get => Area.Y; set => Area = Area.WithY(value); }
+        /// <summary> Minimum height allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
+        public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
+        /// <summary> Minimum width allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
+        public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
 
         #endregion Derivatives of previous properties
 
@@ -270,6 +242,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns the IWidgetParent of this widget. </summary>
         public IWidgetParent Parent => _parent_widget_reference != null ? (IWidgetParent)_parent_widget_reference : _parent_window_reference;
 
+        /// <summary> The DWindow that owns this widget. </summary>
         public DWindow ParentWindow
         {
             get => _parent_window_reference;
@@ -290,18 +263,19 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        internal Widget ParentWidget
+        /// <summary> The widget that owns this widget. (if one exists) </summary>
+        public Widget ParentWidget
         {
             get => _parent_widget_reference;
             set
             {
                 _parent_widget_reference = value;
-                if (value != null) { ParentWindow = value.ParentWindow; }
+                ParentWindow = value?.ParentWindow;
             }
         }
 
         /// <summary> Returns true if this widget is owned by a parent. </summary>
-        internal bool IsOwned => ParentWidget != null || ParentWindow != null;
+        public bool IsOwned => ParentWidget != null || ParentWindow != null;
 
         /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Location + AreaInWindow.Position.ToPoint(), Area.Size);
@@ -314,7 +288,54 @@ namespace DownUnder.UI.Widgets
 
         /// <summary>Returns true if this widget is selected. </summary>
         public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
-        
+
+        /// <summary> This widget plus all widgets contained in this widget. </summary>
+        public List<Widget> AllContainedWidgets
+        {
+            get
+            {
+                List<Widget> result = new List<Widget> { this };
+
+                foreach (Widget child in Children)
+                {
+                    result.AddRange(child.AllContainedWidgets);
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary> All widgets this widget owns. </summary>
+        public abstract List<Widget> Children { get; }
+
+        /// <summary> The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
+        public SpriteFont SpriteFont
+        {
+            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
+            set => _sprite_font_backing = value;
+        }
+
+        /// <summary> The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used. </summary>
+        public GraphicsDevice GraphicsDevice
+        {
+            get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
+            set => _graphics_backing = value;
+        }
+
+        /// <summary> Position of the cursor relative to this widgdet. </summary>
+        public Point2 CursorPosition
+        {
+            get
+            {
+                if (UpdateData.UIInputState == null) return new Point2();
+                if (this is IScrollableWidget)
+                {
+                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
+                }
+                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
+            }
+        }
+
         #endregion Other various non-serialized properties
 
         #endregion Public/Internal Properties
@@ -325,8 +346,11 @@ namespace DownUnder.UI.Widgets
         {
             SetDefaults();
             SetOwnership(parent);
+            if (GraphicsDevice != null)
+            {
+                InitializeGraphics();
+            }
         }
-
         private void SetDefaults()
         {
             Name = GetType().Name;
@@ -334,8 +358,8 @@ namespace DownUnder.UI.Widgets
 
         ~Widget()
         {
-            white_dot.Dispose();
-            render_target?.Dispose();
+            _white_dot?.Dispose();
+            _render_target?.Dispose();
         }
 
         #endregion Constructors
@@ -358,7 +382,7 @@ namespace DownUnder.UI.Widgets
         }
 
         // Nothing should be invoked here.
-        void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
+        private void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
         {
             _update_clicked = false;
             _update_double_clicked = false;
@@ -481,9 +505,9 @@ namespace DownUnder.UI.Widgets
             GetRender();
 
             GraphicsDevice.SetRenderTarget(null);
-            sprite_batch.Begin();
-            sprite_batch.Draw(render_target, Area.ToRectangle(), Color.White);
-            sprite_batch.End();
+            SpriteBatch.Begin();
+            SpriteBatch.Draw(_render_target, Area.ToRectangle(), Color.White);
+            SpriteBatch.End();
         }
 
         private void DrawToRenderTargets()
@@ -495,9 +519,9 @@ namespace DownUnder.UI.Widgets
                 return;
             }
             
-            GraphicsDevice.SetRenderTarget(render_target);
+            GraphicsDevice.SetRenderTarget(_render_target);
 
-            sprite_batch.Begin();
+            SpriteBatch.Begin();
 
             if (DrawBackground)
             {
@@ -505,8 +529,8 @@ namespace DownUnder.UI.Widgets
             }
 
             OnDraw?.Invoke(this, EventArgs.Empty);
-            //DrawOverlay();
-            sprite_batch.End();
+
+            SpriteBatch.End();
             
             foreach (Widget widget in Children)
             {
@@ -534,36 +558,39 @@ namespace DownUnder.UI.Widgets
                 }
             }
             
-            GraphicsDevice.SetRenderTarget(render_target);
-            sprite_batch.Begin();
+            GraphicsDevice.SetRenderTarget(_render_target);
+            SpriteBatch.Begin();
 
             int i = 0;
             foreach (Widget child in Children)
             {
                 if (this is IScrollableWidget s_this)
                 {
-                    sprite_batch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()), Color.White);
+                    SpriteBatch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()), Color.White);
                 }
                 else
                 {
-                    sprite_batch.Draw(renders[i], areas[i].Position, Color.White);
+                    SpriteBatch.Draw(renders[i], areas[i].Position, Color.White);
                 }
                 i++;
             }
             DrawOverlay();
 
-            sprite_batch.End();
+            SpriteBatch.End();
 
-            return render_target;
+            return _render_target;
         }
 
         /// <summary> Initializes all graphic related fields and updates all references. (To be used after a widget is created without parameters.) </summary>
         public void Initialize(DWindow parent_window, GraphicsDevice graphics_device, SpriteFont sprite_font = null)
         {
-            InitializeAllReferences(parent_window, _parent_widget_reference); // The parent widget reference shouldn't be modified here
+            InitializeAllReferences(parent_window, ParentWidget);
             InitializeGraphics();
         }
         
+        /// <summary>
+        /// Initializes all graphics related content.
+        /// </summary>
         internal protected void InitializeGraphics()
         {
             if (GraphicsDevice == null)
@@ -571,8 +598,8 @@ namespace DownUnder.UI.Widgets
                 throw new Exception($"GraphicsDevice cannot be null.");
             }
 
-            sprite_batch = new SpriteBatch(GraphicsDevice);
-            white_dot = DrawingTools.WhiteDot(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
 
             foreach (Widget child in Children)
             {
@@ -583,7 +610,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> To be called post-serialization, this updates all references in this and all children. </summary>
-        internal void InitializeAllReferences(DWindow parent_window, Widget parent_widget = null)
+        internal protected void InitializeAllReferences(DWindow parent_window, Widget parent_widget = null)
         {
             ParentWindow = parent_window;
             ParentWidget = parent_widget;
@@ -594,6 +621,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> Embeds this widget in the given area. Takes SnappingPolicy and spacing into account. </summary>
         internal void EmbedIn(RectangleF area)
         {
             Area = EmbeddedIn(area);
@@ -790,32 +818,16 @@ namespace DownUnder.UI.Widgets
             return new_area;
         }
 
-        /// <summary> This widget plus all widgets contained in this widget. </summary>
-        public List<Widget> GetAllWidgets()
-        {
-            List<Widget> result = new List<Widget> { this };
-
-            foreach (Widget child in Children)
-            {
-                result.AddRange(child.GetAllWidgets());
-            }
-
-            return result;
-        }
-
-        /// <summary> All widgets this widget owns. </summary>
-        public abstract List<Widget> Children { get; }
-
         /// <summary> Draw anything that should be drawn on top of the content in this widget. </summary>
         private void DrawOverlay()
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(white_dot, sprite_batch, Area.SizeOnly().ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
-                scroll_widget.ScrollBars.Draw(sprite_batch);
+                scroll_widget.ScrollBars.Draw(SpriteBatch);
             }
 
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
@@ -887,16 +899,16 @@ namespace DownUnder.UI.Widgets
                 size.Y = 1;
             }
 
-            if (size.ToPoint() != render_target?.Size().ToPoint())
+            if (size.ToPoint() != _render_target?.Size().ToPoint())
             {
                 // Dispose of previous render target
-                if (render_target != null)
+                if (_render_target != null)
                 {
-                    render_target.Dispose();
-                    while (!render_target.IsDisposed) { }
+                    _render_target.Dispose();
+                    while (!_render_target.IsDisposed) { }
                 }
 
-                render_target = new RenderTarget2D(
+                _render_target = new RenderTarget2D(
                     GraphicsDevice,
                     (int)size.X,
                     (int)size.Y,

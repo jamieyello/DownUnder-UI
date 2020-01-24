@@ -18,24 +18,25 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #region Fields
         
         private string _text_backing = "";
-        private bool _text_edit_enabled = false;
+        private bool _editing_enabled_backing = false;
         private TextCursor _text_cursor;
-        //private UIPalette _edit_text
 
         #endregion Fields
 
         #region Public Properties
 
+        /// <summary> Set to enable/disable user editing of this text. </summary>
         [DataMember] public virtual bool EditingEnabled
         {
-            get => _text_edit_enabled;
+            get => _editing_enabled_backing;
             set
             {
                 _text_cursor.Active = value ? false : _text_cursor.Active;
-                _text_edit_enabled = value;
+                _editing_enabled_backing = value;
             }
         }
 
+        /// <summary> The displayed text of this widget. </summary>
         [DataMember] public string Text
         {
             get
@@ -60,44 +61,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         [DataMember] public bool ConstrainAreaToText { get; set; } = false;
 
-        /// <summary>
-        /// Area of the text within the label.
-        /// </summary>
-        public RectangleF TextArea
-        {
-            get
-            {
-                if (IsGraphicsInitialized)
-                {
-                    return new RectangleF(new Vector2(), SpriteFont.MeasureString(Text));
-                }
-                
-                return new RectangleF(Position, new Point2(1, 1));
-            } 
-        }
+        /// <summary> Area of the text within the label. </summary>
+        public RectangleF TextArea => IsGraphicsInitialized ? SpriteFont.MeasureString(Text).ToRectSize() : Position.ToRectPosition(1, 1);
 
-        public RectangleF TextAreaInWindow
-        {
-            get
-            {
-                RectangleF result = TextArea;
-                result.Offset(PositionInWindow);
-                return result;
-            }
-        }
+        public RectangleF TextAreaInWindow => TextArea.WithOffset(PositionInWindow);
 
-        public bool IsBeingEdited
-        {
-            get
-            {
-                if (_text_cursor == null) return false;
-                return _text_cursor.Active;
-            }
-        }
+        /// <summary> True if the user is editting text. </summary>
+        public bool IsBeingEdited => _text_cursor == null ? false : _text_cursor.Active;
 
-        /// <summary>
-        /// Palette of the background while editing text.
-        /// </summary>
+        /// <summary>  Palette of the background while editing text. </summary>
         public UIPalette TextEditBackgroundPalette { get; internal set; } = new UIPalette();
 
         #endregion Public Properties
@@ -108,10 +80,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             : base(parent)
         {
             SetDefaults();
-            if (IsGraphicsInitialized)
-            {
-                InitializeGraphics();
-            }
         }
 
         public Label(IWidgetParent parent, string text)
@@ -119,10 +87,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             SetDefaults();
             Text = text;
-            if (IsGraphicsInitialized)
-            {
-                InitializeGraphics();
-            }
         }
 
         public Label(IWidgetParent parent, SpriteFont sprite_font, string text = "")
@@ -131,10 +95,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             SpriteFont = sprite_font;
             SetDefaults();
             Text = text;
-            if (IsGraphicsInitialized)
-            {
-                InitializeGraphics();
-            }
         }
 
         private void SetDefaults()
@@ -151,7 +111,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             OnSelectOff += DisableEditing;
             OnUpdate += Update;
             OnConfirm += ConfirmEdit;
-            OnGraphicsInitialized += InitializeGraphics;
+            if (IsGraphicsInitialized) InitializeCursor(this, EventArgs.Empty);
+            else OnGraphicsInitialized += InitializeCursor;
         }
 
         #endregion Constructors
@@ -166,48 +127,14 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public override Point2 MinimumSize
         {
-            get
-            {
-                if (!ConstrainAreaToText || !IsGraphicsInitialized)
-                {
-                    return base.MinimumSize;
-                }
-                
-                return base.MinimumSize.Max(SpriteFont.MeasureString(Text));
-            }
+            get => !ConstrainAreaToText || !IsGraphicsInitialized ? base.MinimumSize : base.MinimumSize.Max(SpriteFont.MeasureString(Text));
             set => base.MinimumSize = value;
         }
 
         public override UIPalette BackgroundColor
-        {
-            get
-            {
-                if (IsBeingEdited)
-                {
-                    return TextEditBackgroundPalette;
-                }
-                else
-                {
-                    return base.BackgroundColor;
-                }
-            }
+        { 
+            get => IsBeingEdited ? TextEditBackgroundPalette : base.BackgroundColor;
             internal set => base.BackgroundColor = value;
-        }
-
-        public override bool DrawBackground
-        {
-            get
-            {
-                if (IsBeingEdited)
-                {
-                    return true;
-                }
-                else
-                {
-                    return base.DrawBackground;
-                }
-            }
-            set => base.DrawBackground = value;
         }
 
         protected override object DerivedClone()
@@ -255,7 +182,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            sprite_batch.DrawString(SpriteFont, Text, new Vector2(), TextColor.CurrentColor);
+            SpriteBatch.DrawString(SpriteFont, Text, new Vector2(), TextColor.CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)
@@ -269,7 +196,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        private void InitializeGraphics(object sender, EventArgs args)
+        private void InitializeCursor(object sender, EventArgs args)
         {
             _text_cursor = new TextCursor(this);
         }

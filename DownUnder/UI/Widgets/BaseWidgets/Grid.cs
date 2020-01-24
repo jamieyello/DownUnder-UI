@@ -55,20 +55,20 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             : base(parent)
         {
             SetDefaults();
-            if (IsGraphicsInitialized)
-            {
-                InitializeGraphics();
-            }
+            //if (IsGraphicsInitialized)
+            //{
+            //    InitializeGraphics();
+            //}
         }
 
         public Grid(IWidgetParent parent, int x_length, int y_length, Widget filler = null)
             : base(parent)
         {
             SetDefaults();
-            if (IsGraphicsInitialized)
-            {
-                InitializeGraphics();
-            }
+            //if (IsGraphicsInitialized)
+            //{
+            //    InitializeGraphics();
+            //}
 
             if (filler == null)
             {

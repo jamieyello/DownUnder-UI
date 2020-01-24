@@ -56,7 +56,7 @@ namespace DownUnder.Widgets
             sprite_batch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
             UIImages = new UIImages(GraphicsDevice);
-            
+
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout(this);
 

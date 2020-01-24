@@ -35,13 +35,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
 
             SetDefaults();
-            if (IsGraphicsInitialized) InitializeGraphics();
         }
 
         private void SetDefaults()
         {
             Size = new Point2(100, 100);
-            OnGraphicsInitialized += InitializeScrollbars;
+            if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
+            else OnGraphicsInitialized += InitializeScrollbars;
         }
         
         #endregion Constructors
