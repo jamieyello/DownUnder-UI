@@ -1,5 +1,5 @@
 # DownUnder
-A collection of UI libraries for MonoGame.
+A UI library for MonoGame.
 
 Don't try using this yet!
 
