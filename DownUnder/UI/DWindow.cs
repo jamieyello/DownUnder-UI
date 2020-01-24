@@ -15,87 +15,64 @@ using DownUnder.UI.Widgets.BaseWidgets;
 
 namespace DownUnder.UI
 {
-    public abstract class DWindow : Game, IWidgetParent//, IDebugFeatures
+    public abstract class DWindow : Game, IWidgetParent
     {
         #region Fields/Delegates
 
         public SpriteBatch sprite_batch;
 
-        /// <summary>
-        /// This delegate is meant to grant the main thread's method to spawn
-        /// new windows.
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="new_window"></param>
+        /// <summary> This delegate is meant to grant the main thread's method to spawn new windows. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
 
-        private Layout _layout_backing;
-
-        private Point _minimum_size = new Point(100, 100);
-
+        /// <summary> The GraphicsDeviceManager used by this widget. Is initiated on creation. </summary>
         protected readonly GraphicsDeviceManager GraphicsManager;
 
-        /// <summary>
-        /// Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed.
-        /// </summary>
+        /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
         private int _spawned_window_is_active = -1;
 
+        /// <summary> Used to keep track of this DWindows thread. </summary>
         private static int _thread_id;
-        private readonly Dictionary<int, SetGetEvent<Rectangle>> _area_set_events = new Dictionary<int, SetGetEvent<Rectangle>>();
+        private readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
 
-        /// <summary>
-        /// While true, event queues should not be modified.
-        /// </summary>
+        /// <summary> While true, event queues should not be modified. </summary>
         private bool _event_queue_is_processing = false;
 
-        /// <summary>
-        /// Set to true once the window has updated once.
-        /// </summary>
+        /// <summary> Set to true once the window has updated once. </summary>
         private bool _first_update = false;
 
-        /// <summary>
-        /// Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed.
-        /// </summary>
+        /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         private const int _WAIT_TIME = 5;
 
-        /// <summary>
-        /// How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings.
-        /// </summary>
+        /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         private const int _WAIT_TIME_WARNING_THRESOLD = 100;
-        private Rectangle _area_cache = new Rectangle();
+
+        // A cache used by Area.
+        private RectangleF _area_cache = new RectangleF();
+
+        // Various property backing fields.
+        private Layout _layout_backing;
+        private Point2 _minimum_size_backing;
 
         #endregion Fields/Delegates
 
         #region Properties
 
-        /// <summary>
-        /// A reference to each of this window's children.
-        /// </summary>
+        /// <summary> A reference to each of this window's children. </summary>
         public List<DWindow> Children { get; } = new List<DWindow>();
 
-        /// <summary>
-        /// The window that owns this window.
-        /// </summary>
+        /// <summary> The window that owns this window. </summary>
         public DWindow Parent { get; set; }
 
-        /// <summary>
-        /// Represents this window's input each frame.
-        /// </summary>
+        /// <summary> Represents this window's input each frame. </summary>
         public UIInputState InputState { get; } = new UIInputState();
 
-        /// <summary>
-        /// Used for text input. Typed text is added here.
-        /// </summary>
+        /// <summary> Used for text input. Typed text is added here. </summary>
         public StringBuilder InputText { get; } = new StringBuilder();
 
-        /// <summary>
-        /// Typed CTRL + key combination chars are added here.
-        /// </summary>
+        /// <summary> Typed CTRL + key combination chars are added here. </summary>
         public StringBuilder CommandText { get; } = new StringBuilder();
 
-        /// <summary>
-        /// The Layout Widget of this window.
-        /// </summary>
+        /// <summary> The Layout Widget of this window. </summary>
         public Layout Layout
         {
             get => _layout_backing;
@@ -111,52 +88,54 @@ namespace DownUnder.UI
             }
         }
 
-        /// <summary>
-        /// A delegate to the main program's method to spawn new windows.
-        /// </summary>
+        /// <summary> A delegate to the main program's method to spawn new windows. </summary>
         public WindowCreate CreateWindowDelegate { get; set; }
 
-        // Should these be part of widget?
+        /// <summary> A reference to all widgets that are selected in this DWindow. </summary>
         public Focus SelectedWidgets { get; } = new Focus(FocusType.selection);
 
+        /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
-
-        public SpriteFont DefaultSpriteFont { get; protected set; }
-
-        /// <summary>
-        /// The location of this window on the screen.
-        /// </summary>
-        public Point Location
+        
+        /// <summary> The location of this window on the screen. </summary>
+        public Point2 Position
         {
             get => GraphicsDevice.Viewport.Bounds.Location;
-            set => Area = new Rectangle(value, Area.Size);
+            set => Area = new RectangleF(value, Area.Size);
         }
 
-        /// <summary>
-        /// The size of this window.
-        /// </summary>
-        public Point Size
+        /// <summary> The size of this window. </summary>
+        public Point2 Size
         {
-            get => GraphicsDevice.Viewport.Bounds.Size;
-            set => Area = new Rectangle(Area.Location, value);
+            get => Area.Size;
+            set => Area = new RectangleF(Area.Position, value.ToPoint());
         }
 
-        /// <summary>
-        /// The location and size of this window.
-        /// </summary>
-        public Rectangle Area
+        /// <summary> This minimum size allowed when resizing this window. </summary>
+        public Point2 MinimumSize
+        {
+            get => _minimum_size_backing;
+            set
+            {
+                _minimum_size_backing = value;
+                OSInterface.SetMinimumWindowSize(Window, value.ToPoint());
+            }
+        }
+
+        /// <summary> The location and size of this window. </summary>
+        public RectangleF Area
         {
             get
             {
                 if (!IsActive)
                 {
-                    return new Rectangle();
+                    return new RectangleF();
                 }
 
                 if (IsMainThread)
                 {
                     // Only accessible by the main thread.
-                    return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangle();
+                    return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
                 }
                 else
                 {
@@ -176,7 +155,7 @@ namespace DownUnder.UI
                 else
                 {
                     // Add the event to the queue
-                    _area_set_events.Add(Thread.CurrentThread.ManagedThreadId, new SetGetEvent<Rectangle>(value));
+                    _area_set_events.Add(Thread.CurrentThread.ManagedThreadId, new SetGetEvent<RectangleF>(value));
 
                     // Wait for events to process
                     if (WaitForCrossThreadCompletion)
@@ -220,31 +199,34 @@ namespace DownUnder.UI
         /// </summary>
         public bool WaitForCrossThreadCompletion { get; set; } = true;
 
+        /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
         private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
 
-        public bool DebugOutputEnabled { get; set; } = true;
-
-        /// <summary>
-        /// Used by the UI to set the mouse cursor. Resets every frame. Disable with UICursorsEnabled.
-        /// </summary>
+        /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with UICursorsEnabled. </summary>
         internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
 
-        /// <summary>
-        /// Set to false to disable UI mouse cursor changes.
-        /// </summary>
+        /// <summary> Set to false to disable UI mouse cursor changes. </summary>
         public bool UICursorsEnabled { get; set; } = true;
 
-        //public DrawingData DrawingData { get; } = new DrawingData();
-
+        /// <summary> The default spritefont of this window. Used by contained widgets without a self-defined spritefont. </summary>
         public SpriteFont SpriteFont { get; protected set; }
 
-        public float Width => GraphicsDevice.Viewport.Bounds.Width;
+        /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
+        public float Width
+        {
+            get => Area.Width;
+            set => Area = Area.WithWidth(value);
+        }
 
-        public float Height => GraphicsDevice.Viewport.Bounds.Height;
+        /// <summary> The height of this window. (relative to pizels on a 1080p monitor) </summary>
+        public float Height
+        {
+            get => Area.Height;
+            set => Area = Area.WithHeight(value);
+        }
 
-        Point2 IWidgetParent.Size => GraphicsDevice.Viewport.Bounds.Size;
-
-        protected UIImages UIImages;
+        /// <summary> A collection of icons used by this window and its widgets. </summary>
+        public UIImages UIImages { get; protected set; }
 
         #endregion Properties
 
@@ -260,18 +242,23 @@ namespace DownUnder.UI
                 parent.Children.Add(this);
             }
             
-            GraphicsManager = new GraphicsDeviceManager(this);
+            // What is this?
             FirstUpdate += SetThreadID;
-            Window.AllowUserResizing = true;
-            IsMouseVisible = true;
+
             Window.ClientSizeChanged += SetLayoutAreaToWindowArea;
             Window.TextInput += ProcessKeys;
-
             Exiting += ExitAll;
-            
-            OSInterface.SetMinimumWindowSize(Window, _minimum_size);
-            
+
+            GraphicsManager = new GraphicsDeviceManager(this);
+            Window.AllowUserResizing = true;
+            IsMouseVisible = true;
+            MinimumSize = new Point2(100, 100);
             IsFixedTimeStep = false;
+        }
+
+        ~DWindow()
+        {
+            UIImages.Dispose();
         }
 
         #endregion Constructors
@@ -346,16 +333,16 @@ namespace DownUnder.UI
             Debug.WriteLine($"_spawned_window_is_active = {_spawned_window_is_active}");
         }
 
-        private void AreaSet(Rectangle value)
+        private void AreaSet(RectangleF value)
         {
-            GraphicsManager.PreferredBackBufferWidth = value.Width;
-            GraphicsManager.PreferredBackBufferHeight = value.Height;
+            GraphicsManager.PreferredBackBufferWidth = (int)value.Width;
+            GraphicsManager.PreferredBackBufferHeight = (int)value.Height;
 
             try
             {
                 GraphicsManager.ApplyChanges();
                 ((System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle))
-                    .Location = new System.Drawing.Point(value.X, value.Y);
+                    .Location = new System.Drawing.Point((int)value.X, (int)value.Y);
             }
             catch (Exception e)
             {
@@ -416,11 +403,14 @@ namespace DownUnder.UI
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;
             InputState.Enter = false;
+
+            base.Update(game_time);
         }
 
-        protected void DrawDWindow()
+        protected void DrawDWindow(GameTime game_time)
         {
-
+            Layout.Draw();
+            base.Draw(game_time);
         }
 
         #endregion Protected Methods

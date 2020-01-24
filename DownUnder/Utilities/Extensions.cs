@@ -90,6 +90,11 @@ namespace DownUnder
             return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
         }
 
+        public static RectangleF ToMonoRectangleF(this System.Drawing.Rectangle rect)
+        {
+            return new RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
+        }
+
         public static Size2 ToSize2(this Vector2 v)
         {
             return new Size2(v.X, v.Y);

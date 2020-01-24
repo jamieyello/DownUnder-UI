@@ -57,14 +57,14 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
+        /// <summary> What kind of text is allowed to be entered in this label. </summary>
         [DataMember] public TextEntryRuleSet TextEntryRules { get; set; } = TextEntryRuleSet.String;
 
+        /// <summary> Whet set to true the area of this label will try to cover any text within. </summary>
         [DataMember] public bool ConstrainAreaToText { get; set; } = false;
 
         /// <summary> Area of the text within the label. </summary>
         public RectangleF TextArea => IsGraphicsInitialized ? SpriteFont.MeasureString(Text).ToRectSize() : Position.ToRectPosition(1, 1);
-
-        public RectangleF TextAreaInWindow => TextArea.WithOffset(PositionInWindow);
 
         /// <summary> True if the user is editting text. </summary>
         public bool IsBeingEdited => _text_cursor == null ? false : _text_cursor.Active;
@@ -119,18 +119,21 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Overrides
 
+        /// <summary> When set to true pressing enter while this widget is the primarily selected one will trigger confirmation events. </summary>
         public override bool EnterConfirms
         {
             get => TextEntryRules.IsSingleLine;
             set => TextEntryRules.IsSingleLine = value;
         }
 
+        /// <summary> Minimum size allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
         public override Point2 MinimumSize
         {
             get => !ConstrainAreaToText || !IsGraphicsInitialized ? base.MinimumSize : base.MinimumSize.Max(SpriteFont.MeasureString(Text));
             set => base.MinimumSize = value;
         }
 
+        /// <summary> The UIPalette used for the background color. </summary>
         public override UIPalette BackgroundColor
         { 
             get => IsBeingEdited ? TextEditBackgroundPalette : base.BackgroundColor;

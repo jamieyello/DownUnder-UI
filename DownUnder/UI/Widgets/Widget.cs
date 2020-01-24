@@ -17,14 +17,11 @@ using System.Threading;
 
 // tip: Always remember to update Clone.
 
-// Todo: Change some methods to properties.
-// Combine slots with widget.
+// Combine slots with widget.C:\Users\jamie\source\repos\DownUnder\DownUnder\UI\Widgets\Widget.cs
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 
 namespace DownUnder.UI.Widgets
 {
-    // todo: look into separating items into custom objects.
-    // Clone needs to be updated (and organized)
     /// <summary> A visible window object. </summary>
     [DataContract] public abstract class Widget : IWidgetParent
     {
@@ -278,7 +275,7 @@ namespace DownUnder.UI.Widgets
         public bool IsOwned => ParentWidget != null || ParentWindow != null;
 
         /// <summary> Area relative to the screen. (not the window) </summary>
-        public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Location + AreaInWindow.Position.ToPoint(), Area.Size);
+        public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
 
         /// <summary> Represents this window's input each frame. </summary>
         public UIInputState InputState => ParentWindow?.InputState;

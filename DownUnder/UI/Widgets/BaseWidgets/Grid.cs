@@ -17,23 +17,17 @@ namespace DownUnder.UI.Widgets.BaseWidgets
     {
         #region Fields
 
-        /// <summary>
-        /// A jagged array of all the contained widgets. (Widgets[x][y])
-        /// </summary>
+        /// <summary> A jagged array of all the contained widgets. (Widgets[x][y]) </summary>
         public List<List<Widget>> widgets = new List<List<Widget>>();
 
-        /// <summary>
-        /// This is broken for a possibly obvious reason. It might not matter.
-        /// </summary>
+        /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
         private const int _RESIZING_ACCURACY = 1;
 
         #endregion Fields
 
         #region Public Properties
 
-        /// <summary>
-        /// The number of widgets tall and wide this grid consists of.
-        /// </summary>
+        /// <summary> The number of widgets tall and wide this grid consists of. </summary>
         public Point Dimensions
         {
             get
@@ -55,20 +49,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             : base(parent)
         {
             SetDefaults();
-            //if (IsGraphicsInitialized)
-            //{
-            //    InitializeGraphics();
-            //}
         }
 
         public Grid(IWidgetParent parent, int x_length, int y_length, Widget filler = null)
             : base(parent)
         {
             SetDefaults();
-            //if (IsGraphicsInitialized)
-            //{
-            //    InitializeGraphics();
-            //}
 
             if (filler == null)
             {
@@ -148,9 +134,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             SpaceAllCells();
         }
 
-        /// <summary>
-        /// This will find the longest/tallest widget in each row/collumn and make every other element match.
-        /// </summary>
+        /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>
         private void AutoSizeAllWidgets()
         {
             for (int x = 0; x < widgets.Count; x++)
@@ -208,11 +192,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        /// <summary>
-        /// The default cell is a layout
-        /// </summary>
-        /// <param name="graphics_device"></param>
-        /// <returns></returns>
+        /// <summary> The default cell is a layout </summary>
         protected Layout DefaultCell()
         {
             // Create cell
@@ -268,6 +248,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Overrides
 
+        /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
         public override RectangleF Area
         {
             get
@@ -332,6 +313,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             throw new NotImplementedException();
         }
 
+        /// <summary> All widgets this widget owns. </summary>
         public override List<Widget> Children
         {
             get

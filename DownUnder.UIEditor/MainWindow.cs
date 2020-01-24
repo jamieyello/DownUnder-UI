@@ -76,15 +76,9 @@ namespace DownUnder.Widgets
             {
                 Exit();
             }
-            
-            UpdateDWindow(gameTime);
-            //Console.WriteLine($"{editor_objects.property_grid.local_render_target.Bounds}");
-            //Console.WriteLine($"property_grid.render_target.Bounds {editor_objects.property_grid.render_target.Bounds}");
-            //Console.WriteLine($"property_grid.Area {editor_objects.property_grid.Area}");
-
             // TODO: Add your update logic here
 
-            base.Update(gameTime);
+            UpdateDWindow(gameTime);
         }
 
         /// <summary>
@@ -94,14 +88,9 @@ namespace DownUnder.Widgets
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
-
-            //sprite_batch.Begin();
-            //Layout.Draw(sprite_batch);
-            //sprite_batch.End();
-            Layout.Draw();
-            base.Draw(gameTime);
+            
+            DrawDWindow(gameTime);
         }
 
         public void Slot_Layout_OnClick(object sender, EventArgs e)

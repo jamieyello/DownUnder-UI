@@ -33,5 +33,18 @@ namespace DownUnder.UI.DataTypes
             AddFolder = Texture2D.FromStream(graphics, of_fs);
             of_fs.Dispose();
         }
+
+        public void Dispose()
+        {
+            AddFolder?.Dispose();
+            BrowseFolder?.Dispose();
+            Folder?.Dispose();
+            OpenedFolder?.Dispose();
+        }
+
+        ~UIImages()
+        {
+            Dispose();
+        }
     }
 }
