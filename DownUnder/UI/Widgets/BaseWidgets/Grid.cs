@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 //this needs prefered dimensions?
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Widgets.BaseWidgets
 {
     /// <summary>
     /// A grid of widgets. Cells are empty Layouts by default.
@@ -31,6 +31,9 @@ namespace DownUnder.UI.Widgets
 
         #region Public Properties
 
+        /// <summary>
+        /// The number of widgets tall and wide this grid consists of.
+        /// </summary>
         public Point Dimensions
         {
             get
@@ -116,6 +119,26 @@ namespace DownUnder.UI.Widgets
                     widgets[x].Add((Widget)clone);
                 }
             }
+            AlignWidgets();
+        }
+
+        public void InsertRow(List<Widget> widgets, int y)
+        {
+            if (widgets.Count != Dimensions.X)
+            {
+                throw new Exception("Given list of widgets' length doesn't match the X dimension of this grid.");
+            }
+
+            AlignWidgets();
+        }
+
+        public void InsertColumn(List<Widget> widgets, int x)
+        {
+            if (widgets.Count != Dimensions.Y)
+            {
+                throw new Exception("Given list of widgets' length doesn't match the Y dimension of this grid.");
+            }
+
             AlignWidgets();
         }
 

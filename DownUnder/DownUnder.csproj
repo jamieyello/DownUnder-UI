@@ -89,6 +89,7 @@
     <Compile Include="SpriteEngine\Field\GroundTile.cs" />
     <Compile Include="SpriteEngine\SpriteEngine.cs" />
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
+    <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\Palette.cs" />
@@ -96,12 +97,13 @@
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
-    <Compile Include="UI\Widgets\Grid.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IWidgetParent.cs" />
-    <Compile Include="UI\Widgets\Label.cs" />
-    <Compile Include="UI\Widgets\Layout.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
+    <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
@@ -128,6 +130,18 @@
   <ItemGroup>
     <Content Include="Application Notes.txt" />
     <Content Include="Input\Reader Guide.txt" />
+    <Content Include="UI\Images\add folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UI\Images\browse folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UI\Images\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UI\Images\opened folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>
   <ItemGroup>

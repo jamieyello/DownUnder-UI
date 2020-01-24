@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI.DataTypes;
-using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utilities;
@@ -11,8 +10,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Reflection;
 using MonoGame.Extended;
+using DownUnder.UI.Widgets.BaseWidgets;
 
 namespace DownUnder.UI
 {
@@ -239,15 +238,13 @@ namespace DownUnder.UI
 
         public SpriteFont SpriteFont { get; protected set; }
 
-        public GraphicsDevice Graphics { get; protected set; }
-
         public float Width => GraphicsDevice.Viewport.Bounds.Width;
 
         public float Height => GraphicsDevice.Viewport.Bounds.Height;
 
         Point2 IWidgetParent.Size => GraphicsDevice.Viewport.Bounds.Size;
 
-        public RenderTarget2D RenderTarget { get; set; }
+        protected UIImages UIImages;
 
         #endregion Properties
 

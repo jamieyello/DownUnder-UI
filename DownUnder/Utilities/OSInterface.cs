@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Windows.Forms;
 
 namespace DownUnder.Utilities
 {
@@ -17,6 +18,11 @@ namespace DownUnder.Utilities
         public static void SetMinimumWindowSize(GameWindow window, Point size)
         {
             System.Windows.Forms.Control.FromHandle(window.Handle).MinimumSize = size.ToSystemSize();
+        }
+
+        public static float CaretBlinkTime
+        {
+            get => SystemInformation.CaretBlinkTime / 500f;
         }
     }
 }

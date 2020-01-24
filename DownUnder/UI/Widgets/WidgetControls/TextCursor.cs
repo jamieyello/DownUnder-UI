@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
-using System.Linq;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.Utilities;
 
 namespace DownUnder.UI.Widgets.WidgetControls
@@ -125,16 +124,13 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        float _CaretBlinkTime
-        {
-            get => SystemInformation.CaretBlinkTime / 500f;
-        }
-
         bool _CaretCurrentlyDrawn
         {
             get => caret_blink_timer / _CaretBlinkTime < 0.5f;
         }
 
+        float _CaretBlinkTime => OSInterface.CaretBlinkTime;
+        
         int _CaretLine
         {
             get
@@ -390,7 +386,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             if (!Active) return;
             if (!label.IsBeingEdited) return;
             if (!allow_draw) return;
-            Vector2 offset = label.Position.ToVector2().Floored();
+            Vector2 offset = label.TextArea.Position;
 
             if (_HighlightLength > 0)
             {
@@ -405,7 +401,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Vector2 position = label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                label.sprite_batch.DrawLine(position, position2, Color.Black);
+                label.sprite_batch.DrawLine(position, position2, Color.Black, 1);
             }
         }
 

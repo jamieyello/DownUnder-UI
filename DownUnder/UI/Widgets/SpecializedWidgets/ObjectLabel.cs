@@ -1,12 +1,8 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DownUnder.UI.Widgets.BaseWidgets;
 
 namespace DownUnder.UI.Widgets.SpecializedWidgets
 {

@@ -56,8 +56,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            if (_parent.debug_output) sprite_batch.DrawCircle(20, 20, 20, 20, Color.Black);
-
             if (_SideVisible)
             {
                 sprite_batch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
@@ -74,7 +72,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public void Update(float step, UIInputState ui_input_state)
         {
             #region Position / Size
-            RectangleF widget_content_area = _iscrollable_parent.ContentArea.SizeOnly();
+            RectangleF widget_content_area = _iscrollable_parent.ContentArea;
             RectangleF widget_area = _parent.Area.SizeOnly();
 
             // Claculate size of bars. ---

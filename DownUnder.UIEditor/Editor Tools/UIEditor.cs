@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI;
-using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;

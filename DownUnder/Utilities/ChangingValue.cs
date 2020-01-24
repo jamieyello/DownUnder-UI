@@ -16,7 +16,7 @@ namespace DownUnder.Utility
 
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         public float TransitionSpeed { get; set; } = 1f;
-        public bool IsTransitioning { get => interpolation_progress == 1f; }
+        public bool IsTransitioning { get => interpolation_progress != 1f; }
 
         public ChangingValue()
         {
@@ -43,7 +43,7 @@ namespace DownUnder.Utility
             // Return if target value is current target value (already transitioning to this point)
             if (EqualityComparer<T>.Default.Equals(target_value, this.target_value))
             {
-                if (instant) interpolation_progress = 1f;
+                if (instant) ForceComplete();
                 return;
             }
 

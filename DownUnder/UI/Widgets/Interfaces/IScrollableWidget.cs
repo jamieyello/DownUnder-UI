@@ -10,13 +10,13 @@ namespace DownUnder.UI.Widgets.Interfaces
     public interface IScrollableWidget
     {
         ScrollBars ScrollBars { get; }
-        RectangleF ContentArea { get; set; }
-        float ContentWidth { get; set; }
-        float ContentHeight { get; set; }
-        Point2 ContentPosition { get; set; }
-        Point2 ContentSize { get; set; }
-        float ContentX { get; set; }
-        float ContentY { get; set; }
+        RectangleF ContentArea { get; }
+        float ContentWidth { get; }
+        float ContentHeight { get; }
+        Point2 ContentPosition { get; }
+        Point2 ContentSize { get; }
+        float ContentX { get; }
+        float ContentY { get; }
         Scroll Scroll { get; }
     }
 }

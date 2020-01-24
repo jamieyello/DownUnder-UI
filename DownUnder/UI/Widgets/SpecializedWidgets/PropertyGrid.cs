@@ -1,12 +1,8 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.BaseWidgets;
+using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
-using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.SpecializedWidgets
 {

@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 
 // Todo: add TextArea property
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Widgets.BaseWidgets
 {
     [DataContract]
     public class Label : Widget
@@ -67,7 +67,7 @@ namespace DownUnder.UI.Widgets
             {
                 if (IsGraphicsInitialized)
                 {
-                    return new RectangleF(Position, SpriteFont.MeasureString(Text));
+                    return new RectangleF(new Vector2(), SpriteFont.MeasureString(Text));
                 }
                 
                 return new RectangleF(Position, new Point2(1, 1));
@@ -112,10 +112,9 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public Label(IWidgetParent parent, SpriteFont sprite_font, string text = "")
+        public Label(IWidgetParent parent, string text)
             : base(parent)
         {
-            SpriteFont = sprite_font;
             SetDefaults();
             Text = text;
             if (IsGraphicsInitialized)
@@ -124,9 +123,10 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public Label(IWidgetParent parent, string text)
+        public Label(IWidgetParent parent, SpriteFont sprite_font, string text = "")
             : base(parent)
         {
+            SpriteFont = sprite_font;
             SetDefaults();
             Text = text;
             if (IsGraphicsInitialized)

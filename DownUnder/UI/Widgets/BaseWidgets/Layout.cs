@@ -1,13 +1,12 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.WidgetControls;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Widgets.BaseWidgets
 {
     /// <summary>
     /// A collection of widgets.
@@ -66,51 +65,46 @@ namespace DownUnder.UI.Widgets
         /// <summary>
         /// How wide this widget's content is.
         /// </summary>
-        public float ContentWidth { get => ContentArea.Width; set => ContentArea = new RectangleF(ContentArea.X, ContentArea.Y, value, ContentArea.Height); }
+        public float ContentWidth => ContentArea.Width;
 
         /// <summary>
         /// How tall this widget's content is.
         /// </summary>
-        public float ContentHeight { get => ContentArea.Height; set => ContentArea = new RectangleF(ContentArea.X, ContentArea.Y, ContentArea.Width, value); }
+        public float ContentHeight => ContentArea.Height;
 
         /// <summary>
         /// The position of this widget's content (relative to the parent widget/window).
         /// </summary>
-        public Point2 ContentPosition { get => ContentArea.Position; set => ContentArea = new RectangleF(value, ContentArea.Size); }
+        public Point2 ContentPosition => ContentArea.Position;
 
         /// <summary>
         /// The overall size of this widget's content.
         /// </summary>
-        public Point2 ContentSize { get => ContentArea.Size; set => ContentArea = new RectangleF(ContentArea.Position, value); }
+        public Point2 ContentSize => ContentArea.Size;
 
         /// <summary>
         /// The X position of this widget's content relative to the parent widget (or window).
         /// </summary>
-        public float ContentX { get => ContentArea.X; set => ContentArea = new RectangleF(value, ContentArea.Y, ContentArea.Width, ContentArea.Height); }
+        public float ContentX => ContentArea.X;
 
         /// <summary>
         /// The Y position of this widget's content relative to the parent widget (or window).
         /// </summary>
-        public float ContentY { get => ContentArea.Y; set => ContentArea = new RectangleF(ContentArea.X, value, ContentArea.Width, ContentArea.Height); }
+        public float ContentY => ContentArea.Y;
 
         // Area of this widget
         public RectangleF ContentArea
         {
             get
             {
-                //if (Name == "test_layout") { Debug.WriteLine($"Getting ContentArea, child count = {widgets.Count}"); }
-                int db = 0;
                 RectangleF result = Area;
                 result.Position = new Point2(0, 0);
                 foreach (var child in Children)
                 {
-                    //Debug.WriteLine($"child[{db}].Area = {child.Area}");
-                    db++;
                     result = result.Union(child.Area);
                 }
                 return result;
             }
-            set { }
         }
 
         public Scroll Scroll { get; } = new Scroll();
@@ -118,7 +112,7 @@ namespace DownUnder.UI.Widgets
         #endregion Properties
 
         #region Overrides
-
+        
         public override RectangleF Area
         {
             get
@@ -129,7 +123,6 @@ namespace DownUnder.UI.Widgets
             }
             set
             {
-                //value.Offset(Scroll.ToVector2());
                 base.Area = value;
                 foreach (var child in Children)
                 {
@@ -151,6 +144,8 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        public override List<Widget> Children => widgets;
+        
         protected override void UpdateArea(bool update_parent)
         {
             RectangleF result = new RectangleF();
@@ -181,12 +176,7 @@ namespace DownUnder.UI.Widgets
 
             return c;
         }
-
-        public override List<Widget> Children
-        {
-            get => widgets;
-        }
-
+        
         #endregion Overrides
     }
 }

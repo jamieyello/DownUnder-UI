@@ -1,12 +1,11 @@
 ﻿using DownUnder.UI;
-using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.DataTypes;
+using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.Editor_Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using System;
 using System.Diagnostics;
 
@@ -56,9 +55,10 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             sprite_batch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
-
+            UIImages = new UIImages(GraphicsDevice);
+            
             Layout = new UIEditorLayout(this, out editor_objects);
-            //Layout = EditorTools.TestLayout(this, sprite_font, out editor_objects);
+            //Layout = EditorTools.TestLayout(this);
 
             //DownUnder.Utilities.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
