@@ -215,7 +215,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <returns></returns>
         protected Layout DefaultCell()
         {
-            // Create grid
+            // Create cell
             Layout default_widget = new Layout(this)
             {
                 DrawBackground = true,
@@ -224,6 +224,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             default_widget.SnappingPolicy = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
             default_widget.OutlineSides = Directions2D.DownRight;
             default_widget.Area = new Rectangle(15, 15, 15, 15);
+            default_widget.FitToContentArea = true;
             return default_widget;
         }
 
@@ -318,6 +319,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     Debug.WriteLine($"Property grid result = {Area}");
                 }
             }
+        }
+
+        protected override void UpdateArea(bool update_parent)
+        {
+            AlignWidgets();
+            base.UpdateArea(update_parent);
         }
 
         protected override object DerivedClone()

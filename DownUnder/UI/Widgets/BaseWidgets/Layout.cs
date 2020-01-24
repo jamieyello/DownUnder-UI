@@ -50,7 +50,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AddWidget(Widget widget)
         {
-            widget.InitializeAllReferences(_parent_window_reference, this);
+            widget.InitializeAllReferences(ParentWindow, this);
             widget.EmbedIn(Area);
             widget.SetOwnership(this);
             widgets.Add(widget);
@@ -109,10 +109,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public Scroll Scroll { get; } = new Scroll();
 
+        /// <summary>
+        /// When set to true this widget will try to resize itself to contain all content.
+        /// </summary>
+        public bool FitToContentArea { get; set; } = false;
+
         #endregion Properties
 
         #region Overrides
-        
+
         public override RectangleF Area
         {
             get
@@ -173,6 +178,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             {
                 c.widgets.Add((Widget)widgets[i].Clone());
             }
+
+            ((IScrollableWidget)c).FitToContentArea = FitToContentArea;
 
             return c;
         }

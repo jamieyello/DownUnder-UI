@@ -27,33 +27,26 @@ namespace DownUnder.UI.Widgets
 {
     // todo: look into separating items into custom objects.
     // Clone needs to be updated (and organized)
-    /// <summary>
-    /// A visible window object.
-    /// </summary>
-    [DataContract]
-    public abstract class Widget : IWidgetParent
+    /// <summary> A visible window object. </summary>
+    [DataContract] public abstract class Widget : IWidgetParent
     {
         public bool debug_output = false;
 
         #region Fields/Delegates
 
-        //temporary
-        public Texture2D white_dot;
+        /// <summary> Used by some drawing code. </summary>
+        private Texture2D white_dot;
+
+        /// <summary> The local sprite batch used by this widget. </summary>
         public SpriteBatch sprite_batch;
 
-        /// <summary>
-        /// A reference to the Widget that owns this one, if one exists.
-        /// </summary>
-        [NonSerialized] private Widget _parent_widget_reference;
+        /// <summary> A reference to the Widget that owns this one, if one exists. </summary>
+        private Widget _parent_widget_reference;
 
-        /// <summary>
-        /// A reference to the window that owns this widget.
-        /// </summary>
-        [NonSerialized] protected DWindow _parent_window_reference;
+        /// <summary> A reference to the window that owns this widget. </summary>
+        private DWindow _parent_window_reference;
 
-        /// <summary>
-        /// The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press)
-        /// </summary>
+        /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
 
         // Various property backing fields.
@@ -62,53 +55,43 @@ namespace DownUnder.UI.Widgets
         private Point2 _minimum_area_backing = new Point2(1f, 1f);
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
-
-        /// <summary>
-        /// Used to track the period of time where a second click would be considered a double click. (If this value is > 0)
-        /// </summary>
+        private bool _is_hovered_over_backing;
+        
+        /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
 
-        /// <summary>
-        /// Used to track the period of time where a third click would be considered a triple click. (If this value is > 0)
-        /// </summary>
+        /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
         private float _triple_click_countdown = 0f;
-
-        private bool _is_hovered_over_backing;
-
+        
         private Point2 _previous_cursor_position = new Point2();
 
-        /// <summary>
-        /// The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.)
-        /// </summary>
-        protected const int _MAXIMUM_WIDGET_SIZE = 2048;
+        /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
         private bool _graphics_updating = false;
+
+        /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
 
-        /// <summary>
-        /// Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed.
-        /// </summary>
-        private readonly int _WAIT_TIME = 5;
+        /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
+        private const int _MAXIMUM_WIDGET_SIZE = 2048;
 
-        /// <summary>
-        /// How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings.
-        /// </summary>
-        private readonly int _MAX_WAIT_TIME = 100;
+        /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
+        private const int _WAIT_TIME = 5;
+
+        /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
+        private const int _MAX_WAIT_TIME = 100;
 
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
-        bool update_clicked;
-        bool update_double_clicked;
-        bool update_triple_clicked;
-        bool update_added_to_focused;
-        bool update_set_as_focused;
-        bool update_hovered_over;
+        private bool _update_clicked;
+        private bool _update_double_clicked;
+        private bool _update_triple_clicked;
+        private bool _update_added_to_focused;
+        private bool _update_set_as_focused;
+        private bool _update_hovered_over;
 
-        /// <summary>
-        /// The render target this Widget uses to draw to.
-        /// </summary>
+        /// <summary> The render target this Widget uses to draw to. </summary>
         public RenderTarget2D render_target;
-        public RenderTarget2D overlay_render_target;
 
         #endregion Fields/Delegates
 
@@ -116,106 +99,53 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
-        /// <summary>
-        /// The unique name of this widget.
-        /// </summary>
+        /// <summary> The unique name of this widget. </summary>
         [DataMember] public string Name { get; set; }
 
-        /// <summary>
-        /// If set to false, the background color will not be drawn.
-        /// </summary>
+        /// <summary> If set to false, the background color will not be drawn. </summary>
         [DataMember] public virtual bool DrawBackground { get; set; }
 
-        /// <summary>
-        /// If set to true, colors will shift to their hovered colors on mouse-over.
-        /// </summary>
+        /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
 
-        /// <summary>
-        /// Unimplemented.
-        /// </summary>
-        [DataMember] private bool OutlineOnMouseOver { get; set; }
-
-        /// <summary>
-        /// How thick the outline (if DrawOutline == true) should be.
-        /// </summary>
+        /// <summary> How thick the outline (if DrawOutline == true) should be. </summary>
         [DataMember] public float OutlineThickness { get; set; } = 1f;
 
-        /// <summary>
-        /// If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides)
-        /// </summary>
+        /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember] public bool DrawOutline { get; set; }
 
-        /// <summary>
-        /// Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true).
-        /// </summary>
+        /// <summary> Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true). </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
+        /// <summary> The UIPalette used for the background color. </summary>
         [DataMember] public virtual UIPalette BackgroundColor { get; internal set; } = new UIPalette(Color.CornflowerBlue, Color.CornflowerBlue.ShiftBrightness(1.1f));
+
+        /// <summary> The UIPalette used for any text in this widget. </summary>
         [DataMember] public virtual UIPalette TextColor { get; internal set; } = new UIPalette(Color.Black, Color.Black);
+
+        /// <summary> The UIPalette used for the outline of this widget. (if enabled) </summary>
         [DataMember] public virtual UIPalette OutlineColor { get; internal set; } = new UIPalette();
 
-        /// <summary>
-        /// Represents the corners this widget will snap to.
-        /// </summary>
+        /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
 
-        /// <summary>
-        /// Unimplemented.
-        /// </summary>
-        [DataMember] private bool Centered { get; set; }
+        /// <summary> Unimplemented. </summary>
+        [DataMember] public bool Centered { get; set; }
 
-        /// <summary>
-        /// Should any SnappingPolicy be defined, this represents the distance from the edges of the widget this is snapped to.
-        /// </summary>
+        /// <summary> Should any SnappingPolicy be defined, this represents the distance from the edges of the widget this is snapped to. </summary>
         [DataMember] public Size2 Spacing { get; set; }
 
-        /// <summary>
-        /// Contains all information relevant to updating on this frame.
-        /// </summary>
+        /// <summary> When set to true pressing enter while this widget is the primarily selected one will trigger confirmation events. </summary>
+        [DataMember] public virtual bool EnterConfirms { get; set; } = true;
+
+        /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
-
-        /// <summary>
-        /// The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used.
-        /// </summary>
-        public SpriteFont SpriteFont
-        {
-            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
-            set => _sprite_font_backing = value;
-        }
-
-        /// <summary>
-        /// The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used.
-        /// </summary>
-        public GraphicsDevice GraphicsDevice
-        {
-            get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
-            set => _graphics_backing = value;
-        }
-        
-        /// <summary>
-        /// Position of the cursor relative to this widgdet.
-        /// </summary>
-        public Point2 CursorPosition
-        {
-            get
-            {
-                if (UpdateData.UIInputState == null) return new Point2();
-                if (this is IScrollableWidget)
-                {
-                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
-                }
-                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
-            }
-        }
 
         #endregion Auto properties
 
         #region Non-auto properties
 
-        /// <summary>
-        /// Minimum time (in seconds) in-between two clicks needed for a double/triple-click to register with this widget. Default (and Windows standard) is 0.5f.
-        /// </summary>
+        /// <summary> Minimum time (in seconds) in-between two clicks needed for a double. </summary>
         [DataMember] public float DoubleClickTiming
         {
             get => _double_click_timing_backing;
@@ -226,43 +156,15 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary>
-        /// Area of this widget. (Position relative to parent widget, if any)
-        /// </summary>
+        /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
         [DataMember] public virtual RectangleF Area
         {
-            get => area_backing;
-            set
-            {
-                // Prevent the widget's area from being set to something the render target can't draw. (A zero/negative value)
-                if ((int)value.Width < 1)
-                {
-                    value.Width = 1f;
-                }
-
-                if ((int)value.Height < 1)
-                {
-                    value.Height = 1f;
-                }
-
-                if ((int)value.Width < MinimumWidth)
-                {
-                    value.Width = MinimumWidth;
-                }
-
-                if ((int)value.Height < MinimumHeight)
-                {
-                    value.Height = MinimumHeight;
-                }
-                 
-                area_backing = value;
-            }
+            get => area_backing.WithMinimumSize(MinimumSize);
+            set => area_backing = value;
         }
 
-        /// <summary>
-        /// Minimum size allowed when setting this widget's area.
-        /// </summary>
-        [DataMember] public Point2 MinimumSize
+        /// <summary> Minimum size allowed when setting this widget's area. </summary>
+        [DataMember] public virtual Point2 MinimumSize
         {
             get => _minimum_area_backing;
             set
@@ -277,7 +179,34 @@ namespace DownUnder.UI.Widgets
                 }
 
                 _minimum_area_backing = value;
-                Area = Area;
+            }
+        }
+        
+        /// <summary> The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
+        public SpriteFont SpriteFont
+        {
+            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
+            set => _sprite_font_backing = value;
+        }
+
+        /// <summary> The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used. </summary>
+        public GraphicsDevice GraphicsDevice
+        {
+            get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
+            set => _graphics_backing = value;
+        }
+
+        /// <summary> Position of the cursor relative to this widgdet. </summary>
+        public Point2 CursorPosition
+        {
+            get
+            {
+                if (UpdateData.UIInputState == null) return new Point2();
+                if (this is IScrollableWidget)
+                {
+                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
+                }
+                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
             }
         }
 
@@ -285,8 +214,14 @@ namespace DownUnder.UI.Widgets
 
         #region Derivatives of previous properties
 
-        public float Width { get => Area.Width; set => Area = new RectangleF(Area.X, Area.Y, value, Area.Height); }
-        public float Height { get => Area.Height; set => Area = new RectangleF(Area.X, Area.Y, Area.Width, value); }
+        public float Width
+        {
+            get => Area.Width;
+            set => Area = new RectangleF(Area.X, Area.Y, value, Area.Height);
+        }
+        public float Height
+        {
+            get => Area.Height; set => Area = new RectangleF(Area.X, Area.Y, Area.Width, value); }
         public Point2 Position { get => Area.Position; set => Area = new RectangleF(value, Area.Size); }
         public Point2 Size { get => Area.Size; set => Area = new RectangleF(Area.Position, value); }
         public float X { get => Area.X; set => Area = new RectangleF(value, Area.Y, Area.Width, Area.Height); }
@@ -298,9 +233,7 @@ namespace DownUnder.UI.Widgets
 
         #region Other various non-serialized properties
 
-        /// <summary>
-        /// Returns true if this widget is hovered over.
-        /// </summary>
+        /// <summary> Returns true if this widget is hovered over. </summary>
         public bool IsHoveredOver
         {
             get => _is_hovered_over_backing;
@@ -319,31 +252,22 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary>
-        /// Returns true if this widget is being hovered over as well as on top of all the other widgets being hovered over.
-        /// </summary>
+        /// <summary> Returns true if this widget is being hovered over as well as on top of all the other widgets being hovered over. </summary>
         public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
 
-        /// <summary>
-        /// Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.)
-        /// </summary>
+        /// <summary> Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.) </summary>
         public bool IsGraphicsInitialized => GraphicsDevice != null;
 
-        /// <summary>
-        /// The area of this widget relative to the parent window.
-        /// </summary>
+        /// <summary> The area of this widget relative to the parent window. </summary>
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
-        /// <summary>
-        /// The position of this widget relative to its window.
-        /// </summary>
+        /// <summary> The position of this widget relative to its window. </summary>
         public Point2 PositionInWindow => ParentWidget == null ? Position : Position.AddPoint2(ParentWidget.PositionInWindow);
 
-        /// <summary>
-        /// The area of the screen that this widget can draw to.
-        /// </summary>
+        /// <summary> The area of the screen that this widget can draw to. </summary>
         public RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
+        /// <summary> Returns the IWidgetParent of this widget. </summary>
         public IWidgetParent Parent => _parent_widget_reference != null ? (IWidgetParent)_parent_widget_reference : _parent_window_reference;
 
         public DWindow ParentWindow
@@ -376,42 +300,21 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> Returns true if this widget is owned by a parent. </summary>
         internal bool IsOwned => ParentWidget != null || ParentWindow != null;
 
-        /// <summary>
-        /// Area relative to the screen. (not the window)
-        /// </summary>
+        /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Location + AreaInWindow.Position.ToPoint(), Area.Size);
 
+        /// <summary> Represents this window's input each frame. </summary>
         public UIInputState InputState => ParentWindow?.InputState;
 
-        public bool IsPrimarySelected
-        {
-            get
-            {
-                if (ParentWindow == null)
-                {
-                    return false;
-                }
+        /// <summary> Returns true if this is the main selected widget. </summary>
+        public bool IsPrimarySelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.Primary == this;
 
-                return ParentWindow.SelectedWidgets.Primary == this;
-            }
-        }
-
-        public bool IsSelected
-        {
-            get
-            {
-                if (ParentWindow == null)
-                {
-                    return false;
-                }
-                return ParentWindow.SelectedWidgets.IsWidgetFocused(this);
-            }
-        }
-
-        protected bool EnterConfirms { get; set; } = true;
-
+        /// <summary>Returns true if this widget is selected. </summary>
+        public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
+        
         #endregion Other various non-serialized properties
 
         #endregion Public/Internal Properties
@@ -440,11 +343,7 @@ namespace DownUnder.UI.Widgets
         #region Public/Internal Methods
 
         // Nothing should be invoked in UpdatePriority.
-        /// <summary>
-        /// Updates this widget and all children recursively. This is called before Update() and updates all logic that should occur beforehand.
-        /// </summary>
-        /// <param name="game_time"></param>
-        /// <param name="ui_input"></param>
+        /// <summary> Updates this widget and all children recursively. This is called before Update() and updates all logic that should occur beforehand. </summary>
         internal void UpdatePriority(GameTime game_time, UIInputState ui_input)
         {
             UpdateData.GameTime = game_time;
@@ -461,14 +360,14 @@ namespace DownUnder.UI.Widgets
         // Nothing should be invoked here.
         void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
         {
-            update_clicked = false;
-            update_double_clicked = false;
-            update_triple_clicked = false;
-            update_added_to_focused = false;
-            update_set_as_focused = false;
-            update_hovered_over = false;
+            _update_clicked = false;
+            _update_double_clicked = false;
+            _update_triple_clicked = false;
+            _update_added_to_focused = false;
+            _update_set_as_focused = false;
+            _update_hovered_over = false;
 
-            if (ui_input.PrimaryClick && !_previous_clicking) { update_clicked = true; } else { update_clicked = false; } // Set clicked to only be true on the frame the 'mouse' clicks.
+            if (ui_input.PrimaryClick && !_previous_clicking) { _update_clicked = true; } else { _update_clicked = false; } // Set clicked to only be true on the frame the 'mouse' clicks.
             if (ui_input.CursorPosition != _previous_cursor_position)
             {
                 _double_click_countdown = 0f; // Do not allow double clicks where the mouse has been moved in-between clicks.
@@ -484,38 +383,38 @@ namespace DownUnder.UI.Widgets
 
             if (AreaInWindow.Contains(ui_input.CursorPosition))
             {
-                update_hovered_over = true;
+                _update_hovered_over = true;
 
-                if (update_clicked)
+                if (_update_clicked)
                 {
                     if (ui_input.Control)  // Multi-select if the defined control is held down
                     {
                         if (!IsSelected)
                         {
-                            update_added_to_focused = true;
+                            _update_added_to_focused = true;
                         }
                     }
                     else
                     {
                         if (!IsSelected)
                         {
-                            update_set_as_focused = true;
+                            _update_set_as_focused = true;
                         }
                     }
                     if (_triple_click_countdown > 0)
                     {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
-                        update_triple_clicked = true;
+                        _update_triple_clicked = true;
                     }
                     if (_double_click_countdown > 0)
                     {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
                         if (!IsSelected)
                         {
-                            update_set_as_focused = true;
+                            _update_set_as_focused = true;
                         }
-                        update_double_clicked = true;
+                        _update_double_clicked = true;
                         _triple_click_countdown = _double_click_timing_backing;
                     }
                     _double_click_countdown = _double_click_timing_backing;
@@ -523,24 +422,35 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                update_hovered_over = false;
+                _update_hovered_over = false;
             }
         }
         
-        /// <summary>
-        /// Update this widget and all widgets contained.
-        /// </summary>
-        /// <param name="game_time"></param>
-        /// <param name="ui_input"></param>
+        /// <summary> Update this widget and all widgets contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input)
         {
+            if (this is IScrollableWidget s_this && false)
+            {
+                if (s_this.FitToContentArea)
+                {
+                    Point2 size = Size;
+                    RectangleF c_area = s_this.ContentArea;
+                    
+                    if (c_area.Size.ToPoint2().IsLargerThan(size))
+                    {
+                        Size = c_area.Size.ToPoint2().Max(size);
+                        UpdateArea(true);
+                    }
+                }
+            }
+
             if (IsPrimaryHovered && ParentWindow.IsActive)
             {
-                if (update_added_to_focused) AddToFocused();
-                if (update_set_as_focused) SetAsFocused();
-                if (update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
-                if (update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
-                if (update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                if (_update_added_to_focused) AddToFocused();
+                if (_update_set_as_focused) SetAsFocused();
+                if (_update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
+                if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
             }
 
             if (ui_input.Enter && IsPrimarySelected && EnterConfirms)
@@ -548,7 +458,7 @@ namespace DownUnder.UI.Widgets
                 OnConfirm?.Invoke(this, EventArgs.Empty);
             }
 
-            IsHoveredOver = update_hovered_over;
+            IsHoveredOver = _update_hovered_over;
             UpdatePalette(game_time);
             if (this is IScrollableWidget scroll_widget)
             {
@@ -563,52 +473,10 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary>
-        /// Draw the contents of this widget.
-        /// </summary>
-        /// <param name="sprite_batch"></param>
-        public void Draw(SpriteBatch sprite_batch, RenderTarget2D render_target = null)
+        /// <summary> Draws this widget (and all children) to the screen. Currently clears the screen on calling. </summary>
+        public void Draw()
         {
-            _graphics_in_use = true;
-            if (_graphics_updating)
-            {
-                _graphics_in_use = false;
-                return;
-            }
-
-            this.sprite_batch = sprite_batch;
-
-            if (render_target == null) { render_target = this.render_target; }
-
-            // Preserve the GraphicsDevice's previous render target (avoid unpredictable behavior)
-            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-
-            // Set the graphics device to render to this widget's local render target.
-            GraphicsDevice.SetRenderTarget(render_target);
-            GraphicsDevice.Clear(Color.Transparent);
-
-            if (DrawBackground)
-            {
-                sprite_batch.Draw(white_dot, AreaInWindow.ToRectangle(), BackgroundColor.CurrentColor);
-            }
-
-            OnDraw?.Invoke(this, EventArgs.Empty);
-
-            foreach (Widget widget in Children)
-            {
-                widget.Draw(sprite_batch, this.render_target);
-            }
-            
-            DrawOverlay();
-
-            // Restore the original render targets.
-            GraphicsDevice.SetRenderTargets(previous_render_targets);
-            _graphics_in_use = false;
-        }
-
-        public void Draw2()
-        {
-            UpdateRenderTargetSize();
+            UpdateRenderTargetSizes();
             DrawToRenderTargets();
             GetRender();
 
@@ -689,20 +557,14 @@ namespace DownUnder.UI.Widgets
             return render_target;
         }
 
-        /// <summary>
-        /// Initializes all graphic related fields and updates all references.
-        /// (To be used after a widget is created without parameters.)
-        /// </summary>
-        /// <param name="parent_window"></param>
-        /// <param name="graphics_device"></param>
-        /// <param name="sprite_font"></param>
+        /// <summary> Initializes all graphic related fields and updates all references. (To be used after a widget is created without parameters.) </summary>
         public void Initialize(DWindow parent_window, GraphicsDevice graphics_device, SpriteFont sprite_font = null)
         {
             InitializeAllReferences(parent_window, _parent_widget_reference); // The parent widget reference shouldn't be modified here
             InitializeGraphics();
         }
         
-        internal void InitializeGraphics()
+        internal protected void InitializeGraphics()
         {
             if (GraphicsDevice == null)
             {
@@ -720,11 +582,7 @@ namespace DownUnder.UI.Widgets
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// To be called post-serialization, this updates all references in this and all children.
-        /// </summary>
-        /// <param name="parent_window"></param>
-        /// <param name="parent_widget"></param>
+        /// <summary> To be called post-serialization, this updates all references in this and all children. </summary>
         internal void InitializeAllReferences(DWindow parent_window, Widget parent_widget = null)
         {
             ParentWindow = parent_window;
@@ -741,25 +599,19 @@ namespace DownUnder.UI.Widgets
             Area = EmbeddedIn(area);
         }
 
-        /// <summary>
-        /// Used by internal Focus object.
-        /// </summary>
+        /// <summary>  Used by internal Focus object. </summary>
         internal void TriggerSelectOffEvent()
         {
             OnSelectOff?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Used by internal Focus object.
-        /// </summary>
+        /// <summary> Used by internal Focus object. </summary>
         internal void TriggerSelectEvent()
         {
             OnSelection?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Search for any methods in a DWindow for this to connect to.
-        /// </summary>
+        /// <summary> Search for any methods in a DWindow for this to connect to. </summary>
         /// <param name="window"></param>
         public void ConnectEvents(DWindow window)
         {
@@ -807,9 +659,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary>
-        /// Signals confirming this widget. (Such as pressing enter with this widget selected)
-        /// </summary>
+        /// <summary> Signals confirming this widget. (Such as pressing enter with this widget selected) </summary>
         public void SignalConfirm()
         {
             OnConfirm?.Invoke(this, EventArgs.Empty);
@@ -821,53 +671,29 @@ namespace DownUnder.UI.Widgets
 
         #region EventsHandlers
 
-        /// <summary>
-        /// Invoked when this widget is clicked on.
-        /// </summary>
+        /// <summary> Invoked when this widget is clicked on. </summary>
         public event EventHandler OnClick;
-        /// <summary>
-        /// Invoked when this widget is double clicked.
-        /// </summary>
+        /// <summary> Invoked when this widget is double clicked. </summary>
         public event EventHandler OnDoubleClick;
-        /// <summary>
-        /// Invoked when this widget is triple clicked.
-        /// </summary>
+        /// <summary> Invoked when this widget is triple clicked. </summary>
         public event EventHandler OnTripleClick;
-        /// <summary>
-        /// Invoked when the mouse hovers over this widget.
-        /// </summary>
+        /// <summary> Invoked when the mouse hovers over this widget. </summary>
         public event EventHandler OnHover;
-        /// <summary>
-        /// Invoked when the mouse hovers off this widget.
-        /// </summary>
+        /// <summary> Invoked when the mouse hovers off this widget. </summary>
         public event EventHandler OnHoverOff;
-        /// <summary>
-        /// Invoked after graphics have been initialized and are ready to use.
-        /// </summary>
+        /// <summary> Invoked after graphics have been initialized and are ready to use. </summary>
         public event EventHandler OnGraphicsInitialized;
-        /// <summary>
-        /// Invoked when this widget is drawn.
-        /// </summary>
+        /// <summary> Invoked when this widget is drawn. </summary>
         public event EventHandler OnDraw;
-        /// <summary>
-        /// Invoked when this widget's overlay is drawn.
-        /// </summary>
+        /// <summary> Invoked when this widget's overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
-        /// <summary>
-        /// Invoked after this widget updates.
-        /// </summary>
+        /// <summary> Invoked after this widget updates.</summary>
         public event EventHandler OnUpdate;
-        /// <summary>
-        /// Invoked when this widget is selected.
-        /// </summary>
+        /// <summary> Invoked when this widget is selected. </summary>
         public event EventHandler OnSelection;
-        /// <summary>
-        /// Invoked when this widget is un-selected.
-        /// </summary>
+        /// <summary> Invoked when this widget is un-selected. </summary>
         public event EventHandler OnSelectOff;
-        /// <summary>
-        /// Invoked whwn the user confirms this widget (Such as pressing enter with this widget selected).
-        /// </summary>
+        /// <summary> Invoked whwn the user confirms this widget (Such as pressing enter with this widget selected). </summary>
         public event EventHandler OnConfirm;
 
         #endregion EventsHandlers
@@ -900,11 +726,7 @@ namespace DownUnder.UI.Widgets
 
         #region Private/Protected Methods
 
-        /// <summary>
-        /// Creates a new area taking the snapping_policy into account.
-        /// </summary>
-        /// <param name="encompassing_widget"></param>
-        /// <returns></returns>
+        /// <summary> Creates a new area taking the snapping_policy into account. </summary>
         private RectangleF EmbeddedIn(RectangleF encompassing_area)
         {
             encompassing_area = encompassing_area.SizeOnly();
@@ -968,10 +790,7 @@ namespace DownUnder.UI.Widgets
             return new_area;
         }
 
-        /// <summary>
-        /// This widget plus all widgets contained in this widget.
-        /// </summary>
-        /// <returns></returns>
+        /// <summary> This widget plus all widgets contained in this widget. </summary>
         public List<Widget> GetAllWidgets()
         {
             List<Widget> result = new List<Widget> { this };
@@ -984,17 +803,10 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        /// <summary>
-        /// All widgets this widget owns.
-        /// </summary>
-        /// <returns></returns>
+        /// <summary> All widgets this widget owns. </summary>
         public abstract List<Widget> Children { get; }
 
-        /// <summary>
-        /// Draw anything that should be drawn on top of the content in this widget.
-        /// </summary>
-        /// <param name="sprite_batch"></param>
-        /// <param name="container"></param>
+        /// <summary> Draw anything that should be drawn on top of the content in this widget. </summary>
         private void DrawOverlay()
         {
             if (DrawOutline)
@@ -1009,40 +821,27 @@ namespace DownUnder.UI.Widgets
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Set this widget as the only focused widget.
-        /// </summary>
+        /// <summary> Set this widget as the only focused widget. </summary>
         protected void SetAsFocused() => _parent_window_reference?.SelectedWidgets.SetFocus(this);
 
-        /// <summary>
-        /// Add this widget to the group of selected widgets.
-        /// </summary>
+        /// <summary> Add this widget to the group of selected widgets. </summary>
         protected void AddToFocused() => _parent_window_reference?.SelectedWidgets.AddFocus(this);
         
-        /// <summary>
-        /// A function called by a widget to update both itself and its parent's area.
-        /// </summary>
+        /// <summary> A function called by a widget to update both itself and its parent's area. </summary>
         protected virtual void UpdateArea(bool update_parent)
         {
-            if (IsGraphicsInitialized)
-            {
-                //UpdateRenderTarget();
-            }
-
             if (update_parent)
             {
                 _parent_widget_reference?.UpdateArea(update_parent);
             }
         }
 
-        /// <summary>
-        /// Resize the render target to match the current area.
-        /// </summary>
-        private void UpdateRenderTargetSize()
+        /// <summary> Resize the render target to match the current area. </summary>
+        private void UpdateRenderTargetSizes()
         {
             foreach (Widget child in Children)
             {
-                child.UpdateRenderTargetSize();
+                child.UpdateRenderTargetSizes();
             }
 
             if (this is IScrollableWidget s_this)
@@ -1129,7 +928,6 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).OutlineColor = (UIPalette)OutlineColor.Clone();
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
             ((Widget)c).TextColor = TextColor;
-            ((Widget)c).OutlineOnMouseOver = OutlineOnMouseOver;
             ((Widget)c).OutlineThickness = OutlineThickness;
             ((Widget)c).DrawOutline = DrawOutline;
             ((Widget)c).SnappingPolicy = (DiagonalDirections2D)SnappingPolicy.Clone();

@@ -18,5 +18,6 @@ namespace DownUnder.UI.Widgets.Interfaces
         float ContentX { get; }
         float ContentY { get; }
         Scroll Scroll { get; }
+        bool FitToContentArea { get; set; }
     }
 }

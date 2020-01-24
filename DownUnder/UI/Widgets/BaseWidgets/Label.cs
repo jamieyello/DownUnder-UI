@@ -58,6 +58,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         [DataMember] public TextEntryRuleSet TextEntryRules { get; set; } = TextEntryRuleSet.String;
 
+        [DataMember] public bool ConstrainAreaToText { get; set; } = false;
+
         /// <summary>
         /// Area of the text within the label.
         /// </summary>
@@ -138,7 +140,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void SetDefaults()
         {
             DrawBackground = true;
-            EnterConfirms = false;
+            EnterConfirms = true;
             BackgroundColor.DefaultColor = Color.White.ShiftBrightness(0.84f);
             BackgroundColor.HoveredColor = Color.White;
             TextEditBackgroundPalette.DefaultColor = Color.White;
@@ -155,6 +157,26 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #endregion Constructors
 
         #region Overrides
+
+        public override bool EnterConfirms
+        {
+            get => TextEntryRules.IsSingleLine;
+            set => TextEntryRules.IsSingleLine = value;
+        }
+
+        public override Point2 MinimumSize
+        {
+            get
+            {
+                if (!ConstrainAreaToText || !IsGraphicsInitialized)
+                {
+                    return base.MinimumSize;
+                }
+                
+                return base.MinimumSize.Max(SpriteFont.MeasureString(Text));
+            }
+            set => base.MinimumSize = value;
+        }
 
         public override UIPalette BackgroundColor
         {
@@ -197,6 +219,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             result.TextEntryRules = (TextEntryRuleSet)TextEntryRules.Clone();
             result.EditingEnabled = EditingEnabled;
             result.TextEditBackgroundPalette = (UIPalette)TextEditBackgroundPalette.Clone();
+            result.ConstrainAreaToText = ConstrainAreaToText;
 
             return result;
         }

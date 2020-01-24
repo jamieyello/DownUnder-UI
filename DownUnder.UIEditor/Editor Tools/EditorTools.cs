@@ -15,6 +15,7 @@ namespace DownUnder.UIEditor
             layout.DrawBackground = true;
             Grid test_grid = new Grid(parent, 2, 5);
             test_grid.SnappingPolicy = DiagonalDirections2D.TopLeft;
+            test_grid.SetCell(0, 2, new Label(test_grid, "Whoop"));
             layout.AddWidget(test_grid);
 
             //var test = parent;

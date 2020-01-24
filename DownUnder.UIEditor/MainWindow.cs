@@ -60,7 +60,7 @@ namespace DownUnder.Widgets
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout(this);
 
-            //DownUnder.Utilities.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
+            //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
             // TODO: use this.Content to load your game content here
         }
@@ -100,7 +100,7 @@ namespace DownUnder.Widgets
             //sprite_batch.Begin();
             //Layout.Draw(sprite_batch);
             //sprite_batch.End();
-            Layout.Draw2();
+            Layout.Draw();
             base.Draw(gameTime);
         }
 

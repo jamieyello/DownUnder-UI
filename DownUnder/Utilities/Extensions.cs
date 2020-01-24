@@ -54,6 +54,17 @@ namespace DownUnder
         }
 
         /// <summary>
+        /// Returns true if this Point2's X or Y field is larger than the given one's.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
+        public static bool IsLargerThan(this Point2 p, Point2 p2)
+        {
+            return (p.X > p2.X || p.Y > p2.Y);
+        }
+
+        /// <summary>
         /// Returns a new Point2 with the highest X and Y values of both given Points.
         /// </summary>
         /// <param name="p"></param>
@@ -102,6 +113,22 @@ namespace DownUnder
         public static RectangleF WithSize(this RectangleF r, Size2 s)
         {
             return new RectangleF(r.Position, s);
+        }
+
+        public static RectangleF WithMinimumSize(this RectangleF r, Point2 s)
+        {
+            RectangleF result = r;
+            if (r.Width < s.X) result.Width = s.X;
+            if (r.Height < s.Y) result.Height = s.Y;
+            return result;
+        }
+
+        public static RectangleF WithMaximumSize(this RectangleF r, Point2 s)
+        {
+            RectangleF result = r;
+            if (r.Width > s.X) result.Width = s.X;
+            if (r.Height > s.Y) result.Height = s.Y;
+            return result;
         }
 
         public static RectangleF WithOffset(this RectangleF r, Point2 p)
