@@ -19,6 +19,7 @@ using System.Threading;
 
 // Combine slots with widget.C:\Users\jamie\source\repos\DownUnder\DownUnder\UI\Widgets\Widget.cs
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
+// Move input related code to UIInputState.
 
 namespace DownUnder.UI.Widgets
 {
@@ -164,15 +165,14 @@ namespace DownUnder.UI.Widgets
             get => _minimum_area_backing;
             set
             {
-                if (_minimum_area_backing.X < 1)
+                if (value.X < 1)
                 {
                     throw new Exception("Minimum area width must be at least 1.");
                 }
-                if (_minimum_area_backing.Y < 1)
+                if (value.Y < 1)
                 {
                     throw new Exception("Minimum area height must be at least 1.");
                 }
-
                 _minimum_area_backing = value;
             }
         }
@@ -535,13 +535,13 @@ namespace DownUnder.UI.Widgets
             }
             
             GraphicsDevice.SetRenderTarget(_render_target);
-            SpriteBatch.Begin();
 
             if (DrawBackground)
             {
                 GraphicsDevice.Clear(BackgroundColor.CurrentColor);
             }
 
+            SpriteBatch.Begin();
             OnDraw?.Invoke(this, EventArgs.Empty);
 
             int i = 0;
@@ -567,16 +567,21 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Initializes all graphic related fields and updates all references. (To be used after a widget is created without parameters.) </summary>
-        public void Initialize(DWindow parent_window, GraphicsDevice graphics_device, SpriteFont sprite_font = null)
+        public void Initialize(IWidgetParent parent)
         {
-            InitializeAllReferences(parent_window, ParentWidget);
+            if (parent is Widget w_parent)
+            {
+                InitializeAllReferences(w_parent.ParentWindow, w_parent);
+            } else if (parent is DWindow d_parent)
+            {
+                InitializeAllReferences(d_parent, null);
+            }
+            
             InitializeGraphics();
         }
         
-        /// <summary>
-        /// Initializes all graphics related content.
-        /// </summary>
-        internal protected void InitializeGraphics()
+        /// <summary> Initializes all graphics related content. </summary>
+        private void InitializeGraphics()
         {
             if (GraphicsDevice == null)
             {
@@ -604,12 +609,6 @@ namespace DownUnder.UI.Widgets
             {
                 child.InitializeAllReferences(parent_window, this);
             }
-        }
-
-        /// <summary> Embeds this widget in the given area. Takes SnappingPolicy and spacing into account. </summary>
-        internal void EmbedIn(RectangleF area)
-        {
-            Area = EmbeddedIn(area);
         }
 
         /// <summary>  Used by internal Focus object. </summary>
@@ -739,8 +738,8 @@ namespace DownUnder.UI.Widgets
 
         #region Private/Protected Methods
 
-        /// <summary> Creates a new area taking the snapping_policy into account. </summary>
-        private RectangleF EmbeddedIn(RectangleF encompassing_area)
+        /// <summary> Embeds this widget in the given area. Takes SnappingPolicy and spacing into account. </summary>
+        internal void EmbedIn(RectangleF encompassing_area)
         {
             encompassing_area = encompassing_area.SizeOnly();
             //Debug.WriteLine($"Embedding {Area} in {encompassing_area}");
@@ -800,7 +799,7 @@ namespace DownUnder.UI.Widgets
             }
 
             //Debug.WriteLine($"new_area = {new_area}");
-            return new_area;
+            Area = new_area;
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this widget. </summary>

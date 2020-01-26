@@ -100,8 +100,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 for (int y = 0; y < y_length; y++)
                 {
                     object clone = (Widget)filler.Clone();
-                    ((Widget)clone).SetOwnership(this);
-                    ((Widget)clone).InitializeGraphics();
+                    ((Widget)clone).Initialize(this);
                     widgets[x].Add((Widget)clone);
                 }
             }

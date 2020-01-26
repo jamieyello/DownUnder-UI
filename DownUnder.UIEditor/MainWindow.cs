@@ -57,8 +57,8 @@ namespace DownUnder.Widgets
             SpriteFont = Content.Load<SpriteFont>("font");
             UIImages = new UIImages(GraphicsDevice);
 
-            Layout = new UIEditorLayout(this, out editor_objects);
-            //Layout = EditorTools.TestLayout(this);
+            //Layout = new UIEditorLayout(this, out editor_objects);
+            Layout = EditorTools.TestLayout(this);
 
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
