@@ -12,8 +12,7 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
-    [DataContract]
-    public class Label : Widget
+    [DataContract] public class Label : Widget
     {
         #region Fields
         
@@ -69,9 +68,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> True if the user is editting text. </summary>
         public bool IsBeingEdited => _text_cursor == null ? false : _text_cursor.Active;
 
-        /// <summary>  Palette of the background while editing text. </summary>
-        public UIPalette TextEditBackgroundPalette { get; internal set; } = new UIPalette();
-
         #endregion Public Properties
 
         #region Constructors
@@ -99,14 +95,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
+            PaletteUsage = PaletteCategory.text_element;
             DrawBackground = true;
             EnterConfirms = true;
-            BackgroundColor.DefaultColor = Color.White.ShiftBrightness(0.84f);
-            BackgroundColor.HoveredColor = Color.White;
-            TextEditBackgroundPalette.DefaultColor = Color.White;
-            TextEditBackgroundPalette.HoveredColor = Color.White;
-            TextEditBackgroundPalette.ForceComplete();
+            Theme.Background.DefaultColor = Color.White.ShiftBrightness(0.84f);
+            Theme.Background.HoveredColor = Color.White;
             
+
             OnDraw += DrawText;
             OnSelectOff += DisableEditing;
             OnUpdate += Update;
@@ -133,13 +128,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             set => base.MinimumSize = value;
         }
 
-        /// <summary> The UIPalette used for the background color. </summary>
-        public override UIPalette BackgroundColor
-        { 
-            get => IsBeingEdited ? TextEditBackgroundPalette : base.BackgroundColor;
-            internal set => base.BackgroundColor = value;
-        }
-
         protected override object DerivedClone()
         {
             Label result = new Label();
@@ -148,7 +136,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             result.Name = Name;
             result.TextEntryRules = (TextEntryRuleSet)TextEntryRules.Clone();
             result.EditingEnabled = EditingEnabled;
-            result.TextEditBackgroundPalette = (UIPalette)TextEditBackgroundPalette.Clone();
             result.ConstrainAreaToText = ConstrainAreaToText;
 
             return result;
@@ -185,7 +172,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            SpriteBatch.DrawString(SpriteFont, Text, new Vector2(), TextColor.CurrentColor);
+            SpriteBatch.DrawString(SpriteFont, Text, new Vector2(), Theme.Text.CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)

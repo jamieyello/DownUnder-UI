@@ -40,10 +40,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private float _side_bar_initial_y_value;
 
         [DataMember] public float Thickness { get; set; } = 20f;
-        [DataMember] public UIPalette SideOuterBarPalette { get; private set; } = new UIPalette(Color.DarkGray);
-        [DataMember] public UIPalette BottomOuterBarPalette { get; private set; } = new UIPalette(Color.DarkGray);
-        [DataMember] public UIPalette SideInnerBarPalette { get; private set; } = new UIPalette(Color.LightGray, Color.White);
-        [DataMember] public UIPalette BottomInnerBarPalette { get; private set; } = new UIPalette(Color.LightGray, Color.White);
+        [DataMember] public ElementColors SideOuterBarPalette { get; private set; } = new ElementColors(Color.DarkGray);
+        [DataMember] public ElementColors BottomOuterBarPalette { get; private set; } = new ElementColors(Color.DarkGray);
+        [DataMember] public ElementColors SideInnerBarPalette { get; private set; } = new ElementColors(Color.LightGray, Color.White);
+        [DataMember] public ElementColors BottomInnerBarPalette { get; private set; } = new ElementColors(Color.LightGray, Color.White);
         [DataMember] public float InnerBarSpacing { get; set; } = 4f;
 
         public ScrollBars(IScrollableWidget owning_widget, GraphicsDevice graphics_device)

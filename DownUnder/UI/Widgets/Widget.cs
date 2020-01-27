@@ -17,9 +17,8 @@ using System.Threading;
 
 // tip: Always remember to update Clone.
 
-// Combine slots with widget.C:\Users\jamie\source\repos\DownUnder\DownUnder\UI\Widgets\Widget.cs
+// Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// Move input related code to UIInputState.
 
 namespace DownUnder.UI.Widgets
 {
@@ -28,7 +27,15 @@ namespace DownUnder.UI.Widgets
     {
         public bool debug_output = false;
 
-        #region Fields/Delegates
+        #region Fields/Delegates/Enums
+
+        /// <summary> Defines the behavior of the theme when updating as well as what colors a widget accesses in the theme. </summary>
+        public enum PaletteCategory
+        {
+            default_,
+            text_element,
+            header
+        }
 
         /// <summary> Used by some drawing code. </summary>
         private Texture2D _white_dot;
@@ -95,11 +102,11 @@ namespace DownUnder.UI.Widgets
         /// <summary> The unique name of this widget. </summary>
         [DataMember] public string Name { get; set; }
 
-        /// <summary> If set to false, the background color will not be drawn. </summary>
-        [DataMember] public virtual bool DrawBackground { get; set; }
-
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
+
+        /// <summary> If set to false, the background color will not be drawn. </summary>
+        [DataMember] public virtual bool DrawBackground { get; set; }
 
         /// <summary> How thick the outline (if DrawOutline == true) should be. </summary>
         [DataMember] public float OutlineThickness { get; set; } = 1f;
@@ -110,14 +117,8 @@ namespace DownUnder.UI.Widgets
         /// <summary> Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true). </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
-        /// <summary> The UIPalette used for the background color. </summary>
-        [DataMember] public virtual UIPalette BackgroundColor { get; internal set; } = new UIPalette(Color.CornflowerBlue, Color.CornflowerBlue.ShiftBrightness(1.1f));
-
-        /// <summary> The UIPalette used for any text in this widget. </summary>
-        [DataMember] public virtual UIPalette TextColor { get; internal set; } = new UIPalette(Color.Black, Color.Black);
-
-        /// <summary> The UIPalette used for the outline of this widget. (if enabled) </summary>
-        [DataMember] public virtual UIPalette OutlineColor { get; internal set; } = new UIPalette();
+        /// <summary> The color palette of this widget. </summary>
+        [DataMember] public virtual BaseUITheme Theme { get; set; } = new BaseUITheme();
 
         /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
@@ -130,6 +131,9 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> When set to true pressing enter while this widget is the primarily selected one will trigger confirmation events. </summary>
         [DataMember] public virtual bool EnterConfirms { get; set; } = true;
+
+        /// <summary> What this widget should be regarded as when accessing the theme's defined colors. </summary>
+        [DataMember] public PaletteCategory PaletteUsage { get; set; } = PaletteCategory.default_;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -348,6 +352,7 @@ namespace DownUnder.UI.Widgets
                 InitializeGraphics();
             }
         }
+
         private void SetDefaults()
         {
             Name = GetType().Name;
@@ -480,7 +485,7 @@ namespace DownUnder.UI.Widgets
             }
 
             IsHoveredOver = _update_hovered_over;
-            UpdatePalette(game_time);
+            Theme.Update(this, game_time);
             if (this is IScrollableWidget scroll_widget)
             {
                 scroll_widget.ScrollBars.Update(UpdateData.GameTime.GetElapsedSeconds(), UpdateData.UIInputState);
@@ -538,7 +543,7 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
-                GraphicsDevice.Clear(BackgroundColor.CurrentColor);
+                GraphicsDevice.Clear(Theme.Background.CurrentColor);
             }
 
             SpriteBatch.Begin();
@@ -549,11 +554,21 @@ namespace DownUnder.UI.Widgets
             {
                 if (this is IScrollableWidget s_this)
                 {
-                    SpriteBatch.Draw(renders[i], areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()).Floored(), Color.White);
+                    SpriteBatch.Draw
+                        (
+                        renders[i],
+                        areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()).Floored(),
+                        Color.White
+                        );
                 }
                 else
                 {
-                    SpriteBatch.Draw(renders[i], areas[i].Position.Floored(), Color.White);
+                    SpriteBatch.Draw
+                        (
+                        renders[i], 
+                        areas[i].Position.Floored(), 
+                        Color.White
+                        );
                 }
                 i++;
             }
@@ -678,9 +693,7 @@ namespace DownUnder.UI.Widgets
         }
 
         #endregion Public/Internal Methods
-
-        #region EventHandlers/Events
-
+        
         #region EventsHandlers
 
         /// <summary> Invoked when this widget is clicked on. </summary>
@@ -709,33 +722,7 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnConfirm;
 
         #endregion EventsHandlers
-
-        #region Events
-
-        private void UpdatePalette(GameTime game_time)
-        {
-            if (IsPrimaryHovered && ChangeColorOnMouseOver)
-            {
-                BackgroundColor.Hovered = true;
-                TextColor.Hovered = true;
-                OutlineColor.Hovered = true;
-            }
-            else
-            {
-                BackgroundColor.Hovered = false;
-                TextColor.Hovered = false;
-                OutlineColor.Hovered = false;
-            }
-            
-            TextColor.Update(game_time.GetElapsedSeconds());
-            BackgroundColor.Update(game_time.GetElapsedSeconds());
-            OutlineColor.Update(game_time.GetElapsedSeconds());
-        }
-
-        #endregion Events
-
-        #endregion EventHandlers/Events
-
+        
         #region Private/Protected Methods
 
         /// <summary> Embeds this widget in the given area. Takes SnappingPolicy and spacing into account. </summary>
@@ -807,7 +794,7 @@ namespace DownUnder.UI.Widgets
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.Outline.CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -918,20 +905,20 @@ namespace DownUnder.UI.Widgets
             ((Widget)c)._parent_window_reference = _parent_window_reference;
 
             ((Widget)c).Name = Name;
-            ((Widget)c).DrawBackground = DrawBackground;
-            ((Widget)c).BackgroundColor = (UIPalette)BackgroundColor.Clone();
-            ((Widget)c).TextColor = (UIPalette)TextColor.Clone();
-            ((Widget)c).OutlineColor = (UIPalette)OutlineColor.Clone();
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
-            ((Widget)c).TextColor = TextColor;
+            ((Widget)c).DrawBackground = DrawBackground;
+            ((Widget)c).Theme = (BaseUITheme)Theme.Clone();
             ((Widget)c).OutlineThickness = OutlineThickness;
             ((Widget)c).DrawOutline = DrawOutline;
+            ((Widget)c).EnterConfirms = EnterConfirms;
+            ((Widget)c).MinimumSize = MinimumSize;
             ((Widget)c).SnappingPolicy = (DiagonalDirections2D)SnappingPolicy.Clone();
             ((Widget)c).OutlineSides = (Directions2D)OutlineSides.Clone();
             ((Widget)c).Centered = Centered;
             ((Widget)c).DoubleClickTiming = DoubleClickTiming;
             ((Widget)c).Spacing = Spacing;
             ((Widget)c).Area = Area;
+            ((Widget)c).PaletteUsage = PaletteUsage;
 
             ((Widget)c).debug_output = debug_output;
             return c;

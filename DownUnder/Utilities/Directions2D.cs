@@ -3,9 +3,9 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.Utility
 {
+    /// <summary> Represents four (up, down, left, right) directions. </summary>
     public class Directions2D : ICloneable
     {
-
         private bool up = false;
         private bool down = false;
         private bool left = false;

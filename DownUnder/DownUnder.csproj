@@ -91,11 +91,13 @@
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\ContentHeader.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
-    <Compile Include="UI\Widgets\DataTypes\Palette.cs" />
+    <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
+    <Compile Include="UI\Widgets\DataTypes\BaseUITheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />

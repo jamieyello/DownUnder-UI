@@ -16,7 +16,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
     {
         #region Private Fields
 
-        [DataMember] public List<Widget> widgets = new List<Widget>();
+        [DataMember] private List<Widget> widgets = new List<Widget>();
         
         #endregion Private Fields
 

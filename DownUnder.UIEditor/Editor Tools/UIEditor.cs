@@ -65,10 +65,9 @@ namespace DownUnder.UIEditor.Editor_Tools
                 Spacing = new Size2(30, 30),
                 SnappingPolicy = DiagonalDirections2D.TopLeft,
                 DrawOutline = true,
-                DrawBackground = true,
-                ChangeColorOnMouseOver = true
+                DrawBackground = true
             };
-            project.BackgroundColor.DefaultColor = Color.White;
+            project.Theme.Background.DefaultColor = Color.White;
 
             Grid grid = new Grid(parent, 2, 3)
             {
