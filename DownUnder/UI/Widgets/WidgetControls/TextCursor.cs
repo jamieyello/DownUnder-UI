@@ -63,10 +63,12 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 }
                 if (value)
                 {
+                    label.PaletteUsage = BaseColorScheme.PaletteCategory.text_edit_widget;
                     ActivateAndHighlight();
                 }
                 else
                 {
+                    label.PaletteUsage = BaseColorScheme.PaletteCategory.text_widget;
                     edit_text?.Clear();
                     caret_blink_timer = 0f;
                     allow_draw = false;
@@ -401,7 +403,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Vector2 position = label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                label.SpriteBatch.DrawLine(position, position2, Color.Black, 1);
+                label.SpriteBatch.DrawLine(position, position2, label.Theme.GetText(label).CurrentColor, 1);
             }
         }
 

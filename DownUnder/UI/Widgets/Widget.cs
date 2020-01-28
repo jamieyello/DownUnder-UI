@@ -110,7 +110,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
         /// <summary> The color palette of this widget. </summary>
-        [DataMember] public BaseColorScheme Theme { get; set; } = BaseColorScheme.Default;
+        [DataMember] public BaseColorScheme Theme { get; set; } = BaseColorScheme.Dark;
 
         /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
@@ -125,7 +125,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] public virtual bool EnterConfirms { get; set; } = true;
 
         /// <summary> What this widget should be regarded as when accessing the theme's defined colors. </summary>
-        [DataMember] public BaseColorScheme.PaletteCatagory PaletteUsage { get; set; } = BaseColorScheme.PaletteCatagory.default_;
+        [DataMember] public BaseColorScheme.PaletteCategory PaletteUsage { get; set; } = BaseColorScheme.PaletteCategory.default_widget;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();

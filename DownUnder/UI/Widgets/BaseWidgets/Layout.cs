@@ -30,7 +30,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            PaletteUsage = BaseColorScheme.PaletteCatagory.default_;
+            PaletteUsage = BaseColorScheme.PaletteCategory.default_widget;
             if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeScrollbars;
         }

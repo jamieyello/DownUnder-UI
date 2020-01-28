@@ -95,7 +95,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            DrawBackground = true;
+            PaletteUsage = BaseColorScheme.PaletteCategory.text_widget;
             EnterConfirms = true;
             
             OnDraw += DrawText;

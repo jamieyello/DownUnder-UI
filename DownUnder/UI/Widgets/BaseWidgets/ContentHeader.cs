@@ -17,7 +17,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            PaletteUsage = BaseColorScheme.PaletteCatagory.header;
+            PaletteUsage = BaseColorScheme.PaletteCategory.header_widget;
         }
 
         public override List<Widget> Children => new List<Widget>();
