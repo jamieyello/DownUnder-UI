@@ -67,7 +67,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawOutline = true,
                 DrawBackground = true
             };
-            project.Theme.Background.DefaultColor = Color.White;
+            //project.Theme.GetBackground(project).DefaultColor = Color.White;
 
             Grid grid = new Grid(parent, 2, 3)
             {

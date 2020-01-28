@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            PaletteUsage = PaletteCategory.header;
+            PaletteUsage = BaseColorScheme.PaletteCatagory.header;
         }
 
         public override List<Widget> Children => new List<Widget>();

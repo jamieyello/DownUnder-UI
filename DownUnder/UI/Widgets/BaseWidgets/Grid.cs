@@ -70,7 +70,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             Size = new Point2(100, 100);
             DrawBackground = false;
-            DrawOutline = true;
         }
 
         #endregion Constructors
@@ -195,11 +194,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         protected Layout DefaultCell()
         {
             // Create cell
-            Layout default_widget = new Layout(this)
-            {
-                DrawBackground = true,
-                DrawOutline = true
-            };
+            Layout default_widget = new Layout(this);
             default_widget.SnappingPolicy = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
             default_widget.OutlineSides = Directions2D.DownRight;
             default_widget.Area = new Rectangle(15, 15, 15, 15);

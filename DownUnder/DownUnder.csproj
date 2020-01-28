@@ -97,7 +97,7 @@
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
-    <Compile Include="UI\Widgets\DataTypes\BaseUITheme.cs" />
+    <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />

@@ -25,21 +25,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public Layout(IWidgetParent parent = null)
             : base(parent)
         {
-            if (parent is DWindow)
-            {
-                Size = ((DWindow)parent).GraphicsDevice.Viewport.Bounds.Size;
-            }
-            else
-            {
-                Size = new Point2(100, 100);
-            }
-
             SetDefaults();
         }
 
         private void SetDefaults()
         {
-            Size = new Point2(100, 100);
+            PaletteUsage = BaseColorScheme.PaletteCatagory.default_;
             if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeScrollbars;
         }
@@ -50,9 +41,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AddWidget(Widget widget)
         {
-            widget.InitializeAllReferences(ParentWindow, this);
-            widget.EmbedIn(Area);
             widget.SetOwnership(this);
+            widget.EmbedIn(Area);
             widgets.Add(widget);
         }
 
@@ -61,38 +51,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #region Properties
 
         public ScrollBars ScrollBars { get; private set; }
-
-        /// <summary>
-        /// How wide this widget's content is.
-        /// </summary>
-        public float ContentWidth => ContentArea.Width;
-
-        /// <summary>
-        /// How tall this widget's content is.
-        /// </summary>
-        public float ContentHeight => ContentArea.Height;
-
-        /// <summary>
-        /// The position of this widget's content (relative to the parent widget/window).
-        /// </summary>
-        public Point2 ContentPosition => ContentArea.Position;
-
-        /// <summary>
-        /// The overall size of this widget's content.
-        /// </summary>
-        public Point2 ContentSize => ContentArea.Size;
-
-        /// <summary>
-        /// The X position of this widget's content relative to the parent widget (or window).
-        /// </summary>
-        public float ContentX => ContentArea.X;
-
-        /// <summary>
-        /// The Y position of this widget's content relative to the parent widget (or window).
-        /// </summary>
-        public float ContentY => ContentArea.Y;
-
-        // Area of this widget
+        
         public RectangleF ContentArea
         {
             get
@@ -109,9 +68,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public Scroll Scroll { get; } = new Scroll();
 
-        /// <summary>
-        /// When set to true this widget will try to resize itself to contain all content.
-        /// </summary>
+        /// <summary> When set to true this widget will try to resize itself to contain all content. </summary>
         public bool FitToContentArea { get; set; } = false;
 
         #endregion Properties
@@ -120,12 +77,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public override RectangleF Area
         {
-            get
-            {
-                var result = area_backing;
-                result.Offset(-Scroll.ToVector2());
-                return result;
-            }
+            get => area_backing.WithOffset(-Scroll.ToVector2());
             set
             {
                 base.Area = value;
@@ -136,9 +88,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        /// <summary>
-        /// Area of the widget in the window the scroll offset.
-        /// </summary>
+        /// <summary> Area of the widget in the window the scroll offset. </summary>
         public override RectangleF AreaInWindow
         {
             get

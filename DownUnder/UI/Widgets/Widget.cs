@@ -29,14 +29,6 @@ namespace DownUnder.UI.Widgets
 
         #region Fields/Delegates/Enums
 
-        /// <summary> Defines the behavior of the theme when updating as well as what colors a widget accesses in the theme. </summary>
-        public enum PaletteCategory
-        {
-            default_,
-            text_element,
-            header
-        }
-
         /// <summary> Used by some drawing code. </summary>
         private Texture2D _white_dot;
 
@@ -106,19 +98,19 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
 
         /// <summary> If set to false, the background color will not be drawn. </summary>
-        [DataMember] public virtual bool DrawBackground { get; set; }
+        [DataMember] public virtual bool DrawBackground { get; set; } = true;
+
+        /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
+        [DataMember] public bool DrawOutline { get; set; } = true;
 
         /// <summary> How thick the outline (if DrawOutline == true) should be. </summary>
         [DataMember] public float OutlineThickness { get; set; } = 1f;
-
-        /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
-        [DataMember] public bool DrawOutline { get; set; }
 
         /// <summary> Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true). </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
         /// <summary> The color palette of this widget. </summary>
-        [DataMember] public virtual BaseUITheme Theme { get; set; } = new BaseUITheme();
+        [DataMember] public BaseColorScheme Theme { get; set; } = BaseColorScheme.Default;
 
         /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
@@ -133,7 +125,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] public virtual bool EnterConfirms { get; set; } = true;
 
         /// <summary> What this widget should be regarded as when accessing the theme's defined colors. </summary>
-        [DataMember] public PaletteCategory PaletteUsage { get; set; } = PaletteCategory.default_;
+        [DataMember] public BaseColorScheme.PaletteCatagory PaletteUsage { get; set; } = BaseColorScheme.PaletteCatagory.default_;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -543,7 +535,7 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
-                GraphicsDevice.Clear(Theme.Background.CurrentColor);
+                GraphicsDevice.Clear(Theme.GetBackground(this).CurrentColor);
             }
 
             SpriteBatch.Begin();
@@ -794,7 +786,7 @@ namespace DownUnder.UI.Widgets
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.Outline.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.GetOutline(this).CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -829,7 +821,7 @@ namespace DownUnder.UI.Widgets
 
             if (this is IScrollableWidget s_this)
             {
-                UpdateRenderTargetSize(s_this.ContentSize);
+                UpdateRenderTargetSize(s_this.ContentArea.Size);
             }
             else
             {
@@ -907,7 +899,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).Name = Name;
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
             ((Widget)c).DrawBackground = DrawBackground;
-            ((Widget)c).Theme = (BaseUITheme)Theme.Clone();
+            ((Widget)c).Theme = (BaseColorScheme)Theme.Clone();
             ((Widget)c).OutlineThickness = OutlineThickness;
             ((Widget)c).DrawOutline = DrawOutline;
             ((Widget)c).EnterConfirms = EnterConfirms;

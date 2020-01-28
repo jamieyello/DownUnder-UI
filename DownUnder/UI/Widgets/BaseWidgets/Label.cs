@@ -95,13 +95,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            PaletteUsage = PaletteCategory.text_element;
             DrawBackground = true;
             EnterConfirms = true;
-            Theme.Background.DefaultColor = Color.White.ShiftBrightness(0.84f);
-            Theme.Background.HoveredColor = Color.White;
             
-
             OnDraw += DrawText;
             OnSelectOff += DisableEditing;
             OnUpdate += Update;
@@ -172,7 +168,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            SpriteBatch.DrawString(SpriteFont, Text, new Vector2(), Theme.Text.CurrentColor);
+            SpriteBatch.DrawString(SpriteFont, Text, new Vector2(), Theme.GetText(PaletteUsage).CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)

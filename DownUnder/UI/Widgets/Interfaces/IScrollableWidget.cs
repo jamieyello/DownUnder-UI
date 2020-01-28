@@ -11,12 +11,6 @@ namespace DownUnder.UI.Widgets.Interfaces
     {
         ScrollBars ScrollBars { get; }
         RectangleF ContentArea { get; }
-        float ContentWidth { get; }
-        float ContentHeight { get; }
-        Point2 ContentPosition { get; }
-        Point2 ContentSize { get; }
-        float ContentX { get; }
-        float ContentY { get; }
         Scroll Scroll { get; }
         bool FitToContentArea { get; set; }
     }
