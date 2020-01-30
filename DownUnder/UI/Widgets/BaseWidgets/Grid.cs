@@ -109,8 +109,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void InsertDivider(Widget divider, int y)
         {
+            divider.Parent = this;
             divider.Width = Width;
 
+            dividers.Add(new Tuple<Widget, int>(divider, y));
+
+            AlignWidgets();
         }
 
         // unfinished
@@ -183,7 +187,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        private void SpaceAllCells()
+        private void SpaceAllCells2()
         {
             Point2 position = new Point();
 
@@ -196,6 +200,45 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     position.Y += widgets[x][y].Height;
                 }
                 position.X += widgets[x][0].Width;
+            }
+        }
+        
+        private void SpaceAllCells()
+        {
+            if (widgets.Count == 0 || widgets[0].Count == 0) return;
+
+            Point2 position = new Point();
+
+            for (int x = 0; x < widgets.Count; x++)
+            {
+                position.Y = 0;
+                for (int y = 0; y < widgets[0].Count; y++)
+                {
+                    foreach (var divider in dividers)
+                    {
+                        if (y == divider.Item2) position.Y += divider.Item1.Height;
+                    }
+
+                    widgets[x][y].Position = position;
+                    position.Y += widgets[x][y].Height;
+                }
+                position.X += widgets[x][0].Width;
+            }
+
+            foreach (var divider in dividers)
+            {
+                // if the divider's index is 0 set its position to 0,0
+                if (divider.Item2 == 0)
+                {
+                    divider.Item1.Position = new Point2();
+                }
+                // set the height to under the previous row
+                else
+                {
+                    divider.Item1.Position =
+                        widgets[0][divider.Item2 - 1].Position.AddPoint2(
+                        new Point2(0, widgets[0][divider.Item2 - 1].Height));
+                }
             }
         }
 
@@ -276,6 +319,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     }
                 }
 
+                foreach (var divider in dividers)
+                {
+                    size.Y += divider.Item1.Height;
+                }
+
                 return new RectangleF(base.Area.Position, size);
             }
             set
@@ -311,7 +359,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             base.UpdateArea(update_parent);
         }
 
-        protected override object DerivedClone(Widget parent)
+        protected override object DerivedClone(Widget parent = null)
         {
             throw new NotImplementedException();
         }

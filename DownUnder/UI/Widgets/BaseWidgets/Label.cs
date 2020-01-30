@@ -104,6 +104,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             OnConfirm += ConfirmEdit;
             if (IsGraphicsInitialized) InitializeCursor(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeCursor;
+            if (IsGraphicsInitialized) SetDefaultArea(this, EventArgs.Empty);
+            else OnGraphicsInitialized += SetDefaultArea;
         }
 
         #endregion Constructors
@@ -126,7 +128,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         protected override object DerivedClone(Widget parent = null)
         {
-            Label result = new Label();
+            Label result = new Label(parent);
                 
             result.Text = Text;
             result.Name = Name;
@@ -185,6 +187,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void InitializeCursor(object sender, EventArgs args)
         {
             _text_cursor = new TextCursor(this);
+        }
+
+        private void SetDefaultArea(object sender, EventArgs args)
+        {
+            Area = Area.WithMinimumSize(TextArea.Size);
         }
 
         #endregion

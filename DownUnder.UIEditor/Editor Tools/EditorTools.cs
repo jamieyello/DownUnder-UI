@@ -19,6 +19,8 @@ namespace DownUnder.UIEditor
                 (
                 0, 2, new Label(test_grid, "Whoop") { ConstrainAreaToText = true }
                 );
+
+            test_grid.InsertDivider(new Label(null, "Divider"), 3);
             layout.AddWidget(test_grid);
 
             //var test = parent;

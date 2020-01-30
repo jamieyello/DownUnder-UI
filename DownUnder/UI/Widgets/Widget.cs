@@ -372,6 +372,7 @@ namespace DownUnder.UI.Widgets
 
         private void SetDefaults()
         {
+            Size = new Point2(10, 10);
             Theme = BaseColorScheme.Default;
             Name = GetType().Name;
         }
