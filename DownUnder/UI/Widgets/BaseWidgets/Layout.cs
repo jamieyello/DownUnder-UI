@@ -41,7 +41,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AddWidget(Widget widget)
         {
-            widget.SetOwnership(this);
+            widget.Parent = this;
             widget.EmbedIn(Area);
             widgets.Add(widget);
         }
@@ -120,13 +120,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #endregion
 
-        protected override object DerivedClone()
+        protected override object DerivedClone(Widget parent = null)
         {
             Layout c = new Layout();
             
             for (int i = 0; i < widgets.Count; i++)
             {
-                c.widgets.Add((Widget)widgets[i].Clone());
+                c.widgets.Add((Widget)widgets[i].Clone(parent));
             }
 
             ((IScrollableWidget)c).FitToContentArea = FitToContentArea;

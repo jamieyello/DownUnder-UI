@@ -84,6 +84,7 @@ namespace DownUnder.UI.Widgets
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
+        private BaseColorScheme _theme_backing;
 
         #endregion Fields/Delegates
 
@@ -110,7 +111,18 @@ namespace DownUnder.UI.Widgets
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
         /// <summary> The color palette of this widget. </summary>
-        [DataMember] public BaseColorScheme Theme { get; set; } = BaseColorScheme.Dark;
+        [DataMember] public BaseColorScheme Theme
+        {
+            get => _theme_backing;
+            set
+            {
+                _theme_backing = value;
+                if (_theme_backing != null)
+                {
+                    _theme_backing.Parent = this;
+                }
+            }
+        }
 
         /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
@@ -221,7 +233,7 @@ namespace DownUnder.UI.Widgets
         public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
 
         /// <summary> Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.) </summary>
-        public bool IsGraphicsInitialized => GraphicsDevice != null;
+        public bool IsGraphicsInitialized { get; private set; } = false;
 
         /// <summary> The area of this widget relative to the parent window. </summary>
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
@@ -233,7 +245,23 @@ namespace DownUnder.UI.Widgets
         public RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
         /// <summary> Returns the IWidgetParent of this widget. </summary>
-        public IWidgetParent Parent => _parent_widget_reference != null ? (IWidgetParent)_parent_widget_reference : _parent_window_reference;
+        public IWidgetParent Parent
+        {
+            get => _parent_widget_reference != null ? 
+                (IWidgetParent)_parent_widget_reference :
+                _parent_window_reference;
+            set
+            {
+                if (value is Widget)
+                {
+                    ParentWidget = (Widget)value;
+                }
+                if (value is DWindow)
+                {
+                    ParentWindow = (DWindow)value;
+                }
+            }
+        }
 
         /// <summary> The DWindow that owns this widget. </summary>
         public DWindow ParentWindow
@@ -242,12 +270,13 @@ namespace DownUnder.UI.Widgets
             set
             {
                 _parent_window_reference = value;
-                if (value == null)
+                if (value != null)
                 {
-                    return;
+                    InitializeGraphics();
+
+                    // todo: add disconnectevents, this would be broken if triggered multiple times
+                    //ConnectEvents(value);
                 }
-                
-                ConnectEvents(value);
                 
                 foreach (Widget child in Children)
                 {
@@ -338,15 +367,12 @@ namespace DownUnder.UI.Widgets
         public Widget(IWidgetParent parent = null)
         {
             SetDefaults();
-            SetOwnership(parent);
-            if (GraphicsDevice != null)
-            {
-                InitializeGraphics();
-            }
+            Parent = parent;
         }
 
         private void SetDefaults()
         {
+            Theme = BaseColorScheme.Default;
             Name = GetType().Name;
         }
 
@@ -477,7 +503,7 @@ namespace DownUnder.UI.Widgets
             }
 
             IsHoveredOver = _update_hovered_over;
-            Theme.Update(this, game_time);
+            Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget)
             {
                 scroll_widget.ScrollBars.Update(UpdateData.GameTime.GetElapsedSeconds(), UpdateData.UIInputState);
@@ -535,7 +561,7 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
-                GraphicsDevice.Clear(Theme.GetBackground(this).CurrentColor);
+                GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
             }
 
             SpriteBatch.Begin();
@@ -572,50 +598,23 @@ namespace DownUnder.UI.Widgets
 
             return _render_target;
         }
-
-        /// <summary> Initializes all graphic related fields and updates all references. (To be used after a widget is created without parameters.) </summary>
-        public void Initialize(IWidgetParent parent)
-        {
-            if (parent is Widget w_parent)
-            {
-                InitializeAllReferences(w_parent.ParentWindow, w_parent);
-            } else if (parent is DWindow d_parent)
-            {
-                InitializeAllReferences(d_parent, null);
-            }
-            
-            InitializeGraphics();
-        }
         
         /// <summary> Initializes all graphics related content. </summary>
         private void InitializeGraphics()
         {
+            if (IsGraphicsInitialized) return;
+
             if (GraphicsDevice == null)
             {
                 throw new Exception($"GraphicsDevice cannot be null.");
             }
-
+            
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
 
-            foreach (Widget child in Children)
-            {
-                child.InitializeGraphics();
-            }
+            IsGraphicsInitialized = true;
 
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary> To be called post-serialization, this updates all references in this and all children. </summary>
-        internal protected void InitializeAllReferences(DWindow parent_window, Widget parent_widget = null)
-        {
-            ParentWindow = parent_window;
-            ParentWidget = parent_widget;
-
-            foreach (Widget child in Children)
-            {
-                child.InitializeAllReferences(parent_window, this);
-            }
         }
 
         /// <summary>  Used by internal Focus object. </summary>
@@ -655,29 +654,7 @@ namespace DownUnder.UI.Widgets
                 event_.AddEventHandler(this, handler);
             }
         }
-
-        internal void SetOwnership(IWidgetParent parent)
-        {
-            // If the parent is a widget
-            if (parent is Widget parent_widget)
-            {
-                ParentWidget = parent_widget;
-            }
-
-            // If the parent is a window
-            else if (parent is DWindow parent_window)
-            {
-                ParentWidget = null;
-                ParentWindow = parent_window;
-            }
-
-            else if (parent == null)
-            {
-                ParentWidget = null;
-                ParentWindow = null;
-            }
-        }
-
+        
         /// <summary> Signals confirming this widget. (Such as pressing enter with this widget selected) </summary>
         public void SignalConfirm()
         {
@@ -786,7 +763,7 @@ namespace DownUnder.UI.Widgets
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.GetOutline(this).CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.OutlineColor.CurrentColor, OutlineSides);
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -890,9 +867,9 @@ namespace DownUnder.UI.Widgets
 
         #region Cloning
 
-        public object Clone()
+        public object Clone(Widget parent = null)
         {
-            object c = DerivedClone();
+            object c = DerivedClone(parent);
             ((Widget)c)._parent_widget_reference = _parent_widget_reference;
             ((Widget)c)._parent_window_reference = _parent_window_reference;
 
@@ -913,13 +890,14 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).PaletteUsage = PaletteUsage;
 
             ((Widget)c).debug_output = debug_output;
+
             return c;
         }
 
         // This is for implementing cloning in derived classes. They'll return their
         // clone for their own fields, and 'Widget' will add the base fields to it.
         // See https://stackoverflow.com/questions/19119623/clone-derived-class-from-base-class-method
-        protected abstract object DerivedClone();
+        protected abstract object DerivedClone(Widget parent);
 
         #endregion Cloning
     }

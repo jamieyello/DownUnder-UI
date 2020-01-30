@@ -20,6 +20,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> A jagged array of all the contained widgets. (Widgets[x][y]) </summary>
         public List<List<Widget>> widgets = new List<List<Widget>>();
 
+        public List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
+
         /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
         private const int _RESIZING_ACCURACY = 1;
 
@@ -61,7 +63,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 filler = DefaultCell();
             }
 
-            filler.SetOwnership(this);
+            filler.Parent = this;
 
             CreateWidgetGrid(x_length, y_length, filler);
         }
@@ -98,15 +100,21 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 widgets.Add(new List<Widget>());
                 for (int y = 0; y < y_length; y++)
                 {
-                    object clone = (Widget)filler.Clone();
-                    ((Widget)clone).Initialize(this);
+                    object clone = (Widget)filler.Clone(this);
                     widgets[x].Add((Widget)clone);
                 }
             }
             AlignWidgets();
         }
 
-        public void InsertRow(List<Widget> widgets, int y)
+        public void InsertDivider(Widget divider, int y)
+        {
+            divider.Width = Width;
+
+        }
+
+        // unfinished
+        private void InsertRow(List<Widget> widgets, int y)
         {
             if (widgets.Count != Dimensions.X)
             {
@@ -116,7 +124,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             AlignWidgets();
         }
 
-        public void InsertColumn(List<Widget> widgets, int x)
+        // unfinished
+        private void InsertColumn(List<Widget> widgets, int x)
         {
             if (widgets.Count != Dimensions.Y)
             {
@@ -213,7 +222,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void SetCell(int x, int y, Widget widget, bool update_parent = false)
         {
-            widget.SetOwnership(this);
+            widget.Parent = this;
 
             widget.Area = widgets[x][y].Area;
             widgets[x][y] = widget;
@@ -302,7 +311,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             base.UpdateArea(update_parent);
         }
 
-        protected override object DerivedClone()
+        protected override object DerivedClone(Widget parent)
         {
             throw new NotImplementedException();
         }
@@ -321,6 +330,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                         children.Add(widgets[x][y]);
                     }
                 }
+
+                foreach(var divider in dividers)
+                {
+                    children.Add(divider.Item1);
+                }
+
                 return children;
             }
         }

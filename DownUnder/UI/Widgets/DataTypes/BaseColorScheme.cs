@@ -18,6 +18,9 @@ namespace DownUnder.UI.Widgets.DataTypes
             header_widget = 3
         }
 
+        /// <summary> A reference to the widget that owns this palette. </summary>
+        public Widget Parent { get; set; }
+
         [DataMember] public List<ElementColors> BackGroundColors { get; set; } = new List<ElementColors>();
         [DataMember] public List<ElementColors> TextColors { get; set; } = new List<ElementColors>();
         [DataMember] public List<ElementColors> OutlineColors { get; set; } = new List<ElementColors>();
@@ -37,48 +40,39 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public ElementColors GetBackground(Widget parent)
-        {
-            return GetBackground(parent.PaletteUsage);
-        }
+        public ElementColors BackgroundColor => GetBackground(Parent.PaletteUsage);
 
         public ElementColors GetBackground(PaletteCategory category)
         {
             return BackGroundColors[(int)category];
         }
 
-        public ElementColors GetText(Widget parent)
-        {
-            return GetText(parent.PaletteUsage);
-        }
+        public ElementColors TextColor => GetText(Parent.PaletteUsage);
 
         public ElementColors GetText(PaletteCategory category)
         {
             return TextColors[(int)category];
         }
 
-        public ElementColors GetOutline(Widget parent)
-        {
-            return GetOutline(parent.PaletteUsage);
-        }
+        public ElementColors OutlineColor => GetOutline(Parent.PaletteUsage);
 
         public ElementColors GetOutline(PaletteCategory category)
         {
             return OutlineColors[(int)category];
         }
 
-        public void Update(Widget parent, GameTime game_time)
+        public void Update(GameTime game_time)
         {
-            GetBackground(parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
-            GetText(parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
-            GetOutline(parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
+            GetBackground(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
+            GetText(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
+            GetOutline(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
 
-            if (parent.ChangeColorOnMouseOver)
+            if (Parent.ChangeColorOnMouseOver)
             {
-                SetHovered(parent, parent.IsPrimaryHovered);
+                SetHovered(Parent.IsPrimaryHovered);
             }
 
-            switch (parent.PaletteUsage)
+            switch (Parent.PaletteUsage)
             {
                 case PaletteCategory.default_widget:
                     break;
@@ -97,11 +91,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        private void SetHovered(Widget parent, bool hovered)
+        private void SetHovered(bool hovered)
         {
-            GetBackground(parent.PaletteUsage).Hovered = hovered;
-            GetText(parent.PaletteUsage).Hovered = hovered;
-            GetOutline(parent.PaletteUsage).Hovered = hovered;
+            GetBackground(Parent.PaletteUsage).Hovered = hovered;
+            GetText(Parent.PaletteUsage).Hovered = hovered;
+            GetOutline(Parent.PaletteUsage).Hovered = hovered;
         }
 
         private void ForceComplete()

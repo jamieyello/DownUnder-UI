@@ -22,7 +22,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public override List<Widget> Children => new List<Widget>();
 
-        protected override object DerivedClone()
+        protected override object DerivedClone(Widget parent = null)
         {
             ContentHeader c = new ContentHeader();
             return c;

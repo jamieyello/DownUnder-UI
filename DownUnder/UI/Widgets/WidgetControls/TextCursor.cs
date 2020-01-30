@@ -403,7 +403,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Vector2 position = label.SpriteFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                label.SpriteBatch.DrawLine(position, position2, label.Theme.GetText(label).CurrentColor, 1);
+                label.SpriteBatch.DrawLine(position, position2, label.Theme.TextColor.CurrentColor, 1);
             }
         }
 
