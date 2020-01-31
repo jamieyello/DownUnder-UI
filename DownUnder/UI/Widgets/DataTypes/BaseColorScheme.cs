@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     public class BaseColorScheme
     {
         /// <summary> Defines the behavior of the theme when updating as well as what colors a widget accesses in the theme. </summary>
-        public enum PaletteCategory : int
+        public enum PaletteCategory
         {
             default_widget = 0,
             text_widget = 1,
@@ -174,9 +174,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 r.GetText(PaletteCategory.header_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
                 r.GetText(PaletteCategory.header_widget).SpecialColor = Color.White;
                 r.GetText(PaletteCategory.header_widget).HoveredColor = Color.White;
-
-                r.ForceComplete();
-
+                
                 return r;
             }
         }
@@ -230,9 +228,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 r.GetText(PaletteCategory.header_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
                 r.GetText(PaletteCategory.header_widget).SpecialColor = Color.White;
                 r.GetText(PaletteCategory.header_widget).HoveredColor = Color.White;
-
-                r.ForceComplete();
-
+                
                 return r;
             }
         }

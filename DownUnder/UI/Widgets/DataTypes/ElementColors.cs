@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     [DataContract]
     public class ElementColors
     {
-        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 2f };
+        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 0.4f };
         private bool _special_color_enabled_backing = false;
 
         /// <summary> Color to shift to when nothing of interest is happening. </summary>
@@ -78,9 +78,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         #endregion Constructors
 
-        /// <summary>
-        /// Force the animation to complete immediately.
-        /// </summary>
+        /// <summary> Force the animation to complete immediately. </summary>
         public void ForceComplete() => Update(1f);
 
         public void Update(float step)
@@ -99,10 +97,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             _changing_color.Update(step);
         }
         
-        /// <summary>
-        /// Set the default and the hovered color to one solid color.
-        /// </summary>
-        /// <param name="color"></param>
+        /// <summary> Set the default and the hovered color to one solid color. </summary>
         public void SetSolidColor(Color color)
         {
             DefaultColor = color;

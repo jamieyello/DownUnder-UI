@@ -373,7 +373,7 @@ namespace DownUnder.UI.Widgets
         private void SetDefaults()
         {
             Size = new Point2(10, 10);
-            Theme = BaseColorScheme.Default;
+            Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
         }
 
@@ -529,7 +529,7 @@ namespace DownUnder.UI.Widgets
             SpriteBatch.End();
         }
 
-        /// <summary> Renders this widget with all the children inside. </summary>
+        /// <summary> Renders this widget with all children inside. </summary>
         /// <returns> This widget's render. </returns>
         private RenderTarget2D Render()
         {
@@ -631,8 +631,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Search for any methods in a DWindow for this to connect to. </summary>
-        /// <param name="window"></param>
-        public void ConnectEvents(DWindow window)
+        public void ConnectEvents()
         {
             System.Reflection.EventInfo[] events = GetType().GetEvents();
             for (int i = 0; i < events.GetLength(0); i++)
@@ -640,7 +639,7 @@ namespace DownUnder.UI.Widgets
                 System.Reflection.EventInfo event_ = events[i];
                 string method_name = "Slot_" + Name + "_On" + event_.Name;
 
-                System.Reflection.MethodInfo window_method = window.GetType().GetMethod(method_name);
+                System.Reflection.MethodInfo window_method = ParentWindow.GetType().GetMethod(method_name);
 
                 if (window_method == null)
                 {
@@ -649,7 +648,7 @@ namespace DownUnder.UI.Widgets
 
                 Delegate handler = Delegate.CreateDelegate(
                     event_.EventHandlerType,
-                    window,
+                    ParentWindow,
                     window_method);
 
                 event_.AddEventHandler(this, handler);

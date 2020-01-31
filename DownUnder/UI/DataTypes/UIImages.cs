@@ -8,11 +8,19 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.DataTypes
 {
+    /// <summary> Used by a DWindow to hold textures used by contained widgets. Loads from disk on creation. </summary>
     public class UIImages
     {
+        /// <summary> Icon for adding a folder. </summary>
         public Texture2D AddFolder { get; }
+
+        /// <summary> Icon for browsing a directory. </summary>
         public Texture2D BrowseFolder { get; }
+
+        /// <summary> Icon for a folder. </summary>
         public Texture2D Folder { get; }
+
+        /// <summary> Iconed to represent an open folder. </summary>
         public Texture2D OpenedFolder { get; }
         
         public UIImages(GraphicsDevice graphics)

@@ -10,30 +10,22 @@ using DownUnder.Utilities;
 
 namespace DownUnder.UI.Widgets.WidgetControls
 {
-    /// <summary>
-    /// The blinking vertical line used in typing. Also handles highlighted text.
-    /// </summary>
+    /// <summary> The blinking vertical line used in typing. Also handles highlighted text. </summary>
     class TextCursor
     {
         #region Fields
 
-        /// <summary>
-        /// The widget that owns this text cursor.
-        /// </summary>
+        /// <summary> The widget that owns this text cursor. </summary>
         Label label;
         
-        /// <summary>
-        /// Position of the caret.
-        /// </summary>
+        /// <summary> Position of the caret. </summary>
         int caret_position = 0;
 
         int highlight_start = 0;
 
         int highlight_end = 0;
 
-        /// <summary>
-        /// If this is less than half _CaretBlinkTime then the caret won't be drawn.
-        /// </summary>
+        /// <summary> If this is less than half _CaretBlinkTime then the caret won't be drawn. </summary>
         float caret_blink_timer = 0f;
 
         StringBuilder edit_text;
@@ -90,9 +82,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #region Private Properties
 
-        /// <summary>
-        /// The start of the highlighted text (if active).
-        /// </summary>
+        /// <summary> The start of the highlighted text (if active). </summary>
         int _HighlightPosition
         {
             get
@@ -108,9 +98,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        /// <summary>
-        /// The length of the highlighted text (if active).
-        /// </summary>
+        /// <summary> The length of the highlighted text (if active). </summary>
         int _HighlightLength
         {
             get
@@ -146,9 +134,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        /// <summary>
-        /// The number of lines in this text.
-        /// </summary>
+        /// <summary> The number of lines in this text. </summary>
         public int NumOfLines
         {
             get
@@ -185,9 +171,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        /// <summary>
-        /// Returns the start and end index of the word the caret is over. Includes the following space.
-        /// </summary>
+        /// <summary> Returns the start and end index of the word the caret is over. Includes the following space. </summary>
         public Tuple<int, int> CurrentWord
         {
             get
@@ -374,11 +358,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 caret_blink_timer -= _CaretBlinkTime;
             }
-            
-            if (label.IsPrimaryHovered)
-            {
-                //Console.WriteLine($"Hovering over {label.Text}, TextAreaInWindow = {label.TextAreaInWindow}");
-            }
 
             allow_draw = true;
         }
@@ -407,9 +386,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
         }
 
-        /// <summary>
-        /// Called when Active is set to true.
-        /// </summary>
+        /// <summary> Called when Active is set to true. </summary>
         private void ActivateAndHighlight()
         {
             edit_text = new StringBuilder(label.Text);
@@ -468,6 +445,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         #region Events
 
+        /// <summary> Is called when the label is clicked. </summary>
         private void ClickAction(object sender, EventArgs args)
         {
             if (!Active) return;
@@ -475,11 +453,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             clicking = true;
         }
 
-        /// <summary>
-        /// Is called when the label is double clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
+        /// <summary> Is called when the label is double clicked. </summary>
         private void DoubleClickAction(object sender, EventArgs args)
         {
             if (Active)
@@ -494,11 +468,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             Active = true;
         }
 
-        /// <summary>
-        /// Is called when the label is triple clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
+        /// <summary> Is called when the label is triple clicked. </summary>
         private void TripleClickAction(object sender, EventArgs args)
         {
             if (Active)

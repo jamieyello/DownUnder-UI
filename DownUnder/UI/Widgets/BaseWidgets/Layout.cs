@@ -122,7 +122,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         protected override object DerivedClone(Widget parent = null)
         {
-            Layout c = new Layout();
+            Layout c = new Layout(parent);
             
             for (int i = 0; i < widgets.Count; i++)
             {
