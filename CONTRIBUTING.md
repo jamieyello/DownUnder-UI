@@ -4,6 +4,6 @@ Formatting notes;
   - All fields need to be protected/private, only public properties/methods.
   - No fields should be serializable/included in Clone().
   - Due to the complexity of UI related code, all UI related code should be seperated into regions. It should *generally* be Fields, Properties, Constructors, Methods, Events, and Cloning respectively. This is not strict but it does help. See Widget.cs as an example.
-  - Comments, all non-generic classes/methods/properties/fields need a /// \<summary\>
+  - Comments, all non-generic classes/methods/properties/fields need a (single line) /// \<summary\>
   - Methods should be static if they do not access anything not passed to them.
   - MonoGame.Extended.Size2 is generally never used due to being more incomplete than MonoGame.Extended.Point2 while having the same functionality.
