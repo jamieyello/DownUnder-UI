@@ -170,7 +170,7 @@ namespace DownUnder.UI
 
                             if (i > _WAIT_TIME_WARNING_THRESOLD)
                             {
-                                //this.PrintDebug($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this.");
+                                Console.WriteLine($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this.");
                             }
 
                             if (IsMainThread)

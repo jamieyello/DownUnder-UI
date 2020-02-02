@@ -106,7 +106,7 @@
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />
-    <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
+    <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGridObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
     <Compile Include="UI\Widgets\WidgetControls\ScrollBars.cs" />

@@ -456,6 +456,8 @@ namespace DownUnder.UI.Widgets.WidgetControls
         /// <summary> Is called when the label is double clicked. </summary>
         private void DoubleClickAction(object sender, EventArgs args)
         {
+            if (!label.EditingEnabled) return;
+
             if (Active)
             {
                 clicking = false;

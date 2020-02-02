@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 var y = Dimensions.Y;
                 for (int i = 0; i < y; i++)
                 {
-                    ObjectLabel object_label = (ObjectLabel)GetCell(1, i);
+                    PropertyGridObjectLabel object_label = (PropertyGridObjectLabel)GetCell(1, i);
                     object_label.EditingEnabled = value;
                 }
                 _editing_enabled_backing = value;
@@ -38,14 +38,13 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         public PropertyGrid(IWidgetParent parent, object obj) 
             : base(parent, 2, obj.GetType().GetProperties().Length)
         {
-            
             var properties = obj.GetType().GetProperties();
             if (properties.Length == 0) { throw new Exception("No properties in object."); }
 
             for (int i = 0; i < properties.Length; i++)
             {
                 SetCell(0, i, new Label(
-                    parent,
+                    this,
                     parent.SpriteFont,
                     properties[i].Name)
                 {
@@ -57,7 +56,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 if (properties[i].GetValue(obj) == null)
                 {
                     SetCell(1, i, new Label(
-                        parent,
+                        this,
                         parent.SpriteFont, "null"
                         )
                     {
@@ -69,8 +68,8 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 }
                 else
                 {
-                    SetCell(1, i, new ObjectLabel(
-                        parent,
+                    var label = new PropertyGridObjectLabel(
+                        this,
                         parent.SpriteFont,
                         properties[i].GetValue(obj)
                         )
@@ -78,8 +77,8 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                         DrawOutline = true,
                         OutlineSides = Directions2D.DownRight,
                         MinimumHeight = 20
-                    }
-                    );
+                    };
+                    SetCell(1, i, label);
                 }
             }
         }

@@ -263,6 +263,21 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return widgets[x][y];
         }
 
+        public Point IndexOf(Widget widget)
+        {
+            if (widgets.Count == 0) return new Point(-1, -1);
+
+            for (int x = 0; x < widgets.Count; x++)
+            {
+                for (int y = 0; y < widgets[0].Count; y++)
+                {
+                    if (widgets[x][y] == widget) return new Point(x, y);
+                }
+            }
+
+            return new Point(-1, -1);
+        }
+        
         public void SetCell(int x, int y, Widget widget, bool update_parent = false)
         {
             widget.Parent = this;

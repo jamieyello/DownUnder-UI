@@ -3,27 +3,32 @@ using DownUnder.UI.Widgets.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using DownUnder.UI.Widgets.BaseWidgets;
+using Microsoft.Xna.Framework;
 
 namespace DownUnder.UI.Widgets.SpecializedWidgets
 {
     /// <summary>
     /// This label represents any object, if object implements ILabelEdit then this can allow editing by the user during runtime.
     /// </summary>
-    class ObjectLabel : Label
+    class PropertyGridObjectLabel : Label
     {
         #region Private Fields
 
         private bool _text_editable = false;
 
-        #endregion
+        private bool _grid_insert = false;
 
+        object obj;
+
+        #endregion
+        
         #region Public Properties
 
         #endregion
 
         #region Constructors
 
-        public ObjectLabel(IWidgetParent parent, SpriteFont sprite_font, object obj)
+        public PropertyGridObjectLabel(PropertyGrid parent, SpriteFont sprite_font, object obj)
             : base(parent, sprite_font, obj.ToString())
         {
             SetDefaults(obj);
@@ -32,9 +37,10 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         private void SetDefaults(object obj)
         {
             OnConfirm += Confirm;
+            OnDoubleClick += DoubleClickAction;
             TextEntryRules.IsSingleLine = true;
             EnterConfirms = true;
-
+            
             if (obj is string)
             {
                 _text_editable = true;
@@ -54,6 +60,13 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     TextEntryRules = TextEntryRuleSet.Double;
                 }
             }
+            else
+            {
+                this.obj = obj;
+                _text_editable = false;
+                _grid_insert = true;
+                EditingEnabled = false;
+            }
         }
 
         #endregion
@@ -65,16 +78,27 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
             
         }
 
+        private void DoubleClickAction(object sender, EventArgs args)
+        {
+            if (_grid_insert)
+            {
+                var property_grid = new PropertyGrid(Parent, obj);
+                Point index = ((PropertyGrid)Parent).IndexOf(this);
+                if (index.Y == -1) throw new Exception("Error inserting new property grid.");
+                ((PropertyGrid)Parent).InsertDivider(property_grid, index.Y);
+            }
+        }
+
         #endregion
 
         #region Overrides
 
         public override bool EditingEnabled
         {
-            get => _text_editable && base.EditingEnabled;
+            get => base.EditingEnabled && _text_editable;
             set
             {
-                base.EditingEnabled = value;
+                if (_text_editable) base.EditingEnabled = value;
             }
         }
 

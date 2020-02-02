@@ -125,6 +125,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             return c;
         }
 
+        /// <summary> The basic MonoGame-esque CornFlowerBlue theme. </summary>
         public static BaseColorScheme Default
         {
             get
@@ -179,6 +180,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
         
+        /// <summary> A black theme. </summary>
         public static BaseColorScheme Dark
         {
             get
