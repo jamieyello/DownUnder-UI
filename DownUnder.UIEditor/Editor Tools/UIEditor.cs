@@ -30,7 +30,7 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             Layout project = DefaultProject(parent);
 
-            ((Layout)main_grid.widgets[0][0]).AddWidget(project);
+            ((Layout)main_grid.GetCell(0, 0)).AddWidget(project);
             AddWidget(main_grid);
             
             Grid sidebar = new Grid(main_grid, 1, 2);

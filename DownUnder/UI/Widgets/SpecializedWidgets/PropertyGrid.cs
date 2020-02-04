@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 {
                     PropertyGridObjectLabel object_label = (PropertyGridObjectLabel)GetCell(1, i);
                     object_label.EditingEnabled = value;
-                }
+                } 
                 _editing_enabled_backing = value;
             }
         }

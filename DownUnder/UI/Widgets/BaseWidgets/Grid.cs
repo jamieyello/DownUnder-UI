@@ -6,21 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-//this needs prefered dimensions?
-
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
-    /// <summary>
-    /// A grid of widgets. Cells are empty Layouts by default.
-    /// </summary>
+    /// <summary> A grid of widgets. Cells are empty Layouts by default. </summary>
     public class Grid : Widget
     {
         #region Fields
 
         /// <summary> A jagged array of all the contained widgets. (Widgets[x][y]) </summary>
-        public List<List<Widget>> widgets = new List<List<Widget>>();
+        private List<List<Widget>> widgets = new List<List<Widget>>();
 
-        public List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
+        /// <summary> A list of dividers in a tuple with their y index. </summary>
+        private List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
 
         /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
         private const int _RESIZING_ACCURACY = 1;
@@ -107,14 +104,30 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             AlignWidgets();
         }
 
+        /// <summary> Add a divider to the given row. </summary>
         public void InsertDivider(Widget divider, int y)
         {
             divider.Parent = this;
             divider.Width = Width;
-
             dividers.Add(new Tuple<Widget, int>(divider, y));
 
-            AlignWidgets();
+            UpdateArea(true);
+        }
+
+        /// <summary> Find and remove the given divider. </summary>
+        public bool RemoveDivider(Widget divider)
+        {
+            for (int i = 0; i < dividers.Count; i++)
+            {
+                if (dividers[i].Item1 == divider)
+                {
+                    dividers.RemoveAt(i);
+                    UpdateArea(true);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         // unfinished
@@ -125,7 +138,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 throw new Exception("Given list of widgets' length doesn't match the X dimension of this grid.");
             }
 
-            AlignWidgets();
+            UpdateArea(true);
         }
 
         // unfinished
@@ -136,7 +149,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 throw new Exception("Given list of widgets' length doesn't match the Y dimension of this grid.");
             }
 
-            AlignWidgets();
+            UpdateArea(true);
         }
 
         private void AlignWidgets()
@@ -186,22 +199,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 widgets[x][row].Height = max_y;
             }
         }
-
-        private void SpaceAllCells2()
-        {
-            Point2 position = new Point();
-
-            for (int x = 0; x < widgets.Count; x++)
-            {
-                position.Y = 0;
-                for (int y = 0; y < widgets[0].Count; y++)
-                {
-                    widgets[x][y].Position = position;
-                    position.Y += widgets[x][y].Height;
-                }
-                position.X += widgets[x][0].Width;
-            }
-        }
         
         private void SpaceAllCells()
         {
@@ -227,19 +224,40 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
             foreach (var divider in dividers)
             {
+                // get offset of divider existing in the same row as other dividers
+                float same_row_divider_offset = 0f;
+                foreach (Widget divider_at in DividersAt(divider.Item2))
+                {
+                    if (divider_at == divider.Item1) break;
+                    else same_row_divider_offset += divider_at.Height;
+                }
+                
                 // if the divider's index is 0 set its position to 0,0
                 if (divider.Item2 == 0)
                 {
-                    divider.Item1.Position = new Point2();
+                    divider.Item1.Position = new Point2(0, same_row_divider_offset);
                 }
                 // set the height to under the previous row
                 else
                 {
                     divider.Item1.Position =
                         widgets[0][divider.Item2 - 1].Position.AddPoint2(
-                        new Point2(0, widgets[0][divider.Item2 - 1].Height));
+                        new Point2(0, widgets[0][divider.Item2 - 1].Height + same_row_divider_offset));
                 }
             }
+        }
+
+        /// <summary> Returns a list of dividers that exist on the given row. </summary>
+        public List<Widget> DividersAt(int y)
+        {
+            List<Widget> result = new List<Widget>();
+
+            foreach (var divider in dividers)
+            {
+                if (divider.Item2 == y) result.Add(divider.Item1);
+            }
+
+            return result;
         }
 
         /// <summary> The default cell is a layout </summary>
@@ -249,7 +267,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             Layout default_widget = new Layout(this);
             default_widget.SnappingPolicy = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
             default_widget.OutlineSides = Directions2D.DownRight;
-            default_widget.Area = new Rectangle(15, 15, 15, 15);
             default_widget.FitToContentArea = true;
             return default_widget;
         }
@@ -348,6 +365,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 if (value == area)
                 {
                     return;
+                }
+
+                // Update dividers width
+                foreach (var divider in dividers)
+                {
+                    divider.Item1.Width = value.Width;
                 }
 
                 // Resize the grid as many times as _RESIZING_ACCURACY allows.

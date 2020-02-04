@@ -28,6 +28,17 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             SetDefaults();
         }
 
+        public Layout(IWidgetParent parent, List<Widget> children)
+            : base(parent)
+        {
+            SetDefaults();
+
+            foreach (Widget child in children)
+            {
+                AddWidget(child);
+            }
+        }
+
         private void SetDefaults()
         {
             PaletteUsage = BaseColorScheme.PaletteCategory.default_widget;

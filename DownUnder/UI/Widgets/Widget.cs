@@ -86,7 +86,7 @@ namespace DownUnder.UI.Widgets
         private bool _is_hovered_over_backing;
         private BaseColorScheme _theme_backing;
 
-        #endregion Fields/Delegates
+        #endregion
 
         #region Public/Internal Properties
 
@@ -145,7 +145,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> The local sprite batch used by this widget. </summary>
         public SpriteBatch SpriteBatch { get; private set; }
 
-        #endregion Auto properties
+        #endregion
 
         #region Non-auto properties
 
@@ -163,8 +163,8 @@ namespace DownUnder.UI.Widgets
         /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
         [DataMember] public virtual RectangleF Area
         {
-            get => area_backing.WithMinimumSize(MinimumSize);
-            set => area_backing = value;
+            get => area_backing;
+            set => area_backing = value.WithMinimumSize(MinimumSize);
         }
 
         /// <summary> Minimum size allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
@@ -182,10 +182,12 @@ namespace DownUnder.UI.Widgets
                     throw new Exception("Minimum area height must be at least 1.");
                 }
                 _minimum_area_backing = value;
+
+                if (Area.WithMaximumSize(value) != Area) Area = Area.WithMinimumSize(value);
             }
         }
         
-        #endregion Non-auto properties
+        #endregion
 
         #region Derivatives of previous properties
 
@@ -206,7 +208,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Minimum width allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
 
-        #endregion Derivatives of previous properties
+        #endregion
 
         #region Other various non-serialized properties
 
@@ -232,7 +234,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns true if this widget is being hovered over as well as on top of all the other widgets being hovered over. </summary>
         public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
 
-        /// <summary> Returns true if this widget has been initialized graphically. (If this widget has not been graphically initialized, it cannot be drawn. Call InitializeGraphics() to initialize graphics.) </summary>
+        /// <summary> Returns true if this widget has been initialized graphically. Setting this widget's parent to an initialized widget will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
 
         /// <summary> The area of this widget relative to the parent window. </summary>
@@ -358,11 +360,11 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        #endregion Other various non-serialized properties
+        #endregion
 
-        #endregion Public/Internal Properties
+        #endregion
 
-        #region Constructors
+        #region Constructors/Destructors
 
         public Widget(IWidgetParent parent = null)
         {
@@ -379,11 +381,21 @@ namespace DownUnder.UI.Widgets
 
         ~Widget()
         {
-            _white_dot?.Dispose();
-            _render_target?.Dispose();
+            Dispose();
         }
 
-        #endregion Constructors
+        public void Dispose()
+        {
+            _white_dot?.Dispose();
+            _render_target?.Dispose();
+
+            foreach (Widget child in Children)
+            {
+                child.Dispose();
+            }
+        }
+
+        #endregion
 
         #region Public/Internal Methods
 
@@ -661,7 +673,7 @@ namespace DownUnder.UI.Widgets
             OnConfirm?.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion Public/Internal Methods
+        #endregion
         
         #region EventsHandlers
 
@@ -690,7 +702,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked whwn the user confirms this widget (Such as pressing enter with this widget selected). </summary>
         public event EventHandler OnConfirm;
 
-        #endregion EventsHandlers
+        #endregion
         
         #region Private/Protected Methods
 
@@ -784,7 +796,7 @@ namespace DownUnder.UI.Widgets
         {
             if (update_parent)
             {
-                _parent_widget_reference?.UpdateArea(update_parent);
+                ParentWidget?.UpdateArea(update_parent);
             }
         }
 
@@ -863,7 +875,7 @@ namespace DownUnder.UI.Widgets
         }
 
 
-        #endregion Private/Protected Methods
+        #endregion
 
         #region Cloning
 
@@ -899,6 +911,6 @@ namespace DownUnder.UI.Widgets
         // See https://stackoverflow.com/questions/19119623/clone-derived-class-from-base-class-method
         protected abstract object DerivedClone(Widget parent);
 
-        #endregion Cloning
+        #endregion
     }
 }

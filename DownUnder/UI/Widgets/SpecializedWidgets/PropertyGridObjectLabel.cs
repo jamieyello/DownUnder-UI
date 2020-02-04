@@ -7,18 +7,24 @@ using Microsoft.Xna.Framework;
 
 namespace DownUnder.UI.Widgets.SpecializedWidgets
 {
-    /// <summary>
-    /// This label represents any object, if object implements ILabelEdit then this can allow editing by the user during runtime.
-    /// </summary>
+    /// <summary> This label represents any object. Can be edited by the user during runtime. </summary>
     class PropertyGridObjectLabel : Label
     {
         #region Private Fields
 
         private bool _text_editable = false;
 
-        private bool _grid_insert = false;
+        private bool _grid_insert_backing = false;
 
-        object obj;
+        private bool _GridInsert
+        {
+            get => _grid_insert_backing && Parent != null && Parent is Grid;
+            set => _grid_insert_backing = value;
+        }
+
+        object _obj;
+
+        private Grid _dropdown;
 
         #endregion
         
@@ -62,9 +68,9 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
             }
             else
             {
-                this.obj = obj;
+                _obj = obj;
                 _text_editable = false;
-                _grid_insert = true;
+                _GridInsert = true;
                 EditingEnabled = false;
             }
         }
@@ -80,12 +86,26 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 
         private void DoubleClickAction(object sender, EventArgs args)
         {
-            if (_grid_insert)
+            if (_GridInsert)
             {
-                var property_grid = new PropertyGrid(Parent, obj);
-                Point index = ((PropertyGrid)Parent).IndexOf(this);
-                if (index.Y == -1) throw new Exception("Error inserting new property grid.");
-                ((PropertyGrid)Parent).InsertDivider(property_grid, index.Y);
+                if (_dropdown == null)
+                {
+                    Point index = ((PropertyGrid)Parent).IndexOf(this);
+                    if (index.Y == -1) throw new Exception("Error inserting new property grid, could not find self in parent.");
+
+                    _dropdown = new Grid(Parent, 2, 1);
+                    _dropdown.SetCell(1, 0, new PropertyGrid(_dropdown, _obj));
+
+                    ((PropertyGrid)Parent).InsertDivider(_dropdown, index.Y + 1);
+                }
+                else
+                {
+                    if (!((PropertyGrid)ParentWidget).RemoveDivider(_dropdown))
+                    {
+                        throw new Exception("Failed to remove property grid from parent.");
+                    }
+                    _dropdown = null;
+                }
             }
         }
 
