@@ -19,6 +19,7 @@ using System.Threading;
 
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
+// eventually revert old drawing code
 
 namespace DownUnder.UI.Widgets
 {
@@ -34,12 +35,6 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
-
-        /// <summary> A reference to the Widget that owns this one, if one exists. </summary>
-        private Widget _parent_widget_reference;
-
-        /// <summary> A reference to the window that owns this widget. </summary>
-        private DWindow _parent_window_reference;
 
         /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
@@ -85,6 +80,8 @@ namespace DownUnder.UI.Widgets
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
         private BaseColorScheme _theme_backing;
+        private Widget _parent_widget_backing;
+        private DWindow _parent_window_backing;
 
         #endregion
 
@@ -110,20 +107,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true). </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
-        /// <summary> The color palette of this widget. </summary>
-        [DataMember] public BaseColorScheme Theme
-        {
-            get => _theme_backing;
-            set
-            {
-                _theme_backing = value;
-                if (_theme_backing != null)
-                {
-                    _theme_backing.Parent = this;
-                }
-            }
-        }
-
         /// <summary> Represents the corners this widget will snap to within the parent. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
 
@@ -138,6 +121,12 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> What this widget should be regarded as when accessing the theme's defined colors. </summary>
         [DataMember] public BaseColorScheme.PaletteCategory PaletteUsage { get; set; } = BaseColorScheme.PaletteCategory.default_widget;
+
+        /// <summary> While set to true this widget will lock its current width. </summary>
+        [DataMember] public bool IsFixedWidth { get; set; } = false;
+
+        /// <summary> While set to true this widget will lock its current height. </summary>
+        [DataMember] public bool IsFixedHeight { get; set; } = false;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -164,7 +153,12 @@ namespace DownUnder.UI.Widgets
         [DataMember] public virtual RectangleF Area
         {
             get => area_backing;
-            set => area_backing = value.WithMinimumSize(MinimumSize);
+            set
+            {
+                if (IsFixedWidth) value.Width = area_backing.Width;
+                if (IsFixedHeight) value.Height = area_backing.Height;
+                area_backing = value.WithMinimumSize(MinimumSize);
+            }
         }
 
         /// <summary> Minimum size allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
@@ -183,10 +177,24 @@ namespace DownUnder.UI.Widgets
                 }
                 _minimum_area_backing = value;
 
-                if (Area.WithMaximumSize(value) != Area) Area = Area.WithMinimumSize(value);
+                if (Area.WithMinimumSize(value) != Area) Area = Area.WithMinimumSize(value);
             }
         }
-        
+
+        /// <summary> The color palette of this widget. </summary>
+        [DataMember] public BaseColorScheme Theme
+        {
+            get => _theme_backing;
+            set
+            {
+                _theme_backing = value;
+                if (_theme_backing != null)
+                {
+                    _theme_backing.Parent = this;
+                }
+            }
+        }
+
         #endregion
 
         #region Derivatives of previous properties
@@ -249,9 +257,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns the IWidgetParent of this widget. </summary>
         public IWidgetParent Parent
         {
-            get => _parent_widget_reference != null ? 
-                (IWidgetParent)_parent_widget_reference :
-                _parent_window_reference;
+            get => ParentWidget != null ? 
+                (IWidgetParent)ParentWidget :
+                ParentWindow;
             set
             {
                 if (value is Widget)
@@ -268,10 +276,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> The DWindow that owns this widget. </summary>
         public DWindow ParentWindow
         {
-            get => _parent_window_reference;
+            get => _parent_window_backing;
             set
             {
-                _parent_window_reference = value;
+                _parent_window_backing = value;
                 if (value != null)
                 {
                     InitializeGraphics();
@@ -290,10 +298,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> The widget that owns this widget. (if one exists) </summary>
         public Widget ParentWidget
         {
-            get => _parent_widget_reference;
+            get => _parent_widget_backing;
             set
             {
-                _parent_widget_reference = value;
+                _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
             }
         }
@@ -786,10 +794,10 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Set this widget as the only focused widget. </summary>
-        protected void SetAsFocused() => _parent_window_reference?.SelectedWidgets.SetFocus(this);
+        protected void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
 
         /// <summary> Add this widget to the group of selected widgets. </summary>
-        protected void AddToFocused() => _parent_window_reference?.SelectedWidgets.AddFocus(this);
+        protected void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
         
         /// <summary> A function called by a widget to update both itself and its parent's area. </summary>
         protected virtual void UpdateArea(bool update_parent)
@@ -882,8 +890,8 @@ namespace DownUnder.UI.Widgets
         public object Clone(Widget parent = null)
         {
             object c = DerivedClone(parent);
-            ((Widget)c)._parent_widget_reference = _parent_widget_reference;
-            ((Widget)c)._parent_window_reference = _parent_window_reference;
+            ((Widget)c).ParentWidget = ParentWidget;
+            ((Widget)c).ParentWindow = ParentWindow;
 
             ((Widget)c).Name = Name;
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
@@ -899,6 +907,8 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).DoubleClickTiming = DoubleClickTiming;
             ((Widget)c).Spacing = Spacing;
             ((Widget)c).Area = Area;
+            ((Widget)c).IsFixedWidth = IsFixedWidth;
+            ((Widget)c).IsFixedHeight = IsFixedHeight;
             ((Widget)c).PaletteUsage = PaletteUsage;
 
             ((Widget)c).debug_output = debug_output;

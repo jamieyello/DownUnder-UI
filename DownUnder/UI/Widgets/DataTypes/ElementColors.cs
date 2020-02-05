@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     [DataContract]
     public class ElementColors
     {
-        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 0.4f };
+        [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 4f };
         private bool _special_color_enabled_backing = false;
 
         /// <summary> Color to shift to when nothing of interest is happening. </summary>

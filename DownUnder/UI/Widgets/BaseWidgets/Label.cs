@@ -60,7 +60,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         [DataMember] public TextEntryRuleSet TextEntryRules { get; set; } = TextEntryRuleSet.String;
 
         /// <summary> Whet set to true the area of this label will try to cover any text within. </summary>
-        [DataMember] public bool ConstrainAreaToText { get; set; } = false;
+        [DataMember] public bool ConstrainAreaToText { get; set; } = true;
 
         /// <summary> Area of the text within the label. </summary>
         public RectangleF TextArea => IsGraphicsInitialized ? SpriteFont.MeasureString(Text).ToRectSize() : Position.ToRectPosition(1, 1);

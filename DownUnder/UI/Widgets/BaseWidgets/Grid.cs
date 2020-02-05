@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+// Add IsFixed size to Area.Set
+// throw error if multiple widgets are added that have conficting fixed sizes
+
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
     /// <summary> A grid of widgets. Cells are empty Layouts by default. </summary>
@@ -101,7 +104,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     widgets[x].Add((Widget)clone);
                 }
             }
-            AlignWidgets();
+            UpdateArea(true);
         }
 
         /// <summary> Add a divider to the given row. </summary>
@@ -154,6 +157,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void AlignWidgets()
         {
+            if (Dimensions.X == 0 || Dimensions.Y == 0) return;
             AutoSizeAllWidgets();
             SpaceAllCells();
         }
@@ -174,15 +178,24 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void AutoSizeCollumn(int collumn)
         {
-            float max_x = 0;
+            float x_width = 0;
             for (int y = 0; y < widgets[0].Count; y++)
             {
-                max_x = MathHelper.Max(max_x, widgets[collumn][y].Width);
+                x_width = MathHelper.Max(x_width, widgets[collumn][y].Width);
             }
 
             for (int y = 0; y < widgets[0].Count; y++)
             {
-                widgets[collumn][y].Width = max_x;
+                if (widgets[collumn][y].IsFixedWidth)
+                {
+                    x_width = widgets[collumn][y].Width;
+                    break;
+                }
+            }
+
+            for (int y = 0; y < widgets[0].Count; y++)
+            {
+                widgets[collumn][y].Width = x_width;
             }
         }
 
@@ -192,6 +205,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             for (int x = 0; x < widgets.Count; x++)
             {
                 max_y = MathHelper.Max(max_y, widgets[x][row].Height);
+            }
+
+            for (int x = 0; x < widgets.Count; x++)
+            {
+                if (widgets[x][row].IsFixedHeight)
+                {
+                    max_y = widgets[x][row].Height;
+                    break;
+                }
             }
 
             for (int x = 0; x < widgets.Count; x++)
@@ -383,7 +405,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     i++;
                 }
 
-                SpaceAllCells();
+                UpdateArea(false);
                 if (Name == "Property grid")
                 {
                     Debug.WriteLine($"Property grid result = {Area}");
