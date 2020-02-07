@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -155,6 +156,8 @@ namespace DownUnder.UI.Widgets
             get => area_backing;
             set
             {
+                if (debug_output) Console.WriteLine($"Base area set; value = {value}");
+
                 if (IsFixedWidth) value.Width = area_backing.Width;
                 if (IsFixedHeight) value.Height = area_backing.Height;
                 area_backing = value.WithMinimumSize(MinimumSize);
@@ -843,11 +846,6 @@ namespace DownUnder.UI.Widgets
                     Thread.Sleep(_WAIT_TIME);
                 }
             }
-            
-            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
-            {
-                throw new Exception($"Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {area_backing}).");
-            }
 
             if (size.X < 1)
             {
@@ -861,6 +859,12 @@ namespace DownUnder.UI.Widgets
 
             if (size.ToPoint() != _render_target?.Size().ToPoint())
             {
+                if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
+                {
+                    size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
+                    ConsoleOutput.WriteLine($"Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
+                }
+
                 // Dispose of previous render target
                 if (_render_target != null)
                 {

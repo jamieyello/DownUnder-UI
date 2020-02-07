@@ -226,7 +226,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             if (widgets.Count == 0 || widgets[0].Count == 0) return;
 
-            Point2 position = new Point();
+            Point2 position = new Point2();
 
             for (int x = 0; x < widgets.Count; x++)
             {
@@ -353,64 +353,57 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             get
             {
-                if (Dimensions.X == 0 || Dimensions.Y == 0)
-                {
-                    return new RectangleF();
-                }
-
-                Point2 size = new Point();
-
-                for (int x = 0; x < widgets.Count; x++)
-                {
-                    size.X += widgets[x][0].Width;
-                }
-
-                if (widgets.Count != 0)
-                {
-                    for (int y = 0; y < widgets[0].Count; y++)
-                    {
-                        size.Y += widgets[0][y].Height;
-                    }
-                }
-
-                foreach (var divider in dividers)
-                {
-                    size.Y += divider.Item1.Height;
-                }
-
-                return new RectangleF(base.Area.Position, size);
+                return GetContentArea();
             }
             set
             {
+                RectangleF original_area = Area;
                 base.Area = value;
-                RectangleF area = Area;
-                if (value == area)
-                {
-                    return;
-                }
-
+                RectangleF new_area = area_backing;
+                if (debug_output) Console.WriteLine($"Setting area {original_area} to {new_area}");
+                
                 // Update dividers width
                 foreach (var divider in dividers)
                 {
-                    divider.Item1.Width = value.Width;
+                    divider.Item1.Width = new_area.Width;
                 }
-
-                // Resize the grid as many times as _RESIZING_ACCURACY allows.
-                Size2 modifier;
-                int i = 0;
-                while ((Area.ToRectangle().Size != value.Size.ToPoint()) && (i < _RESIZING_ACCURACY))
-                {
-                    modifier = new Size2(value.Width / area.Width, value.Height / area.Height);
-                    ExpandAllWidgets(modifier);
-                    i++;
-                }
+                
+                ExpandAllWidgets(new Size2(
+                    new_area.Width / original_area.Width, 
+                    new_area.Height / original_area.Height));
 
                 UpdateArea(false);
-                if (Name == "Property grid")
+            }
+        }
+
+        private RectangleF GetContentArea()
+        {
+            if (Dimensions.X == 0 || Dimensions.Y == 0)
+            {
+                return new RectangleF();
+            }
+
+            Point2 size = new Point();
+
+            for (int x = 0; x < widgets.Count; x++)
+            {
+                size.X += widgets[x][0].Width;
+            }
+
+            if (widgets.Count != 0)
+            {
+                for (int y = 0; y < widgets[0].Count; y++)
                 {
-                    Debug.WriteLine($"Property grid result = {Area}");
+                    size.Y += widgets[0][y].Height;
                 }
             }
+
+            foreach (var divider in dividers)
+            {
+                size.Y += divider.Item1.Height;
+            }
+
+            return new RectangleF(base.Area.Position, size);
         }
 
         protected override void UpdateArea(bool update_parent)

@@ -4,6 +4,7 @@ using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UIEditor
 {
@@ -26,8 +27,11 @@ namespace DownUnder.UIEditor
             test_grid.InsertDivider(new Label(null, "Fourth Divider"), 0);
             test_grid.InsertDivider(new Label(null, "Middle Divider"), 3);
             test_grid.InsertDivider(new Label(null, "Last Divider"), 5);
+            //test_grid.IsFixedWidth = true;
+            test_grid.debug_output = true;
             test_grid.Width = 300f;
             test_grid.Height = 300f;
+            test_grid.debug_output = false;
             layout.AddWidget(test_grid);
 
             //var test = parent;

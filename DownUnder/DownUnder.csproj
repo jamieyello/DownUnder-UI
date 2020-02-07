@@ -113,6 +113,7 @@
     <Compile Include="UI\Widgets\WidgetControls\TextCursor.cs" />
     <Compile Include="Utilities\Camera.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />
+    <Compile Include="Utilities\ConsoleOutput.cs" />
     <Compile Include="Utilities\Directions2D.cs" />
     <Compile Include="Utilities\DrawingTools.cs" />
     <Compile Include="Utilities\DiagonalDirections2D.cs" />
