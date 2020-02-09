@@ -78,7 +78,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Private Methods
 
-        private void ExpandAllWidgets(Size2 modifier)
+        private void ExpandAllWidgets(Point2 modifier)
         {
             RectangleF new_area;
             for (int x = 0; x < widgets.Count; x++)
@@ -86,10 +86,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 for (int y = 0; y < widgets[0].Count; y++)
                 {
                     new_area = widgets[x][y].Area;
-                    new_area.Width *= modifier.Width;
-                    new_area.Height *= modifier.Height;
+                    new_area.Width *= modifier.X;
+                    new_area.Height *= modifier.Y;
                     widgets[x][y].Area = new_area;
                 }
+            }
+
+            foreach (var divider in dividers)
+            {
+                divider.Item1.Height *= modifier.Y;
             }
         }
 
@@ -360,20 +365,80 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 RectangleF original_area = Area;
                 base.Area = value;
                 RectangleF new_area = area_backing;
-                if (debug_output) Console.WriteLine($"Setting area {original_area} to {new_area}");
+
+                if (debug_output)
+                {
+                    Console.WriteLine($"Setting area {original_area} to {new_area}");
+                    Console.WriteLine($"Current fixed area {FixedContentSizeTotal()}");
+                }
                 
                 // Update dividers width
                 foreach (var divider in dividers)
                 {
                     divider.Item1.Width = new_area.Width;
                 }
-                
-                ExpandAllWidgets(new Size2(
-                    new_area.Width / original_area.Width, 
-                    new_area.Height / original_area.Height));
+
+                Point2 fixed_size = FixedContentSizeTotal();
+                Point2 expansion_size = new Point2(
+                    (new_area.Width - fixed_size.X) / (original_area.Width - fixed_size.X),
+                    (new_area.Height - fixed_size.Y) / (original_area.Height - fixed_size.Y))
+                    .Max(new Point2(0.001f, 0.001f));
+
+                ExpandAllWidgets(expansion_size);
 
                 UpdateArea(false);
             }
+        }
+
+        /// <summary> The total height/width of contained widgets that won't resize. </summary>
+        private Point2 FixedContentSizeTotal()
+        {
+            Point2 fixed_size = new Point2();
+
+            for (int i = 0; i < Dimensions.X; i++)
+            {
+                float fixed_width = FixedWidthOfColumn(i);
+                if (fixed_width != -1f)
+                {
+                    fixed_size.X += fixed_width;
+                }
+            }
+
+            for (int i = 0; i < Dimensions.Y; i++)
+            {
+                float fixed_height = FixedHeightOfRow(i);
+                if (fixed_height != -1f)
+                {
+                    fixed_size.Y += fixed_height;
+                }
+            }
+
+            foreach (var divider in dividers)
+            {
+                if (divider.Item1.IsFixedHeight) fixed_size.Y += divider.Item1.Height;
+            }
+
+            return fixed_size;
+        }
+
+        float FixedHeightOfRow(int row)
+        {
+            for (int i = 0; i < Dimensions.X; i++)
+            {
+                if (widgets[i][row].IsFixedHeight) return widgets[i][row].Height;
+            }
+
+            return -1f;
+        }
+
+        float FixedWidthOfColumn(int column)
+        {
+            for (int i = 0; i < Dimensions.Y; i++)
+            {
+                if (widgets[column][i].IsFixedWidth) return widgets[column][i].Width;
+            }
+
+            return -1f;
         }
 
         private RectangleF GetContentArea()

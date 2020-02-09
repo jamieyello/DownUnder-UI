@@ -208,6 +208,11 @@ namespace DownUnder
             return new RectangleF(r.Position, s);
         }
 
+        public static RectangleF WithSize(this RectangleF r, float width, float height)
+        {
+            return new RectangleF(r.X, r.Y, width, height);
+        }
+
         public static RectangleF WithMinimumSize(this RectangleF r, Point2 s)
         {
             RectangleF result = r;

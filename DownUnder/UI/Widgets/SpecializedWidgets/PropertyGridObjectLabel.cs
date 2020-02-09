@@ -94,6 +94,8 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     if (index.Y == -1) throw new Exception("Error inserting new property grid, could not find self in parent.");
 
                     _dropdown = new Grid(Parent, 2, 1);
+                    _dropdown.GetCell(0, 0).Width = 16f;
+                    _dropdown.GetCell(0, 0).IsFixedWidth = true;
                     _dropdown.SetCell(1, 0, new PropertyGrid(_dropdown, _obj));
 
                     ((PropertyGrid)Parent).InsertDivider(_dropdown, index.Y + 1);
