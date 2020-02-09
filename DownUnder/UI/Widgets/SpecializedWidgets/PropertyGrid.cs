@@ -84,5 +84,16 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         }
 
         #endregion
+
+        #region Public Methods
+
+        /// <summary> Returns true if the there are any properties in the given object to view. </summary>
+        public static bool IsCompatible(object obj)
+        {
+            if (obj.GetType().GetProperties().Length == 0) return false;
+            return true;
+        }
+
+        #endregion
     }
 }

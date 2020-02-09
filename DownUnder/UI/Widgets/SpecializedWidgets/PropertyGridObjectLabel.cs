@@ -18,7 +18,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 
         private bool _GridInsert
         {
-            get => _grid_insert_backing && Parent != null && Parent is Grid;
+            get => _grid_insert_backing && Parent != null && Parent is Grid && PropertyGrid.IsCompatible(_obj);
             set => _grid_insert_backing = value;
         }
 
@@ -106,6 +106,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     {
                         throw new Exception("Failed to remove property grid from parent.");
                     }
+                    _dropdown.Dispose();
                     _dropdown = null;
                 }
             }
