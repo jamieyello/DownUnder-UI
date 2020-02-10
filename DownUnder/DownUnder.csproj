@@ -91,7 +91,7 @@
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
-    <Compile Include="UI\Widgets\BaseWidgets\ContentHeader.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />
-    <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGridObjectLabel.cs" />
+    <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
     <Compile Include="UI\Widgets\WidgetControls\ScrollBars.cs" />

@@ -74,7 +74,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             DrawBackground = false;
         }
 
-        #endregion Constructors
+        #endregion
 
         #region Private Methods
 
@@ -365,12 +365,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 RectangleF original_area = Area;
                 base.Area = value;
                 RectangleF new_area = area_backing;
-
-                if (debug_output)
-                {
-                    Console.WriteLine($"Setting area {original_area} to {new_area}");
-                    Console.WriteLine($"Current fixed area {FixedContentSizeTotal()}");
-                }
                 
                 // Update dividers width
                 foreach (var divider in dividers)

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace DownUnder.UI.Widgets.SpecializedWidgets
 {
     /// <summary> This label represents any object. Can be edited by the user during runtime. </summary>
-    class PropertyGridObjectLabel : Label
+    class ObjectLabel : Label
     {
         #region Private Fields
 
@@ -34,7 +34,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 
         #region Constructors
 
-        public PropertyGridObjectLabel(PropertyGrid parent, SpriteFont sprite_font, object obj)
+        public ObjectLabel(Widget parent, SpriteFont sprite_font, object obj)
             : base(parent, sprite_font, obj.ToString())
         {
             SetDefaults(obj);

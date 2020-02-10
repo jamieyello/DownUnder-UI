@@ -156,8 +156,6 @@ namespace DownUnder.UI.Widgets
             get => area_backing;
             set
             {
-                if (debug_output) Console.WriteLine($"Base area set; value = {value}");
-
                 if (IsFixedWidth) value.Width = area_backing.Width;
                 if (IsFixedHeight) value.Height = area_backing.Height;
                 area_backing = value.WithMinimumSize(MinimumSize);

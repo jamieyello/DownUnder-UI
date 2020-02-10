@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 var y = Dimensions.Y;
                 for (int i = 0; i < y; i++)
                 {
-                    PropertyGridObjectLabel object_label = (PropertyGridObjectLabel)GetCell(1, i);
+                    ObjectLabel object_label = (ObjectLabel)GetCell(1, i);
                     object_label.EditingEnabled = value;
                 } 
                 _editing_enabled_backing = value;
@@ -68,7 +68,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 }
                 else
                 {
-                    var label = new PropertyGridObjectLabel(
+                    var label = new ObjectLabel(
                         this,
                         parent.SpriteFont,
                         properties[i].GetValue(obj)
