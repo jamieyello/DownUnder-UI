@@ -100,6 +100,8 @@
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
+    <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
+    <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IWidgetParent.cs" />

@@ -130,26 +130,36 @@ namespace DownUnder
             return new Point2((int)(p.X + 0.5f), (int)(p.Y + 0.5f));
         }
 
-        /// <summary> Returns true if this Point2's X or Y field is larger than the given one's. </summary>
+        /// <summary> Returns true if this <see cref="Point2" />'s X or Y field is larger than the given one's. </summary>
         public static bool IsLargerThan(this Point2 p, Point2 p2)
         {
             return (p.X > p2.X || p.Y > p2.Y);
         }
 
-        /// <summary> Returns a new Point2 with the highest X and Y values of both given Points. </summary>
+        /// <summary> Returns a new <see cref="Point2" /> with the highest X and Y values of both given Points. </summary>
         public static Point2 Max(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Max(p.X, p2.X), MathHelper.Max(p.Y, p2.Y));
         }
 
-        /// <summary> Returns a new Point2 with the lowest X and Y values of both given Points. </summary>
+        /// <summary> Returns a new <see cref="Point2" /> with the lowest X and Y values of both given Points. </summary>
         public static Point2 Min(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Min(p.X, p2.X), MathHelper.Min(p.Y, p2.Y));
         }
 
+        public static Point2 MultipliedBy(this Point2 p, float scale)
+        {
+            return new Point2(p.X * scale, p.Y * scale);
+        }
+
+        public static Point2 MultipliedBy(this Point2 p, Point2 p2)
+        {
+            return new Point2(p.X * p2.X, p.Y * p2.Y);
+        }
+
         /// <summary>
-        /// Returns an integer rounded to the nearest integer value.
+        /// Returns an <see cref="int" /> rounded to the nearest integer value.
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>
@@ -159,7 +169,7 @@ namespace DownUnder
         }
 
         /// <summary>
-        /// Returns a new Rectangle without the position values.
+        /// Returns a new <see cref="Rectangle" /> without the position values.
         /// </summary>
         /// <param name="r"></param>
         /// <returns></returns>
@@ -236,6 +246,15 @@ namespace DownUnder
             return result;
         }
 
+        public static RectangleF WithCenter(this RectangleF r, Point2 center)
+        {
+            RectangleF result = r;
+            result.Position = center.WithOffset(
+                result.Size.ToPoint2().MultipliedBy(-0.5f)
+                );
+            return result;
+        }
+
         public static RectangleF AsRectangleSize(this Point2 p)
         {
             return new RectangleF(new Point2(), p);
@@ -246,14 +265,20 @@ namespace DownUnder
             return new System.Drawing.Size(p.X, p.Y);
         }
 
-        /// <summary>
-        /// Returns a new RectangleF that's been resized by X pixels. (On both sides)
-        /// </summary>
-        /// <param name="r"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public static RectangleF Resized(this RectangleF r, float x, float y)
+        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
+        public static RectangleF Resized(this RectangleF r, Point2 modifier)
+        {
+            return new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        }
+
+        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
+        public static RectangleF Resized(this RectangleF r, float modifier)
+        {
+            return new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        }
+
+        /// <summary> Returns a new <see cref="RectangleF"/> that's been resized by X pixels. (On all sides) </summary>
+        public static RectangleF ResizedBy(this RectangleF r, float x, float y)
         {
             RectangleF result = r;
             result.X -= x;
@@ -263,22 +288,14 @@ namespace DownUnder
             return result;
         }
 
-        /// <summary>
-        /// Returns a Vector2 with both the X and Y values rounded down.
-        /// </summary>
-        /// <param name="v"></param>
-        /// <returns></returns>
+        /// <summary> Returns a <see cref="Vector2"/> with both the X and Y values rounded down. </summary>
         public static Vector2 Floored(this Vector2 v)
         {
             return new Vector2((int)v.X, (int)v.Y);
         }
 
-        /// <summary>
-        /// Returns new Color with brightness shifted by a percentage.
-        /// </summary>
-        /// <param name="c"></param>
+        /// <summary> Returns new <see cref="Color"/> with brightness shifted by a percentage. </summary>
         /// <param name="percentage"></param>
-        /// <returns></returns>
         public static Color ShiftBrightness(this Color c, float percentage)
         {
             if (percentage > 1)
@@ -303,19 +320,14 @@ namespace DownUnder
             }
         }
 
-        /// <summary>
-        /// Returns a RectangleF to represent each line of text.
-        /// </summary>
-        /// <param name="sprite_font"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <summary> Returns a <see cref="RectangleF"/> to represent each line of text. </summary>
         public static List<RectangleF> MeasureStringAreas(this SpriteFont sprite_font, string text)
         {
             return MeasureTrimmedString(sprite_font, text, 0, 0);
         }
 
         /// <summary>
-        /// Returns a RectangleF to represent each line of text for a selected substring of the text.
+        /// Returns a <see cref="RectangleF"/> to represent each line of text for a selected substring of the text.
         /// </summary>
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
@@ -328,7 +340,7 @@ namespace DownUnder
         }
 
         /// <summary>
-        /// Returns a RectangleF to represent each line of text for a trimmed version of the text.
+        /// Returns a <see cref="RectangleF"/> to represent each line of text for a trimmed version of the text.
         /// </summary>
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
@@ -495,20 +507,15 @@ namespace DownUnder
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
-        /// <summary>
-        /// Returns new Point2 with the sum of each.
-        /// </summary>
-        /// <param name="p1"></param>
-        /// <param name="p2"></param>
-        /// <returns></returns>
-        public static Point2 AddPoint2(this Point2 p1, Point2 p2)
+        /// <summary> Returns new Point2 with the sum of each. </summary>
+        public static Point2 WithOffset(this Point2 p1, Point2 p2)
         {
             return new Point2(p1.X + p2.X, p1.Y + p2.Y);
         }
 
         public static RectangleF SnapInsideRectangle(this RectangleF inner, RectangleF outer, DiagonalDirections2D snapping_policy)
         {
-            inner.Position = outer.Position.AddPoint2(inner.Position);
+            inner.Position = outer.Position.WithOffset(inner.Position);
 
             Directions2D snapping = snapping_policy.ToPerpendicular();
 

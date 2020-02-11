@@ -21,6 +21,8 @@ using System.Threading;
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // eventually revert old drawing code
+// Add WidgetCollection, an IList that interfaces with widgets easier.
+// bug: parent is unused in Clone()
 
 namespace DownUnder.UI.Widgets
 {
@@ -250,7 +252,7 @@ namespace DownUnder.UI.Widgets
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
         /// <summary> The position of this widget relative to its window. </summary>
-        public Point2 PositionInWindow => ParentWidget == null ? Position : Position.AddPoint2(ParentWidget.PositionInWindow);
+        public Point2 PositionInWindow => ParentWidget == null ? Position : Position.WithOffset(ParentWidget.PositionInWindow);
 
         /// <summary> The area of the screen that this widget can draw to. </summary>
         public RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
@@ -339,7 +341,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> All widgets this widget owns. </summary>
-        public abstract List<Widget> Children { get; }
+        public abstract WidgetList Children { get; }
 
         /// <summary> The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
         public SpriteFont SpriteFont
@@ -597,7 +599,7 @@ namespace DownUnder.UI.Widgets
                     SpriteBatch.Draw
                         (
                         renders[i],
-                        areas[i].Position.AddPoint2(s_this.Scroll.ToPoint2().Inverted()).Floored(),
+                        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
                         Color.White
                         );
                 }

@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -17,7 +18,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #region Fields
 
         /// <summary> A jagged array of all the contained widgets. (Widgets[x][y]) </summary>
-        private List<List<Widget>> widgets = new List<List<Widget>>();
+        private WidgetArray _widgets = new WidgetArray();
 
         /// <summary> A list of dividers in a tuple with their y index. </summary>
         private List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
@@ -25,23 +26,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
         private const int _RESIZING_ACCURACY = 1;
 
-        #endregion Fields
+        #endregion
 
         #region Public Properties
 
         /// <summary> The number of widgets tall and wide this grid consists of. </summary>
-        public Point Dimensions
-        {
-            get
-            {
-                if (widgets.Count == 0)
-                {
-                    return new Point();
-                }
-
-                return new Point(widgets.Count, widgets[0].Count);
-            }
-        }
+        public Point Dimensions => _widgets.Dimensions;
 
         #endregion Public Properties
 
@@ -65,7 +55,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
             filler.Parent = this;
 
-            CreateWidgetGrid(x_length, y_length, filler);
+            _widgets = new WidgetArray(x_length, y_length, filler);
+            UpdateArea(true);
         }
 
         private void SetDefaults()
@@ -77,41 +68,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #endregion
 
         #region Private Methods
-
-        private void ExpandAllWidgets(Point2 modifier)
-        {
-            RectangleF new_area;
-            for (int x = 0; x < widgets.Count; x++)
-            {
-                for (int y = 0; y < widgets[0].Count; y++)
-                {
-                    new_area = widgets[x][y].Area;
-                    new_area.Width *= modifier.X;
-                    new_area.Height *= modifier.Y;
-                    widgets[x][y].Area = new_area;
-                }
-            }
-
-            foreach (var divider in dividers)
-            {
-                divider.Item1.Height *= modifier.Y;
-            }
-        }
-
-        protected void CreateWidgetGrid(int x_length, int y_length, Widget filler)
-        {
-            for (int x = 0; x < x_length; x++)
-            {
-                widgets.Add(new List<Widget>());
-                for (int y = 0; y < y_length; y++)
-                {
-                    object clone = (Widget)filler.Clone(this);
-                    widgets[x].Add((Widget)clone);
-                }
-            }
-            UpdateArea(true);
-        }
-
+        
         /// <summary> Add a divider to the given row. </summary>
         public void InsertDivider(Widget divider, int y)
         {
@@ -170,12 +127,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>
         private void AutoSizeAllWidgets()
         {
-            for (int x = 0; x < widgets.Count; x++)
+            for (int x = 0; x < _widgets.Count; x++)
             {
                 AutoSizeCollumn(x);
             }
 
-            for (int y = 0; y < widgets[0].Count; y++)
+            for (int y = 0; y < _widgets[0].Count; y++)
             {
                 AutoSizeRow(y);
             }
@@ -183,70 +140,62 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void AutoSizeCollumn(int collumn)
         {
-            float x_width = 0;
-            for (int y = 0; y < widgets[0].Count; y++)
-            {
-                x_width = MathHelper.Max(x_width, widgets[collumn][y].Width);
-            }
+            float x_width = _widgets.GetColumn(collumn).MaxSize.X;
 
-            for (int y = 0; y < widgets[0].Count; y++)
+            for (int y = 0; y < _widgets[0].Count; y++)
             {
-                if (widgets[collumn][y].IsFixedWidth)
+                if (_widgets[collumn][y].IsFixedWidth)
                 {
-                    x_width = widgets[collumn][y].Width;
+                    x_width = _widgets[collumn][y].Width;
                     break;
                 }
             }
 
-            for (int y = 0; y < widgets[0].Count; y++)
+            for (int y = 0; y < _widgets[0].Count; y++)
             {
-                widgets[collumn][y].Width = x_width;
+                _widgets[collumn][y].Width = x_width;
             }
         }
 
         private void AutoSizeRow(int row)
         {
-            float max_y = 0;
-            for (int x = 0; x < widgets.Count; x++)
-            {
-                max_y = MathHelper.Max(max_y, widgets[x][row].Height);
-            }
+            float max_y = _widgets.GetRow(row).MaxSize.Y;
 
-            for (int x = 0; x < widgets.Count; x++)
+            for (int x = 0; x < _widgets.Count; x++)
             {
-                if (widgets[x][row].IsFixedHeight)
+                if (_widgets[x][row].IsFixedHeight)
                 {
-                    max_y = widgets[x][row].Height;
+                    max_y = _widgets[x][row].Height;
                     break;
                 }
             }
 
-            for (int x = 0; x < widgets.Count; x++)
+            for (int x = 0; x < _widgets.Count; x++)
             {
-                widgets[x][row].Height = max_y;
+                _widgets[x][row].Height = max_y;
             }
         }
         
         private void SpaceAllCells()
         {
-            if (widgets.Count == 0 || widgets[0].Count == 0) return;
+            if (_widgets.Count == 0 || _widgets[0].Count == 0) return;
 
             Point2 position = new Point2();
 
-            for (int x = 0; x < widgets.Count; x++)
+            for (int x = 0; x < _widgets.Count; x++)
             {
                 position.Y = 0;
-                for (int y = 0; y < widgets[0].Count; y++)
+                for (int y = 0; y < _widgets[0].Count; y++)
                 {
                     foreach (var divider in dividers)
                     {
                         if (y == divider.Item2) position.Y += divider.Item1.Height;
                     }
 
-                    widgets[x][y].Position = position;
-                    position.Y += widgets[x][y].Height;
+                    _widgets[x][y].Position = position;
+                    position.Y += _widgets[x][y].Height;
                 }
-                position.X += widgets[x][0].Width;
+                position.X += _widgets[x][0].Width;
             }
 
             foreach (var divider in dividers)
@@ -268,8 +217,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 else
                 {
                     divider.Item1.Position =
-                        widgets[0][divider.Item2 - 1].Position.AddPoint2(
-                        new Point2(0, widgets[0][divider.Item2 - 1].Height + same_row_divider_offset));
+                        _widgets[0][divider.Item2 - 1].Position.WithOffset(
+                        new Point2(0, _widgets[0][divider.Item2 - 1].Height + same_row_divider_offset));
                 }
             }
         }
@@ -304,30 +253,20 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public Widget GetCell(int x, int y)
         {
-            return widgets[x][y];
+            return _widgets[x][y];
         }
 
         public Point IndexOf(Widget widget)
         {
-            if (widgets.Count == 0) return new Point(-1, -1);
-
-            for (int x = 0; x < widgets.Count; x++)
-            {
-                for (int y = 0; y < widgets[0].Count; y++)
-                {
-                    if (widgets[x][y] == widget) return new Point(x, y);
-                }
-            }
-
-            return new Point(-1, -1);
+            return _widgets.IndexOf(widget);
         }
         
         public void SetCell(int x, int y, Widget widget, bool update_parent = false)
         {
             widget.Parent = this;
 
-            widget.Area = widgets[x][y].Area;
-            widgets[x][y] = widget;
+            widget.Area = _widgets[x][y].Area;
+            _widgets[x][y] = widget;
             UpdateArea(update_parent);
         }
 
@@ -341,11 +280,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 }
             }
 
-            if (!(widgets[x][y] is Layout))
+            if (!(_widgets[x][y] is Layout))
             {
-                throw new Exception($"Cannot add widget to cell[{x}][{y}], because cell[{x}][{y}] is not a Layout. widgets[{x}][{y}].GetType() = {widgets[x][y].GetType()}");
+                throw new Exception($"Cannot add widget to cell[{x}][{y}], because cell[{x}][{y}] is not a Layout. widgets[{x}][{y}].GetType() = {_widgets[x][y].GetType()}");
             } 
-            ((Layout)widgets[x][y]).AddWidget(widget);
+            ((Layout)_widgets[x][y]).AddWidget(widget);
             UpdateArea(update_parent);
         }
 
@@ -377,8 +316,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     (new_area.Width - fixed_size.X) / (original_area.Width - fixed_size.X),
                     (new_area.Height - fixed_size.Y) / (original_area.Height - fixed_size.Y))
                     .Max(new Point2(0.001f, 0.001f));
+                
+                _widgets.ExpandAll(expansion_size);
 
-                ExpandAllWidgets(expansion_size);
+                foreach (var divider in dividers)
+                {
+                    divider.Item1.Height *= expansion_size.Y;
+                }
 
                 UpdateArea(false);
             }
@@ -419,7 +363,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             for (int i = 0; i < Dimensions.X; i++)
             {
-                if (widgets[i][row].IsFixedHeight) return widgets[i][row].Height;
+                if (_widgets[i][row].IsFixedHeight) return _widgets[i][row].Height;
             }
 
             return -1f;
@@ -429,7 +373,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             for (int i = 0; i < Dimensions.Y; i++)
             {
-                if (widgets[column][i].IsFixedWidth) return widgets[column][i].Width;
+                if (_widgets[column][i].IsFixedWidth) return _widgets[column][i].Width;
             }
 
             return -1f;
@@ -442,18 +386,26 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 return new RectangleF();
             }
 
+            //Point2 size = new Point2();
+            //RectangleF? widgets_size = _widgets.AreaCoverage;
+            //if (widgets_size == null) size = ((RectangleF)widgets_size).Size;
+
+            //Console.WriteLine(_widgets.AreaCoverage);
+
+            //Point2 size = ((RectangleF)_widgets.AreaCoverage).Size;
+
             Point2 size = new Point();
 
-            for (int x = 0; x < widgets.Count; x++)
+            for (int x = 0; x < _widgets.Count; x++)
             {
-                size.X += widgets[x][0].Width;
+                size.X += _widgets[x][0].Width;
             }
 
-            if (widgets.Count != 0)
+            if (_widgets.Count != 0)
             {
-                for (int y = 0; y < widgets[0].Count; y++)
+                for (int y = 0; y < _widgets[0].Count; y++)
                 {
-                    size.Y += widgets[0][y].Height;
+                    size.Y += _widgets[0][y].Height;
                 }
             }
 
@@ -477,19 +429,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         }
 
         /// <summary> All widgets this widget owns. </summary>
-        public override List<Widget> Children
+        public override WidgetList Children
         {
             get
             {
-                List<Widget> children = new List<Widget>();
-                Point2 dimensions = Dimensions;
-                for (int x = 0; x < dimensions.X; x++)
-                {
-                    for (int y = 0; y < dimensions.Y; y++)
-                    {
-                        children.Add(widgets[x][y]);
-                    }
-                }
+                WidgetList children = new WidgetList();
+                children.ToList().AddRange(_widgets.ToWidgetList());
 
                 foreach(var divider in dividers)
                 {

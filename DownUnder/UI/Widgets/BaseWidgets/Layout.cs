@@ -8,15 +8,13 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
-    /// <summary>
-    /// A collection of widgets.
-    /// </summary>
+    /// <summary> A collection of widgets. </summary>
     [DataContract]
     public class Layout : Widget, IScrollableWidget
     {
         #region Private Fields
 
-        [DataMember] private List<Widget> widgets = new List<Widget>();
+        [DataMember] private WidgetList _widgets = new WidgetList();
         
         #endregion Private Fields
 
@@ -54,7 +52,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             widget.Parent = this;
             widget.EmbedIn(Area);
-            widgets.Add(widget);
+            _widgets.Add(widget);
         }
 
         #endregion Public Methods
@@ -67,13 +65,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             get
             {
-                RectangleF result = Area;
-                result.Position = new Point2(0, 0);
-                foreach (var child in Children)
-                {
-                    result = result.Union(child.Area);
-                }
-                return result;
+                RectangleF? result = _widgets.AreaCoverage;
+                if (result == null) return Area;
+                return ((RectangleF)result).Union(Area);
             }
         }
 
@@ -110,17 +104,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        public override List<Widget> Children => widgets;
-        
-        protected override void UpdateArea(bool update_parent)
-        {
-            RectangleF result = new RectangleF();
-            foreach (var child in Children)
-            {
-                result = result.Union(child.Area);
-            }
-            base.UpdateArea(update_parent);
-        }
+        public override WidgetList Children => _widgets;
 
         #region Events
         
@@ -135,9 +119,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             Layout c = new Layout(parent);
             
-            for (int i = 0; i < widgets.Count; i++)
+            for (int i = 0; i < _widgets.Count; i++)
             {
-                c.widgets.Add((Widget)widgets[i].Clone(parent));
+                c._widgets.Add((Widget)_widgets[i].Clone(parent));
             }
 
             ((IScrollableWidget)c).FitToContentArea = FitToContentArea;

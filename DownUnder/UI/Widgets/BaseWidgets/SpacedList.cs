@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DownUnder.UI.Widgets.DataTypes;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.BaseWidgets
@@ -12,10 +13,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
     {
         #region Private Fields
 
-        private List<Widget> _widgets = new List<Widget>();
+        private WidgetList _widgets = new WidgetList();
         private int _max_width_backing = 0;
 
         #endregion
+
+        #region Public Properties
 
         /// <summary> How long a row is allowed to be before it displays the following widgets on the next row. If 0, there will be no limit. </summary>
         public int MaxRowWidth
@@ -28,6 +31,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
+        public float ListSpacing { get; set; } = 10f;
+
+        public bool AlignEvenly { get; set; } = true;
+
+        #endregion
+
         public SpacedList(Widget parent = null)
             : base(parent)
         {
@@ -39,18 +48,41 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get => base.Area;
             set
             {
-                RectangleF original_area = Area;
                 base.Area = value;
-                RectangleF new_area = area_backing;
+                AlignList(area_backing.Width);
+            }
+        }
+
+        private void AlignList(float width)
+        {
+            Point2 size = new Point2();
+            if (AlignEvenly)
+            {
+                foreach (Widget widget in _widgets)
+                {
+                    size = size.Max(widget.Size);
+                }
+            }
+            
+            Point2 current_position = new Point2(0, ListSpacing);
+            int x = 0;
+            foreach (Widget widget in _widgets)
+            {
+                current_position.X += ListSpacing;
+                if (AlignEvenly)
+                {
+                    current_position.X += size.X;
+                }
             }
         }
 
         protected override void UpdateArea(bool update_parent)
         {
+            AlignList(Width);
             base.UpdateArea(update_parent);
         }
 
-        public override List<Widget> Children => _widgets;
+        public override WidgetList Children => _widgets;
         
         protected override object DerivedClone(Widget parent = null)
         {
