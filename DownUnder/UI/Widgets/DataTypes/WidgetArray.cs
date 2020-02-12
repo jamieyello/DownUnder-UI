@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
+    /// <summary> A general interface for an array of Widgets. </summary>
     public class WidgetArray : IList<WidgetList>
     {
         private readonly List<WidgetList> _widgets = new List<WidgetList>();
@@ -61,7 +62,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 }
             }
         }
-
+        
         public void ExpandAll(float modifier)
         {
             foreach (WidgetList list in _widgets)
@@ -75,6 +76,45 @@ namespace DownUnder.UI.Widgets.DataTypes
             foreach (WidgetList list in _widgets)
             {
                 list.ExpandAll(modifier);
+            }
+        }
+
+        public void Align()
+        {
+            if (_widgets.Count == 0 || _widgets[0].Count == 0) return;
+
+            AutoSizeAllWidgets();
+            AutoSpaceAllWidgets();
+        }
+
+        private void AutoSpaceAllWidgets()
+        {
+            Point2 position = new Point2();
+
+            for (int x = 0; x < _widgets.Count; x++)
+            {
+                position.Y = 0;
+                for (int y = 0; y < _widgets[0].Count; y++)
+                {
+                    _widgets[x][y].Position = position;
+                    position.Y += _widgets[x][y].Height;
+                }
+
+                position.X += _widgets[x][0].Width;
+            }
+        }
+        
+        /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>
+        private void AutoSizeAllWidgets()
+        {
+            for (int x = 0; x < _widgets.Count; x++)
+            {
+                GetColumn(x).AutoSizeWidth();
+            }
+
+            for (int y = 0; y < _widgets[0].Count; y++)
+            {
+                GetRow(y).AutoSizeHeight();
             }
         }
 
@@ -101,6 +141,21 @@ namespace DownUnder.UI.Widgets.DataTypes
             return result;
         }
 
+        public float InsertSpaceY(int row_index, float space)
+        {
+            float? space_y = null;
+            for (int y = row_index; y < Dimensions.Y; y++)
+            {
+                foreach (Widget widget in GetRow(y))
+                {
+                    if (space_y == null) space_y = widget.Y;
+                    widget.Y += space;
+                }
+            }
+
+            return (float)space_y;
+        }
+
         /// <summary> Returns true if the given jagged array has no length mismatches. </summary>
         private static bool IsEven<T>(List<List<T>> jagged_array)
         {
@@ -115,8 +170,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             return false;
         }
         
-
-
         #region IList Implementation
 
         public int Count => _widgets.Count;

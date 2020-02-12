@@ -65,6 +65,56 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
+        /// <summary> Set all the widget's width values to match each other. </summary>
+        public void AutoSizeWidth()
+        {
+            float new_width = MaxSize.X;
+            
+            foreach (Widget widget in _widgets)
+            {
+                if (widget.IsFixedWidth)
+                {
+                    new_width = widget.Width;
+                    break;
+                }
+            }
+
+            SetAllWidth(new_width);
+        }
+
+        /// <summary> Set all the widget's height values to match each other. </summary>
+        public void AutoSizeHeight()
+        {
+            float new_height = MaxSize.Y;
+
+            foreach (Widget widget in _widgets)
+            {
+                if (widget.IsFixedHeight)
+                {
+                    new_height = widget.Height;
+                    break;
+                }
+            }
+
+            SetAllHeight(new_height);
+        }
+
+        public void SetAllWidth(float width)
+        {
+            foreach (Widget widget in _widgets)
+            {
+                widget.Width = width;
+            }
+        }
+
+        public void SetAllHeight(float height)
+        {
+            foreach (Widget widget in _widgets)
+            {
+                widget.Height = height;
+            }
+        }
+
         public List<Widget> ToList()
         {
             return _widgets;

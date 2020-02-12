@@ -21,8 +21,7 @@ using System.Threading;
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // eventually revert old drawing code
-// Add WidgetCollection, an IList that interfaces with widgets easier.
-// bug: parent is unused in Clone()
+// area_backing is causing an awful mess being treated as a cache most of the time
 
 namespace DownUnder.UI.Widgets
 {
@@ -894,8 +893,8 @@ namespace DownUnder.UI.Widgets
         public object Clone(Widget parent = null)
         {
             object c = DerivedClone(parent);
-            ((Widget)c).ParentWidget = ParentWidget;
-            ((Widget)c).ParentWindow = ParentWindow;
+            if (parent == null) ((Widget)c).Parent = Parent;
+            else ((Widget)c).Parent = parent;
 
             ((Widget)c).Name = Name;
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;

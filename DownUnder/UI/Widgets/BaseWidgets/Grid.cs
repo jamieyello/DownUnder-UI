@@ -26,6 +26,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
         private const int _RESIZING_ACCURACY = 1;
 
+        /// <summary> When set to true this widget will ignore children's invoking of UpdateArea(). </summary>
+        private bool _disable_update_area = false;
+
         #endregion
 
         #region Public Properties
@@ -46,6 +49,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public Grid(IWidgetParent parent, int x_length, int y_length, Widget filler = null)
             : base(parent)
         {
+            _disable_update_area = true;
             SetDefaults();
 
             if (filler == null)
@@ -56,6 +60,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             filler.Parent = this;
 
             _widgets = new WidgetArray(x_length, y_length, filler);
+            _disable_update_area = false;
             UpdateArea(true);
         }
 
@@ -117,65 +122,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             UpdateArea(true);
         }
 
-        private void AlignWidgets()
-        {
-            if (Dimensions.X == 0 || Dimensions.Y == 0) return;
-            AutoSizeAllWidgets();
-            SpaceAllCells();
-        }
-
-        /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>
-        private void AutoSizeAllWidgets()
-        {
-            for (int x = 0; x < _widgets.Count; x++)
-            {
-                AutoSizeCollumn(x);
-            }
-
-            for (int y = 0; y < _widgets[0].Count; y++)
-            {
-                AutoSizeRow(y);
-            }
-        }
-
-        private void AutoSizeCollumn(int collumn)
-        {
-            float x_width = _widgets.GetColumn(collumn).MaxSize.X;
-
-            for (int y = 0; y < _widgets[0].Count; y++)
-            {
-                if (_widgets[collumn][y].IsFixedWidth)
-                {
-                    x_width = _widgets[collumn][y].Width;
-                    break;
-                }
-            }
-
-            for (int y = 0; y < _widgets[0].Count; y++)
-            {
-                _widgets[collumn][y].Width = x_width;
-            }
-        }
-
-        private void AutoSizeRow(int row)
-        {
-            float max_y = _widgets.GetRow(row).MaxSize.Y;
-
-            for (int x = 0; x < _widgets.Count; x++)
-            {
-                if (_widgets[x][row].IsFixedHeight)
-                {
-                    max_y = _widgets[x][row].Height;
-                    break;
-                }
-            }
-
-            for (int x = 0; x < _widgets.Count; x++)
-            {
-                _widgets[x][row].Height = max_y;
-            }
-        }
-        
+        //this is currently not used
         private void SpaceAllCells()
         {
             if (_widgets.Count == 0 || _widgets[0].Count == 0) return;
@@ -301,6 +248,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
             set
             {
+                bool previous_area_update = _disable_update_area;
+                _disable_update_area = true;
                 RectangleF original_area = Area;
                 base.Area = value;
                 RectangleF new_area = area_backing;
@@ -310,7 +259,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 {
                     divider.Item1.Width = new_area.Width;
                 }
-
+                
                 Point2 fixed_size = FixedContentSizeTotal();
                 Point2 expansion_size = new Point2(
                     (new_area.Width - fixed_size.X) / (original_area.Width - fixed_size.X),
@@ -324,6 +273,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     divider.Item1.Height *= expansion_size.Y;
                 }
 
+                _disable_update_area = previous_area_update;
                 UpdateArea(false);
             }
         }
@@ -386,40 +336,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 return new RectangleF();
             }
 
-            //Point2 size = new Point2();
-            //RectangleF? widgets_size = _widgets.AreaCoverage;
-            //if (widgets_size == null) size = ((RectangleF)widgets_size).Size;
-
-            //Console.WriteLine(_widgets.AreaCoverage);
-
-            //Point2 size = ((RectangleF)_widgets.AreaCoverage).Size;
-
-            Point2 size = new Point();
-
-            for (int x = 0; x < _widgets.Count; x++)
-            {
-                size.X += _widgets[x][0].Width;
-            }
-
-            if (_widgets.Count != 0)
-            {
-                for (int y = 0; y < _widgets[0].Count; y++)
-                {
-                    size.Y += _widgets[0][y].Height;
-                }
-            }
-
-            foreach (var divider in dividers)
-            {
-                size.Y += divider.Item1.Height;
-            }
-
-            return new RectangleF(base.Area.Position, size);
+            return ((RectangleF)_widgets.AreaCoverage).WithPosition(base.Area.Position);
         }
 
         protected override void UpdateArea(bool update_parent)
         {
-            AlignWidgets();
+            if (_disable_update_area) return;
+            _widgets.Align();
             base.UpdateArea(update_parent);
         }
 
