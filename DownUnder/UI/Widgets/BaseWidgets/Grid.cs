@@ -122,54 +122,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             UpdateArea(true);
         }
 
-        //this is currently not used
-        private void SpaceAllCells()
-        {
-            if (_widgets.Count == 0 || _widgets[0].Count == 0) return;
-
-            Point2 position = new Point2();
-
-            for (int x = 0; x < _widgets.Count; x++)
-            {
-                position.Y = 0;
-                for (int y = 0; y < _widgets[0].Count; y++)
-                {
-                    foreach (var divider in dividers)
-                    {
-                        if (y == divider.Item2) position.Y += divider.Item1.Height;
-                    }
-
-                    _widgets[x][y].Position = position;
-                    position.Y += _widgets[x][y].Height;
-                }
-                position.X += _widgets[x][0].Width;
-            }
-
-            foreach (var divider in dividers)
-            {
-                // get offset of divider existing in the same row as other dividers
-                float same_row_divider_offset = 0f;
-                foreach (Widget divider_at in DividersAt(divider.Item2))
-                {
-                    if (divider_at == divider.Item1) break;
-                    else same_row_divider_offset += divider_at.Height;
-                }
-                
-                // if the divider's index is 0 set its position to 0,0
-                if (divider.Item2 == 0)
-                {
-                    divider.Item1.Position = new Point2(0, same_row_divider_offset);
-                }
-                // set the height to under the previous row
-                else
-                {
-                    divider.Item1.Position =
-                        _widgets[0][divider.Item2 - 1].Position.WithOffset(
-                        new Point2(0, _widgets[0][divider.Item2 - 1].Height + same_row_divider_offset));
-                }
-            }
-        }
-
         /// <summary> Returns a list of dividers that exist on the given row. </summary>
         public List<Widget> DividersAt(int y)
         {
@@ -248,85 +200,32 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
             set
             {
-                bool previous_area_update = _disable_update_area;
+                bool previous_disable_update_area = _disable_update_area;
                 _disable_update_area = true;
-                RectangleF original_area = Area;
-                base.Area = value;
-                RectangleF new_area = area_backing;
-                
-                // Update dividers width
+
+                float divider_height = 0f;
                 foreach (var divider in dividers)
                 {
-                    divider.Item1.Width = new_area.Width;
+                    divider_height += divider.Item1.Height;
                 }
-                
-                Point2 fixed_size = FixedContentSizeTotal();
-                Point2 expansion_size = new Point2(
-                    (new_area.Width - fixed_size.X) / (original_area.Width - fixed_size.X),
-                    (new_area.Height - fixed_size.Y) / (original_area.Height - fixed_size.Y))
-                    .Max(new Point2(0.001f, 0.001f));
-                
-                _widgets.ExpandAll(expansion_size);
+
+                _widgets.Align(value.WithHeight(value.Height - divider_height));
+                RectangleF? new_area = _widgets.AreaCoverage;
+                if (new_area == null) return;
 
                 foreach (var divider in dividers)
                 {
-                    divider.Item1.Height *= expansion_size.Y;
+                    divider.Item1.Area = new RectangleF(
+                        new_area.Value.X,
+                        _widgets.InsertSpaceY(divider.Item2, divider.Item1.Height),
+                        new_area.Value.Width,
+                        divider.Item1.Height
+                        );
                 }
 
-                _disable_update_area = previous_area_update;
-                UpdateArea(false);
+                _disable_update_area = previous_disable_update_area;
+                base.UpdateArea(true);
             }
-        }
-
-        /// <summary> The total height/width of contained widgets that won't resize. </summary>
-        private Point2 FixedContentSizeTotal()
-        {
-            Point2 fixed_size = new Point2();
-
-            for (int i = 0; i < Dimensions.X; i++)
-            {
-                float fixed_width = FixedWidthOfColumn(i);
-                if (fixed_width != -1f)
-                {
-                    fixed_size.X += fixed_width;
-                }
-            }
-
-            for (int i = 0; i < Dimensions.Y; i++)
-            {
-                float fixed_height = FixedHeightOfRow(i);
-                if (fixed_height != -1f)
-                {
-                    fixed_size.Y += fixed_height;
-                }
-            }
-
-            foreach (var divider in dividers)
-            {
-                if (divider.Item1.IsFixedHeight) fixed_size.Y += divider.Item1.Height;
-            }
-
-            return fixed_size;
-        }
-
-        float FixedHeightOfRow(int row)
-        {
-            for (int i = 0; i < Dimensions.X; i++)
-            {
-                if (_widgets[i][row].IsFixedHeight) return _widgets[i][row].Height;
-            }
-
-            return -1f;
-        }
-
-        float FixedWidthOfColumn(int column)
-        {
-            for (int i = 0; i < Dimensions.Y; i++)
-            {
-                if (_widgets[column][i].IsFixedWidth) return _widgets[column][i].Width;
-            }
-
-            return -1f;
         }
 
         private RectangleF GetContentArea()

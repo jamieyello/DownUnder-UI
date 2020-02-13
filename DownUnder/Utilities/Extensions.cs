@@ -158,6 +158,36 @@ namespace DownUnder
             return new Point2(p.X * p2.X, p.Y * p2.Y);
         }
 
+        public static Point2 DividedBy(this Point2 p, float scale)
+        {
+            return new Point2(p.X / scale, p.Y / scale);
+        }
+
+        public static Point2 DividedBy(this Point2 p, Point2 p2)
+        {
+            return new Point2(p.X / p2.X, p.Y / p2.Y);
+        }
+
+        public static float LesserValue(this Point2 p)
+        {
+            return MathHelper.Min(p.X, p.Y);
+        }
+
+        public static float GreaterValue(this Point2 p)
+        {
+            return MathHelper.Max(p.X, p.Y);
+        }
+
+        public static Point2 WithMinValue(this Point2 p, float v)
+        {
+            return new Point2(MathHelper.Max(p.X, v), MathHelper.Max(p.Y, v));
+        }
+
+        public static Point2 WithMaxValue(this Point2 p, float v)
+        {
+            return new Point2(MathHelper.Min(p.X, v), MathHelper.Min(p.Y, v));
+        }
+
         /// <summary>
         /// Returns an <see cref="int" /> rounded to the nearest integer value.
         /// </summary>

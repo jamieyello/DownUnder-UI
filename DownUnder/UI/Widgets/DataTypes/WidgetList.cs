@@ -49,6 +49,32 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
+        public float CombinedHeight
+        {
+            get
+            {
+                float result = 0f;
+                foreach (Widget widget in _widgets)
+                {
+                    result += widget.Height;
+                }
+                return result;
+            }
+        }
+
+        public float CombinedWidth
+        {
+            get
+            {
+                float result = 0f;
+                foreach (Widget widget in _widgets)
+                {
+                    result += widget.Width;
+                }
+                return result;
+            }
+        }
+
         public void ExpandAll(float modifier)
         {
             foreach (Widget widget in _widgets)
