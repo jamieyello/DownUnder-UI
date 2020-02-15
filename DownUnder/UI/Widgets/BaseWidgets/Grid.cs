@@ -27,7 +27,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private const int _RESIZING_ACCURACY = 1;
 
         /// <summary> When set to true this widget will ignore children's invoking of UpdateArea(). </summary>
-        private bool _disable_update_area = false;
+        protected bool _disable_update_area = false;
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
             _widgets = new WidgetArray(x_length, y_length, filler);
             _disable_update_area = false;
-            UpdateArea(true);
+            UpdateArea(false);
         }
 
         private void SetDefaults()
@@ -140,7 +140,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             // Create cell
             Layout default_widget = new Layout(this);
-            default_widget.SnappingPolicy = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
             default_widget.OutlineSides = Directions2D.DownRight;
             default_widget.FitToContentArea = true;
             return default_widget;
@@ -160,46 +159,34 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return _widgets.IndexOf(widget);
         }
         
-        public void SetCell(int x, int y, Widget widget, bool update_parent = false)
+        public void SetCell(int x, int y, Widget widget, bool preserve_cell_area = false, bool update_parent = true)
         {
             widget.Parent = this;
 
-            widget.Area = _widgets[x][y].Area;
+            if (preserve_cell_area) widget.Area = _widgets[x][y].Area;
             _widgets[x][y] = widget;
             UpdateArea(update_parent);
         }
 
-        public void AddToCell(int x, int y, Widget widget, bool update_parent = false)
+        /// <summary> Returns the WidgetArray used by this Grid. Does not include dividers. </summary>
+        public WidgetArray ToWidgetArray()
         {
-            if (widget.IsOwned)
-            {
-                if (widget.Parent != this)
-                {
-                    throw new Exception($"(Name = {Name}, widget.Name {widget.Name}) Cannot use widget owned by something else.");
-                }
-            }
-
-            if (!(_widgets[x][y] is Layout))
-            {
-                throw new Exception($"Cannot add widget to cell[{x}][{y}], because cell[{x}][{y}] is not a Layout. widgets[{x}][{y}].GetType() = {_widgets[x][y].GetType()}");
-            } 
-            ((Layout)_widgets[x][y]).AddWidget(widget);
-            UpdateArea(update_parent);
+            return _widgets;
         }
 
         #endregion Public Methods
 
         #region Overrides
 
+        private Point2 _area_position_backing = new Point2();
+
         /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
         public override RectangleF Area
         {
-            get
-            {
-                return GetContentArea();
-            }
+            get => (Dimensions.X == 0 || Dimensions.Y == 0) ? new RectangleF() : _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
             set
             {
+                //Console.WriteLine("setting area to " + value);
                 bool previous_disable_update_area = _disable_update_area;
                 _disable_update_area = true;
 
@@ -209,7 +196,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     divider_height += divider.Item1.Height;
                 }
 
-                _widgets.Align(value.WithHeight(value.Height - divider_height));
+                _area_position_backing = value.Position;
+                _widgets.Align(value.WithHeight(value.Height - divider_height).SizeOnly());
                 RectangleF? new_area = _widgets.AreaCoverage;
                 if (new_area == null) return;
 
@@ -226,16 +214,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 _disable_update_area = previous_disable_update_area;
                 base.UpdateArea(true);
             }
-        }
-
-        private RectangleF GetContentArea()
-        {
-            if (Dimensions.X == 0 || Dimensions.Y == 0)
-            {
-                return new RectangleF();
-            }
-
-            return ((RectangleF)_widgets.AreaCoverage).WithPosition(base.Area.Position);
         }
 
         protected override void UpdateArea(bool update_parent)

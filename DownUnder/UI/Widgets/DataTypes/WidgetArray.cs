@@ -110,8 +110,6 @@ namespace DownUnder.UI.Widgets.DataTypes
 
                 position.X += _widgets[x][0].Width;
             }
-
-            Console.WriteLine($"Start {start} AreaCoverage {AreaCoverage}");
         }
         
         /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 // Todo: add TextArea property
@@ -19,6 +18,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private string _text_backing = "";
         private bool _editing_enabled_backing = false;
         private TextCursor _text_cursor;
+        protected bool _disable_area_update = true;
 
         #endregion Fields
 
@@ -76,6 +76,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             : base(parent)
         {
             SetDefaults();
+            _disable_area_update = false;
         }
 
         public Label(IWidgetParent parent, string text)
@@ -83,6 +84,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             SetDefaults();
             Text = text;
+            _disable_area_update = false;
         }
 
         public Label(IWidgetParent parent, SpriteFont sprite_font, string text = "")
@@ -91,6 +93,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             SpriteFont = sprite_font;
             SetDefaults();
             Text = text;
+            _disable_area_update = false;
         }
 
         private void SetDefaults()
@@ -143,7 +146,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             get => new WidgetList();
         }
-        
+
+        protected override void UpdateArea(bool update_parent)
+        {
+            if (_disable_area_update) return;
+            base.UpdateArea(update_parent);
+        }
+
         #endregion Overrides
 
         #region Event Handlers

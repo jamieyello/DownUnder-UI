@@ -32,25 +32,25 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             ((Layout)main_grid.GetCell(0, 0)).AddWidget(project);
             AddWidget(main_grid);
-            
+
             Grid sidebar = new Grid(main_grid, 1, 2);
             Label test = new Label(sidebar, "Future area for CommonControls.");
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
-            sidebar.AddToCell(0, 0, test);
-            sidebar.AddToCell(0, 1, property_grid);
-            sidebar.GetCell(0, 1).debug_output = true;
-            main_grid.AddToCell(1, 0, sidebar);
+            sidebar.SetCell(0, 0, test, true);
+            //sidebar.SetCell(0, 1, property_grid, true);
+            //sidebar.GetCell(0, 1).debug_output = true;
+            //main_grid.SetCell(1, 0, sidebar, true);
 
-            property_grid.EditingEnabled = true;
-            var grid_layout = main_grid.GetCell(1, 0);
-            grid_layout.Name = "Grid Container";
-            property_grid.Name = "Property grid";
+            //property_grid.EditingEnabled = true;
+            //var grid_layout = main_grid.GetCell(1, 0);
+            //grid_layout.Name = "Grid Container";
+            //property_grid.Name = "Property grid";
 
-            editor_objects = new EditorObjects
-            {
-                project = project,
-                property_grid = property_grid
-            };
+            editor_objects = null;// new EditorObjects
+            //{
+            //    project = project,
+            //    property_grid = property_grid
+            //};
             //editor_objects.fields = fields;
         }
 

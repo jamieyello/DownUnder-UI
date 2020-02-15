@@ -38,9 +38,11 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         public PropertyGrid(IWidgetParent parent, object obj) 
             : base(parent, 2, obj.GetType().GetProperties().Length)
         {
+            bool previous_disable_update_area = _disable_update_area;
+            _disable_update_area = true;
             var properties = obj.GetType().GetProperties();
             if (properties.Length == 0) { throw new Exception("No properties in object."); }
-
+            
             for (int i = 0; i < properties.Length; i++)
             {
                 SetCell(0, i, new Label(
@@ -81,6 +83,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     SetCell(1, i, label);
                 }
             }
+            _disable_update_area = false;
         }
 
         #endregion

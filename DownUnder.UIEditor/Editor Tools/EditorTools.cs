@@ -15,7 +15,7 @@ namespace DownUnder.UIEditor
             Layout layout = new Layout(parent);
             layout.DrawBackground = true;
             Grid test_grid = new Grid(parent, 2, 5);
-            test_grid.SnappingPolicy = DiagonalDirections2D.TopLeft;
+            test_grid.SnappingPolicy = DiagonalDirections2D.None;
             test_grid.InsertDivider(new Label(null, "Divider") { IsFixedHeight = true }, 2);
             test_grid.Area = new RectangleF(50f, 50f, 300f, 300f);
             Console.WriteLine("result area " + test_grid.Area);
