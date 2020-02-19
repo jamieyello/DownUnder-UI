@@ -577,7 +577,9 @@ namespace DownUnder.UI.Widgets
             switch (DrawMode)
             {
                 case DrawingMode.direct:
-                    DrawDirect(sprite_batch);
+                    SpriteBatch.Begin();
+                    DrawDirect(SpriteBatch);
+                    SpriteBatch.End();
                     break;
 
                 case DrawingMode.use_render_target:
@@ -601,7 +603,18 @@ namespace DownUnder.UI.Widgets
                 return;
             }
             
-            if (SpriteBatch.)
+            if (DrawBackground)
+            {
+                sprite_batch.FillRectangle(DrawingArea, Theme.BackgroundColor.CurrentColor);
+            }
+            
+            foreach (Widget child in Children)
+            {
+                child.DrawDirect(sprite_batch);
+            }
+
+            DrawOverlay(sprite_batch);
+            
             OnDraw?.Invoke(this, EventArgs.Empty);
         }
 
@@ -677,7 +690,7 @@ namespace DownUnder.UI.Widgets
                 }
                 i++;
             }
-            DrawOverlay();
+            DrawOverlay(SpriteBatch);
 
             SpriteBatch.End();
 
@@ -845,14 +858,14 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this widget. </summary>
-        private void DrawOverlay()
+        private void DrawOverlay(SpriteBatch sprite_batch)
         {
             if (DrawOutline)
             {
                 DrawingTools.DrawBorder(
-                    _white_dot, 
-                    SpriteBatch,
-                    Area.SizeOnly().ToRectangle(), 
+                    _white_dot,
+                    sprite_batch,
+                    DrawingArea.ToRectangle(), 
                     OutlineThickness, 
                     Theme.OutlineColor.CurrentColor, 
                     OutlineSides
@@ -860,7 +873,7 @@ namespace DownUnder.UI.Widgets
             }
 
             if (this is IScrollableWidget scroll_widget){
-                scroll_widget.ScrollBars.Draw(SpriteBatch);
+                scroll_widget.ScrollBars.Draw(sprite_batch);
             }
 
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
