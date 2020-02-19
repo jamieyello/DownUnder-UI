@@ -13,19 +13,18 @@ namespace DownUnder.UIEditor
         public static Layout TestLayout(DWindow parent)
         {
             Layout layout = new Layout(parent);
-            layout.DrawBackground = true;
             Grid test_grid = new Grid(parent, 2, 5);
             test_grid.SnappingPolicy = DiagonalDirections2D.None;
             test_grid.InsertDivider(new Label(null, "Divider") { IsFixedHeight = true }, 2);
             test_grid.Area = new RectangleF(50f, 50f, 300f, 300f);
             Console.WriteLine("result area " + test_grid.Area);
 
-            //test_grid.SetCell
-            //    (
-            //    0, 2, new Label(test_grid, "Whoop") { ConstrainAreaToText = true }
-            //    );
+            test_grid.SetCell
+                (
+                0, 2, new Label(test_grid, "Whoop") { ConstrainAreaToText = true }
+                );
 
-            //test_grid.InsertDivider(new Label(null, "Second Divider") { IsFixedHeight = true }, 0);
+            test_grid.InsertDivider(new Label(null, "Second Divider") { IsFixedHeight = true }, 0);
             //test_grid.InsertDivider(new Label(null, "Third Divider") { IsFixedHeight = true }, 0);
             //test_grid.InsertDivider(new Label(null, "Fourth Divider") { IsFixedHeight = true }, 0);
             //test_grid.InsertDivider(new Label(null, "Middle Divider") { IsFixedHeight = true }, 3);
@@ -41,6 +40,20 @@ namespace DownUnder.UIEditor
             
             //layout.AddWidget(widget);
 
+            return layout;
+        }
+
+        public static Layout TestLayout2(DWindow parent)
+        {
+            Layout layout = new Layout(parent);
+            Grid test_grid = new Grid(parent, 2, 2);
+            test_grid.SnappingPolicy = DiagonalDirections2D.None;
+            test_grid.Area = new RectangleF(50f, 50f, 300f, 300f);
+            Grid inner_grid = new Grid(test_grid, 2, 2);
+            test_grid.SetCell(0, 0, inner_grid);
+
+            layout.AddWidget(test_grid);
+            
             return layout;
         }
 

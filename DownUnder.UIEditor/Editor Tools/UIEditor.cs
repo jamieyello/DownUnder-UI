@@ -4,6 +4,7 @@ using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
@@ -36,10 +37,12 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid sidebar = new Grid(main_grid, 1, 2);
             Label test = new Label(sidebar, "Future area for CommonControls.");
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
+            Console.WriteLine($"Sidebar Area pre-SetCell {sidebar.Area} ");
             sidebar.SetCell(0, 0, test, true);
+            Console.WriteLine($"Sidebar Area post-SetCell {sidebar.Area} ");
             //sidebar.SetCell(0, 1, property_grid, true);
-            //sidebar.GetCell(0, 1).debug_output = true;
-            //main_grid.SetCell(1, 0, sidebar, true);
+            sidebar.GetCell(0, 1).debug_output = true;
+            main_grid.SetCell(1, 0, sidebar);
 
             //property_grid.EditingEnabled = true;
             //var grid_layout = main_grid.GetCell(1, 0);

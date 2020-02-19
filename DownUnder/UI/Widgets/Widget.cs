@@ -570,14 +570,14 @@ namespace DownUnder.UI.Widgets
             foreach (Widget child in Children)
             {
                 renders.Add(child.Render());
-                if (child is IScrollableWidget s_widget)
-                {
-                    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
-                }
-                else
-                {
+                //if (child is IScrollableWidget s_widget)
+                //{
+                //    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
+                //}
+                //else
+                //{
                     areas.Add(child.Area);
-                }
+                //}
             }
             
             GraphicsDevice.SetRenderTarget(_render_target);
@@ -593,24 +593,25 @@ namespace DownUnder.UI.Widgets
             int i = 0;
             foreach (Widget child in Children)
             {
-                if (this is IScrollableWidget s_this)
-                {
-                    SpriteBatch.Draw
-                        (
-                        renders[i],
-                        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
-                        Color.White
-                        );
-                }
-                else
-                {
+                //if (this is IScrollableWidget s_this)
+                //{
+                //    SpriteBatch.Draw
+                //        (
+                //        renders[i],
+                //        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
+                //        Color.White
+                //        );
+                //}
+                //else
+                //{
                     SpriteBatch.Draw
                         (
                         renders[i], 
-                        areas[i].Position.Floored(), 
+                        areas[i].ToRectangle(),
+                        //Area.ToRectangle(),
                         Color.White
                         );
-                }
+                //}
                 i++;
             }
             DrawOverlay();
@@ -858,6 +859,7 @@ namespace DownUnder.UI.Widgets
 
             if (size.ToPoint() != _render_target?.Size().ToPoint())
             {
+                //Console.WriteLine($"\nUpdating {Name} Area\nPrevious: {_render_target?.Size().ToPoint()}\nNew: {size.ToPoint()}\n");
                 if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
                 {
                     size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));

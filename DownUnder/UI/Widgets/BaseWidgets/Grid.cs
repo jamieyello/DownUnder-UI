@@ -159,13 +159,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return _widgets.IndexOf(widget);
         }
         
-        public void SetCell(int x, int y, Widget widget, bool preserve_cell_area = false, bool update_parent = true)
+        public void SetCell(int x, int y, Widget widget, bool preserve_cell_area = true, bool update_parent = true)
         {
             widget.Parent = this;
 
             if (preserve_cell_area) widget.Area = _widgets[x][y].Area;
             _widgets[x][y] = widget;
-            UpdateArea(update_parent);
         }
 
         /// <summary> Returns the WidgetArray used by this Grid. Does not include dividers. </summary>
@@ -186,7 +185,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get => (Dimensions.X == 0 || Dimensions.Y == 0) ? new RectangleF() : _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
             set
             {
-                //Console.WriteLine("setting area to " + value);
                 bool previous_disable_update_area = _disable_update_area;
                 _disable_update_area = true;
 
@@ -219,7 +217,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         protected override void UpdateArea(bool update_parent)
         {
             if (_disable_update_area) return;
-            _widgets.Align();
+
+            // Prevent the child widgets from calling this function
+            bool previous_disable_update_area = _disable_update_area;
+            _disable_update_area = true;
+
+            _widgets.Align(Area);
+
+            _disable_update_area = previous_disable_update_area;
+
             base.UpdateArea(update_parent);
         }
 
