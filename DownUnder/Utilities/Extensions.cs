@@ -130,19 +130,19 @@ namespace DownUnder
             return new Point2((int)(p.X + 0.5f), (int)(p.Y + 0.5f));
         }
 
-        /// <summary> Returns true if this <see cref="Point2" />'s X or Y field is larger than the given one's. </summary>
+        /// <summary> Returns true if this <see cref="Point2"/>'s X or Y field is larger than the given one's. </summary>
         public static bool IsLargerThan(this Point2 p, Point2 p2)
         {
             return (p.X > p2.X || p.Y > p2.Y);
         }
 
-        /// <summary> Returns a new <see cref="Point2" /> with the highest X and Y values of both given Points. </summary>
+        /// <summary> Returns a new <see cref="Point2"/> with the highest X and Y values of both given Points. </summary>
         public static Point2 Max(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Max(p.X, p2.X), MathHelper.Max(p.Y, p2.Y));
         }
 
-        /// <summary> Returns a new <see cref="Point2" /> with the lowest X and Y values of both given Points. </summary>
+        /// <summary> Returns a new <see cref="Point2"/> with the lowest X and Y values of both given Points. </summary>
         public static Point2 Min(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Min(p.X, p2.X), MathHelper.Min(p.Y, p2.Y));
@@ -188,31 +188,19 @@ namespace DownUnder
             return new Point2(MathHelper.Min(p.X, v), MathHelper.Min(p.Y, v));
         }
 
-        /// <summary>
-        /// Returns an <see cref="int" /> rounded to the nearest integer value.
-        /// </summary>
-        /// <param name="v"></param>
-        /// <returns></returns>
+        /// <summary> Returns an <see cref="int"/> rounded to the nearest integer value. </summary>
         public static int Rounded(this float f)
         {
             return (int)(f + 0.5f);
         }
 
-        /// <summary>
-        /// Returns a new <see cref="Rectangle" /> without the position values.
-        /// </summary>
-        /// <param name="r"></param>
-        /// <returns></returns>
+        /// <summary> Returns a new <see cref="Rectangle"/> without the position values. </summary>
         public static Rectangle SizeOnly(this Rectangle r)
         {
             return new Rectangle(new Point(), r.Size);
         }
 
-        /// <summary>
-        /// Returns a new RectangleF without the position values.
-        /// </summary>
-        /// <param name="r"></param>
-        /// <returns></returns>
+        /// <summary> Returns a new RectangleF without the position values. </summary>
         public static RectangleF SizeOnly(this RectangleF r)
         {
             return new RectangleF(new Point2(), r.Size);

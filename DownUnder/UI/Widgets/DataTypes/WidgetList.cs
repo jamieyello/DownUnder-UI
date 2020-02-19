@@ -9,16 +9,17 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
+    /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     public class WidgetList : IList<Widget>
     {
-        protected List<Widget> _widgets = new List<Widget>();
+        protected List<Widget> Widgets { get; set; } = new List<Widget>();
         
         public WidgetList() { }
         public WidgetList(List<Widget> widget_list)
         {
             foreach (Widget widget in widget_list)
             {
-                ((IList<Widget>)_widgets).Add(widget);
+                ((IList<Widget>)Widgets).Add(widget);
             }
         }
 
@@ -27,7 +28,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             get
             {
                 Point2 max_size = new Point2();
-                foreach (Widget widget in _widgets)
+                foreach (Widget widget in Widgets)
                 {
                     max_size = max_size.Max(widget.Size);
                 }
@@ -40,10 +41,10 @@ namespace DownUnder.UI.Widgets.DataTypes
             get
             {
                 if (Count == 0) return null;
-                RectangleF result = _widgets[0].Area;
-                for (int i = 1; i < _widgets.Count; i++)
+                RectangleF result = Widgets[0].Area;
+                for (int i = 1; i < Widgets.Count; i++)
                 {
-                    result = result.Union(_widgets[i].Area);
+                    result = result.Union(Widgets[i].Area);
                 }
                 return result;
             }
@@ -54,7 +55,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             get
             {
                 float result = 0f;
-                foreach (Widget widget in _widgets)
+                foreach (Widget widget in Widgets)
                 {
                     result += widget.Height;
                 }
@@ -67,7 +68,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             get
             {
                 float result = 0f;
-                foreach (Widget widget in _widgets)
+                foreach (Widget widget in Widgets)
                 {
                     result += widget.Width;
                 }
@@ -77,7 +78,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void ExpandAll(float modifier)
         {
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 widget.Area = widget.Area.Resized(modifier);
             }
@@ -85,7 +86,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void ExpandAll(Point2 modifier)
         {
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 widget.Area = widget.Area.Resized(modifier);
             }
@@ -96,7 +97,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             float new_width = MaxSize.X;
             
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 if (widget.IsFixedWidth)
                 {
@@ -113,7 +114,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             float new_height = MaxSize.Y;
 
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 if (widget.IsFixedHeight)
                 {
@@ -127,7 +128,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void SetAllWidth(float width)
         {
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 widget.Width = width;
             }
@@ -135,7 +136,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void SetAllHeight(float height)
         {
-            foreach (Widget widget in _widgets)
+            foreach (Widget widget in Widgets)
             {
                 widget.Height = height;
             }
@@ -143,74 +144,79 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public List<Widget> ToList()
         {
-            return _widgets;
+            return Widgets;
         }
 
         #region IList Implementation
 
         public Widget this[int index]
         {
-            get => ((IList<Widget>)_widgets)[index];
-            set => ((IList<Widget>)_widgets)[index] = value;
+            get => ((IList<Widget>)Widgets)[index];
+            set => ((IList<Widget>)Widgets)[index] = value;
         }
 
-        public int Count => ((IList<Widget>)_widgets).Count;
+        public int Count => ((IList<Widget>)Widgets).Count;
 
-        public bool IsReadOnly => ((IList<Widget>)_widgets).IsReadOnly;
-
+        public bool IsReadOnly => ((IList<Widget>)Widgets).IsReadOnly;
+        
         public static implicit operator List<Widget>(WidgetList v)
         {
-            return v._widgets;
+            return v.Widgets;
         }
 
         public void Add(Widget widget)
         {
-            ((IList<Widget>)_widgets).Add(widget);
+            ((IList<Widget>)Widgets).Add(widget);
         }
 
         public void Clear()
         {
-            ((IList<Widget>)_widgets).Clear();
+            ((IList<Widget>)Widgets).Clear();
         }
 
         public bool Contains(Widget widget)
         {
-            return ((IList<Widget>)_widgets).Contains(widget);
+            return ((IList<Widget>)Widgets).Contains(widget);
         }
 
         public void CopyTo(Widget[] array, int array_index)
         {
-            ((IList<Widget>)_widgets).CopyTo(array, array_index);
+            ((IList<Widget>)Widgets).CopyTo(array, array_index);
         }
 
         public IEnumerator<Widget> GetEnumerator()
         {
-            return ((IList<Widget>)_widgets).GetEnumerator();
+            return ((IList<Widget>)Widgets).GetEnumerator();
         }
 
         public int IndexOf(Widget widget)
         {
-            return ((IList<Widget>)_widgets).IndexOf(widget);
+            return ((IList<Widget>)Widgets).IndexOf(widget);
         }
 
         public void Insert(int index, Widget widget)
         {
-            ((IList<Widget>)_widgets).Insert(index, widget);
+            ((IList<Widget>)Widgets).Insert(index, widget);
         }
 
         public bool Remove(Widget widget)
         {
-            return ((IList<Widget>)_widgets).Remove(widget);
+            return ((IList<Widget>)Widgets).Remove(widget);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<Widget>)_widgets).RemoveAt(index);
+            ((IList<Widget>)Widgets).RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IList<Widget>)_widgets).GetEnumerator();
+            return ((IList<Widget>)Widgets).GetEnumerator();
+        }
+
+        internal void AddRange(WidgetList allContainedWidgets)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

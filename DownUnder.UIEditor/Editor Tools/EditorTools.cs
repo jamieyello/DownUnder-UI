@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
@@ -50,11 +51,18 @@ namespace DownUnder.UIEditor
             test_grid.SnappingPolicy = DiagonalDirections2D.None;
             test_grid.Area = new RectangleF(50f, 50f, 300f, 300f);
             Grid inner_grid = new Grid(test_grid, 2, 2);
+            inner_grid.GetCell(1,1).OnUpdate += PrintDisplayArea;
             test_grid.SetCell(0, 0, inner_grid);
 
             layout.AddWidget(test_grid);
             
             return layout;
+        }
+
+        private static void PrintDisplayArea(object sender, EventArgs args)
+        {
+            Widget w = (Widget)sender;
+            Console.WriteLine($"DisplayArea {w.DisplayArea}");
         }
 
         public static Layout ScrollTestLayout(IWidgetParent parent, SpriteFont sprite_font, out EditorObjects editor_objects)

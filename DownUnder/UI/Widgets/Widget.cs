@@ -22,6 +22,8 @@ using System.Threading;
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // eventually revert old drawing code
 // area_backing is causing an awful mess being treated as a cache most of the time
+// Most update code can be moved
+// By current logic, should DrawMode be an auto-property?
 
 namespace DownUnder.UI.Widgets
 {
@@ -40,13 +42,13 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
-        
+
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
 
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
         private float _triple_click_countdown = 0f;
-        
+
         private Point2 _previous_cursor_position = new Point2();
 
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
@@ -84,6 +86,17 @@ namespace DownUnder.UI.Widgets
         private BaseColorScheme _theme_backing;
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
+        private DrawingMode _draw_mode_backing = DrawingMode.direct;
+
+        public enum DrawingMode
+        {
+            /// <summary> Draw nothing. </summary>
+            disable,
+            /// <summary> Draw directly to the current render target without switching or clearing it. (default) </summary>
+            direct,
+            /// <summary> Draw this and all children to a render target before drawing to the current render target. (Will clear the target unless disabled)</summary>
+            use_render_target
+        }
 
         #endregion
 
@@ -129,13 +142,13 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> While set to true this widget will lock its current height. </summary>
         [DataMember] public bool IsFixedHeight { get; set; } = false;
-
+        
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
         /// <summary> The local sprite batch used by this widget. </summary>
         public SpriteBatch SpriteBatch { get; private set; }
-
+        
         #endregion
 
         #region Non-auto properties
@@ -193,6 +206,20 @@ namespace DownUnder.UI.Widgets
                 if (_theme_backing != null)
                 {
                     _theme_backing.Parent = this;
+                }
+            }
+        }
+
+        /// <summary> How this Widget should be drawn. Unless render targets are needed, <see cref="DrawingMode.direct"/> should be used for performance. </summary>
+        [DataMember] public DrawingMode DrawMode
+        {
+            get => _draw_mode_backing;
+            set
+            {
+                _draw_mode_backing = value;
+                foreach (Widget child in Children)
+                {
+                    child.DrawMode = value;
                 }
             }
         }
@@ -256,7 +283,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> The area of the screen that this widget can draw to. </summary>
         public RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
-        /// <summary> Returns the IWidgetParent of this widget. </summary>
+        /// <summary> The area this widget should be drawing to. </summary>
+        public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : DisplayArea;
+
+        /// <summary> Returns the parent of this widget. </summary>
         public IWidgetParent Parent
         {
             get => ParentWidget != null ? 
@@ -305,6 +335,7 @@ namespace DownUnder.UI.Widgets
             {
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
+                if (value != null) DrawMode = value.DrawMode;
             }
         }
 
@@ -324,15 +355,15 @@ namespace DownUnder.UI.Widgets
         public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
 
         /// <summary> This widget plus all widgets contained in this widget. </summary>
-        public List<Widget> AllContainedWidgets
+        public WidgetList AllContainedWidgets
         {
             get
             {
-                List<Widget> result = new List<Widget> { this };
+                WidgetList result = new WidgetList { this };
 
                 foreach (Widget child in Children)
                 {
-                    result.AddRange(child.AllContainedWidgets);
+                    result.ToList().AddRange(child.AllContainedWidgets);
                 }
 
                 return result;
@@ -541,11 +572,44 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draws this widget (and all children) to the screen. Currently clears the screen on calling. </summary>
-        public void Draw()
+        public void Draw(SpriteBatch sprite_batch = null)
         {
-            Render();
+            switch (DrawMode)
+            {
+                case DrawingMode.direct:
+                    DrawDirect(sprite_batch);
+                    break;
 
-            GraphicsDevice.SetRenderTarget(null);
+                case DrawingMode.use_render_target:
+                    DrawUsingRenderTargets();
+                    break;
+
+                case DrawingMode.disable:
+                    break;
+
+                default:
+                    throw new Exception("DrawingMode not supported in Draw.");
+            }
+        }
+
+        private void DrawDirect(SpriteBatch sprite_batch)
+        {
+            _graphics_in_use = true;
+            if (_graphics_updating)
+            {
+                _graphics_in_use = false;
+                return;
+            }
+            
+            if (SpriteBatch.)
+            OnDraw?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void DrawUsingRenderTargets()
+        {
+            var previous_render_targets = GraphicsDevice.GetRenderTargets();
+            Render();
+            GraphicsDevice.SetRenderTargets(previous_render_targets);
             SpriteBatch.Begin();
             SpriteBatch.Draw(_render_target, Area.ToRectangle(), Color.White);
             SpriteBatch.End();
@@ -570,14 +634,14 @@ namespace DownUnder.UI.Widgets
             foreach (Widget child in Children)
             {
                 renders.Add(child.Render());
-                //if (child is IScrollableWidget s_widget)
-                //{
-                //    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
-                //}
-                //else
-                //{
+                if (child is IScrollableWidget s_widget)
+                {
+                    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
+                }
+                else
+                {
                     areas.Add(child.Area);
-                //}
+                }
             }
             
             GraphicsDevice.SetRenderTarget(_render_target);
@@ -593,25 +657,24 @@ namespace DownUnder.UI.Widgets
             int i = 0;
             foreach (Widget child in Children)
             {
-                //if (this is IScrollableWidget s_this)
-                //{
-                //    SpriteBatch.Draw
-                //        (
-                //        renders[i],
-                //        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
-                //        Color.White
-                //        );
-                //}
-                //else
-                //{
+                if (this is IScrollableWidget s_this)
+                {
+                    SpriteBatch.Draw
+                        (
+                        renders[i],
+                        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
+                        Color.White
+                        );
+                }
+                else
+                {
                     SpriteBatch.Draw
                         (
                         renders[i], 
                         areas[i].ToRectangle(),
-                        //Area.ToRectangle(),
                         Color.White
                         );
-                //}
+                }
                 i++;
             }
             DrawOverlay();
@@ -786,7 +849,14 @@ namespace DownUnder.UI.Widgets
         {
             if (DrawOutline)
             {
-                DrawingTools.DrawBorder(_white_dot, SpriteBatch, Area.SizeOnly().ToRectangle(), OutlineThickness, Theme.OutlineColor.CurrentColor, OutlineSides);
+                DrawingTools.DrawBorder(
+                    _white_dot, 
+                    SpriteBatch,
+                    Area.SizeOnly().ToRectangle(), 
+                    OutlineThickness, 
+                    Theme.OutlineColor.CurrentColor, 
+                    OutlineSides
+                    );
             }
 
             if (this is IScrollableWidget scroll_widget){
@@ -915,7 +985,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).IsFixedWidth = IsFixedWidth;
             ((Widget)c).IsFixedHeight = IsFixedHeight;
             ((Widget)c).PaletteUsage = PaletteUsage;
-
+            ((Widget)c).DrawMode = DrawMode;
             ((Widget)c).debug_output = debug_output;
 
             return c;
