@@ -145,6 +145,35 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return default_widget;
         }
 
+        private void Align(RectangleF value)
+        {
+            bool previous_disable_update_area = _disable_update_area;
+            _disable_update_area = true;
+
+            float divider_height = 0f;
+            foreach (var divider in dividers)
+            {
+                divider_height += divider.Item1.Height;
+            }
+
+            _area_position_backing = value.Position;
+            _widgets.Align(value.WithHeight(value.Height - divider_height).SizeOnly());
+            RectangleF? new_area = _widgets.AreaCoverage;
+            if (new_area == null) return;
+
+            foreach (var divider in dividers)
+            {
+                divider.Item1.Area = new RectangleF(
+                    new_area.Value.X,
+                    _widgets.InsertSpaceY(divider.Item2, divider.Item1.Height),
+                    new_area.Value.Width,
+                    divider.Item1.Height
+                    );
+            }
+
+            _disable_update_area = previous_disable_update_area;
+        }
+
         #endregion Private Methods
 
         #region Public Methods
@@ -185,46 +214,14 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get => (Dimensions.X == 0 || Dimensions.Y == 0) ? new RectangleF() : _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
             set
             {
-                bool previous_disable_update_area = _disable_update_area;
-                _disable_update_area = true;
-
-                float divider_height = 0f;
-                foreach (var divider in dividers)
-                {
-                    divider_height += divider.Item1.Height;
-                }
-
-                _area_position_backing = value.Position;
-                _widgets.Align(value.WithHeight(value.Height - divider_height).SizeOnly());
-                RectangleF? new_area = _widgets.AreaCoverage;
-                if (new_area == null) return;
-
-                foreach (var divider in dividers)
-                {
-                    divider.Item1.Area = new RectangleF(
-                        new_area.Value.X,
-                        _widgets.InsertSpaceY(divider.Item2, divider.Item1.Height),
-                        new_area.Value.Width,
-                        divider.Item1.Height
-                        );
-                }
-
-                _disable_update_area = previous_disable_update_area;
-                base.UpdateArea(true);
+                Align(value);
             }
         }
 
         protected override void UpdateArea(bool update_parent)
         {
             if (_disable_update_area) return;
-
-            // Prevent the child widgets from calling this function
-            bool previous_disable_update_area = _disable_update_area;
-            _disable_update_area = true;
-
-            _widgets.Align(Area);
-
-            _disable_update_area = previous_disable_update_area;
+            Align(Area);
 
             base.UpdateArea(update_parent);
         }

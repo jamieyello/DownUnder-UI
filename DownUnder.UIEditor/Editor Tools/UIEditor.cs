@@ -39,10 +39,16 @@ namespace DownUnder.UIEditor.Editor_Tools
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
             Console.WriteLine($"Sidebar Area pre-SetCell {sidebar.Area} ");
             sidebar.SetCell(0, 0, test, true);
-            Console.WriteLine($"Sidebar Area post-SetCell {sidebar.Area} ");
-            //sidebar.SetCell(0, 1, property_grid, true);
-            sidebar.GetCell(0, 1).debug_output = true;
-            main_grid.SetCell(1, 0, sidebar);
+            Console.WriteLine($"Sidebar Area post-test {sidebar.Area} ");
+            sidebar.SetCell(0, 1, property_grid, true);
+            Console.WriteLine($"Sidebar Area post-propertygrid {sidebar.Area} ");
+            sidebar.debug_output = true;
+            sidebar.Size = new Point2(100, 100);
+            sidebar.debug_output = false;
+            Console.WriteLine($"Sidebar Area post-area set {sidebar.Area} ");
+
+            //sidebar.GetCell(0, 1).debug_output = true;
+            //main_grid.SetCell(1, 0, sidebar);
 
             //property_grid.EditingEnabled = true;
             //var grid_layout = main_grid.GetCell(1, 0);

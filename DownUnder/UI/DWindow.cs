@@ -407,9 +407,9 @@ namespace DownUnder.UI
             base.Update(game_time);
         }
 
-        protected void DrawDWindow(GameTime game_time)
+        protected void DrawDWindow(GameTime game_time, SpriteBatch sprite_batch = null)
         {
-            Layout.Draw();
+            Layout.Draw(sprite_batch);
             base.Draw(game_time);
         }
 

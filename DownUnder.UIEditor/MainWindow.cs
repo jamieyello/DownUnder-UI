@@ -53,8 +53,8 @@ namespace DownUnder.Widgets
             SpriteFont = Content.Load<SpriteFont>("font");
             UIImages = new UIImages(GraphicsDevice);
 
-            //Layout = new UIEditorLayout(this, out editor_objects);
-            Layout = EditorTools.TestLayout2(this);
+            Layout = new UIEditorLayout(this, out editor_objects);
+            //Layout = EditorTools.TestLayout2(this);
 
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
@@ -85,8 +85,10 @@ namespace DownUnder.Widgets
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
-            
-            DrawDWindow(gameTime);
+
+            sprite_batch.Begin();
+            DrawDWindow(gameTime, sprite_batch);
+            sprite_batch.End();
         }
 
         public void Slot_Layout_OnClick(object sender, EventArgs e)

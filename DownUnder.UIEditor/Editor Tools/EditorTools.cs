@@ -62,7 +62,7 @@ namespace DownUnder.UIEditor
         private static void PrintDisplayArea(object sender, EventArgs args)
         {
             Widget w = (Widget)sender;
-            Console.WriteLine($"DisplayArea {w.DisplayArea}");
+            Console.WriteLine($"DisplayArea {w.DrawingArea}");
         }
 
         public static Layout ScrollTestLayout(IWidgetParent parent, SpriteFont sprite_font, out EditorObjects editor_objects)

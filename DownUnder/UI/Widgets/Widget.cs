@@ -24,6 +24,7 @@ using System.Threading;
 // area_backing is causing an awful mess being treated as a cache most of the time
 // Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
+// DrawingArea doesn't have consistent size between modes.
 
 namespace DownUnder.UI.Widgets
 {
@@ -87,7 +88,9 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
-
+        private SpriteBatch _local_sprite_batch_backing;
+        private SpriteBatch _passed_sprite_batch_backing;
+        
         public enum DrawingMode
         {
             /// <summary> Draw nothing. </summary>
@@ -146,8 +149,15 @@ namespace DownUnder.UI.Widgets
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
-        /// <summary> The local sprite batch used by this widget. </summary>
-        public SpriteBatch SpriteBatch { get; private set; }
+        /// <summary> The sprite batch currently used by this widget. </summary>
+        public SpriteBatch SpriteBatch
+        {
+            get
+            {
+                if (DrawMode == DrawingMode.use_render_target) return _local_sprite_batch_backing;
+                return _passed_sprite_batch_backing;
+            }
+        }
         
         #endregion
 
@@ -281,9 +291,9 @@ namespace DownUnder.UI.Widgets
         public Point2 PositionInWindow => ParentWidget == null ? Position : Position.WithOffset(ParentWidget.PositionInWindow);
 
         /// <summary> The area of the screen that this widget can draw to. </summary>
-        public RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
+        private RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
-        /// <summary> The area this widget should be drawing to. </summary>
+        /// <summary> The area this widget should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : DisplayArea;
 
         /// <summary> Returns the parent of this widget. </summary>
@@ -577,9 +587,7 @@ namespace DownUnder.UI.Widgets
             switch (DrawMode)
             {
                 case DrawingMode.direct:
-                    SpriteBatch.Begin();
-                    DrawDirect(SpriteBatch);
-                    SpriteBatch.End();
+                    DrawDirect(sprite_batch);
                     break;
 
                 case DrawingMode.use_render_target:
@@ -602,7 +610,9 @@ namespace DownUnder.UI.Widgets
                 _graphics_in_use = false;
                 return;
             }
-            
+
+            _passed_sprite_batch_backing = sprite_batch;
+
             if (DrawBackground)
             {
                 sprite_batch.FillRectangle(DrawingArea, Theme.BackgroundColor.CurrentColor);
@@ -709,7 +719,7 @@ namespace DownUnder.UI.Widgets
                 throw new Exception($"GraphicsDevice cannot be null.");
             }
             
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            _local_sprite_batch_backing = new SpriteBatch(GraphicsDevice);
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
 
             IsGraphicsInitialized = true;
