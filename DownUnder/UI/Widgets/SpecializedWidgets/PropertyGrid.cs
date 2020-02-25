@@ -35,7 +35,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 
         #region Constructors
 
-        public PropertyGrid(IWidgetParent parent, object obj) 
+        public PropertyGrid(IParent parent, object obj) 
             : base(parent, 2, obj.GetType().GetProperties().Length)
         {
             bool previous_disable_update_area = _disable_update_area;

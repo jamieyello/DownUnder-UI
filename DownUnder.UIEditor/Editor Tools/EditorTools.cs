@@ -51,11 +51,28 @@ namespace DownUnder.UIEditor
             test_grid.SnappingPolicy = DiagonalDirections2D.None;
             test_grid.Area = new RectangleF(50f, 50f, 300f, 300f);
             Grid inner_grid = new Grid(test_grid, 2, 2);
-            inner_grid.GetCell(1,1).OnUpdate += PrintDisplayArea;
             test_grid.SetCell(0, 0, inner_grid);
+            inner_grid.SetCell(1, 1, new Label(inner_grid, "test"));
 
             layout.AddWidget(test_grid);
             
+            return layout;
+        }
+
+        public static Layout TestLayout3(DWindow parent)
+        {
+            Layout layout = new Layout(parent);
+
+            Label label = new Label(layout, "test text")
+            {
+                DrawOutline = true,
+                SnappingPolicy = DiagonalDirections2D.None
+            };
+
+            label.Area = new RectangleF(10, 10, 50, 50);
+
+            layout.AddWidget(label);
+
             return layout;
         }
 
@@ -65,7 +82,7 @@ namespace DownUnder.UIEditor
             Console.WriteLine($"DisplayArea {w.DrawingArea}");
         }
 
-        public static Layout ScrollTestLayout(IWidgetParent parent, SpriteFont sprite_font, out EditorObjects editor_objects)
+        public static Layout ScrollTestLayout(IParent parent, SpriteFont sprite_font, out EditorObjects editor_objects)
         {
             Layout inner_layout = new Layout(parent);
             inner_layout.Name = "test_layout";

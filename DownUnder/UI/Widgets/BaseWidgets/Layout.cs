@@ -20,21 +20,10 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Constructors
 
-        public Layout(IWidgetParent parent = null)
+        public Layout(IParent parent = null)
             : base(parent)
         {
             SetDefaults();
-        }
-
-        public Layout(IWidgetParent parent, List<Widget> children)
-            : base(parent)
-        {
-            SetDefaults();
-
-            foreach (Widget child in children)
-            {
-                AddWidget(child);
-            }
         }
 
         private void SetDefaults()
@@ -73,7 +62,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public Scroll Scroll { get; } = new Scroll();
 
-        /// <summary> When set to true this widget will try to resize itself to contain all content. </summary>
+        /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
         public bool FitToContentArea { get; set; } = false;
 
         #endregion Properties
@@ -88,12 +77,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 base.Area = value;
                 foreach (var child in Children)
                 {
-                    child.EmbedIn(value);
+                    child.EmbedIn(area_backing);
                 }
             }
         }
 
-        /// <summary> Area of the widget in the window the scroll offset. </summary>
+        /// <summary> Area of the <see cref="Widget"/> in the window (without the scroll offset). </summary>
         public override RectangleF AreaInWindow
         {
             get

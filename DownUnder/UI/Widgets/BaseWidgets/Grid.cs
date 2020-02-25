@@ -12,45 +12,41 @@ using System.Diagnostics;
 
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
-    /// <summary> A grid of widgets. Cells are empty Layouts by default. </summary>
+    /// <summary> A grid of <see cref="Widget"/>s. Cells are empty <see cref="Layout"/>s by default. </summary>
     public class Grid : Widget
     {
         #region Fields
 
-        /// <summary> A jagged array of all the contained widgets. (Widgets[x][y]) </summary>
+        /// <summary> A jagged array of all the contained <see cref="Widget"/>s. (Widgets[x][y]) </summary>
         private WidgetArray _widgets = new WidgetArray();
 
         /// <summary> A list of dividers in a tuple with their y index. </summary>
         private List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
 
-        /// <summary> This is broken for a possibly obvious reason. It might not matter. </summary>
-        private const int _RESIZING_ACCURACY = 1;
-
-        /// <summary> When set to true this widget will ignore children's invoking of UpdateArea(). </summary>
+        /// <summary> When set to true this <see cref="Widget"/> will ignore children's invoking of <see cref="UpdateArea(bool)"/>. </summary>
         protected bool _disable_update_area = false;
 
         #endregion
 
         #region Public Properties
 
-        /// <summary> The number of widgets tall and wide this grid consists of. </summary>
+        /// <summary> The number of <see cref="Widget"/>s tall and wide this <see cref="Grid"/> consists of. </summary>
         public Point Dimensions => _widgets.Dimensions;
 
         #endregion Public Properties
 
         #region Constructors
 
-        public Grid(IWidgetParent parent = null)
+        public Grid(IParent parent = null)
             : base(parent)
         {
-            SetDefaults();
+            SetDefaults(false);
         }
 
-        public Grid(IWidgetParent parent, int x_length, int y_length, Widget filler = null)
+        public Grid(IParent parent, int x_length, int y_length, Widget filler = null, bool debug = false)
             : base(parent)
         {
             _disable_update_area = true;
-            SetDefaults();
 
             if (filler == null)
             {
@@ -60,13 +56,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             filler.Parent = this;
 
             _widgets = new WidgetArray(x_length, y_length, filler);
+            SetDefaults(debug);
+
             _disable_update_area = false;
-            UpdateArea(false);
+            //UpdateArea(false);
         }
 
-        private void SetDefaults()
+        private void SetDefaults(bool debug)
         {
-            Size = new Point2(100, 100);
+            _widgets.Align(new RectangleF(0, 0, 100, 100));
             DrawBackground = false;
         }
 
@@ -135,7 +133,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return result;
         }
 
-        /// <summary> The default cell is a layout </summary>
+        /// <summary> The default cell is a <see cref="Layout"/>. </summary>
         protected Layout DefaultCell()
         {
             // Create cell
@@ -196,7 +194,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             _widgets[x][y] = widget;
         }
 
-        /// <summary> Returns the WidgetArray used by this Grid. Does not include dividers. </summary>
+        /// <summary> Returns the <see cref="WidgetArray"/> used by this <see cref="Grid"/>. Does not include dividers. </summary>
         public WidgetArray ToWidgetArray()
         {
             return _widgets;
@@ -208,7 +206,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private Point2 _area_position_backing = new Point2();
 
-        /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
+        /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="Parent"/>, if any) </summary>
         public override RectangleF Area
         {
             get => (Dimensions.X == 0 || Dimensions.Y == 0) ? new RectangleF() : _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
@@ -231,7 +229,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             throw new NotImplementedException();
         }
 
-        /// <summary> All widgets this widget owns. </summary>
+        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         public override WidgetList Children
         {
             get

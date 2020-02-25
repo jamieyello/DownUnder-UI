@@ -20,16 +20,16 @@ using System.Threading;
 
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// eventually revert old drawing code
 // area_backing is causing an awful mess being treated as a cache most of the time
 // Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
-// DrawingArea doesn't have consistent size between modes.
+// DrawingArea doesn't have consistent size between drawing modes.
+// Impelement Add() {} to Layout
 
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget : IWidgetParent
+    [DataContract] public abstract class Widget : IParent
     {
         public bool debug_output = false;
 
@@ -95,9 +95,9 @@ namespace DownUnder.UI.Widgets
         {
             /// <summary> Draw nothing. </summary>
             disable,
-            /// <summary> Draw directly to the current render target without switching or clearing it. (default) </summary>
+            /// <summary> Draw directly to the current <see cref="RenderTarget2D"/> without switching or clearing it. (default) </summary>
             direct,
-            /// <summary> Draw this and all children to a render target before drawing to the current render target. (Will clear the target unless disabled)</summary>
+            /// <summary> Draw this and all children to a private <see cref="RenderTarget2D"/> before drawing to the current <see cref="RenderTarget2D"/>. (Will clear the target unless disabled)</summary>
             use_render_target
         }
 
@@ -107,7 +107,7 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
-        /// <summary> The unique name of this widget. </summary>
+        /// <summary> The name of this <see cref="Widget"/>. </summary>
         [DataMember] public string Name { get; set; }
 
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
@@ -119,37 +119,37 @@ namespace DownUnder.UI.Widgets
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember] public bool DrawOutline { get; set; } = true;
 
-        /// <summary> How thick the outline (if DrawOutline == true) should be. </summary>
+        /// <summary> How thick the outline should be. 1 by default. </summary>
         [DataMember] public float OutlineThickness { get; set; } = 1f;
 
-        /// <summary> Which sides (of the outline) are drawn (top, bottom, left, right) if (DrawOutLine == true). </summary>
+        /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
 
-        /// <summary> Represents the corners this widget will snap to within the parent. </summary>
+        /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
         [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
 
         /// <summary> Unimplemented. </summary>
         [DataMember] public bool Centered { get; set; }
 
-        /// <summary> Should any SnappingPolicy be defined, this represents the distance from the edges of the widget this is snapped to. </summary>
+        /// <summary> The distance from the edges of the widget this is snapped to. </summary>
         [DataMember] public Size2 Spacing { get; set; }
 
-        /// <summary> When set to true pressing enter while this widget is the primarily selected one will trigger confirmation events. </summary>
+        /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
         [DataMember] public virtual bool EnterConfirms { get; set; } = true;
 
-        /// <summary> What this widget should be regarded as when accessing the theme's defined colors. </summary>
+        /// <summary> What this <see cref="Widget"/> should be regarded as when accessing the <see cref="Theme"/>'s defined colors. </summary>
         [DataMember] public BaseColorScheme.PaletteCategory PaletteUsage { get; set; } = BaseColorScheme.PaletteCategory.default_widget;
 
-        /// <summary> While set to true this widget will lock its current width. </summary>
+        /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
         [DataMember] public bool IsFixedWidth { get; set; } = false;
 
-        /// <summary> While set to true this widget will lock its current height. </summary>
+        /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Height"/>. </summary>
         [DataMember] public bool IsFixedHeight { get; set; } = false;
         
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
 
-        /// <summary> The sprite batch currently used by this widget. </summary>
+        /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
         public SpriteBatch SpriteBatch
         {
             get
@@ -174,7 +174,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Area of this widget. (Position relative to parent widget, if any) </summary>
+        /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
         [DataMember] public virtual RectangleF Area
         {
             get => area_backing;
@@ -186,7 +186,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Minimum size allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         [DataMember] public virtual Point2 MinimumSize
         {
             get => _minimum_area_backing;
@@ -206,7 +206,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> The color palette of this widget. </summary>
+        /// <summary> The color palette of this <see cref="Widget"/>. </summary>
         [DataMember] public BaseColorScheme Theme
         {
             get => _theme_backing;
@@ -220,7 +220,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> How this Widget should be drawn. Unless render targets are needed, <see cref="DrawingMode.direct"/> should be used for performance. </summary>
+        /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed, <see cref="DrawingMode.direct"/> should be used for performance. </summary>
         [DataMember] public DrawingMode DrawMode
         {
             get => _draw_mode_backing;
@@ -238,28 +238,28 @@ namespace DownUnder.UI.Widgets
 
         #region Derivatives of previous properties
 
-        /// <summary> The width of this widget (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The width of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Width { get => Area.Width; set => Area = Area.WithWidth(value); }
-        /// <summary> The height of this widget (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The height of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Height { get => Area.Height; set => Area = Area.WithHeight(value); }
-        /// <summary> The position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The position of this <see cref="Widget"/> in its <see cref="IParent"/> (in terms of pixels on a 1080p monitor) </summary>
         public Point2 Position { get => Area.Position; set => Area = Area.WithPosition(value); }
-        /// <summary> The size of this widget (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The size of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
         public Point2 Size { get => Area.Size; set => Area = Area.WithSize(value); }
-        /// <summary> The x position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The x position of this <see cref="Widget"/> in its <see cref="IParent"/> (in terms of pixels on a 1080p monitor) </summary>
         public float X { get => Area.X; set => Area = Area.WithX(value); }
-        /// <summary> The y position of this widget in its parent (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> The y position of this <see cref="Widget"/> in its <see cref="IParent"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Y { get => Area.Y; set => Area = Area.WithY(value); }
-        /// <summary> Minimum height allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> Minimum height allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
-        /// <summary> Minimum width allowed when setting this widget's area. (in terms of pixels on a 1080p monitor) </summary>
+        /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
 
         #endregion
 
         #region Other various non-serialized properties
 
-        /// <summary> Returns true if this widget is hovered over. </summary>
+        /// <summary> Returns true if this <see cref="Widget"/> is hovered over. </summary>
         public bool IsHoveredOver
         {
             get => _is_hovered_over_backing;
@@ -278,29 +278,29 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Returns true if this widget is being hovered over as well as on top of all the other widgets being hovered over. </summary>
+        /// <summary> Returns true if this <see cref="Widget"/> is being hovered over as well as on top of all the other <see cref="Widget"/>s being hovered over. </summary>
         public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
 
-        /// <summary> Returns true if this widget has been initialized graphically. Setting this widget's parent to an initialized widget will initialize graphics. </summary>
+        /// <summary> Returns true if this <see cref="Widget"/> has been initialized graphically. Setting this <see cref="Widget"/>'s <see cref="Parent"/> to an initialized <see cref="Widget"/> or <see cref="DWindow"/> will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
 
-        /// <summary> The area of this widget relative to the parent window. </summary>
+        /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
-        /// <summary> The position of this widget relative to its window. </summary>
+        /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
         public Point2 PositionInWindow => ParentWidget == null ? Position : Position.WithOffset(ParentWidget.PositionInWindow);
 
-        /// <summary> The area of the screen that this widget can draw to. </summary>
+        /// <summary> The area of the screen that this <see cref="Widget"/> can draw to. </summary>
         private RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
-        /// <summary> The area this widget should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
+        /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : DisplayArea;
 
-        /// <summary> Returns the parent of this widget. </summary>
-        public IWidgetParent Parent
+        /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
+        public IParent Parent
         {
             get => ParentWidget != null ? 
-                (IWidgetParent)ParentWidget :
+                (IParent)ParentWidget :
                 ParentWindow;
             set
             {
@@ -315,7 +315,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> The DWindow that owns this widget. </summary>
+        /// <summary> The <see cref="DWindow"/> that owns this <see cref="Widget"/>. </summary>
         public DWindow ParentWindow
         {
             get => _parent_window_backing;
@@ -337,7 +337,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> The widget that owns this widget. (if one exists) </summary>
+        /// <summary> The <see cref="Widget"/> that owns this <see cref="Widget"/>. (if one exists) </summary>
         public Widget ParentWidget
         {
             get => _parent_widget_backing;
@@ -349,22 +349,22 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Returns true if this widget is owned by a parent. </summary>
-        public bool IsOwned => ParentWidget != null || ParentWindow != null;
+        /// <summary> Returns true if this <see cref="Widget"/> is owned by a parent. </summary>
+        public bool IsOwned => Parent != null;
 
         /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
 
-        /// <summary> Represents this window's input each frame. </summary>
+        /// <summary> Represents the window's input each frame. </summary>
         public UIInputState InputState => ParentWindow?.InputState;
 
-        /// <summary> Returns true if this is the main selected widget. </summary>
+        /// <summary> Returns true if this is the main selected <see cref="Widget"/>. </summary>
         public bool IsPrimarySelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.Primary == this;
 
-        /// <summary>Returns true if this widget is selected. </summary>
+        /// <summary>Returns true if this <see cref="Widget"/> is selected. </summary>
         public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
 
-        /// <summary> This widget plus all widgets contained in this widget. </summary>
+        /// <summary> This <see cref="Widget"/> plus all <see cref="Widget"/>s contained in this <see cref="Widget"/>. </summary>
         public WidgetList AllContainedWidgets
         {
             get
@@ -380,24 +380,24 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> All widgets this widget owns. </summary>
+        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         public abstract WidgetList Children { get; }
 
-        /// <summary> The SpriteFont used by this Widget. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
+        /// <summary> The SpriteFont used by this <see cref="Widget"/>. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
         public SpriteFont SpriteFont
         {
             get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
             set => _sprite_font_backing = value;
         }
 
-        /// <summary> The GraphicsDevice used by this Widget. If left null, the Parent of this Widget's GraphicsDevice will be used. </summary>
+        /// <summary> The GraphicsDevice used by this <see cref="Widget"/>. If left null, the <see cref="Parent"/>'s GraphicsDevice will be used. </summary>
         public GraphicsDevice GraphicsDevice
         {
             get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
             set => _graphics_backing = value;
         }
 
-        /// <summary> Position of the cursor relative to this widgdet. </summary>
+        /// <summary> Position of the cursor relative to this <see cref="Widget"/>. </summary>
         public Point2 CursorPosition
         {
             get
@@ -417,7 +417,7 @@ namespace DownUnder.UI.Widgets
 
         #region Constructors/Destructors
 
-        public Widget(IWidgetParent parent = null)
+        public Widget(IParent parent = null)
         {
             SetDefaults();
             Parent = parent;
@@ -451,7 +451,7 @@ namespace DownUnder.UI.Widgets
         #region Public/Internal Methods
 
         // Nothing should be invoked in UpdatePriority.
-        /// <summary> Updates this widget and all children recursively. This is called before Update() and updates all logic that should occur beforehand. </summary>
+        /// <summary> Updates this <see cref="Widget"/> and all children recursively. This is called before <see cref="Update(GameTime, UIInputState)"/> and updates all logic that should occur beforehand. </summary>
         internal void UpdatePriority(GameTime game_time, UIInputState ui_input)
         {
             UpdateData.GameTime = game_time;
@@ -533,8 +533,8 @@ namespace DownUnder.UI.Widgets
                 _update_hovered_over = false;
             }
         }
-        
-        /// <summary> Update this widget and all widgets contained. </summary>
+
+        /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input)
         {
             if (this is IScrollableWidget s_this && false)
@@ -581,7 +581,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Draws this widget (and all children) to the screen. Currently clears the screen on calling. </summary>
+        /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
         public void Draw(SpriteBatch sprite_batch = null)
         {
             switch (DrawMode)
@@ -638,8 +638,8 @@ namespace DownUnder.UI.Widgets
             SpriteBatch.End();
         }
 
-        /// <summary> Renders this widget with all children inside. </summary>
-        /// <returns> This widget's render. </returns>
+        /// <summary> Renders this <see cref="Widget"/> with all children inside. </summary>
+        /// <returns> This <see cref="Widget"/>'s render. </returns>
         private RenderTarget2D Render()
         {
             UpdateRenderTargetSizes();
@@ -727,19 +727,19 @@ namespace DownUnder.UI.Widgets
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>  Used by internal Focus object. </summary>
+        /// <summary>  Used by internal <see cref="Focus"/> object. </summary>
         internal void TriggerSelectOffEvent()
         {
             OnSelectOff?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary> Used by internal Focus object. </summary>
+        /// <summary> Used by internal <see cref="Focus"/> object. </summary>
         internal void TriggerSelectEvent()
         {
             OnSelection?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary> Search for any methods in a DWindow for this to connect to. </summary>
+        /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
         public void ConnectEvents()
         {
             System.Reflection.EventInfo[] events = GetType().GetEvents();
@@ -763,53 +763,56 @@ namespace DownUnder.UI.Widgets
                 event_.AddEventHandler(this, handler);
             }
         }
-        
-        /// <summary> Signals confirming this widget. (Such as pressing enter with this widget selected) </summary>
+
+        /// <summary> Signals confirming this <see cref="Widget"/>. (Such as pressing enter with this <see cref="Widget"/> selected) </summary>
         public void SignalConfirm()
         {
             OnConfirm?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
-        
+
         #region EventsHandlers
 
-        /// <summary> Invoked when this widget is clicked on. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is clicked on. </summary>
         public event EventHandler OnClick;
-        /// <summary> Invoked when this widget is double clicked. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is double clicked. </summary>
         public event EventHandler OnDoubleClick;
-        /// <summary> Invoked when this widget is triple clicked. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. </summary>
         public event EventHandler OnTripleClick;
-        /// <summary> Invoked when the mouse hovers over this widget. </summary>
+        /// <summary> Invoked when the mouse hovers over this <see cref="Widget"/>. </summary>
         public event EventHandler OnHover;
-        /// <summary> Invoked when the mouse hovers off this widget. </summary>
+        /// <summary> Invoked when the mouse hovers off this <see cref="Widget"/>. </summary>
         public event EventHandler OnHoverOff;
         /// <summary> Invoked after graphics have been initialized and are ready to use. </summary>
         public event EventHandler OnGraphicsInitialized;
-        /// <summary> Invoked when this widget is drawn. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is drawn. </summary>
         public event EventHandler OnDraw;
-        /// <summary> Invoked when this widget's overlay is drawn. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
-        /// <summary> Invoked after this widget updates.</summary>
+        /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
         public event EventHandler OnUpdate;
-        /// <summary> Invoked when this widget is selected. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is selected. </summary>
         public event EventHandler OnSelection;
-        /// <summary> Invoked when this widget is un-selected. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/> is un-selected. </summary>
         public event EventHandler OnSelectOff;
-        /// <summary> Invoked whwn the user confirms this widget (Such as pressing enter with this widget selected). </summary>
+        /// <summary> Invoked whwn the user confirms this <see cref="Widget"/> (Such as pressing enter with this <see cref="Widget"/> selected). </summary>
         public event EventHandler OnConfirm;
 
         #endregion
         
         #region Private/Protected Methods
 
-        /// <summary> Embeds this widget in the given area. Takes SnappingPolicy and spacing into account. </summary>
+        public void EmbedIn(IParent parent)
+        {
+            if (parent == null) return;
+            EmbedIn(parent.Area);
+        }
+
+        /// <summary> Embeds this <see cref="Widget"/> in the given area. Takes <see cref="SnappingPolicy"/> and <see cref="Spacing"/> into account. </summary>
         internal void EmbedIn(RectangleF encompassing_area)
         {
             encompassing_area = encompassing_area.SizeOnly();
-            //Debug.WriteLine($"Embedding {Area} in {encompassing_area}");
-            //Debug.WriteLine($"SnappingPolicy = {SnappingPolicy}");
-
             RectangleF new_area = Area;
 
             // Convert the corners into up/down left/right to determine which walls the new area should stick to
@@ -862,12 +865,11 @@ namespace DownUnder.UI.Widgets
             {
                 new_area.Height = MinimumHeight;
             }
-
-            //Debug.WriteLine($"new_area = {new_area}");
+            
             Area = new_area;
         }
 
-        /// <summary> Draw anything that should be drawn on top of the content in this widget. </summary>
+        /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/>. </summary>
         private void DrawOverlay(SpriteBatch sprite_batch)
         {
             if (DrawOutline)
@@ -889,13 +891,13 @@ namespace DownUnder.UI.Widgets
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary> Set this widget as the only focused widget. </summary>
+        /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
         protected void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
 
-        /// <summary> Add this widget to the group of selected widgets. </summary>
+        /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
         protected void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
-        
-        /// <summary> A function called by a widget to update both itself and its parent's area. </summary>
+
+        /// <summary> A function called by a <see cref="Widget"/> to update both itself and its <see cref="Parent"/>'s area. </summary>
         protected virtual void UpdateArea(bool update_parent)
         {
             if (update_parent)
@@ -904,7 +906,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Resize the render target to match the current area. </summary>
+        /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes()
         {
             foreach (Widget child in Children)

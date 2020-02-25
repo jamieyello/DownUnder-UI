@@ -38,7 +38,11 @@
     <Reference Include="MonoGame.Extended, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Extended.1.1.0\lib\portable-net45+win8+wpa81\MonoGame.Extended.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.7.0.1708, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework.Net, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -104,7 +108,7 @@
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
-    <Compile Include="UI\Widgets\Interfaces\IWidgetParent.cs" />
+    <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />

@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
 {
     class ItemTreeGrid : Grid
     {
-        public ItemTreeGrid(IWidgetParent parent)
+        public ItemTreeGrid(IParent parent)
             : base(parent)
         {
 

@@ -2,17 +2,14 @@
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
-    /// <summary>
-    /// A layout meant to create layouts during runtime. Used in DownUnder.UIEditor. Should be moved eventually.
-    /// </summary>
+    /// <summary> A <see cref="Layout"/> meant to create <see cref="Layout"/>s during runtime.</summary>
     class UIEditorLayout : Layout
     {
+        /// <summary> I will use this later. Don't throw it away! </summary>
         enum CommonWidgets
         {
             Label,
@@ -20,40 +17,27 @@ namespace DownUnder.UIEditor.Editor_Tools
             Layout
         }
 
-        // What made the first UI that made the first UI? This.
-        /// <param name="sprite_font"></param>
-        /// <param name="editor_objects">Shortcut to several widgets relevant to editting UI.</param>
-        /// <returns></returns>
+        /// <summary> What made the first UI that made the first UI? This. </summary>
+        /// <param name="editor_objects"> Shortcut to several widgets relevant to the UI. </param>
         public UIEditorLayout(DWindow parent, out EditorObjects editor_objects)
             : base(parent)
-        { 
-            Grid main_grid = new Grid(parent, 2, 1);
+        {
+            EmbedIn(parent);
 
-            Layout project = DefaultProject(parent);
-
-            ((Layout)main_grid.GetCell(0, 0)).AddWidget(project);
+            Grid main_grid = new Grid(this, 2, 1);
             AddWidget(main_grid);
 
-            Grid sidebar = new Grid(main_grid, 1, 2);
+            Layout project = DefaultProject(parent);
+            ((Layout)main_grid.GetCell(0, 0)).AddWidget(project);
+            
+            Grid sidebar = new Grid(main_grid, 1, 2, null, true);
+            main_grid.SetCell(1, 0, sidebar);
+
             Label test = new Label(sidebar, "Future area for CommonControls.");
+            sidebar.SetCell(0, 0, test);
+
             PropertyGrid property_grid = new PropertyGrid(sidebar, project);
-            Console.WriteLine($"Sidebar Area pre-SetCell {sidebar.Area} ");
-            sidebar.SetCell(0, 0, test, true);
-            Console.WriteLine($"Sidebar Area post-test {sidebar.Area} ");
-            sidebar.SetCell(0, 1, property_grid, true);
-            Console.WriteLine($"Sidebar Area post-propertygrid {sidebar.Area} ");
-            sidebar.debug_output = true;
-            sidebar.Size = new Point2(100, 100);
-            sidebar.debug_output = false;
-            Console.WriteLine($"Sidebar Area post-area set {sidebar.Area} ");
-
-            //sidebar.GetCell(0, 1).debug_output = true;
-            //main_grid.SetCell(1, 0, sidebar);
-
-            //property_grid.EditingEnabled = true;
-            //var grid_layout = main_grid.GetCell(1, 0);
-            //grid_layout.Name = "Grid Container";
-            //property_grid.Name = "Property grid";
+            sidebar.SetCell(0, 1, property_grid);
 
             editor_objects = null;// new EditorObjects
             //{

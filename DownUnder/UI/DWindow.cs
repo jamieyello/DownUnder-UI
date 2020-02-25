@@ -15,7 +15,7 @@ using DownUnder.UI.Widgets.BaseWidgets;
 
 namespace DownUnder.UI
 {
-    public abstract class DWindow : Game, IWidgetParent
+    public abstract class DWindow : Game, IParent
     {
         #region Fields/Delegates
 
