@@ -184,7 +184,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void DrawText(object sender, EventArgs args)
         {
             _text_cursor.Draw();
-            SpriteBatch.DrawString(SpriteFont, Text, DrawingArea.Position, Theme.GetText(PaletteUsage).CurrentColor);
+            SpriteBatch.DrawString(SpriteFont, Text, DrawingArea.Position.Floored(), Theme.GetText(PaletteUsage).CurrentColor);
         }
 
         private void ConfirmEdit(object sender, EventArgs args)

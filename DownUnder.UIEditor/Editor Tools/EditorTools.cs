@@ -33,7 +33,7 @@ namespace DownUnder.UIEditor
             //test_grid.IsFixedWidth = true;
             //test_grid.debug_output = true;
             test_grid.debug_output = false;
-            layout.AddWidget(test_grid);
+            layout.Add(test_grid);
 
             //var test = parent;
             //var widget = new PropertyGrid(layout, sprite_font, test);
@@ -54,7 +54,7 @@ namespace DownUnder.UIEditor
             test_grid.SetCell(0, 0, inner_grid);
             inner_grid.SetCell(1, 1, new Label(inner_grid, "test"));
 
-            layout.AddWidget(test_grid);
+            layout.Add(test_grid);
             
             return layout;
         }
@@ -71,7 +71,7 @@ namespace DownUnder.UIEditor
 
             label.Area = new RectangleF(10, 10, 50, 50);
 
-            layout.AddWidget(label);
+            layout.Add(label);
 
             return layout;
         }
@@ -98,7 +98,7 @@ namespace DownUnder.UIEditor
 
             test_grid.SetCell(0, 0, label);
 
-            inner_layout.AddWidget(test_grid);
+            inner_layout.Add(test_grid);
 
             //throw new Exception();
             return inner_layout;

@@ -73,7 +73,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         {
             #region Position / Size
             RectangleF widget_content_area = _iscrollable_parent.ContentArea;
-            RectangleF widget_area = _parent.Area.SizeOnly();
+            RectangleF widget_area = _parent.DrawingArea;
 
             // Claculate size of bars. ---
             _outer_bar_bottom_area.Height = Thickness;

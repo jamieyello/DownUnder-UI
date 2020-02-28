@@ -55,7 +55,20 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     MinimumHeight = 20 // test
                 });
 
-                if (properties[i].GetValue(obj) == null)
+                if (properties[i].GetIndexParameters().Length != 0)
+                {
+                    SetCell(1, i, new Label(
+                        this,
+                        parent.SpriteFont, "*Collection*"
+                        )
+                    {
+                        DrawOutline = true,
+                        OutlineSides = Directions2D.DownRight,
+                        MinimumHeight = 20
+                    }
+);
+                }
+                else if (properties[i].GetValue(obj) == null)
                 {
                     SetCell(1, i, new Label(
                         this,

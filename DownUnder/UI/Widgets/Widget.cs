@@ -20,11 +20,11 @@ using System.Threading;
 
 // Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// area_backing is causing an awful mess being treated as a cache most of the time
 // Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
 // DrawingArea doesn't have consistent size between drawing modes.
-// Impelement Add() {} to Layout
+// Implement IList in Layout
+// Implement IScrollableWidget in Grid (and possibly IList)
 
 namespace DownUnder.UI.Widgets
 {

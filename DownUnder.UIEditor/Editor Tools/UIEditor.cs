@@ -25,10 +25,10 @@ namespace DownUnder.UIEditor.Editor_Tools
             EmbedIn(parent);
 
             Grid main_grid = new Grid(this, 2, 1);
-            AddWidget(main_grid);
+            Add(main_grid);
 
             Layout project = DefaultProject(parent);
-            ((Layout)main_grid.GetCell(0, 0)).AddWidget(project);
+            ((Layout)main_grid.GetCell(0, 0)).Add(project);
             
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
@@ -36,15 +36,17 @@ namespace DownUnder.UIEditor.Editor_Tools
             Label test = new Label(sidebar, "Future area for CommonControls.");
             sidebar.SetCell(0, 0, test);
 
-            PropertyGrid property_grid = new PropertyGrid(sidebar, project);
-            sidebar.SetCell(0, 1, property_grid);
+            Layout property_grid_layout = new Layout(sidebar);
+            sidebar.SetCell(0, 1, property_grid_layout);
 
-            editor_objects = null;// new EditorObjects
-            //{
-            //    project = project,
-            //    property_grid = property_grid
-            //};
-            //editor_objects.fields = fields;
+            PropertyGrid property_grid = new PropertyGrid(property_grid_layout, project);
+            property_grid_layout.Add(property_grid);
+
+            editor_objects = new EditorObjects
+            {
+                project = project,
+                property_grid = property_grid
+            };
         }
 
         static Layout DefaultProject(DWindow parent)
@@ -69,7 +71,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
             //grid.Spacing = new Size2(10, 10);
 
-            project.AddWidget(grid);
+            project.Add(grid);
 
             return project;
         }

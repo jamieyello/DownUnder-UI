@@ -3,14 +3,14 @@ using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.WidgetControls;
 using MonoGame.Extended;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.BaseWidgets
 {
-    /// <summary> A collection of widgets. </summary>
-    [DataContract]
-    public class Layout : Widget, IScrollableWidget
+    /// <summary> A collection of <see cref="Widget"/>s. </summary>
+    [DataContract] public class Layout : Widget, IScrollableWidget, IList<Widget>
     {
         #region Private Fields
 
@@ -35,17 +35,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         
         #endregion Constructors
 
-        #region Public Methods
-
-        public void AddWidget(Widget widget)
-        {
-            widget.Parent = this;
-            widget.EmbedIn(Area);
-            _widgets.Add(widget);
-        }
-
-        #endregion Public Methods
-
         #region Properties
 
         public ScrollBars ScrollBars { get; private set; }
@@ -54,9 +43,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             get
             {
-                RectangleF? result = _widgets.AreaCoverage;
+                RectangleF? result = _widgets.AreaCoverage?.Union(Area);
                 if (result == null) return Area;
-                return ((RectangleF)result).Union(Area);
+                return result.Value;
             }
         }
 
@@ -96,7 +85,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public override WidgetList Children => _widgets;
 
         #region Events
-        
+
         private void InitializeScrollbars(object sender, EventArgs args)
         {
             ScrollBars = new ScrollBars(this, GraphicsDevice);
@@ -117,7 +106,69 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
             return c;
         }
-        
+
         #endregion Overrides
+
+        #region IList Implementation
+
+        public int Count => ((IList<Widget>)_widgets).Count;
+
+        public bool IsReadOnly => ((IList<Widget>)_widgets).IsReadOnly;
+
+        public Widget this[int index] { get => ((IList<Widget>)_widgets)[index]; set => ((IList<Widget>)_widgets)[index] = value; }
+
+        public int IndexOf(Widget item)
+        {
+            return ((IList<Widget>)_widgets).IndexOf(item);
+        }
+
+        public void Insert(int index, Widget item)
+        {
+            ((IList<Widget>)_widgets).Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            ((IList<Widget>)_widgets).RemoveAt(index);
+        }
+
+        public void Add(Widget widget)
+        {
+            widget.Parent = this;
+            widget.EmbedIn(Area);
+            ((IList<Widget>)_widgets).Add(widget);
+        }
+
+        public void Clear()
+        {
+            ((IList<Widget>)_widgets).Clear();
+        }
+
+        public bool Contains(Widget item)
+        {
+            return ((IList<Widget>)_widgets).Contains(item);
+        }
+
+        public void CopyTo(Widget[] array, int arrayIndex)
+        {
+            ((IList<Widget>)_widgets).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(Widget item)
+        {
+            return ((IList<Widget>)_widgets).Remove(item);
+        }
+
+        public IEnumerator<Widget> GetEnumerator()
+        {
+            return ((IList<Widget>)_widgets).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IList<Widget>)_widgets).GetEnumerator();
+        }
+
+        #endregion
     }
 }
