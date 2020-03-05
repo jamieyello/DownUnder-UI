@@ -73,7 +73,9 @@ namespace DownUnder.UI.Widgets.WidgetControls
         {
             #region Position / Size
             RectangleF widget_content_area = _iscrollable_parent.ContentArea;
-            RectangleF widget_area = _parent.DrawingArea;
+            RectangleF drawing_area = _parent.DrawingArea;
+            RectangleF widget_area = _parent.Area;
+            RectangleF area_in_window = _parent.AreaInWindow;
 
             // Claculate size of bars. ---
             _outer_bar_bottom_area.Height = Thickness;
@@ -84,30 +86,30 @@ namespace DownUnder.UI.Widgets.WidgetControls
             Point2 modifier = new Point2();
 
             // Calculate modifiers for the size of the inner bar.
-            if (widget_area.Width.Rounded() < widget_content_area.Width.Rounded())
+            if (drawing_area.Width.Rounded() < widget_content_area.Width.Rounded())
             {
                 modifier.X = widget_area.Width / widget_content_area.Width;
                 _BottomVisible = true;
             }
             else { modifier.X = 1f; _BottomVisible = false; }
-            if (widget_area.Height.Rounded() < widget_content_area.Height.Rounded())
+            if (drawing_area.Height.Rounded() < widget_content_area.Height.Rounded())
             {
                 modifier.Y = widget_area.Height / widget_content_area.Height;
                 _SideVisible = true;
             }
             else { modifier.Y = 1f; _SideVisible = false; }
 
-            _outer_bar_bottom_area.Width = widget_area.Width;
-            _outer_side_bar_area.Height = widget_area.Height;
+            _outer_bar_bottom_area.Width = drawing_area.Width;
+            _outer_side_bar_area.Height = drawing_area.Height;
 
-            _inner_bottom_bar_area.Width = (widget_area.Width - InnerBarSpacing * 3) * modifier.X;
-            _inner_side_bar_area.Height = (widget_area.Height - InnerBarSpacing * 3) * modifier.Y;
+            _inner_bottom_bar_area.Width = (drawing_area.Width - InnerBarSpacing * 3) * modifier.X;
+            _inner_side_bar_area.Height = (drawing_area.Height - InnerBarSpacing * 3) * modifier.Y;
 
             // Calculate the positions of the bars. ---
-            _outer_bar_bottom_area.X = widget_area.X;
-            _outer_side_bar_area.Y = widget_area.Y;
-            _outer_bar_bottom_area.Y = widget_area.Bottom - Thickness;
-            _outer_side_bar_area.X = widget_area.Right - Thickness;
+            _outer_bar_bottom_area.X = drawing_area.X;
+            _outer_side_bar_area.Y = drawing_area.Y;
+            _outer_bar_bottom_area.Y = drawing_area.Bottom - Thickness;
+            _outer_side_bar_area.X = drawing_area.Right - Thickness;
 
             _inner_side_bar_area.X = _outer_side_bar_area.X + InnerBarSpacing;
             _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + _iscrollable_parent.Scroll.Y.GetCurrent() * modifier.Y;
@@ -121,10 +123,12 @@ namespace DownUnder.UI.Widgets.WidgetControls
             // Modify these so the width of the bar matches the outer rather
             // than the inner bar
             // Update palettes ---
-            if (_inner_bottom_bar_area.Contains(_parent.CursorPosition)) BottomInnerBarPalette.Hovered = true; else BottomInnerBarPalette.Hovered = false;
-            if (_inner_side_bar_area.Contains(_parent.CursorPosition)) SideInnerBarPalette.Hovered = true; else SideInnerBarPalette.Hovered = false;
-            if (_outer_bar_bottom_area.Contains(_parent.CursorPosition)) BottomOuterBarPalette.Hovered = true; else BottomOuterBarPalette.Hovered = false;
-            if (_outer_side_bar_area.Contains(_parent.CursorPosition)) SideOuterBarPalette.Hovered = true; else SideOuterBarPalette.Hovered = false;
+            Point2 cursor_position = ui_input_state.CursorPosition;
+            if (_parent.DrawMode == Widget.DrawingMode.use_render_target) cursor_position = _parent.CursorPosition;
+            if (_inner_bottom_bar_area.Contains(cursor_position)) BottomInnerBarPalette.Hovered = true; else BottomInnerBarPalette.Hovered = false;
+            if (_inner_side_bar_area.Contains(cursor_position)) SideInnerBarPalette.Hovered = true; else SideInnerBarPalette.Hovered = false;
+            if (_outer_bar_bottom_area.Contains(cursor_position)) BottomOuterBarPalette.Hovered = true; else BottomOuterBarPalette.Hovered = false;
+            if (_outer_side_bar_area.Contains(cursor_position)) SideOuterBarPalette.Hovered = true; else SideOuterBarPalette.Hovered = false;
 
             SideOuterBarPalette.Update(step);
             BottomOuterBarPalette.Update(step);
@@ -195,10 +199,25 @@ namespace DownUnder.UI.Widgets.WidgetControls
             // Don't let the scrollbars go out of bounds.
             if (_iscrollable_parent.Scroll.X.GetCurrent() < 0f) _iscrollable_parent.Scroll.X.SetTargetValue(0f, true);
             if (_iscrollable_parent.Scroll.Y.GetCurrent() < 0f) _iscrollable_parent.Scroll.Y.SetTargetValue(0f, true);
-            if (_iscrollable_parent.Scroll.X.GetCurrent() > widget_content_area.Width - widget_area.Width) _iscrollable_parent.Scroll.X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
-            if (_iscrollable_parent.Scroll.Y.GetCurrent() > widget_content_area.Height - widget_area.Height) _iscrollable_parent.Scroll.Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
+            if (_iscrollable_parent.Scroll.X.GetCurrent() > widget_content_area.Width - widget_area.Width)
+                _iscrollable_parent.Scroll.X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
+            if (_iscrollable_parent.Scroll.Y.GetCurrent() > widget_content_area.Height - widget_area.Height)
+                _iscrollable_parent.Scroll.Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
 
             #endregion Restraining
+
+            // Validate
+            if (_parent.debug_output)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"widget_area {widget_area}");
+                Console.WriteLine($"widget_content_area {widget_content_area}");
+                Console.WriteLine($"drawing_area {drawing_area}");
+                Console.WriteLine($"Scroll.Y {_iscrollable_parent.Scroll.Y.GetCurrent()}");
+                Console.WriteLine();
+            }
+
+
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Public Properties
 
-        /// <summary> How long a row is allowed to be before it displays the following widgets on the next row. If 0, there will be no limit. </summary>
+        /// <summary> How long a row is allowed to be before it displays the following <see cref="Widget"/>s on the next row. If 0, there will be no limit. </summary>
         public int MaxRowWidth
         {
             get => _max_width_backing;
@@ -65,7 +65,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
             
             Point2 current_position = new Point2(0, ListSpacing);
-            int x = 0;
             foreach (Widget widget in _widgets)
             {
                 current_position.X += ListSpacing;

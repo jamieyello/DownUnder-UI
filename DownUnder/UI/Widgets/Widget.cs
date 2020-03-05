@@ -23,8 +23,8 @@ using System.Threading;
 // Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
 // DrawingArea doesn't have consistent size between drawing modes.
-// Implement IList in Layout
 // Implement IScrollableWidget in Grid (and possibly IList)
+// Should Layout and Grid just be removed?
 
 namespace DownUnder.UI.Widgets
 {
@@ -290,11 +290,11 @@ namespace DownUnder.UI.Widgets
         /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
         public Point2 PositionInWindow => ParentWidget == null ? Position : Position.WithOffset(ParentWidget.PositionInWindow);
 
-        /// <summary> The area of the screen that this <see cref="Widget"/> can draw to. </summary>
-        private RectangleF DisplayArea => ParentWidget == null ? AreaInWindow : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
+        /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
+        private RectangleF DisplayArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : DisplayArea;
+        public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : AreaInWindow;
 
         /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
         public IParent Parent

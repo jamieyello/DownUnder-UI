@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
     {
         #region Private Fields
 
-        [DataMember] private WidgetList _widgets = new WidgetList();
+        private WidgetList _widgets = new WidgetList();
         
         #endregion Private Fields
 
@@ -43,7 +43,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             get
             {
-                RectangleF? result = _widgets.AreaCoverage?.Union(Area);
+                RectangleF? result = _widgets.AreaCoverage?.Union(Area.SizeOnly());
                 if (result == null) return Area;
                 return result.Value;
             }

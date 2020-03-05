@@ -37,6 +37,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             sidebar.SetCell(0, 0, test);
 
             Layout property_grid_layout = new Layout(sidebar);
+            property_grid_layout.debug_output = true;
             sidebar.SetCell(0, 1, property_grid_layout);
 
             PropertyGrid property_grid = new PropertyGrid(property_grid_layout, project);
