@@ -1,8 +1,11 @@
 ﻿using DownUnder.UI;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.BaseWidgets;
+using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
@@ -37,7 +40,6 @@ namespace DownUnder.UIEditor.Editor_Tools
             sidebar.SetCell(0, 0, test);
 
             Layout property_grid_layout = new Layout(sidebar);
-            property_grid_layout.debug_output = true;
             sidebar.SetCell(0, 1, property_grid_layout);
 
             //debug_output = true;
@@ -77,6 +79,23 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.Add(grid);
 
             return project;
+        }
+
+        private static void DiagnoseArea(object sender, EventArgs args)
+        {
+            Widget widget = (Widget)sender;
+            Console.WriteLine();
+            Console.WriteLine($"Area {widget.Area}");
+            Console.WriteLine($"VisibleArea {widget.VisibleArea}");
+            Console.WriteLine($"AreaInWindow {widget.AreaInWindow}");
+            Console.WriteLine($"DrawingArea {widget.DrawingArea}");
+            if (widget is IScrollableWidget scroll_widget)
+            {
+                Console.WriteLine($"Scroll {scroll_widget.Scroll.Y.GetCurrent()}");
+                Console.WriteLine($"ContentArea {scroll_widget.ContentArea}");
+            }
+            Console.WriteLine($"parent AreaInWindow {widget.ParentWidget?.AreaInWindow}");
+            Console.WriteLine();
         }
     }
 }

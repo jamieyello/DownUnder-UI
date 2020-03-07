@@ -25,6 +25,7 @@ using System.Threading;
 // DrawingArea doesn't have consistent size between drawing modes.
 // Implement IScrollableWidget in Grid (and possibly IList)
 // Should Layout and Grid just be removed?
+// Invert Scroll values by default
 
 namespace DownUnder.UI.Widgets
 {
@@ -40,7 +41,7 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
-
+        
         /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
 
@@ -293,16 +294,16 @@ namespace DownUnder.UI.Widgets
             get
             {
                 if (ParentWidget == null) { return Position; }
-                if (ParentWidget is IScrollableWidget ithis)
+                if (ParentWidget is IScrollableWidget iscroll_parent)
                 {
-                    return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(ithis.Scroll.ToPoint2().Inverted());
+                    return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(iscroll_parent.Scroll.ToPoint2().Inverted());
                 }
                 return Position.WithOffset(ParentWidget.PositionInWindow);
             }
         }
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
-        private RectangleF DisplayArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.AreaInWindow);
+        public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : AreaInWindow;
@@ -613,8 +614,11 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        Rectangle _previous_scissor_rectangle;
         private void DrawDirect(SpriteBatch sprite_batch)
         {
+            _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
+            sprite_batch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
             _graphics_in_use = true;
             if (_graphics_updating)
             {
@@ -626,17 +630,21 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
-                sprite_batch.FillRectangle(DrawingArea, Theme.BackgroundColor.CurrentColor);
+                sprite_batch.FillRectangle(VisibleArea, Theme.BackgroundColor.CurrentColor);
             }
-            
+
+            OnDraw?.Invoke(this, EventArgs.Empty);
+
             foreach (Widget child in Children)
             {
                 child.DrawDirect(sprite_batch);
             }
 
+            sprite_batch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+
             DrawOverlay(sprite_batch);
-            
-            OnDraw?.Invoke(this, EventArgs.Empty);
+
+            sprite_batch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
         }
 
         private void DrawUsingRenderTargets()

@@ -14,7 +14,6 @@ namespace DownUnder.Widgets
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    ///
     public class MainWindow : DWindow
     {
         /// <summary> Contains all widgets relevant to this editor. (When the editor supports slots this won't be proper) </summary>
@@ -86,7 +85,8 @@ namespace DownUnder.Widgets
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
 
-            sprite_batch.Begin();
+            sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                      null, null, RasterizerState);
             DrawDWindow(gameTime, sprite_batch);
             sprite_batch.End();
         }

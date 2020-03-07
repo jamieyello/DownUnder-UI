@@ -228,6 +228,8 @@ namespace DownUnder.UI
         /// <summary> A collection of icons used by this window and its widgets. </summary>
         public UIImages UIImages { get; protected set; }
 
+        public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true };
+
         #endregion Properties
 
         #region Constructors

@@ -211,6 +211,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Console.WriteLine();
                 Console.WriteLine($"widget_area {widget_area}");
+                Console.WriteLine($"DisplayArea {_parent.VisibleArea}");
                 Console.WriteLine($"area_in_window {area_in_window}");
                 Console.WriteLine($"widget_content_area {widget_content_area}");
                 Console.WriteLine($"drawing_area {drawing_area}");
