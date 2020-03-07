@@ -106,10 +106,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
             _inner_side_bar_area.Height = (drawing_area.Height - InnerBarSpacing * 3) * modifier.Y;
 
             // Calculate the positions of the bars. ---
-            _outer_bar_bottom_area.X = drawing_area.X;
-            _outer_side_bar_area.Y = drawing_area.Y;
-            _outer_bar_bottom_area.Y = drawing_area.Bottom - Thickness;
-            _outer_side_bar_area.X = drawing_area.Right - Thickness;
+            _outer_bar_bottom_area.X = area_in_window.X;
+            _outer_side_bar_area.Y = area_in_window.Y;
+            _outer_bar_bottom_area.Y = area_in_window.Bottom - Thickness;
+            _outer_side_bar_area.X = area_in_window.Right - Thickness;
 
             _inner_side_bar_area.X = _outer_side_bar_area.X + InnerBarSpacing;
             _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + _iscrollable_parent.Scroll.Y.GetCurrent() * modifier.Y;
@@ -211,13 +211,13 @@ namespace DownUnder.UI.Widgets.WidgetControls
             {
                 Console.WriteLine();
                 Console.WriteLine($"widget_area {widget_area}");
+                Console.WriteLine($"area_in_window {area_in_window}");
                 Console.WriteLine($"widget_content_area {widget_content_area}");
                 Console.WriteLine($"drawing_area {drawing_area}");
+                Console.WriteLine($"modifier {modifier}");
                 Console.WriteLine($"Scroll.Y {_iscrollable_parent.Scroll.Y.GetCurrent()}");
                 Console.WriteLine();
             }
-
-
         }
     }
 }

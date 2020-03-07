@@ -288,7 +288,18 @@ namespace DownUnder.UI.Widgets
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
         /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
-        public Point2 PositionInWindow => ParentWidget == null ? Position : Position.WithOffset(ParentWidget.PositionInWindow);
+        public Point2 PositionInWindow
+        {
+            get
+            {
+                if (ParentWidget == null) { return Position; }
+                if (ParentWidget is IScrollableWidget ithis)
+                {
+                    return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(ithis.Scroll.ToPoint2().Inverted());
+                }
+                return Position.WithOffset(ParentWidget.PositionInWindow);
+            }
+        }
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
         private RectangleF DisplayArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.AreaInWindow);

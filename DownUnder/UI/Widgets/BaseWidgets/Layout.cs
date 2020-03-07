@@ -44,8 +44,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get
             {
                 RectangleF? result = _widgets.AreaCoverage?.Union(Area.SizeOnly());
-                if (result == null) return Area;
-                return result.Value;
+                if (result == null) return Area.WithOffset(Scroll.ToPoint2().Inverted());
+                return result.Value.WithOffset(Scroll.ToPoint2().Inverted());
             }
         }
 
@@ -60,7 +60,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public override RectangleF Area
         {
-            get => area_backing.WithOffset(-Scroll.ToVector2());
+            get => area_backing;
             set
             {
                 base.Area = value;
@@ -72,15 +72,15 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         }
 
         /// <summary> Area of the <see cref="Widget"/> in the window (without the scroll offset). </summary>
-        public override RectangleF AreaInWindow
-        {
-            get
-            {
-                var area = base.AreaInWindow;
-                area.Offset(Scroll.ToVector2());
-                return area;
-            }
-        }
+        //public override RectangleF AreaInWindow
+        //{
+        //    get
+        //    {
+        //        var area = base.AreaInWindow;
+        //        area.Offset(Scroll.ToVector2());
+        //        return area;
+        //    }
+        //}
 
         public override WidgetList Children => _widgets;
 
