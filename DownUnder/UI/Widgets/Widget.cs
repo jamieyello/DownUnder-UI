@@ -53,6 +53,8 @@ namespace DownUnder.UI.Widgets
 
         private Point2 _previous_cursor_position = new Point2();
 
+        private Rectangle _previous_scissor_rectangle;
+
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
         private bool _graphics_updating = false;
 
@@ -85,6 +87,7 @@ namespace DownUnder.UI.Widgets
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
+        private bool _previous_is_hovered_over_backing;
         private BaseColorScheme _theme_backing;
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
@@ -266,13 +269,14 @@ namespace DownUnder.UI.Widgets
             get => _is_hovered_over_backing;
             protected set
             {
+                _previous_is_hovered_over_backing = _is_hovered_over_backing;
                 _is_hovered_over_backing = value;
-                if (value)
+                if (value && !_previous_is_hovered_over_backing)
                 {
                     OnHover?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (!value)
+                if (!value && _previous_is_hovered_over_backing)
                 {
                     OnHoverOff?.Invoke(this, EventArgs.Empty);
                 }
@@ -501,7 +505,7 @@ namespace DownUnder.UI.Widgets
                 _double_click_countdown -= game_time.GetElapsedSeconds();
             }
 
-            if (AreaInWindow.Contains(ui_input.CursorPosition))
+            if (VisibleArea.Contains(ui_input.CursorPosition))
             {
                 _update_hovered_over = true;
 
@@ -613,12 +617,12 @@ namespace DownUnder.UI.Widgets
                     throw new Exception("DrawingMode not supported in Draw.");
             }
         }
-
-        Rectangle _previous_scissor_rectangle;
+        
         private void DrawDirect(SpriteBatch sprite_batch)
         {
+            RectangleF visible_area = VisibleArea;
             _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
-            sprite_batch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
             _graphics_in_use = true;
             if (_graphics_updating)
             {
@@ -630,7 +634,7 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
-                sprite_batch.FillRectangle(VisibleArea, Theme.BackgroundColor.CurrentColor);
+                sprite_batch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
             }
 
             OnDraw?.Invoke(this, EventArgs.Empty);
@@ -640,7 +644,7 @@ namespace DownUnder.UI.Widgets
                 child.DrawDirect(sprite_batch);
             }
 
-            sprite_batch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
 
             DrawOverlay(sprite_batch);
 

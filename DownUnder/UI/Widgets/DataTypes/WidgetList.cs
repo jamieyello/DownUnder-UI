@@ -23,6 +23,67 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
+        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true)
+        {
+            if (Widgets.Count == 0) return;
+            float row_height = MaxSize.Y + spacing;
+            max_width = max_width - spacing * 2;
+
+            // Read the areas of the widgets just once (areas)
+            List<RectangleF> areas = new List<RectangleF>();
+            foreach (Widget widget in Widgets)
+            {
+                areas.Add(widget.Area);
+            }
+
+            // Determine the number of widgets that should be in a row (row_x_count)
+            Point2 point;
+            int row_x_count = areas.Count;
+            point = new Point2(spacing, spacing);
+            int this_row_count = 0;
+            for (int i = 0; i < areas.Count; i++)
+            {
+                point.X += areas[i].Width;
+                this_row_count++;
+                if (point.X > max_width)
+                {
+                    row_x_count = Math.Min(this_row_count, row_x_count);
+                    this_row_count = 0;
+                    point.X = spacing;
+                }
+            }
+
+            // Given the
+            // row_x_count
+            // max_width
+            // row_height
+            // Set the positions of the Widgets.
+            point = new Point2(spacing, spacing + row_height / 2);
+            int x = 0;
+            for (int i = 0; i < Widgets.Count; i++)
+            {
+                point.X = max_width * ((float)(x + 1) / (row_x_count + 1)) + spacing * x + spacing;
+                Widgets[i].Area = areas[i].WithCenter(point);
+
+                if (x++ == row_x_count)
+                {
+                    x = 0;
+                    point.Y += row_height;
+                }
+            }
+
+            if (debug_output)
+            {
+                for (int i = 0; i < areas.Count; i++)
+                {
+                    Console.WriteLine($"areas[{i}] {areas[i]}");
+
+                }
+                Console.WriteLine($"row_x_count {row_x_count}");
+                Console.WriteLine($"max_width {max_width}");
+            }
+        }
+
         public Point2 MaxSize
         {
             get

@@ -205,20 +205,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 _iscrollable_parent.Scroll.Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
 
             #endregion Restraining
-
-            // Validate
-            if (_parent.debug_output)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"widget_area {widget_area}");
-                Console.WriteLine($"DisplayArea {_parent.VisibleArea}");
-                Console.WriteLine($"area_in_window {area_in_window}");
-                Console.WriteLine($"widget_content_area {widget_content_area}");
-                Console.WriteLine($"drawing_area {drawing_area}");
-                Console.WriteLine($"modifier {modifier}");
-                Console.WriteLine($"Scroll.Y {_iscrollable_parent.Scroll.Y.GetCurrent()}");
-                Console.WriteLine();
-            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
     {
         #region Private Fields
 
-        private WidgetList _widgets = new WidgetList();
+        protected WidgetList _widgets = new WidgetList();
         
         #endregion Private Fields
 
@@ -54,6 +54,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
         public bool FitToContentArea { get; set; } = false;
 
+        public bool EmbedChildren { get; set; } = true;
+
         #endregion Properties
 
         #region Overrides
@@ -66,25 +68,16 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 base.Area = value;
                 foreach (var child in Children)
                 {
-                    child.EmbedIn(area_backing);
+                    if (EmbedChildren) child.EmbedIn(area_backing);
                 }
             }
         }
 
-        /// <summary> Area of the <see cref="Widget"/> in the window (without the scroll offset). </summary>
-        //public override RectangleF AreaInWindow
-        //{
-        //    get
-        //    {
-        //        var area = base.AreaInWindow;
-        //        area.Offset(Scroll.ToVector2());
-        //        return area;
-        //    }
-        //}
-
         public override WidgetList Children => _widgets;
 
-        #region Events
+        #region Events/EventHandlers
+
+        public event EventHandler OnListChange;
 
         private void InitializeScrollbars(object sender, EventArgs args)
         {
@@ -125,23 +118,28 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public void Insert(int index, Widget item)
         {
             ((IList<Widget>)_widgets).Insert(index, item);
+            OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void RemoveAt(int index)
         {
             ((IList<Widget>)_widgets).RemoveAt(index);
+            OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void Add(Widget widget)
         {
             widget.Parent = this;
-            widget.EmbedIn(Area);
+            if (EmbedChildren) widget.EmbedIn(Area);
             ((IList<Widget>)_widgets).Add(widget);
+            OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void Clear()
         {
+            bool invoke = (Count != 0);
             ((IList<Widget>)_widgets).Clear();
+            if (invoke) OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         public bool Contains(Widget item)
@@ -156,7 +154,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public bool Remove(Widget item)
         {
-            return ((IList<Widget>)_widgets).Remove(item);
+            if (((IList<Widget>)_widgets).Remove(item))
+            {
+                OnListChange?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+            return false;
         }
 
         public IEnumerator<Widget> GetEnumerator()

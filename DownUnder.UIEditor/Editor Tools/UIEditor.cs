@@ -36,9 +36,34 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
 
-            Label test = new Label(sidebar, "Future area for CommonControls.");
-            sidebar.SetCell(0, 0, test);
+            SpacedList common_controls = new SpacedList(sidebar)
+            {
+                new Label(null, "One"),
+                new Label(null, "two"),
+                new Label(null, "three"),
+                new Label(null, "four"),
+                new Label(null, "five"),
+                new Label(null, "six"),
+                new Label(null, "seven")
+            };
 
+            sidebar.SetCell(0, 0, common_controls);
+            //common_controls.OnListChange += DiagnoseAreaToggled;
+            common_controls.debug_output = true;
+            common_controls.Add(new Label(null, "eight"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.Add(new Label(null, "bup"));
+            common_controls.debug_output = false;
+            
             Layout property_grid_layout = new Layout(sidebar);
             sidebar.SetCell(0, 1, property_grid_layout);
 
@@ -79,6 +104,11 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.Add(grid);
 
             return project;
+        }
+
+        private static void DiagnoseAreaToggled(object sender, EventArgs args)
+        {
+            if (((Widget)sender).debug_output) DiagnoseArea(sender, args);
         }
 
         private static void DiagnoseArea(object sender, EventArgs args)
