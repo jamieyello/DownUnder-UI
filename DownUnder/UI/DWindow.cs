@@ -228,6 +228,7 @@ namespace DownUnder.UI
         /// <summary> A collection of icons used by this window and its widgets. </summary>
         public UIImages UIImages { get; protected set; }
 
+        /// <summary> <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> used when drawing the UI. (Necessary for clipping) </summary>
         public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true };
 
         #endregion Properties
@@ -401,6 +402,7 @@ namespace DownUnder.UI
                 HoveredWidgets.Reset();
             }
             Layout.Update(game_time, InputState);
+            
             if (UICursorsEnabled) Mouse.SetCursor(UICursor);
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;

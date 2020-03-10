@@ -38,30 +38,13 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
-                new Label(null, "One"),
-                new Label(null, "two"),
-                new Label(null, "three"),
-                new Label(null, "four"),
-                new Label(null, "five"),
-                new Label(null, "six"),
-                new Label(null, "seven")
+                new Button(null) { Size = new Point2(100, 100) }
             };
 
             sidebar.SetCell(0, 0, common_controls);
             //common_controls.OnListChange += DiagnoseAreaToggled;
             common_controls.debug_output = true;
             common_controls.Add(new Label(null, "eight"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
-            common_controls.Add(new Label(null, "bup"));
             common_controls.debug_output = false;
             
             Layout property_grid_layout = new Layout(sidebar);

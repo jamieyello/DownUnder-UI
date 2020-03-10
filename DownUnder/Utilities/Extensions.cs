@@ -273,6 +273,11 @@ namespace DownUnder
             return result;
         }
 
+        public static RectangleF WithCenter(this RectangleF r, RectangleF r2)
+        {
+            return r.WithCenter(r2.Center);
+        }
+
         public static RectangleF AsRectangleSize(this Point2 p)
         {
             return new RectangleF(new Point2(), p);

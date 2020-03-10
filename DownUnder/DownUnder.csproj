@@ -95,6 +95,7 @@
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
+    <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />

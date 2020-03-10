@@ -41,7 +41,7 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
-        
+
         /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
         private bool _previous_clicking;
 
@@ -94,7 +94,7 @@ namespace DownUnder.UI.Widgets
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
         private SpriteBatch _local_sprite_batch_backing;
         private SpriteBatch _passed_sprite_batch_backing;
-        
+
         public enum DrawingMode
         {
             /// <summary> Draw nothing. </summary>
@@ -149,19 +149,12 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Height"/>. </summary>
         [DataMember] public bool IsFixedHeight { get; set; } = false;
-        
+
+        /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
+        [DataMember] public bool PassthroughMouse { get; set; } = false;
+
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
-
-        /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
-        public SpriteBatch SpriteBatch
-        {
-            get
-            {
-                if (DrawMode == DrawingMode.use_render_target) return _local_sprite_batch_backing;
-                return _passed_sprite_batch_backing;
-            }
-        }
         
         #endregion
 
@@ -427,6 +420,16 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
+        public SpriteBatch SpriteBatch
+        {
+            get
+            {
+                if (DrawMode == DrawingMode.use_render_target) return _local_sprite_batch_backing;
+                return _passed_sprite_batch_backing;
+            }
+        }
+
         #endregion
 
         #endregion
@@ -505,7 +508,7 @@ namespace DownUnder.UI.Widgets
                 _double_click_countdown -= game_time.GetElapsedSeconds();
             }
 
-            if (VisibleArea.Contains(ui_input.CursorPosition))
+            if (VisibleArea.Contains(ui_input.CursorPosition) && !PassthroughMouse)
             {
                 _update_hovered_over = true;
 
@@ -1035,6 +1038,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).PaletteUsage = PaletteUsage;
             ((Widget)c).DrawMode = DrawMode;
             ((Widget)c).debug_output = debug_output;
+            ((Widget)c).PassthroughMouse = PassthroughMouse;
 
             return c;
         }
