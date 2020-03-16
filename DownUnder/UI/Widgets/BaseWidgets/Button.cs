@@ -30,6 +30,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public Label Label { get; private set; }
 
+        public float ImageEdgeSpace { get; set; } = 20f;
+
         /// <summary> The image to be displayed in this <see cref="Button"/>. (if any) </summary>
         public Texture2D Image
         {
@@ -94,7 +96,10 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             if (Image != null)
             {
-                SpriteBatch.Draw(Image, DrawingArea.Position, Color.White);
+                SpriteBatch.Draw(
+                    Image, 
+                    Image.Bounds.ToRectangleF().FittedIn(DrawingArea, ImageEdgeSpace).ToRectangle(), 
+                    Color.White);
             }
         }
 

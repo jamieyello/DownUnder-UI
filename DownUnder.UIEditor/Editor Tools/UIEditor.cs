@@ -4,6 +4,7 @@ using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 
@@ -36,9 +37,17 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
 
+            Button grid_b = new Button(null)
+            {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout")
+            };
+
+            grid_b.DrawBackground = true;
+
             SpacedList common_controls = new SpacedList(sidebar)
             {
-                new Button(null) { Size = new Point2(100, 100) }
+                grid_b
             };
 
             sidebar.SetCell(0, 0, common_controls);

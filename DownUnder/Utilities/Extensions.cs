@@ -278,6 +278,19 @@ namespace DownUnder
             return r.WithCenter(r2.Center);
         }
 
+        /// <summary> Returns a new <see cref="RectangleF"/> positioned inside a given <see cref="RectangleF"/> with aspect ratio preserved. </summary>
+        public static RectangleF FittedIn(this RectangleF r, RectangleF r2, float min_spacing = 0f)
+        {
+            float max_size = Math.Min(
+                    Math.Min(r.Width, r2.Width - min_spacing),
+                    Math.Min(r.Height, r2.Height - min_spacing));
+
+            return new RectangleF(0f, 0f,
+                    r.Width * (max_size / r.Width),
+                    r.Height * (max_size / r.Height))
+                    .WithCenter(r2);
+        }
+
         public static RectangleF AsRectangleSize(this Point2 p)
         {
             return new RectangleF(new Point2(), p);
