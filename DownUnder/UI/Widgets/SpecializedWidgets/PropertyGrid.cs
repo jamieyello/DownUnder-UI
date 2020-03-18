@@ -38,8 +38,6 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
         public PropertyGrid(IParent parent, object obj) 
             : base(parent, 2, obj.GetType().GetProperties().Length)
         {
-            bool previous_disable_update_area = _disable_update_area;
-            _disable_update_area = true;
             var properties = obj.GetType().GetProperties();
             if (properties.Length == 0) { throw new Exception("No properties in object."); }
             
@@ -59,7 +57,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                 {
                     SetCell(1, i, new Label(
                         this,
-                        parent.SpriteFont, "*Collection*"
+                        parent.SpriteFont, "Collection..."
                         )
                     {
                         DrawOutline = true,
@@ -96,7 +94,6 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     SetCell(1, i, label);
                 }
             }
-            _disable_update_area = false;
         }
 
         #endregion

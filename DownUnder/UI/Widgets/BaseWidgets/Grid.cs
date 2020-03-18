@@ -18,13 +18,19 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         #region Fields
 
         /// <summary> A jagged array of all the contained <see cref="Widget"/>s. (Widgets[x][y]) </summary>
-        private WidgetArray _widgets = new WidgetArray();
+        private readonly WidgetArray _widgets = new WidgetArray();
 
         /// <summary> A list of dividers in a tuple with their y index. </summary>
-        private List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
+        private readonly List<Tuple<Widget, int>> dividers = new List<Tuple<Widget, int>>();
 
-        /// <summary> When set to true this <see cref="Widget"/> will ignore children's invoking of <see cref="UpdateArea(bool)"/>. </summary>
-        protected bool _disable_update_area = false;
+        /// <summary> When set to false the <see cref="_area_cache"/> will update next time <see cref="Area"/> is read. </summary>
+        private bool _area_cache_updated = false;
+
+        /// <summary> Using a cache for the <see cref="Area"/> of this <see cref="Widget"/> greatly improves performance. </summary>
+        private RectangleF _area_cache;
+
+        /// <summary> When set to true <see cref="_area_cache"/> will be used. Only disabled for ruling out bugs. </summary>
+        private const bool _USE_AREA_CACHE = true;
 
         #endregion
 
@@ -46,8 +52,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public Grid(IParent parent, int x_length, int y_length, Widget filler = null, bool debug = false)
             : base(parent)
         {
-            _disable_update_area = true;
-
             if (filler == null)
             {
                 filler = DefaultCell();
@@ -57,15 +61,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
             _widgets = new WidgetArray(x_length, y_length, filler);
             SetDefaults(debug);
-
-            _disable_update_area = false;
-            //UpdateArea(false);
         }
 
         private void SetDefaults(bool debug)
         {
             _widgets.Align(new RectangleF(0, 0, 100, 100));
-            DrawBackground = false;
         }
 
         #endregion
@@ -79,7 +79,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             divider.Width = Width;
             dividers.Add(new Tuple<Widget, int>(divider, y));
 
-            UpdateArea(true);
+            SignalChildAreaChanged();
         }
 
         /// <summary> Find and remove the given divider. </summary>
@@ -90,7 +90,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 if (dividers[i].Item1 == divider)
                 {
                     dividers.RemoveAt(i);
-                    UpdateArea(true);
+                    SignalChildAreaChanged();
                     return true;
                 }
             }
@@ -106,7 +106,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 throw new Exception("Given list of widgets' length doesn't match the X dimension of this grid.");
             }
 
-            UpdateArea(true);
+            SignalChildAreaChanged();
         }
 
         // unfinished
@@ -117,7 +117,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                 throw new Exception("Given list of widgets' length doesn't match the Y dimension of this grid.");
             }
 
-            UpdateArea(true);
+            SignalChildAreaChanged();
         }
 
         /// <summary> Returns a list of dividers that exist on the given row. </summary>
@@ -145,9 +145,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void Align(RectangleF value)
         {
-            bool previous_disable_update_area = _disable_update_area;
-            _disable_update_area = true;
-
             float divider_height = 0f;
             foreach (var divider in dividers)
             {
@@ -158,6 +155,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             _widgets.Align(value.WithHeight(value.Height - divider_height).SizeOnly());
             RectangleF? new_area = _widgets.AreaCoverage;
             if (new_area == null) return;
+            _area_cache = new_area.Value.WithPosition(_area_position_backing);
+            _area_cache_updated = true;
 
             foreach (var divider in dividers)
             {
@@ -168,8 +167,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets
                     divider.Item1.Height
                     );
             }
-
-            _disable_update_area = previous_disable_update_area;
         }
 
         #endregion Private Methods
@@ -209,19 +206,24 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="Parent"/>, if any) </summary>
         public override RectangleF Area
         {
-            get => (Dimensions.X == 0 || Dimensions.Y == 0) ? new RectangleF() : _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
+            get
+            {
+                if (Dimensions.X == 0 || Dimensions.Y == 0) return new RectangleF();
+                if (_area_cache_updated && _USE_AREA_CACHE) return _area_cache;
+                _area_cache_updated = true;
+                _area_cache = _widgets.AreaCoverage.Value.WithPosition(_area_position_backing);
+                return _area_cache;
+            }
             set
             {
                 Align(value);
             }
         }
 
-        protected override void UpdateArea(bool update_parent)
+        protected override void SignalChildAreaChanged()
         {
-            if (_disable_update_area) return;
-            Align(Area);
-
-            base.UpdateArea(update_parent);
+            _area_cache_updated = false;
+            base.SignalChildAreaChanged();
         }
 
         protected override object DerivedClone(Widget parent = null)

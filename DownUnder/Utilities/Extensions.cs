@@ -94,6 +94,12 @@ namespace DownUnder
         {
             return new RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
         }
+        
+        public static Rectangle ToRectangle(this RectangleF r, bool round)
+        {
+            if (!round) return r.ToRectangle();
+            return new Rectangle(r.X.Rounded(), r.Y.Rounded(), r.Width.Rounded(), r.Height.Rounded());
+        }
 
         public static Size2 ToSize2(this Vector2 v)
         {
@@ -291,6 +297,7 @@ namespace DownUnder
                     .WithCenter(r2);
         }
 
+        /// <summary> Returns this <see cref="Point2"/> as a new <see cref="RectangleF"/>'s size. </summary>
         public static RectangleF AsRectangleSize(this Point2 p)
         {
             return new RectangleF(new Point2(), p);
@@ -533,9 +540,7 @@ namespace DownUnder
             return bmp;
         }
 
-        /// <summary>
-        /// Calculates the distance between a point and a rectangle.
-        /// </summary>
+        /// <summary> Calculates the distance between a point and a rectangle. </summary>
         public static double DistanceFrom(this RectangleF rectangle, Point2 point)
         {
             var dx = Math.Max(Math.Max(rectangle.X - point.X, point.X - rectangle.Right), 0);

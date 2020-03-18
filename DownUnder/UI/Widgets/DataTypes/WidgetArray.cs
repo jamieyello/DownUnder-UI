@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A general interface for an array of Widgets. </summary>
-    public class WidgetArray : IList<WidgetList>
+    public sealed class WidgetArray : IList<WidgetList>
     {
         private readonly List<WidgetList> _widgets = new List<WidgetList>();
 

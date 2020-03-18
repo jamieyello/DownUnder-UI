@@ -30,7 +30,7 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget : IParent
+    [DataContract] public abstract class Widget : IParent, IDisposable
     {
         public bool debug_output = false;
 
@@ -451,18 +451,26 @@ namespace DownUnder.UI.Widgets
 
         ~Widget()
         {
-            Dispose();
+            Dispose(true);
         }
 
         public void Dispose()
         {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             _white_dot?.Dispose();
             _render_target?.Dispose();
+            _local_sprite_batch_backing?.Dispose();
 
             foreach (Widget child in Children)
             {
-                child.Dispose();
+                child.Dispose(true);
             }
+
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -566,7 +574,7 @@ namespace DownUnder.UI.Widgets
                     if (c_area.Size.ToPoint2().IsLargerThan(size))
                     {
                         Size = c_area.Size.ToPoint2().Max(size);
-                        UpdateArea(true);
+                        SignalChildAreaChanged();
                     }
                 }
             }
@@ -624,8 +632,8 @@ namespace DownUnder.UI.Widgets
         private void DrawDirect(SpriteBatch sprite_batch)
         {
             RectangleF visible_area = VisibleArea;
-            _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
-            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
+            if (visible_area.Height == 0f || visible_area.Width == 0f) return;
+
             _graphics_in_use = true;
             if (_graphics_updating)
             {
@@ -639,6 +647,9 @@ namespace DownUnder.UI.Widgets
             {
                 sprite_batch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
             }
+
+            _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
+            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
 
             OnDraw?.Invoke(this, EventArgs.Empty);
 
@@ -923,13 +934,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
         protected void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
-        /// <summary> A function called by a <see cref="Widget"/> to update both itself and its <see cref="Parent"/>'s area. </summary>
-        protected virtual void UpdateArea(bool update_parent)
+        /// <summary> Called by a child <see cref="Widget"/> to signal that it's area has changed. </summary>
+        protected virtual void SignalChildAreaChanged()
         {
-            if (update_parent)
-            {
-                ParentWidget?.UpdateArea(update_parent);
-            }
+            ParentWidget?.SignalChildAreaChanged();
         }
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>

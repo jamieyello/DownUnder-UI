@@ -80,6 +80,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AlignContent()
         {
+            
             Label.Area = Label.Area.WithCenter(Area);
         }
 
@@ -98,7 +99,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             {
                 SpriteBatch.Draw(
                     Image, 
-                    Image.Bounds.ToRectangleF().FittedIn(DrawingArea, ImageEdgeSpace).ToRectangle(), 
+                    Image.Bounds.ToRectangleF().FittedIn(DrawingArea, ImageEdgeSpace).ToRectangle(true), 
                     Color.White);
             }
         }
@@ -114,7 +115,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             throw new NotImplementedException();
         }
 
-        protected override void UpdateArea(bool update_parent)
+        protected override void SignalChildAreaChanged()
         {
             if (_disable_update_area) return;
             bool _previous_disable_update_area = _disable_update_area;
@@ -123,7 +124,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             AlignContent();
 
             _disable_update_area = _previous_disable_update_area;
-            base.UpdateArea(update_parent);
+            base.SignalChildAreaChanged();
         }
 
         public override Point2 MinimumSize

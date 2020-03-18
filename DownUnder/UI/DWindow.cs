@@ -259,9 +259,11 @@ namespace DownUnder.UI
             IsFixedTimeStep = false;
         }
 
-        ~DWindow()
+        protected override void Dispose(bool disposing)
         {
+            GraphicsManager.Dispose();
             UIImages.Dispose();
+            base.Dispose(disposing);
         }
 
         #endregion Constructors

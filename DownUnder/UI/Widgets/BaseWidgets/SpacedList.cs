@@ -27,7 +27,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void SetDefaults()
         {
-            OnListChange += UpdateArea;
+            OnListChange += SignalChildAreaChanged;
             EmbedChildren = false;
         }
 
@@ -43,16 +43,16 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        private void UpdateArea(object sender, EventArgs args)
+        private void SignalChildAreaChanged(object sender, EventArgs args)
         {
-            UpdateArea(true);
+            SignalChildAreaChanged();
         }
 
-        protected override void UpdateArea(bool update_parent)
+        protected override void SignalChildAreaChanged()
         {
             if (_disable_update_area) return;
             _widgets.AlignHorizontalWrap(area_backing.Width, debug_output, ListSpacing);
-            base.UpdateArea(update_parent);
+            base.SignalChildAreaChanged();
         }
     }
 }
