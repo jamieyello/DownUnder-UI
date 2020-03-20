@@ -220,7 +220,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        protected override void SignalChildAreaChanged()
+        internal override void SignalChildAreaChanged()
         {
             _area_cache_updated = false;
             base.SignalChildAreaChanged();

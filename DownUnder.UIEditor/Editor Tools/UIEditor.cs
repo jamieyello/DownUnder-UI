@@ -37,17 +37,19 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
 
-            Button grid_b = new Button(null)
+            Button butt = new Button(null)
             {
                 Size = new Point2(100, 100),
                 Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout")
             };
 
-            grid_b.DrawBackground = true;
+            butt.OnDrag += TestDrag;
+            butt.OnDrop += TestDrop;
+            butt.DrawBackground = true;
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
-                grid_b
+                butt
             };
 
             sidebar.SetCell(0, 0, common_controls);
@@ -96,6 +98,18 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.Add(grid);
 
             return project;
+        }
+
+        private static void TestDrag(object sender, EventArgs args)
+        {
+            Widget w_sender = (Widget)sender;
+            Console.WriteLine($"{w_sender.GetType()} drag event triggered.");
+        }
+
+        private static void TestDrop(object sender, EventArgs args)
+        {
+            Widget w_sender = (Widget)sender;
+            Console.WriteLine($"{w_sender.GetType()} drop event triggered.");
         }
 
         private static void DiagnoseAreaToggled(object sender, EventArgs args)

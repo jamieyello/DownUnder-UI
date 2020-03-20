@@ -112,6 +112,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             OnConfirm += ConfirmEdit;
             if (IsGraphicsInitialized) InitializeCursor(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeCursor;
+            if (IsGraphicsInitialized) SetDefaultArea(this, EventArgs.Empty);
+            else OnGraphicsInitialized += SetDefaultArea;
         }
 
         #endregion Constructors
@@ -150,7 +152,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get => new WidgetList();
         }
 
-        protected override void SignalChildAreaChanged()
+        internal override void SignalChildAreaChanged()
         {
             if (_disable_area_update) return;
             base.SignalChildAreaChanged();
@@ -199,6 +201,12 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         private void InitializeCursor(object sender, EventArgs args)
         {
             _text_cursor = new TextCursor(this);
+        }
+
+        private void SetDefaultArea(object sender, EventArgs args)
+        {
+            Area = Area.WithMinimumSize(TextArea.Size);
+            ParentWidget?.SignalChildAreaChanged();
         }
 
         #endregion

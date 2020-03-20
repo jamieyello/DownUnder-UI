@@ -80,8 +80,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AlignContent()
         {
-            
             Label.Area = Label.Area.WithCenter(Area);
+            Console.WriteLine($"Set label area to {Label.Area}");
         }
 
         #endregion
@@ -115,7 +115,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             throw new NotImplementedException();
         }
 
-        protected override void SignalChildAreaChanged()
+        internal override void SignalChildAreaChanged()
         {
             if (_disable_update_area) return;
             bool _previous_disable_update_area = _disable_update_area;

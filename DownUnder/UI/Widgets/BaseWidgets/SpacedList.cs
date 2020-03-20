@@ -48,7 +48,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             SignalChildAreaChanged();
         }
 
-        protected override void SignalChildAreaChanged()
+        internal override void SignalChildAreaChanged()
         {
             if (_disable_update_area) return;
             _widgets.AlignHorizontalWrap(area_backing.Width, debug_output, ListSpacing);

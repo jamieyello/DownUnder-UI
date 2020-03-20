@@ -26,6 +26,9 @@ using System.Threading;
 // Implement IScrollableWidget in Grid (and possibly IList)
 // Should Layout and Grid just be removed?
 // Invert Scroll values by default
+// SignalChildAreaChanged should be called in base area only, _disable_update_area should be in base.
+// Figure out what's causing the massive performance drop that occurs over time.
+// SpacedList is uneven.
 
 namespace DownUnder.UI.Widgets
 {
@@ -491,6 +494,12 @@ namespace DownUnder.UI.Widgets
                 widget.UpdatePriority(game_time, ui_input);
             }
         }
+        
+        bool dragging_in = false;
+        bool dragging_off = false;
+
+        bool _update_drag;
+        bool _update_drop;
 
         // Nothing should be invoked here.
         private void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
@@ -501,24 +510,39 @@ namespace DownUnder.UI.Widgets
             _update_added_to_focused = false;
             _update_set_as_focused = false;
             _update_hovered_over = false;
+            _update_drag = false;
+            _update_drop = false;
 
-            if (ui_input.PrimaryClick && !_previous_clicking) { _update_clicked = true; } else { _update_clicked = false; } // Set clicked to only be true on the frame the 'mouse' clicks.
             if (ui_input.CursorPosition != _previous_cursor_position)
             {
-                _double_click_countdown = 0f; // Do not allow double clicks where the mouse has been moved in-between clicks.
+                _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
                 _triple_click_countdown = 0f;
             }
-
-            _previous_clicking = ui_input.PrimaryClick;
-            _previous_cursor_position = ui_input.CursorPosition;
+            
             if (_double_click_countdown > 0f)
             {
                 _double_click_countdown -= game_time.GetElapsedSeconds();
             }
 
+            if (!ui_input.PrimaryClick)
+            {
+                dragging_in = false;
+                if (dragging_off)
+                {
+                    dragging_off = false;
+                    _update_drop = true;
+                }
+            }
+
             if (VisibleArea.Contains(ui_input.CursorPosition) && !PassthroughMouse)
             {
                 _update_hovered_over = true;
+
+                if (ui_input.PrimaryClick && !_previous_clicking) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
+                _previous_clicking = ui_input.PrimaryClick;
+                _previous_cursor_position = ui_input.CursorPosition;
+
+                if (_update_clicked) { dragging_in = true; }
 
                 if (_update_clicked)
                 {
@@ -557,7 +581,11 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                _update_hovered_over = false;
+                if (dragging_in && !dragging_off)
+                {
+                    dragging_off = true;
+                    _update_drag = true;
+                }
             }
         }
 
@@ -586,6 +614,16 @@ namespace DownUnder.UI.Widgets
                 if (_update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
                 if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
                 if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (_update_drag)
+            {
+                OnDrag?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (_update_drop)
+            {
+                OnDrop?.Invoke(this, EventArgs.Empty);
             }
 
             if (ui_input.Enter && IsPrimarySelected && EnterConfirms)
@@ -835,6 +873,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnSelectOff;
         /// <summary> Invoked whwn the user confirms this <see cref="Widget"/> (Such as pressing enter with this <see cref="Widget"/> selected). </summary>
         public event EventHandler OnConfirm;
+        /// <summary> Invoked when the user clicks and holds this <see cref="Widget"/> while leaving the area. (For drag and drop) </summary>
+        public event EventHandler OnDrag;
+        /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
+        public event EventHandler OnDrop;
 
         #endregion
         
@@ -935,7 +977,7 @@ namespace DownUnder.UI.Widgets
         protected void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Called by a child <see cref="Widget"/> to signal that it's area has changed. </summary>
-        protected virtual void SignalChildAreaChanged()
+        internal virtual void SignalChildAreaChanged()
         {
             ParentWidget?.SignalChildAreaChanged();
         }
