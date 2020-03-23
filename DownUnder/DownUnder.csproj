@@ -97,6 +97,8 @@
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorList.cs" />
+    <Compile Include="UI\Widgets\Behaviors\StartDragAnimation.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
@@ -106,12 +108,14 @@
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
+    <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
+    <Compile Include="UI\Widgets\Interfaces\IWidgetChild.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
@@ -152,6 +156,7 @@
     <Content Include="UI\Images\opened folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
     <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>
   <ItemGroup>

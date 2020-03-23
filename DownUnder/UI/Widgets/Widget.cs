@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utilities;
 using DownUnder.Utility;
@@ -433,6 +434,8 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        public BehaviorList Behaviors { get; private set; }
+
         #endregion
 
         #endregion
@@ -450,6 +453,7 @@ namespace DownUnder.UI.Widgets
             Size = new Point2(10, 10);
             Theme = BaseColorScheme.Default;
             Name = GetType().Name;
+            Behaviors = new BehaviorList(this);
         }
 
         ~Widget()
