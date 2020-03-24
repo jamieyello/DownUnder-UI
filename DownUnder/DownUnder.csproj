@@ -128,6 +128,8 @@
     <Compile Include="Utilities\Directions2D.cs" />
     <Compile Include="Utilities\DrawingTools.cs" />
     <Compile Include="Utilities\DiagonalDirections2D.cs" />
+    <Compile Include="Utilities\Extensions\ConversionExtensions.cs" />
+    <Compile Include="Utilities\Extensions\DrawingExtensions.cs" />
     <Compile Include="Utilities\Images\Image.cs" />
     <Compile Include="Utilities\Images\ImagePool.cs" />
     <Compile Include="Utilities\Images\ImageSet.cs" />
@@ -136,7 +138,7 @@
     <Compile Include="Utilities\Orientation.cs" />
     <Compile Include="Utilities\OSInterface.cs" />
     <Compile Include="Utilities\Serialization\CSCreator.cs" />
-    <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
     <Compile Include="Utilities\Vector.cs" />

@@ -8,33 +8,28 @@ using System.Threading.Tasks;
 namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
-    public abstract class WidgetBehavior : IWidgetChild
+    public abstract class WidgetBehavior
     {
-        private Widget _parent;
+        Widget _parent_backing;
 
-        public WidgetBehavior() { }
-        public WidgetBehavior(Widget parent)
+        public Widget Parent
         {
-            ((IWidgetChild)this).Parent = parent;
-        }
-
-        bool IWidgetChild.IsInitialized => ((IWidgetChild)this).Parent != null;
-
-        Widget IWidgetChild.Parent
-        {
-            get => _parent;
+            get => _parent_backing;
             set
             {
-                if (((IWidgetChild)this).IsInitialized)
+                if (_parent_backing != null)
                 {
-                    if (_parent == value) return;
+                    if (_parent_backing == value) return;
                     throw new Exception("WidgetBehaviors cannot be reused.");
                 }
-                _parent = value;
-                AddEvents(value);
+                _parent_backing = value;
+                AddEvents();
             }
         }
 
-        protected abstract void AddEvents(Widget parent);
+        public bool HasParent { get => Parent != null; }
+        
+        protected abstract void AddEvents();
+        internal abstract void Deconstruct();
     }
 }

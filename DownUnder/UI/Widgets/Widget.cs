@@ -657,6 +657,7 @@ namespace DownUnder.UI.Widgets
             {
                 case DrawingMode.direct:
                     DrawDirect(sprite_batch);
+                    DrawNoClip();
                     break;
 
                 case DrawingMode.use_render_target:
@@ -705,6 +706,16 @@ namespace DownUnder.UI.Widgets
             DrawOverlay(sprite_batch);
 
             sprite_batch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
+        }
+
+        private void DrawNoClip()
+        {
+            OnDrawNoClip?.Invoke(this, EventArgs.Empty);
+
+            foreach (Widget child in Children)
+            {
+                child.DrawNoClip();
+            }
         }
 
         private void DrawUsingRenderTargets()
@@ -869,6 +880,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
+        /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
+        public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
         public event EventHandler OnUpdate;
         /// <summary> Invoked when this <see cref="Widget"/> is selected. </summary>

@@ -26,11 +26,16 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public void Add(WidgetBehavior item)
         {
+            item.Parent = _parent;
             ((IList<WidgetBehavior>)_behaviors).Add(item);
         }
 
         public void Clear()
         {
+            foreach (WidgetBehavior behavior in _behaviors)
+            {
+                behavior.Deconstruct();
+            }
             ((IList<WidgetBehavior>)_behaviors).Clear();
         }
 
@@ -56,16 +61,23 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public void Insert(int index, WidgetBehavior item)
         {
+            item.Parent = _parent;
             ((IList<WidgetBehavior>)_behaviors).Insert(index, item);
         }
 
         public bool Remove(WidgetBehavior item)
         {
-            return ((IList<WidgetBehavior>)_behaviors).Remove(item);
+            if (((IList<WidgetBehavior>)_behaviors).Remove(item))
+            {
+                item.Deconstruct();
+                return true;
+            }
+            return false;
         }
 
         public void RemoveAt(int index)
         {
+            ((IList<WidgetBehavior>)_behaviors)[index].Deconstruct();
             ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);
         }
 

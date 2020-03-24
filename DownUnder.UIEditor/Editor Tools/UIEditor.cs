@@ -1,6 +1,7 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.BaseWidgets;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
@@ -46,6 +47,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             butt.OnDrag += TestDrag;
             butt.OnDrop += TestDrop;
             butt.DrawBackground = true;
+            butt.Behaviors.Add(new StartDragAnimation());
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
