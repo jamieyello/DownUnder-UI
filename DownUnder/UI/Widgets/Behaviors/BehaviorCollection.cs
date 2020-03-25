@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class BehaviorList : IList<WidgetBehavior>
+    public class BehaviorCollection : IList<WidgetBehavior>
     {
         private readonly Widget _parent;
 
-        public BehaviorList(Widget parent)
+        public BehaviorCollection(Widget parent)
         {
             _parent = parent;
         }

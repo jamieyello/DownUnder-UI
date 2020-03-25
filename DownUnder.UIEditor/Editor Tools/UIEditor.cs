@@ -48,6 +48,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             butt.OnDrop += TestDrop;
             butt.DrawBackground = true;
             butt.Behaviors.Add(new StartDragAnimation());
+            //Behaviors.Add(new ChasingPointTest());
 
             SpacedList common_controls = new SpacedList(sidebar)
             {

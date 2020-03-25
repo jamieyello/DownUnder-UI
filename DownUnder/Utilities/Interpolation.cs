@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Diagnostics;
 
@@ -6,16 +7,17 @@ namespace DownUnder.Utility
 {
     public enum InterpolationType
     {
-        liniar,
+        /// <summary> y = x </summary>
+        linear,
+        /// <summary> y = x * x </summary>
         squared,
+        /// <summary> y = x * x * x </summary>
         cubed,
-
-        /// <summary>
-        /// A stretched sin wave where the bottom x/y is at 0 and the top x/y is at 1. (recommended)
-        /// </summary>
+        /// <summary> y = sin(x * π / 2) (A stretched sin wave where the bottom x/y is at 0 and the top x/y is at 1, recommended) </summary>
         fake_sin
     }
 
+    // https://www.youtube.com/watch?v=sh7BZf7D5Bw -jamieyello
     public static class Interpolation
     {
         /// <summary>
@@ -26,12 +28,11 @@ namespace DownUnder.Utility
         /// <param name="target_object">The second object to represent the destination of the interpolation.</param>
         /// <param name="progress">A value typically between 0f and 1f representing how far along the interpolation you want.</param>
         /// <param name="interpolation_type">The type of interpolation you want to use.</param>
-        /// <returns></returns>
         public static T GetMiddle<T>(T initial_object, T target_object, float progress, InterpolationType interpolation_type)
         {
-            switch (typeof(T).ToString())
+            switch (typeof(T))
             {
-                case "Microsoft.Xna.Framework.Color": // Special cases need to be made for types that can't be converted to 'System.Single'
+                case Type π when typeof(T).IsAssignableFrom(typeof(Color)): // Special cases need to be made for types that can't be converted to 'System.Single'
                     return (T)Convert.ChangeType
                         (
                             Color.Lerp
@@ -41,6 +42,18 @@ namespace DownUnder.Utility
                                 Plot(progress, interpolation_type)
                             ), typeof(T)
                         );
+
+                case Type π when typeof(T).IsAssignableFrom(typeof(RectangleF)):
+                    return (T)Convert.ChangeType
+                        (
+                            RectLerp
+                            (
+                                (RectangleF)Convert.ChangeType(initial_object, typeof(RectangleF)),
+                                (RectangleF)Convert.ChangeType(target_object, typeof(RectangleF)),
+                                Plot(progress, interpolation_type)
+                            ), typeof(T)
+                        );
+
                 // Add new cases here.
 
                 default: // A float will be returned.
@@ -67,7 +80,7 @@ namespace DownUnder.Utility
             float y;
             switch (type)
             {
-                case InterpolationType.liniar:
+                case InterpolationType.linear:
                     y = x;
                     break;
 
@@ -91,10 +104,29 @@ namespace DownUnder.Utility
 
             if (cap)
             {
-                if (y > 1f) y = 1f;
+                if (y > 1f) y = 1f; 
                 if (y < 0f) y = 0f;
             }
             return y;
+        }
+
+        /// <summary>
+        /// Performs linear interpolation of <see cref="RectangleF"/>.
+        /// </summary>
+        /// <param name="r1"></param>
+        /// <param name="r2"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        public static RectangleF RectLerp(RectangleF r1, RectangleF r2, float progress)
+        {
+            float inverse_progress = 1 - progress;
+            return new RectangleF
+                (
+                r1.X * inverse_progress + r2.X * progress,
+                r1.Y * inverse_progress + r2.Y * progress,
+                r1.Width * inverse_progress + r2.Width * progress,
+                r1.Height * inverse_progress + r2.Height * progress
+                );
         }
     }
 }

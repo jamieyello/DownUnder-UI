@@ -11,6 +11,16 @@ namespace DownUnder
 {
     public static class ConversionExtensions
     {
+        // temp extensions until MonoGame.Extended adds these missing properties
+        public static Point2 TopRight(this RectangleF r)
+        {
+            return new Point2(r.X + r.Width, r.Y);
+        }
+        public static Point2 BottomLeft(this RectangleF r)
+        {
+            return new Point2(r.X, r.Y + r.Height);
+        }
+
         public static Point ToPoint(this Point2 p)
         {
             return new Point((int)p.X, (int)p.Y);

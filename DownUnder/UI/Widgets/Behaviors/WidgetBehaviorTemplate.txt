@@ -8,14 +8,23 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     class BehaviorTemplate : WidgetBehavior
     {
-        public BehaviorTemplate() : base() { }
-        public BehaviorTemplate(Widget parent)
-            : base(parent)
+        public BehaviorTemplate()
         {
 
         }
 
-        protected override void AddEvents(Widget parent)
+		/// <summary>
+        /// All Events should be added here.
+        /// </summary>
+        protected override void ConnectEvents()
+        {
+            
+        }
+
+		/// <summary>
+        /// All Events added in ConnectEvents should be removed here.
+        /// </summary>
+        internal override void DisconnectEvents()
         {
             
         }

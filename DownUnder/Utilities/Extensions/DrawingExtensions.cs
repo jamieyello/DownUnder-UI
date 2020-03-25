@@ -10,15 +10,10 @@ using System.Threading.Tasks;
 
 namespace DownUnder
 {
-    public static class DrawingExtensions
+    public static class LinePaths
     {
         public static void DrawRoundedRect(this SpriteBatch spriteBatch, RectangleF rect, float radius, Color color, float thickness = 1f)
         {
-            if (radius == 0f)
-            {
-                spriteBatch.DrawRectangle(rect, color, thickness / 2);
-            }
-
             // Top left round
             DrawCircleQuarters(spriteBatch, rect.Position.WithOffset(new Point2(radius, radius)), radius, DiagonalDirections2D.TopLeft, color, 1f, 1f, thickness);
 
@@ -42,16 +37,6 @@ namespace DownUnder
 
             // Left line
             spriteBatch.DrawLine(rect.X, rect.Y + radius, rect.X, rect.Y + rect.Height - radius, color, thickness);
-        }
-
-        // temp extensions until MonoGame.Extended adds these missing properties
-        public static Point2 TopRight(this RectangleF r)
-        {
-            return new Point2(r.X + r.Width, r.Y);
-        }
-        public static Point2 BottomLeft(this RectangleF r)
-        {
-            return new Point2(r.X, r.Y + r.Height);
         }
 
         public static void DrawCircleQuarters
@@ -84,7 +69,6 @@ namespace DownUnder
             }
         }
 
-        // https://www.mathopenref.com/coordbasiccircle.html
         private static void _DrawCircleQuarter
             (
                 this SpriteBatch spriteBatch,
@@ -96,29 +80,42 @@ namespace DownUnder
                 float thickness = 1f
             )
         {
+            DrawLines(spriteBatch, GetCircleQuarterPoints(center, radius, mod_x, mod_y), color, thickness);
+        }
+
+        // https://www.mathopenref.com/coordbasiccircle.html
+        public static List<Point2> GetCircleQuarterPoints
+            (
+                Point2 center,
+                float radius,
+                float mod_x = 1f,
+                float mod_y = 1f
+            )
+        {
             float accuracy = radius / 2;
             float r_s = radius * radius;
-            Point2[] points = new Point2[(int)accuracy + 1];
+            List<Point2> points = new List<Point2>();
 
             float x;
-            for (int i = 0; i <= accuracy; i++)
+            for (int i = 0; i < accuracy; i++)
             {
                 x = (i / accuracy) * radius;
                 // solve for y (y = ± √(r2−x2))
-                points[i] = new Point2(x * mod_x, (float)Math.Sqrt(r_s - x * x) * mod_y).WithOffset(center);
+                points.Add(new Point2(x * mod_x, (float)Math.Sqrt(r_s - x * x) * mod_y).WithOffset(center));
             }
+            points.Add(new Point2(radius * mod_x + center.X, center.Y));
 
-            DrawLines(spriteBatch, points, color, thickness);
+            return points;
         }
 
-        public static void DrawLines(this SpriteBatch spriteBatch, Point2[] points, Color color, float thickness = 1f)
+        public static void DrawLines(this SpriteBatch spriteBatch, List<Point2> points, Color color, float thickness = 1f)
         {
-            if (points.Length == 0) return;
-            if (points.Length == 1)
+            if (points.Count == 0) return;
+            if (points.Count == 1)
             {
                 spriteBatch.DrawPoint(points[0], color, thickness);
             }
-            for (int i = 1; i < points.Length; i++)
+            for (int i = 1; i < points.Count; i++)
             {
                 spriteBatch.DrawLine(points[i - 1].X, points[i - 1].Y, points[i].X, points[i].Y, color, thickness);
             }

@@ -97,7 +97,7 @@
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
-    <Compile Include="UI\Widgets\Behaviors\BehaviorList.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Behaviors\StartDragAnimation.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />

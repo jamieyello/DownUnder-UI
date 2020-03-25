@@ -435,7 +435,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public BehaviorList Behaviors { get; private set; }
+        public BehaviorCollection Behaviors { get; private set; }
 
         #endregion
 
@@ -452,9 +452,9 @@ namespace DownUnder.UI.Widgets
         private void SetDefaults()
         {
             Size = new Point2(10, 10);
-            Theme = BaseColorScheme.Default;
+            Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
-            Behaviors = new BehaviorList(this);
+            Behaviors = new BehaviorCollection(this);
         }
 
         ~Widget()
@@ -505,6 +505,7 @@ namespace DownUnder.UI.Widgets
 
         bool _update_drag;
         bool _update_drop;
+        bool _update_passthrough_clicked;
 
         // Nothing should be invoked here.
         private void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
@@ -517,6 +518,7 @@ namespace DownUnder.UI.Widgets
             _update_hovered_over = false;
             _update_drag = false;
             _update_drop = false;
+            _update_passthrough_clicked = false;
 
             if (ui_input.CursorPosition != _previous_cursor_position)
             {
@@ -620,6 +622,10 @@ namespace DownUnder.UI.Widgets
                 if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
                 if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
             }
+
+            if (_update_clicked) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+            if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
+            if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
             if (_update_drag)
             {
@@ -871,6 +877,12 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDoubleClick;
         /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. </summary>
         public event EventHandler OnTripleClick;
+        /// <summary> Invoked when this <see cref="Widget"/> is clicked on. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
+        public event EventHandler OnPassthroughClick;
+        /// <summary> Invoked when this <see cref="Widget"/> is double clicked. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
+        public event EventHandler OnPassthroughDoubleClick;
+        /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
+        public event EventHandler OnPassthroughTripleClick;
         /// <summary> Invoked when the mouse hovers over this <see cref="Widget"/>. </summary>
         public event EventHandler OnHover;
         /// <summary> Invoked when the mouse hovers off this <see cref="Widget"/>. </summary>
