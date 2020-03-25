@@ -23,13 +23,13 @@ namespace DownUnder.UI.Widgets.Behaviors
                     throw new Exception("WidgetBehaviors cannot be reused.");
                 }
                 _parent_backing = value;
-                AddEvents();
+                ConnectEvents();
             }
         }
 
         public bool HasParent { get => Parent != null; }
         
-        protected abstract void AddEvents();
-        internal abstract void Deconstruct();
+        protected abstract void ConnectEvents();
+        internal abstract void DisconnectEvents();
     }
 }

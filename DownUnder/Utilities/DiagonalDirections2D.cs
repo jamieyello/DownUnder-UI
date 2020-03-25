@@ -12,10 +12,7 @@ namespace DownUnder.Utility
         public bool bottom_right;
         public bool bottom_left;
 
-        /// <summary>
-        /// Creates a perpendicular Direction2D by combining directions. (Not rotation.)
-        /// </summary>
-        /// <returns></returns>
+        /// <summary> Creates a perpendicular Direction2D by combining directions. (Not rotation.) </summary>
         public Directions2D ToPerpendicular()
         {
             return new Directions2D()
@@ -86,6 +83,28 @@ namespace DownUnder.Utility
                 ((DiagonalDirections2D)obj).top_left == top_left &&
                 ((DiagonalDirections2D)obj).bottom_right == bottom_right &&
                 ((DiagonalDirections2D)obj).bottom_left == bottom_left;
+        }
+
+        public static DiagonalDirections2D operator |(DiagonalDirections2D d1, DiagonalDirections2D d2)
+        {
+            return new DiagonalDirections2D()
+            {
+                top_left = d1.top_left || d2.top_left,
+                top_right = d1.top_right || d2.top_right,
+                bottom_left = d1.bottom_left || d2.bottom_left,
+                bottom_right = d1.bottom_right || d2.bottom_right
+            };
+        }
+
+        public static DiagonalDirections2D operator &(DiagonalDirections2D d1, DiagonalDirections2D d2)
+        {
+            return new DiagonalDirections2D()
+            {
+                top_left = d1.top_left && d2.top_left,
+                top_right = d1.top_right && d2.top_right,
+                bottom_left = d1.bottom_left && d2.bottom_left,
+                bottom_right = d1.bottom_right && d2.bottom_right
+            };
         }
 
         public static DiagonalDirections2D TopRight_BottomLeft_TopLeft_BottomRight

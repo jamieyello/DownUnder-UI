@@ -30,6 +30,7 @@ using System.Threading;
 // SignalChildAreaChanged should be called in base area only, _disable_update_area should be in base.
 // Figure out what's causing the massive performance drop that occurs over time.
 // SpacedList is uneven.
+// Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 
 namespace DownUnder.UI.Widgets
 {

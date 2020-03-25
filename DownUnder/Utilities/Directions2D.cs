@@ -122,6 +122,28 @@ namespace DownUnder.Utility
                 ((Directions2D)obj).Down == Down;
         }
 
+        public static Directions2D operator |(Directions2D d1, Directions2D d2)
+        {
+            return new Directions2D()
+            {
+                left = d1.left || d2.left,
+                right = d1.right || d2.right,
+                up = d1.up || d2.up,
+                down = d1.down || d2.down
+            };
+        }
+
+        public static Directions2D operator &(Directions2D d1, Directions2D d2)
+        {
+            return new Directions2D()
+            {
+                left = d1.left && d2.left,
+                right = d1.right && d2.right,
+                up = d1.up && d2.up,
+                down = d1.down && d2.down
+            };
+        }
+
         public static Directions2D UpDownLeftRight
         {
             get => new Directions2D()
