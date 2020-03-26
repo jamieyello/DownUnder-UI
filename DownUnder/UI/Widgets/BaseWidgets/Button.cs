@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Constructors
 
-        public Button(IParent parent)
+        public Button(IParent parent = null)
             : base(parent)
         {
             SetDefaults();
@@ -112,7 +112,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         
         protected override object DerivedClone(Widget parent)
         {
-            throw new NotImplementedException();
+            Button c = new Button(parent);
+            c.FitAreaToContent = FitAreaToContent;
+            c.ImageEdgeSpace = ImageEdgeSpace;
+            c.Image = _image_backing;
+            return c;
         }
 
         internal override void SignalChildAreaChanged()

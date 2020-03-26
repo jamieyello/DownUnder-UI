@@ -231,6 +231,8 @@ namespace DownUnder.UI
         /// <summary> <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> used when drawing the UI. (Necessary for clipping) </summary>
         public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true };
 
+        public object DraggingObject { get; set; }
+
         #endregion Properties
 
         #region Constructors

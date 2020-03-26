@@ -47,8 +47,8 @@ namespace DownUnder.UIEditor.Editor_Tools
             butt.OnDrag += TestDrag;
             butt.OnDrop += TestDrop;
             butt.DrawBackground = true;
-            butt.Behaviors.Add(new StartDragAnimation());
-            //Behaviors.Add(new ChasingPointTest());
+            butt.Behaviors.Add(new DragableOutlineAnimation());
+            butt.Behaviors.Add(new DragAndDropClone() { DragObject = new Button() });
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
@@ -79,7 +79,7 @@ namespace DownUnder.UIEditor.Editor_Tools
         static Layout DefaultProject(DWindow parent)
         {
             // Create taskbar
-            Layout project = new Layout(parent)
+            Layout project = new Layout()
             {
                 Width = 200,
                 Height = 140,
@@ -89,6 +89,8 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawOutline = true,
                 DrawBackground = true
             };
+            project.DeveloperObjects.IsDeveloperModeEnabled = true;
+
             //project.Theme.GetBackground(project).DefaultColor = Color.White;
 
             Grid grid = new Grid(parent, 2, 3)

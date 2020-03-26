@@ -5,7 +5,7 @@ using DownUnder.Utility;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class StartDragAnimation : WidgetBehavior
+    public class DragableOutlineAnimation : WidgetBehavior
     {
         private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
         private ChangingValue<float> round_amount = new ChangingValue<float>(0f);
@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         private bool snap_rect_to_mouse = false;
         private float end_circumference = 20f;
         
-        public StartDragAnimation()
+        public DragableOutlineAnimation()
         {
             round_amount.Interpolation = InterpolationType.fake_sin;
             round_amount.TransitionSpeed = 1f;

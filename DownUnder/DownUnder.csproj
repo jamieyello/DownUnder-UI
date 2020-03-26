@@ -98,7 +98,9 @@
     <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Behaviors\StartDragAnimation.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DragableOutlineAnimation.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DragAndDropClone.cs" />
+    <Compile Include="UI\Widgets\DataTypes\DeveloperObjects.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
@@ -110,7 +112,9 @@
     <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
+    <Compile Include="UI\Widgets\Interfaces\IAcceptsDrops.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
+    <Compile Include="UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />

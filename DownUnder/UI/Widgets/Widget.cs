@@ -24,8 +24,6 @@ using System.Threading;
 // Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
 // DrawingArea doesn't have consistent size between drawing modes.
-// Implement IScrollableWidget in Grid (and possibly IList)
-// Should Layout and Grid just be removed?
 // Invert Scroll values by default
 // SignalChildAreaChanged should be called in base area only, _disable_update_area should be in base.
 // Figure out what's causing the massive performance drop that occurs over time.
@@ -35,7 +33,8 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget : IParent, IDisposable
+    [DataContract] public abstract class Widget 
+        : IParent, IDisposable, ICloneable, IAcceptsDrops
     {
         public bool debug_output = false;
 
@@ -66,6 +65,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
 
+        bool dragging_in = false;
+
+        bool dragging_off = false;
+
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
 
@@ -84,6 +87,8 @@ namespace DownUnder.UI.Widgets
         private bool _update_added_to_focused;
         private bool _update_set_as_focused;
         private bool _update_hovered_over;
+        bool _update_drag;
+        bool _update_drop;
 
         // Various property backing fields.
         protected RectangleF area_backing = new RectangleF();
@@ -157,6 +162,12 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
+
+        /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
+        [DataMember] public bool AcceptsDrops { get; set; }
+
+        /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
+        [DataMember] public List<Type> AcceptedDropTypes { get; set; } = new List<Type>();
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -359,7 +370,11 @@ namespace DownUnder.UI.Widgets
             {
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
-                if (value != null) DrawMode = value.DrawMode;
+                if (value != null)
+                {
+                    value.DeveloperObjects.LastAddedChild = this;
+                    DrawMode = value.DrawMode;
+                }
             }
         }
 
@@ -437,6 +452,8 @@ namespace DownUnder.UI.Widgets
 
         public BehaviorCollection Behaviors { get; private set; }
 
+        public DeveloperObjects DeveloperObjects { get; set; }
+
         #endregion
 
         #endregion
@@ -455,6 +472,8 @@ namespace DownUnder.UI.Widgets
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
+            DeveloperObjects = new DeveloperObjects();
+            DeveloperObjects.Parent = this;
         }
 
         ~Widget()
@@ -500,13 +519,6 @@ namespace DownUnder.UI.Widgets
             }
         }
         
-        bool dragging_in = false;
-        bool dragging_off = false;
-
-        bool _update_drag;
-        bool _update_drop;
-        bool _update_passthrough_clicked;
-
         // Nothing should be invoked here.
         private void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
         {
@@ -518,7 +530,6 @@ namespace DownUnder.UI.Widgets
             _update_hovered_over = false;
             _update_drag = false;
             _update_drop = false;
-            _update_passthrough_clicked = false;
 
             if (ui_input.CursorPosition != _previous_cursor_position)
             {
@@ -867,6 +878,26 @@ namespace DownUnder.UI.Widgets
             OnConfirm?.Invoke(this, EventArgs.Empty);
         }
 
+        public bool IsDropAcceptable(object drop)
+        {
+            IAcceptsDrops i_this = this;
+
+            if (i_this.AcceptsDrops)
+            {
+                Console.WriteLine("Accepting drop");
+                foreach (Type type in i_this.AcceptedDropTypes)
+                {
+                    if (type.IsAssignableFrom(drop?.GetType()))
+                    {
+                        Console.WriteLine("Accepted drop");
+                        return true;
+                    }
+                }
+            }
+            Console.WriteLine("Denied drop");
+            return false;
+        }
+
         #endregion
 
         #region EventsHandlers
@@ -1091,9 +1122,30 @@ namespace DownUnder.UI.Widgets
 
         #endregion
 
-        #region Cloning
+        #region IAcceptsDrops Implementation
 
-        public object Clone(Widget parent = null)
+        // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
+        bool IAcceptsDrops.AcceptsDrops => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptsDrops : AcceptsDrops;
+        List<Type> IAcceptsDrops.AcceptedDropTypes => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptedDropTypes : AcceptedDropTypes;
+        bool IAcceptsDrops.IsDropAcceptable(object drop) => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
+        void IAcceptsDrops.HandleDrop(object drop)
+        {
+            if (DeveloperObjects.IsDeveloperModeEnabled) { ((IAcceptsDrops)DeveloperObjects).HandleDrop(drop); } else { HandleDrop(drop); }
+        }
+
+        void HandleDrop(object drop)
+        {
+
+        }
+        #endregion
+
+        #region ICloneable Implementation
+
+        public object Clone()
+        {
+            return Clone(null);
+        }
+        public object Clone(Widget parent)
         {
             object c = DerivedClone(parent);
             if (parent == null) ((Widget)c).Parent = Parent;
@@ -1119,6 +1171,8 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).DrawMode = DrawMode;
             ((Widget)c).debug_output = debug_output;
             ((Widget)c).PassthroughMouse = PassthroughMouse;
+            ((Widget)c).AcceptsDrops = AcceptsDrops;
+            foreach (Type type in AcceptedDropTypes) { ((Widget)c).AcceptedDropTypes.Add(type); }
 
             return c;
         }
