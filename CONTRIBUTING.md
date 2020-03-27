@@ -1,6 +1,6 @@
 Basic Program Structure Overview and Design Philosophy
   - 
-  DownUnder UI (name WIP?) is yet another GUI designer program. The goal of this project is to overtake all other GUI designers in quality, as well as visual appeal that wouldn't be possible with any other designer. This is why DownUnder is based on the game development oriented framework MonoGame, which leaves optimized special effects easily implemented. All elements of the framework need to be visually appealing past the bar set by other frameworks if this project is to compete.
+  DownUnder UI (name WIP?) is yet another GUI designer program. The goal of this project is to overtake all other GUI designers in visual appeal that wouldn't be possible with any other designer. This is why DownUnder is based on the game development oriented framework MonoGame, which leaves optimized special effects easily implemented. All elements of the framework need to be visually appealing past the bar set by other frameworks if this project is to compete.
   
   A wide selection of special effects are planned. Nearly everything that moves or changes should have some kind of intorpolation (implemented through the ChangingValue<> class), if even just a couple frames. Things in real life don't just pop into existence, why should they on your screen?
   
