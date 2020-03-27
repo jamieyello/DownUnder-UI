@@ -340,7 +340,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             
             text_area = label.SpriteFont.MeasureStringAreas(edit_text.ToString());
             highlight_area = label.SpriteFont.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
-            caret_blink_timer += label.UpdateData.GameTime.GetElapsedSeconds();
+            caret_blink_timer += label.UpdateData.ElapsedSeconds;
 
             bool over_highlighted_text = false;
             foreach (RectangleF text in highlight_area)

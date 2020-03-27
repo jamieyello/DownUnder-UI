@@ -66,9 +66,9 @@ namespace DownUnder.UI.Widgets.Behaviors
                 rect.SetTargetValue(new RectangleF(0, 0, end_circumference, end_circumference).WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
                 if (!rect.IsTransitioning) { snap_rect_to_mouse = true; }
             }
-            rect.Update(Parent.UpdateData.GameTime.GetElapsedSeconds());
-            rect_color.Update(Parent.UpdateData.GameTime.GetElapsedSeconds());
-            round_amount.Update(Parent.UpdateData.GameTime.GetElapsedSeconds());
+            rect.Update(Parent.UpdateData.ElapsedSeconds);
+            rect_color.Update(Parent.UpdateData.ElapsedSeconds);
+            round_amount.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
         private void DrawRect(object sender, EventArgs args)

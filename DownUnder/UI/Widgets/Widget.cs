@@ -511,6 +511,7 @@ namespace DownUnder.UI.Widgets
         internal void UpdatePriority(GameTime game_time, UIInputState ui_input)
         {
             UpdateData.GameTime = game_time;
+            UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.UIInputState = ui_input;
 
             UpdateCursorInput(game_time, ui_input);
@@ -659,7 +660,7 @@ namespace DownUnder.UI.Widgets
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget)
             {
-                scroll_widget.ScrollBars.Update(UpdateData.GameTime.GetElapsedSeconds(), UpdateData.UIInputState);
+                scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             }
 
             OnUpdate?.Invoke(this, EventArgs.Empty);
@@ -1139,6 +1140,7 @@ namespace DownUnder.UI.Widgets
         {
 
         }
+
         #endregion
 
         #region ICloneable Implementation

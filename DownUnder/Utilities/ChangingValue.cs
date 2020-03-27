@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 namespace DownUnder.Utility
 {
-    /// <summary>
-    /// Value designed to smoothly transition between two states.
-    /// </summary>
+    /// <summary> Value designed to smoothly transition between two states. </summary>
     public class ChangingValue<T>
     {
         [NonSerialized] private T initial_value = (T)Activator.CreateInstance(typeof(T));

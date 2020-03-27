@@ -53,15 +53,12 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
 
             sidebar.SetCell(0, 0, common_controls);
-            //common_controls.OnListChange += DiagnoseAreaToggled;
             common_controls.debug_output = true;
             common_controls.Add(new Label(null, "eight"));
             common_controls.debug_output = false;
             
             Layout property_grid_layout = new Layout(sidebar);
             sidebar.SetCell(0, 1, property_grid_layout);
-
-            //debug_output = true;
 
             PropertyGrid property_grid = new PropertyGrid(property_grid_layout, project);
             property_grid_layout.Add(property_grid);
@@ -78,42 +75,15 @@ namespace DownUnder.UIEditor.Editor_Tools
             // Create taskbar
             Layout project = new Layout()
             {
-                Width = 300,
-                Height = 200,
-
+                Size = new Point2(300f, 200f),
                 Spacing = new Size2(30, 30),
                 SnappingPolicy = DiagonalDirections2D.TopLeft,
                 DrawOutline = true,
                 DrawBackground = true
             };
             project.DeveloperObjects.IsDeveloperModeEnabled = true;
-            
-            //project.Theme.GetBackground(project).DefaultColor = Color.White;
-
-            //Grid grid = new Grid(parent, 2, 3)
-            //{
-            //    SnappingPolicy = DiagonalDirections2D.TopRight,
-            //    Spacing = new Size2(10, 10)
-            //};
-            //grid.Spacing = new Size2(10, 10);
-
-            //project.OnListChange += DiagnoseChildren;
-            
-            //project.Add(grid);
 
             return project;
-        }
-
-        private static void TestDrag(object sender, EventArgs args)
-        {
-            Widget w_sender = (Widget)sender;
-            Console.WriteLine($"{w_sender.GetType()} drag event triggered.");
-        }
-
-        private static void TestDrop(object sender, EventArgs args)
-        {
-            Widget w_sender = (Widget)sender;
-            Console.WriteLine($"{w_sender.GetType()} drop event triggered.");
         }
 
         private static void DiagnoseAreaToggled(object sender, EventArgs args)

@@ -16,7 +16,13 @@ namespace DownUnder
         /// <summary> Returns true if this <see cref="Point2"/>'s X or Y field is larger than the given one's. </summary>
         public static bool IsLargerThan(this Point2 p, Point2 p2)
         {
-            return (p.X > p2.X || p.Y > p2.Y);
+            return p.X > p2.X || p.Y > p2.Y;
+        }
+
+        /// <summary> Returns true if either X or Y is negative. </summary>
+        public static bool IsNegative(this Point2 p)
+        {
+            return p.X < 0f || p.Y < 0f;
         }
 
         /// <summary> Returns a new <see cref="Point2"/> with the highest X and Y values of both given Points. </summary>
