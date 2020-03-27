@@ -43,7 +43,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         private void DropObject(object sender, EventArgs args)
         {
             IAcceptsDrops victim = Parent.ParentWindow.HoveredWidgets.Primary;
-            victim.HandleDrop(DragObject);
+            victim.HandleDrop(Parent.ParentWindow.DraggingObject);
         }
     }
 }

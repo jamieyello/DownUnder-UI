@@ -86,13 +86,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #endregion
 
-        protected override object DerivedClone(Widget parent = null)
+        protected override object DerivedClone()
         {
-            Layout c = new Layout(parent);
+            Layout c = new Layout();
             
             for (int i = 0; i < _widgets.Count; i++)
             {
-                c._widgets.Add((Widget)_widgets[i].Clone(parent));
+                c._widgets.Add((Widget)_widgets[i].Clone());
             }
 
             ((IScrollableWidget)c).FitToContentArea = FitToContentArea;
@@ -115,9 +115,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return ((IList<Widget>)_widgets).IndexOf(item);
         }
 
-        public void Insert(int index, Widget item)
+        public void Insert(int index, Widget widget)
         {
-            ((IList<Widget>)_widgets).Insert(index, item);
+            widget.Parent = this;
+            if (EmbedChildren) widget.EmbedIn(Area);
+            ((IList<Widget>)_widgets).Insert(index, widget);
             OnListChange?.Invoke(this, EventArgs.Empty);
         }
 

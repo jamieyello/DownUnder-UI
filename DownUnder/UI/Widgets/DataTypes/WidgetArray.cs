@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -60,6 +61,14 @@ namespace DownUnder.UI.Widgets.DataTypes
                 {
                     _widgets[x][y] = widget_array[x][y];
                 }
+            }
+        }
+
+        public void SetParent(IParent parent)
+        {
+            foreach (WidgetList widgets in _widgets)
+            {
+                widgets.SetParent(parent);
             }
         }
         

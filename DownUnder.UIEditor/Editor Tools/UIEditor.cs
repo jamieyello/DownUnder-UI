@@ -14,14 +14,6 @@ namespace DownUnder.UIEditor.Editor_Tools
     /// <summary> A <see cref="Layout"/> meant to create <see cref="Layout"/>s during runtime.</summary>
     class UIEditorLayout : Layout
     {
-        /// <summary> I will use this later. Don't throw it away! </summary>
-        enum CommonWidgets
-        {
-            Label,
-            Grid,
-            Layout
-        }
-
         /// <summary> What made the first UI that made the first UI? This. </summary>
         /// <param name="editor_objects"> Shortcut to several widgets relevant to the UI. </param>
         public UIEditorLayout(DWindow parent, out EditorObjects editor_objects)
@@ -43,12 +35,17 @@ namespace DownUnder.UIEditor.Editor_Tools
                 Size = new Point2(100, 100),
                 Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout")
             };
-
-            butt.OnDrag += TestDrag;
-            butt.OnDrop += TestDrop;
+            
             butt.DrawBackground = true;
             butt.Behaviors.Add(new DragableOutlineAnimation());
-            butt.Behaviors.Add(new DragAndDropClone() { DragObject = new Button() });
+            butt.Behaviors.Add(new DragAndDropClone()
+            {
+                DragObject = new Button()
+                {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 90, 30),
+                }
+            });
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
@@ -81,8 +78,8 @@ namespace DownUnder.UIEditor.Editor_Tools
             // Create taskbar
             Layout project = new Layout()
             {
-                Width = 200,
-                Height = 140,
+                Width = 300,
+                Height = 200,
 
                 Spacing = new Size2(30, 30),
                 SnappingPolicy = DiagonalDirections2D.TopLeft,
@@ -90,17 +87,19 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawBackground = true
             };
             project.DeveloperObjects.IsDeveloperModeEnabled = true;
-
+            
             //project.Theme.GetBackground(project).DefaultColor = Color.White;
 
-            Grid grid = new Grid(parent, 2, 3)
-            {
-                SnappingPolicy = DiagonalDirections2D.TopRight,
-                Spacing = new Size2(10, 10)
-            };
+            //Grid grid = new Grid(parent, 2, 3)
+            //{
+            //    SnappingPolicy = DiagonalDirections2D.TopRight,
+            //    Spacing = new Size2(10, 10)
+            //};
             //grid.Spacing = new Size2(10, 10);
 
-            project.Add(grid);
+            //project.OnListChange += DiagnoseChildren;
+            
+            //project.Add(grid);
 
             return project;
         }
@@ -137,6 +136,16 @@ namespace DownUnder.UIEditor.Editor_Tools
             }
             Console.WriteLine($"parent AreaInWindow {widget.ParentWidget?.AreaInWindow}");
             Console.WriteLine();
+        }
+
+        private static void DiagnoseChildren(object sender, EventArgs args)
+        {
+            Widget w_sender = (Widget)sender;
+            Console.WriteLine($"w_s.Children Count {w_sender.Children.Count}");
+            for (int i = 0; i < w_sender.Children.Count; i++)
+            {
+                Console.WriteLine($"{i} {w_sender.Children[i].Area}");
+            }
         }
     }
 }

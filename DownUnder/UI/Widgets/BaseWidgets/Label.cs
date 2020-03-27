@@ -134,9 +134,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             set => base.MinimumSize = value;
         }
 
-        protected override object DerivedClone(Widget parent = null)
+        protected override object DerivedClone()
         {
-            Label result = new Label(parent);
+            Label result = new Label();
                 
             result.Text = Text;
             result.Name = Name;

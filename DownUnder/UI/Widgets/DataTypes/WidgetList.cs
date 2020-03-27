@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -131,6 +132,14 @@ namespace DownUnder.UI.Widgets.DataTypes
                     result += widget.Width;
                 }
                 return result;
+            }
+        }
+
+        public void SetParent(IParent parent)
+        {
+            foreach (Widget widget in Widgets)
+            {
+                widget.Parent = parent;
             }
         }
 

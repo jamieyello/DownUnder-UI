@@ -60,6 +60,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             filler.Parent = this;
 
             _widgets = new WidgetArray(x_length, y_length, filler);
+            _widgets.SetParent(this);
+
             SetDefaults(debug);
         }
 
@@ -226,7 +228,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             base.SignalChildAreaChanged();
         }
 
-        protected override object DerivedClone(Widget parent = null)
+        protected override object DerivedClone()
         {
             throw new NotImplementedException();
         }

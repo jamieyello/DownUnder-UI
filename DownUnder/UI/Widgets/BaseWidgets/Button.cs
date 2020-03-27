@@ -80,7 +80,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public void AlignContent()
         {
-            Label.Area = Label.Area.WithCenter(Area);
+            Label.Area = Label.Area.WithCenter(Area.SizeOnly());
             Console.WriteLine($"Set label area to {Label.Area}");
         }
 
@@ -110,9 +110,9 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         public override WidgetList Children => _children_backing;
         
-        protected override object DerivedClone(Widget parent)
+        protected override object DerivedClone()
         {
-            Button c = new Button(parent);
+            Button c = new Button();
             c.FitAreaToContent = FitAreaToContent;
             c.ImageEdgeSpace = ImageEdgeSpace;
             c.Image = _image_backing;

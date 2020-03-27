@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Interfaces;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,13 @@ namespace DownUnder.UI.Widgets.DataTypes
                 {
                     if (Parent is Layout l_parent)
                     {
+                        Point2 scroll_offset = new Point2();
+                        if (Parent is IScrollableWidget s_widget)
+                        {
+                            scroll_offset = s_widget.Scroll.ToPoint2();
+                        }
+
+                        w_drop.Area = w_drop.Area.WithCenter(Parent.CursorPosition);
                         l_parent.Add(w_drop);
                     }
                 }

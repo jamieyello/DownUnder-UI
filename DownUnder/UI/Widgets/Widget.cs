@@ -29,6 +29,8 @@ using System.Threading;
 // Figure out what's causing the massive performance drop that occurs over time.
 // SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
+// Grid dividers are broken
+// Scrollbars are ugly
 
 namespace DownUnder.UI.Widgets
 {
@@ -434,7 +436,7 @@ namespace DownUnder.UI.Widgets
                 if (UpdateData.UIInputState == null) return new Point2();
                 if (this is IScrollableWidget)
                 {
-                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
+                    return UpdateData.UIInputState.CursorPosition - PositionInWindow + ((IScrollableWidget)this).Scroll.ToVector2();
                 }
                 return UpdateData.UIInputState.CursorPosition - PositionInWindow;
             }
@@ -1143,14 +1145,7 @@ namespace DownUnder.UI.Widgets
 
         public object Clone()
         {
-            return Clone(null);
-        }
-        public object Clone(Widget parent)
-        {
-            object c = DerivedClone(parent);
-            if (parent == null) ((Widget)c).Parent = Parent;
-            else ((Widget)c).Parent = parent;
-
+            object c = DerivedClone();
             ((Widget)c).Name = Name;
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
             ((Widget)c).DrawBackground = DrawBackground;
@@ -1164,7 +1159,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).Centered = Centered;
             ((Widget)c).DoubleClickTiming = DoubleClickTiming;
             ((Widget)c).Spacing = Spacing;
-            ((Widget)c).Area = Area;
+            ((Widget)c).Area = Area; 
             ((Widget)c).IsFixedWidth = IsFixedWidth;
             ((Widget)c).IsFixedHeight = IsFixedHeight;
             ((Widget)c).PaletteUsage = PaletteUsage;
@@ -1180,7 +1175,7 @@ namespace DownUnder.UI.Widgets
         // This is for implementing cloning in derived classes. They'll return their
         // clone for their own fields, and 'Widget' will add the base fields to it.
         // See https://stackoverflow.com/questions/19119623/clone-derived-class-from-base-class-method
-        protected abstract object DerivedClone(Widget parent);
+        protected abstract object DerivedClone();
 
         #endregion
     }
