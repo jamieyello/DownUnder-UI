@@ -11,6 +11,15 @@ namespace DownUnder.Utility
         private bool left = false;
         private bool right = false;
 
+        public Directions2D() { }
+        public Directions2D(bool up, bool down, bool left, bool right)
+        {
+            this.up = up;
+            this.down = down;
+            this.left = left;
+            this.right = right;
+        }
+
         [DataMember] public bool AllowOpposites = true;
         
         [DataMember] public bool Up
@@ -108,6 +117,21 @@ namespace DownUnder.Utility
         public static bool operator !=(Directions2D d1, Directions2D d2)
         {
             return !(d1 == d2);
+        }
+
+        public static bool operator true(Directions2D d)
+        {
+            return d.up || d.down || d.left || d.right;
+        }
+
+        public static bool operator false(Directions2D d)
+        {
+            return !(d.up || d.down || d.left || d.right);
+        }
+
+        public static Directions2D operator !(Directions2D d)
+        {
+            return new Directions2D(!d.up, !d.down, !d.left, !d.right);
         }
 
         public override bool Equals(Object obj)

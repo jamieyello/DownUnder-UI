@@ -331,6 +331,39 @@ namespace DownUnder
             return inner;
         }
 
+        public static Directions2D GetCursorHoverOnBorders(this RectangleF r, Point2 p, float border_thickness)
+        {
+            RectangleF[] areas = GetBorderArea(r, border_thickness);
+            Directions2D result = new Directions2D();
+
+            if (areas[0].Contains(p)) result.Up = true;
+            if (areas[1].Contains(p)) result.Right = true;
+            if (areas[2].Contains(p)) result.Down = true;
+            if (areas[3].Contains(p)) result.Left = true;
+
+            return result;
+        }
+
+        public static RectangleF[] GetBorderArea(this RectangleF r, float thickness)
+        {
+            RectangleF[] areas = new RectangleF[4];
+            float half_thickness = thickness / 2;
+
+            // Top
+            areas[0] = new RectangleF(r.X - half_thickness, r.Y - half_thickness, r.Width + thickness, thickness);
+
+            // Right
+            areas[1] = new RectangleF(r.X + r.Width - half_thickness, r.Y - half_thickness, thickness, r.Height + thickness);
+
+            // Bottom
+            areas[2] = new RectangleF(r.X - half_thickness, r.Y + r.Height - half_thickness, r.Width + thickness, thickness);
+
+            //Left
+            areas[3] = new RectangleF(r.X - half_thickness, r.Y - half_thickness, thickness, r.Height + thickness);
+
+            return areas;
+        }
+
         public enum NumericRelationship
         {
             GreaterThan = 1,

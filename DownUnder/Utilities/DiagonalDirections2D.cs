@@ -12,6 +12,15 @@ namespace DownUnder.Utility
         public bool bottom_right;
         public bool bottom_left;
 
+        public DiagonalDirections2D() { }
+        public DiagonalDirections2D(bool top_right, bool top_left, bool bottom_right, bool bottom_left)
+        {
+            this.top_right = top_right;
+            this.top_left = top_left;
+            this.bottom_right = bottom_right;
+            this.bottom_left = bottom_left;
+        }
+
         /// <summary> Creates a perpendicular Direction2D by combining directions. (Not rotation.) </summary>
         public Directions2D ToPerpendicular()
         {
@@ -71,6 +80,21 @@ namespace DownUnder.Utility
         public static bool operator !=(DiagonalDirections2D d1, DiagonalDirections2D d2)
         {
             return !(d1 == d2);
+        }
+
+        public static bool operator true(DiagonalDirections2D d)
+        {
+            return d.top_left || d.top_right || d.bottom_left || d.bottom_right;
+        }
+
+        public static bool operator false(DiagonalDirections2D d)
+        {
+            return !(d.top_left || d.top_right || d.bottom_left || d.bottom_right);
+        }
+
+        public static DiagonalDirections2D operator !(DiagonalDirections2D d)
+        {
+            return new DiagonalDirections2D(!d.top_right, !d.top_left, !d.bottom_right, !d.bottom_left);
         }
 
         public override bool Equals(Object obj)

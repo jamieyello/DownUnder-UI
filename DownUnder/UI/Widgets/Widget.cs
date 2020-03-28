@@ -5,6 +5,7 @@ using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ using System.Threading;
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Grid dividers are broken
 // Scrollbars are ugly
+// Serialization code is scary
 
 namespace DownUnder.UI.Widgets
 {
@@ -67,9 +69,11 @@ namespace DownUnder.UI.Widgets
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
 
-        bool dragging_in = false;
+        private bool dragging_in = false;
 
-        bool dragging_off = false;
+        private bool dragging_off = false;
+
+        private bool user_resizing = false;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
@@ -80,6 +84,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         private const int _MAX_WAIT_TIME = 100;
 
+        /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
+        private const float _USER_RESIZE_BOUNDS_SIZE = 20f;
+
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
@@ -89,8 +96,8 @@ namespace DownUnder.UI.Widgets
         private bool _update_added_to_focused;
         private bool _update_set_as_focused;
         private bool _update_hovered_over;
-        bool _update_drag;
-        bool _update_drop;
+        private bool _update_drag;
+        private bool _update_drop;
 
         // Various property backing fields.
         protected RectangleF area_backing = new RectangleF();
@@ -106,6 +113,7 @@ namespace DownUnder.UI.Widgets
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
         private SpriteBatch _local_sprite_batch_backing;
         private SpriteBatch _passed_sprite_batch_backing;
+        private bool _allow_user_resizing_backing = false;
 
         public enum DrawingMode
         {
@@ -247,6 +255,13 @@ namespace DownUnder.UI.Widgets
                     child.DrawMode = value;
                 }
             }
+        }
+
+        /// <summary> When enabled the user will able to resize this <see cref="Widget"/> with the cursor. </summary>
+        [DataMember] public bool AllowUserResize
+        {
+            get => DeveloperObjects.IsDeveloperModeEnabled ? DeveloperObjects.AllowUserResizing : _allow_user_resizing_backing;
+            set => _allow_user_resizing_backing = value;
         }
 
         #endregion
@@ -515,7 +530,16 @@ namespace DownUnder.UI.Widgets
             UpdateData.UIInputState = ui_input;
 
             UpdateCursorInput(game_time, ui_input);
-            if (IsHoveredOver) ParentWindow?.HoveredWidgets.AddFocus(this);
+            
+            if (AllowUserResize)
+            {
+                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(ParentWindow.InputState.CursorPosition, _USER_RESIZE_BOUNDS_SIZE);
+                if (resize_grab != Directions2D.None)
+                {
+                    ParentWindow.ResizeGrabber = this;
+                    ParentWindow.ResizeGrab = resize_grab;
+                }
+            }
             foreach (Widget widget in Children)
             {
                 widget.UpdatePriority(game_time, ui_input);
@@ -613,6 +637,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input)
         {
+            //Idk what's going on here
             if (this is IScrollableWidget s_this && false)
             {
                 if (s_this.FitToContentArea)
@@ -628,22 +653,35 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
-            if (IsPrimaryHovered && ParentWindow.IsActive)
+            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
+            
+            // Skip some normal behavior if the user has the resize cursor over this widget
+            if (ParentWindow.ResizeGrabber != this && !user_resizing)
             {
-                if (_update_added_to_focused) AddToFocused();
-                if (_update_set_as_focused) SetAsFocused();
-                if (_update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
-                if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
-                if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                if (IsPrimaryHovered && ParentWindow.IsActive)
+                {
+                    if (_update_added_to_focused) AddToFocused();
+                    if (_update_set_as_focused) SetAsFocused();
+                    if (_update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                }
+
+                if (_update_clicked) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+                if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
+                if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
+
+                if (_update_drag)
+                {
+                    OnDrag?.Invoke(this, EventArgs.Empty);
+                }
             }
-
-            if (_update_clicked) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
-            if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
-            if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
-
-            if (_update_drag)
+            else // User has resize cursor over this widget or is in the middle of resizing
             {
-                OnDrag?.Invoke(this, EventArgs.Empty);
+                if ((ParentWindow.ResizeGrab == Directions2D.UpOnly) || (ParentWindow.ResizeGrab == Directions2D.DownOnly)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
+                if ((ParentWindow.ResizeGrab == Directions2D.LeftOnly) || (ParentWindow.ResizeGrab == Directions2D.RightOnly)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
+                if ((ParentWindow.ResizeGrab == Directions2D.UpRight) || (ParentWindow.ResizeGrab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
+                if ((ParentWindow.ResizeGrab == Directions2D.UpLeft) || (ParentWindow.ResizeGrab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
             }
 
             if (_update_drop)
@@ -657,6 +695,7 @@ namespace DownUnder.UI.Widgets
             }
 
             IsHoveredOver = _update_hovered_over;
+            
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget)
             {
@@ -1169,6 +1208,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).debug_output = debug_output;
             ((Widget)c).PassthroughMouse = PassthroughMouse;
             ((Widget)c).AcceptsDrops = AcceptsDrops;
+            ((Widget)c).AllowUserResize = AllowUserResize;
             foreach (Type type in AcceptedDropTypes) { ((Widget)c).AcceptedDropTypes.Add(type); }
 
             return c;

@@ -57,6 +57,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
+        public bool AllowUserResizing { get; set; } = true;
+
         #region IAcceptsDrops Implementation
 
         public bool AcceptsDrops { get; private set; } = false;

@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets.BaseWidgets;
+using DownUnder.UI.Widgets;
+using DownUnder.Utility;
 
 namespace DownUnder.UI
 {
@@ -97,6 +99,11 @@ namespace DownUnder.UI
         /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
         
+        /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
+        internal Widget ResizeGrabber { get; set; }
+
+        internal Directions2D ResizeGrab { get; set; }
+
         /// <summary> The location of this window on the screen. </summary>
         public Point2 Position
         {
@@ -391,6 +398,7 @@ namespace DownUnder.UI
             }
             ProcessQueuedEvents();
             HoveredWidgets.Reset();
+            ResizeGrabber = null;
             InputState.UpdateAll(this, game_time);
             //Console.WriteLine($"_keyboard_state.IsKeyDown(Keys.Left) = {Keyboard.GetState().IsKeyDown(Keys.Left)}");
             //Console.WriteLine(InputState.TextCursorMovement.Down);
