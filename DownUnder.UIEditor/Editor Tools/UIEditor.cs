@@ -81,7 +81,8 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawOutline = true,
                 DrawBackground = true
             };
-            project.DeveloperObjects.IsDeveloperModeEnabled = true;
+            project.DeveloperObjects.IsEditModeEnabled = true;
+            project.Behaviors.Add(new DrawPixelGrid());
 
             return project;
         }

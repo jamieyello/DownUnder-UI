@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,17 @@ namespace DownUnder.Utilities.DrawingEffects
         List<List<GridPixel>> _pixel_grid = new List<List<GridPixel>>();
         Point2 _size_backing = new Point2();
         float _spacing_backing = 8f;
+        Color _base_color_backing;
 
-        public GridPixel DefaultPixel { get; set; } = new GridPixel();
+        public PixelGrid()
+        {
+            DefaultPixel = new GridPixel();
+            DefaultPixel.ChangingColor.SetTargetValue(BaseColor);
+        }
+        
+        public Color BaseColor { get; set; } = Color.Red;
+
+        public GridPixel DefaultPixel { get; set; }
 
         public float Spacing
         {
@@ -57,7 +67,7 @@ namespace DownUnder.Utilities.DrawingEffects
                 }
             }
         }
-
+        
         private void UpdateGridDimensions()
         {
             int required_x = (int)((Spacing + Size.X) / Spacing);
@@ -70,7 +80,7 @@ namespace DownUnder.Utilities.DrawingEffects
                 return;
             }
 
-            // Case empty old grid (done)
+            // Case empty old grid
             if (_pixel_grid.Count == 0 || _pixel_grid[0].Count == 0)
             {
                 _pixel_grid.Clear();
@@ -96,6 +106,77 @@ namespace DownUnder.Utilities.DrawingEffects
             {
                 return;
             }
+
+            // At this point the new size is determined to be bigger or smaller than the existing grid (but not nonexistent)
+
+            // Case bigger X
+            if (required_x > _pixel_grid.Count)
+            {
+                int add_x = required_x - _pixel_grid.Count;
+                int start_x = _pixel_grid.Count;
+                for (int i = 0; i < add_x; i++)
+                {
+                    List<GridPixel> new_row = new List<GridPixel>();
+                    for (int y = 0; y < _pixel_grid[0].Count; y++)
+                    {
+                        GridPixel new_pixel = (GridPixel)DefaultPixel.Clone();
+                        new_pixel.Position = PositionOfPixel(start_x + i, y);
+                        new_row.Add(new_pixel);
+                    }
+                    _pixel_grid.Add(new_row);
+                }
+            }
+
+            // Case smaller X
+            if (required_x < _pixel_grid.Count)
+            {
+                int remove_x = _pixel_grid.Count - required_x;
+                for (int i = 0; i < remove_x; i++)
+                {
+                    _pixel_grid.RemoveAt(_pixel_grid.Count - 1);
+                }
+            }
+
+            // Case bigger Y
+            if (required_y > _pixel_grid[0].Count)
+            {
+                int add_y = required_y - _pixel_grid[0].Count;
+                int start_y = _pixel_grid[0].Count;
+
+                // Add to all columns
+                for (int x = 0; x < _pixel_grid.Count; x++)
+                {
+                    for (int i = 0; i < add_y; i++)
+                    {
+                        GridPixel new_pixel = (GridPixel)DefaultPixel.Clone();
+                        new_pixel.Position = PositionOfPixel(x, start_y + i);
+                        _pixel_grid[x].Add(new_pixel);
+                    }
+                }
+            }
+
+            // Case smaller Y
+            if (required_y < _pixel_grid[0].Count)
+            {
+                int remove_y = _pixel_grid[0].Count - required_y;
+
+                for (int x = 0; x < _pixel_grid.Count; x++)
+                {
+                    for (int y = 0; y < remove_y; y++)
+                    {
+                        _pixel_grid[x].RemoveAt(_pixel_grid[x].Count - 1);
+                    }
+                }
+            }
+        }
+
+        private Point2 PositionOfPixel(int x, int y)
+        {
+            return new Point2
+                (
+                Spacing + Spacing * x,
+                Spacing + Spacing * y
+                );
         }
     }
 }

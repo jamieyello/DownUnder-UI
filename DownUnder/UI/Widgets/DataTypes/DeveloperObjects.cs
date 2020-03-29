@@ -3,9 +3,6 @@ using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -33,7 +30,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public bool IsDeveloperModeEnabled
+        public bool IsEditModeEnabled
         {
             get => _is_developer_mode_enabled_backing;
             set
@@ -41,7 +38,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 _is_developer_mode_enabled_backing = value;
                 foreach (Widget child in Parent.Children)
                 {
-                    child.DeveloperObjects.IsDeveloperModeEnabled = value;
+                    child.DeveloperObjects.IsEditModeEnabled = value;
                 }
             }
         }
@@ -53,7 +50,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             set
             {
                 _last_added_widget_backing = value;
-                value.DeveloperObjects.IsDeveloperModeEnabled = IsDeveloperModeEnabled || value.DeveloperObjects.IsDeveloperModeEnabled;
+                value.DeveloperObjects.IsEditModeEnabled = IsEditModeEnabled || value.DeveloperObjects.IsEditModeEnabled;
             }
         }
 

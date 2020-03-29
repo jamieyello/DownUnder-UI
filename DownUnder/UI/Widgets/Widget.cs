@@ -33,6 +33,7 @@ using System.Threading;
 // Grid dividers are broken
 // Scrollbars are ugly
 // Serialization code is scary
+// Add Intercept Parent.DrawingArea to cursor in bounds extension
 
 namespace DownUnder.UI.Widgets
 {
@@ -260,7 +261,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> When enabled the user will able to resize this <see cref="Widget"/> with the cursor. </summary>
         [DataMember] public bool AllowUserResize
         {
-            get => DeveloperObjects.IsDeveloperModeEnabled ? DeveloperObjects.AllowUserResizing : _allow_user_resizing_backing;
+            get => DeveloperObjects.IsEditModeEnabled ? DeveloperObjects.AllowUserResizing : _allow_user_resizing_backing;
             set => _allow_user_resizing_backing = value;
         }
 
@@ -533,8 +534,11 @@ namespace DownUnder.UI.Widgets
             
             if (AllowUserResize)
             {
-                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(ParentWindow.InputState.CursorPosition, _USER_RESIZE_BOUNDS_SIZE);
-                if (resize_grab != Directions2D.None)
+                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
+                    ParentWindow.InputState.CursorPosition, 
+                    _USER_RESIZE_BOUNDS_SIZE);
+                if (resize_grab != Directions2D.None 
+                    && ParentWindow.ResizeGrabber == null)
                 {
                     ParentWindow.ResizeGrabber = this;
                     ParentWindow.ResizeGrab = resize_grab;
@@ -682,6 +686,11 @@ namespace DownUnder.UI.Widgets
                 if ((ParentWindow.ResizeGrab == Directions2D.LeftOnly) || (ParentWindow.ResizeGrab == Directions2D.RightOnly)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
                 if ((ParentWindow.ResizeGrab == Directions2D.UpRight) || (ParentWindow.ResizeGrab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
                 if ((ParentWindow.ResizeGrab == Directions2D.UpLeft) || (ParentWindow.ResizeGrab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
+
+                if (_update_clicked)
+                {
+
+                }
             }
 
             if (_update_drop)
@@ -1167,12 +1176,12 @@ namespace DownUnder.UI.Widgets
         #region IAcceptsDrops Implementation
 
         // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        bool IAcceptsDrops.AcceptsDrops => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptsDrops : AcceptsDrops;
-        List<Type> IAcceptsDrops.AcceptedDropTypes => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptedDropTypes : AcceptedDropTypes;
-        bool IAcceptsDrops.IsDropAcceptable(object drop) => DeveloperObjects.IsDeveloperModeEnabled ? ((IAcceptsDrops)DeveloperObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
+        bool IAcceptsDrops.AcceptsDrops => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptsDrops : AcceptsDrops;
+        List<Type> IAcceptsDrops.AcceptedDropTypes => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptedDropTypes : AcceptedDropTypes;
+        bool IAcceptsDrops.IsDropAcceptable(object drop) => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
         void IAcceptsDrops.HandleDrop(object drop)
         {
-            if (DeveloperObjects.IsDeveloperModeEnabled) { ((IAcceptsDrops)DeveloperObjects).HandleDrop(drop); } else { HandleDrop(drop); }
+            if (DeveloperObjects.IsEditModeEnabled) { ((IAcceptsDrops)DeveloperObjects).HandleDrop(drop); } else { HandleDrop(drop); }
         }
 
         void HandleDrop(object drop)

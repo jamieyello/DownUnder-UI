@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DownUnder.Utility
 {
     /// <summary> Value designed to smoothly transition between two states. </summary>
-    public class ChangingValue<T>
+    public class ChangingValue<T> : ICloneable
     {
         [NonSerialized] private T initial_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T current_value = (T)Activator.CreateInstance(typeof(T));
@@ -81,12 +81,16 @@ namespace DownUnder.Utility
 
         public object Clone()
         {
-            var obj = new ChangingValue<T>();
-            obj.interpolation_progress = interpolation_progress;
-            obj.Interpolation = Interpolation;
-            obj.TransitionSpeed = TransitionSpeed;
+            var c = new ChangingValue<T>();
+            c.interpolation_progress = interpolation_progress;
+            c.Interpolation = Interpolation;
+            c.TransitionSpeed = TransitionSpeed;
 
-            return obj;
+            c.initial_value = initial_value;
+            c.current_value = current_value;
+            c.target_value = target_value;
+
+            return c;
         }
     }
 }

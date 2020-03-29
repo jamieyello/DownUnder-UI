@@ -16,7 +16,7 @@ namespace DownUnder.Utilities.DrawingEffects
 
         public Point2 Position { get; set; }
 
-        public ChangingValue<Color> Color { get; set; } = new ChangingValue<Color>();
+        public ChangingValue<Color> ChangingColor { get; set; } = new ChangingValue<Color>();
 
         public float Size { get; set; } = 1f;
 
@@ -26,12 +26,12 @@ namespace DownUnder.Utilities.DrawingEffects
 
         public void Update(float step)
         {
-            Color.Update(step);
+            ChangingColor.Update(step);
         }
 
         public void Draw(SpriteBatch sprite_batch, Point2 offset)
         {
-            sprite_batch.DrawPoint(Position.X + offset.X, Position.Y + offset.Y, Color.GetCurrent(), Size);
+            sprite_batch.DrawPoint(Position.X + offset.X, Position.Y + offset.Y, ChangingColor.GetCurrent(), Size);
         }
 
         #endregion
@@ -41,7 +41,7 @@ namespace DownUnder.Utilities.DrawingEffects
         public object Clone()
         {
             GridPixel c = new GridPixel();
-            c.Color = (ChangingValue<Color>)Color.Clone();
+            c.ChangingColor = (ChangingValue<Color>)ChangingColor.Clone();
             c.Position = Position;
             c.Size = Size;
             return c;
