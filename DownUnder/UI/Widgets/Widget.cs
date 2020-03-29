@@ -70,11 +70,19 @@ namespace DownUnder.UI.Widgets
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
 
-        private bool dragging_in = false;
+        private bool _dragging_in = false;
 
-        private bool dragging_off = false;
+        private bool _dragging_off = false;
 
-        private bool user_resizing = false;
+        private bool _is_user_resizing = false;
+
+        private Directions2D _resize_grab;
+
+        private RectangleF _resizing_initial_area;
+
+        Directions2D _resizing_direction;
+
+        Point2 repositioning_origin;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
@@ -541,7 +549,7 @@ namespace DownUnder.UI.Widgets
                     && ParentWindow.ResizeGrabber == null)
                 {
                     ParentWindow.ResizeGrabber = this;
-                    ParentWindow.ResizeGrab = resize_grab;
+                    _resize_grab = resize_grab;
                 }
             }
             foreach (Widget widget in Children)
@@ -575,10 +583,10 @@ namespace DownUnder.UI.Widgets
 
             if (!ui_input.PrimaryClick)
             {
-                dragging_in = false;
-                if (dragging_off)
+                _dragging_in = false;
+                if (_dragging_off)
                 {
-                    dragging_off = false;
+                    _dragging_off = false;
                     _update_drop = true;
                 }
             }
@@ -591,7 +599,7 @@ namespace DownUnder.UI.Widgets
                 _previous_clicking = ui_input.PrimaryClick;
                 _previous_cursor_position = ui_input.CursorPosition;
 
-                if (_update_clicked) { dragging_in = true; }
+                if (_update_clicked) { _dragging_in = true; }
 
                 if (_update_clicked)
                 {
@@ -630,9 +638,9 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                if (dragging_in && !dragging_off)
+                if (_dragging_in && !_dragging_off)
                 {
-                    dragging_off = true;
+                    _dragging_off = true;
                     _update_drag = true;
                 }
             }
@@ -660,7 +668,7 @@ namespace DownUnder.UI.Widgets
             if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (ParentWindow.ResizeGrabber != this && !user_resizing)
+            if (ParentWindow.ResizeGrabber != this && !ParentWindow.IsUserResizing)
             {
                 if (IsPrimaryHovered && ParentWindow.IsActive)
                 {
@@ -679,19 +687,49 @@ namespace DownUnder.UI.Widgets
                 {
                     OnDrag?.Invoke(this, EventArgs.Empty);
                 }
+
+                IsHoveredOver = _update_hovered_over;
+
             }
             else // User has resize cursor over this widget or is in the middle of resizing
             {
-                if ((ParentWindow.ResizeGrab == Directions2D.UpOnly) || (ParentWindow.ResizeGrab == Directions2D.DownOnly)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
-                if ((ParentWindow.ResizeGrab == Directions2D.LeftOnly) || (ParentWindow.ResizeGrab == Directions2D.RightOnly)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
-                if ((ParentWindow.ResizeGrab == Directions2D.UpRight) || (ParentWindow.ResizeGrab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
-                if ((ParentWindow.ResizeGrab == Directions2D.UpLeft) || (ParentWindow.ResizeGrab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
+                if ((_resize_grab == Directions2D.UpOnly) || (_resize_grab == Directions2D.DownOnly)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
+                if ((_resize_grab == Directions2D.LeftOnly) || (_resize_grab == Directions2D.RightOnly)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
+                if ((_resize_grab == Directions2D.UpRight) || (_resize_grab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
+                if ((_resize_grab == Directions2D.UpLeft) || (_resize_grab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
 
-                if (_update_clicked)
+                if (_update_clicked && !ParentWindow.IsUserResizing)
                 {
+                    if (_resize_grab != Directions2D.None)
+                    {
+                        _resizing_direction = (Directions2D)_resize_grab.Clone();
+                        ParentWindow.IsUserResizing = true;
+                        _is_user_resizing = true;
+                        _resizing_initial_area = Area;
+                        repositioning_origin = InputState.CursorPosition;
+                    }
+                }
 
+                if (!ui_input.PrimaryClick)
+                {
+                    _is_user_resizing = false;
+                    ParentWindow.IsUserResizing = false;
+                }
+
+                if (_is_user_resizing)
+                {
+                    RectangleF new_area = _resizing_initial_area;
+                    if (_resizing_direction & Directions2D.RightOnly) { new_area = new_area.WithWidth(_resizing_initial_area.Width + ui_input.CursorPosition.WithOffset(repositioning_origin.Inverted()).X); }
+                    if (_resizing_direction & Directions2D.DownOnly) { new_area = new_area.WithHeight(_resizing_initial_area.Height + ui_input.CursorPosition.WithOffset(repositioning_origin.Inverted()).Y); }
+                    if (_resizing_direction & Directions2D.RightOnly) { }
+                    if (_resizing_direction & Directions2D.RightOnly) { }
+
+                    Area = new_area;
                 }
             }
+
+            // Should something happen to this widget while resizing, another widget can reset the parent window to not resize if mouse is up
+            //ParentWindow.IsUserResizing = ParentWindow.IsUserResizing && ui_input.PrimaryClick;
 
             if (_update_drop)
             {
@@ -702,8 +740,6 @@ namespace DownUnder.UI.Widgets
             {
                 OnConfirm?.Invoke(this, EventArgs.Empty);
             }
-
-            IsHoveredOver = _update_hovered_over;
             
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget)

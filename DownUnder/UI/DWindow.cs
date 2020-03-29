@@ -102,7 +102,7 @@ namespace DownUnder.UI
         /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
         internal Widget ResizeGrabber { get; set; }
 
-        internal Directions2D ResizeGrab { get; set; }
+        internal bool IsUserResizing { get; set; }
 
         /// <summary> The location of this window on the screen. </summary>
         public Point2 Position
