@@ -51,9 +51,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
 
-        /// <summary> The primary cursor press of the previous frame. (Used to trigger events on the single frame of a press) </summary>
-        private bool _previous_clicking;
-
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
 
@@ -82,7 +79,7 @@ namespace DownUnder.UI.Widgets
 
         Directions2D _resizing_direction;
 
-        Point2 repositioning_origin;
+        Point2 _repositioning_origin;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
@@ -540,7 +537,11 @@ namespace DownUnder.UI.Widgets
 
             UpdateCursorInput(game_time, ui_input);
             
-            if (AllowUserResize)
+            if (
+                AllowUserResize 
+                && !PassthroughMouse
+                && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))
+                )
             {
                 Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
                     ParentWindow.InputState.CursorPosition, 
@@ -595,8 +596,7 @@ namespace DownUnder.UI.Widgets
             {
                 _update_hovered_over = true;
 
-                if (ui_input.PrimaryClick && !_previous_clicking) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
-                _previous_clicking = ui_input.PrimaryClick;
+                if (ui_input.PrimaryClickTriggered) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = ui_input.CursorPosition;
 
                 if (_update_clicked) { _dragging_in = true; }
@@ -649,22 +649,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input)
         {
-            //Idk what's going on here
-            if (this is IScrollableWidget s_this && false)
-            {
-                if (s_this.FitToContentArea)
-                {
-                    Point2 size = Size;
-                    RectangleF c_area = s_this.ContentArea;
-                    
-                    if (c_area.Size.ToPoint2().IsLargerThan(size))
-                    {
-                        Size = c_area.Size.ToPoint2().Max(size);
-                        SignalChildAreaChanged();
-                    }
-                }
-            }
-
             if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             
             // Skip some normal behavior if the user has the resize cursor over this widget
@@ -698,7 +682,7 @@ namespace DownUnder.UI.Widgets
                 if ((_resize_grab == Directions2D.UpRight) || (_resize_grab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
                 if ((_resize_grab == Directions2D.UpLeft) || (_resize_grab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
 
-                if (_update_clicked && !ParentWindow.IsUserResizing)
+                if (ui_input.PrimaryClickTriggered && !ParentWindow.IsUserResizing)
                 {
                     if (_resize_grab != Directions2D.None)
                     {
@@ -706,7 +690,7 @@ namespace DownUnder.UI.Widgets
                         ParentWindow.IsUserResizing = true;
                         _is_user_resizing = true;
                         _resizing_initial_area = Area;
-                        repositioning_origin = InputState.CursorPosition;
+                        _repositioning_origin = InputState.CursorPosition;
                     }
                 }
 
@@ -719,17 +703,15 @@ namespace DownUnder.UI.Widgets
                 if (_is_user_resizing)
                 {
                     RectangleF new_area = _resizing_initial_area;
-                    if (_resizing_direction & Directions2D.RightOnly) { new_area = new_area.WithWidth(_resizing_initial_area.Width + ui_input.CursorPosition.WithOffset(repositioning_origin.Inverted()).X); }
-                    if (_resizing_direction & Directions2D.DownOnly) { new_area = new_area.WithHeight(_resizing_initial_area.Height + ui_input.CursorPosition.WithOffset(repositioning_origin.Inverted()).Y); }
-                    if (_resizing_direction & Directions2D.RightOnly) { }
-                    if (_resizing_direction & Directions2D.RightOnly) { }
+                    Point2 amount = ui_input.CursorPosition.WithOffset(_repositioning_origin.Inverted());
+                    if (_resizing_direction & Directions2D.RightOnly) { new_area = new_area.ResizedBy(amount.X, Directions2D.RightOnly); }
+                    if (_resizing_direction & Directions2D.DownOnly) { new_area = new_area.ResizedBy(amount.Y, Directions2D.DownOnly); }
+                    if (_resizing_direction & Directions2D.UpOnly) { new_area = new_area.ResizedBy(-amount.Y, Directions2D.UpOnly); }
+                    if (_resizing_direction & Directions2D.LeftOnly) { new_area = new_area.ResizedBy(-amount.X, Directions2D.LeftOnly); }
 
                     Area = new_area;
                 }
             }
-
-            // Should something happen to this widget while resizing, another widget can reset the parent window to not resize if mouse is up
-            //ParentWindow.IsUserResizing = ParentWindow.IsUserResizing && ui_input.PrimaryClick;
 
             if (_update_drop)
             {

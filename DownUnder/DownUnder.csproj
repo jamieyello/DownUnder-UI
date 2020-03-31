@@ -137,6 +137,7 @@
     <Compile Include="Utilities\DiagonalDirections2D.cs" />
     <Compile Include="Utilities\Extensions\ConversionExtensions.cs" />
     <Compile Include="Utilities\Extensions\DrawingExtensions.cs" />
+    <Compile Include="Utilities\Extensions\RectangleFExtensions.cs" />
     <Compile Include="Utilities\Images\Image.cs" />
     <Compile Include="Utilities\Images\ImagePool.cs" />
     <Compile Include="Utilities\Images\ImageSet.cs" />

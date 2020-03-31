@@ -37,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void Update(object sender, EventArgs args)
         {
+            _pixel_grid_effect.Size = Parent.Size;
             _pixel_grid_effect.Update(Parent.UpdateData.ElapsedSeconds);
         }
 

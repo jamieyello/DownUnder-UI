@@ -11,16 +11,6 @@ namespace DownUnder
 {
     public static class ConversionExtensions
     {
-        // temp extensions until MonoGame.Extended adds these missing properties
-        public static Point2 TopRight(this RectangleF r)
-        {
-            return new Point2(r.X + r.Width, r.Y);
-        }
-        public static Point2 BottomLeft(this RectangleF r)
-        {
-            return new Point2(r.X, r.Y + r.Height);
-        }
-
         public static Point ToPoint(this Point2 p)
         {
             return new Point((int)p.X, (int)p.Y);
@@ -103,12 +93,6 @@ namespace DownUnder
             return new RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
         }
 
-        public static Rectangle ToRectangle(this RectangleF r, bool round)
-        {
-            if (!round) return r.ToRectangle();
-            return new Rectangle(r.X.Rounded(), r.Y.Rounded(), r.Width.Rounded(), r.Height.Rounded());
-        }
-
         public static Size2 ToSize2(this Vector2 v)
         {
             return new Size2(v.X, v.Y);
@@ -165,98 +149,7 @@ namespace DownUnder
         {
             return new Rectangle(new Point(), r.Size);
         }
-
-        /// <summary> Returns a new RectangleF without the position values. </summary>
-        public static RectangleF SizeOnly(this RectangleF r)
-        {
-            return new RectangleF(new Point2(), r.Size);
-        }
-
-        public static RectangleF WithX(this RectangleF r, float x)
-        {
-            return new RectangleF(x, r.Y, r.Width, r.Height);
-        }
-
-        public static RectangleF WithY(this RectangleF r, float y)
-        {
-            return new RectangleF(r.X, y, r.Width, r.Height);
-        }
-
-        public static RectangleF WithWidth(this RectangleF r, float width)
-        {
-            return new RectangleF(r.X, r.Y, width, r.Height);
-        }
-
-        public static RectangleF WithHeight(this RectangleF r, float height)
-        {
-            return new RectangleF(r.X, r.Y, r.Width, height);
-        }
-
-        public static RectangleF WithPosition(this RectangleF r, Point2 p)
-        {
-            return new RectangleF(p, r.Size);
-        }
-
-        public static RectangleF WithSize(this RectangleF r, Size2 s)
-        {
-            return new RectangleF(r.Position, s);
-        }
-
-        public static RectangleF WithSize(this RectangleF r, float width, float height)
-        {
-            return new RectangleF(r.X, r.Y, width, height);
-        }
-
-        public static RectangleF WithMinimumSize(this RectangleF r, Point2 s)
-        {
-            RectangleF result = r;
-            if (r.Width < s.X) result.Width = s.X;
-            if (r.Height < s.Y) result.Height = s.Y;
-            return result;
-        }
-
-        public static RectangleF WithMaximumSize(this RectangleF r, Point2 s)
-        {
-            RectangleF result = r;
-            if (r.Width > s.X) result.Width = s.X;
-            if (r.Height > s.Y) result.Height = s.Y;
-            return result;
-        }
-
-        public static RectangleF WithOffset(this RectangleF r, Point2 p)
-        {
-            RectangleF result = r;
-            result.Offset(p);
-            return result;
-        }
-
-        public static RectangleF WithCenter(this RectangleF r, Point2 center)
-        {
-            RectangleF result = r;
-            result.Position = center.WithOffset(
-                result.Size.ToPoint2().MultipliedBy(-0.5f)
-                );
-            return result;
-        }
-
-        public static RectangleF WithCenter(this RectangleF r, RectangleF r2)
-        {
-            return r.WithCenter(r2.Center);
-        }
-
-        /// <summary> Returns a new <see cref="RectangleF"/> positioned inside a given <see cref="RectangleF"/> with aspect ratio preserved. </summary>
-        public static RectangleF FittedIn(this RectangleF r, RectangleF r2, float min_spacing = 0f)
-        {
-            float max_size = Math.Min(
-                    Math.Min(r.Width, r2.Width - min_spacing),
-                    Math.Min(r.Height, r2.Height - min_spacing));
-
-            return new RectangleF(0f, 0f,
-                    r.Width * (max_size / r.Width),
-                    r.Height * (max_size / r.Height))
-                    .WithCenter(r2);
-        }
-
+        
         /// <summary> Returns this <see cref="Point2"/> as a new <see cref="RectangleF"/>'s size. </summary>
         public static RectangleF AsRectangleSize(this Point2 p)
         {
@@ -266,29 +159,6 @@ namespace DownUnder
         public static System.Drawing.Size ToSystemSize(this Point p)
         {
             return new System.Drawing.Size(p.X, p.Y);
-        }
-
-        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF Resized(this RectangleF r, Point2 modifier)
-        {
-            return new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
-        }
-
-        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF Resized(this RectangleF r, float modifier)
-        {
-            return new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
-        }
-
-        /// <summary> Returns a new <see cref="RectangleF"/> that's been resized by X pixels. (On all sides) </summary>
-        public static RectangleF ResizedBy(this RectangleF r, float x, float y)
-        {
-            RectangleF result = r;
-            result.X -= x;
-            result.Y -= y;
-            result.Width += x * 2;
-            result.Height += y * 2;
-            return result;
         }
 
         /// <summary> Returns a <see cref="Vector2"/> with both the X and Y values rounded down. </summary>

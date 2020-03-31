@@ -270,98 +270,10 @@ namespace DownUnder
             return bmp;
         }
 
-        /// <summary> Calculates the distance between a point and a rectangle. </summary>
-        public static double DistanceFrom(this RectangleF rectangle, Point2 point)
-        {
-            var dx = Math.Max(Math.Max(rectangle.X - point.X, point.X - rectangle.Right), 0);
-            var dy = Math.Max(Math.Max(rectangle.Top - point.Y, point.Y - rectangle.Bottom), 0);
-            return Math.Sqrt(dx * dx + dy * dy);
-        }
-
         /// <summary> Returns new Point2 with the sum of each. </summary>
         public static Point2 WithOffset(this Point2 p1, Point2 p2)
         {
             return new Point2(p1.X + p2.X, p1.Y + p2.Y);
-        }
-
-        public static RectangleF SnapInsideRectangle(this RectangleF inner, RectangleF outer, DiagonalDirections2D snapping_policy)
-        {
-            inner.Position = outer.Position.WithOffset(inner.Position);
-
-            Directions2D snapping = snapping_policy.ToPerpendicular();
-
-            // left
-            if (snapping.Left && !snapping.Right)
-            {
-                inner.X = outer.X;
-            }
-
-            // right
-            if (!snapping.Left && snapping.Right)
-            {
-                inner.X = outer.X + outer.Width - inner.Width;
-            }
-
-            // left and right
-            if (snapping.Left && snapping.Right)
-            {
-                inner.X = outer.X;
-                inner.Width = outer.Width;
-            }
-
-            // up
-            if (snapping.Up && !snapping.Down)
-            {
-                inner.Y = outer.Y;
-            }
-
-            // down
-            if (!snapping.Up && snapping.Down)
-            {
-                inner.Y = outer.Y + outer.Height - inner.Height;
-            }
-
-            // up and down
-            if (snapping.Up && snapping.Down)
-            {
-                inner.Y = outer.Y;
-                inner.Height = outer.Height;
-            }
-
-            return inner;
-        }
-
-        public static Directions2D GetCursorHoverOnBorders(this RectangleF r, Point2 p, float border_thickness)
-        {
-            RectangleF[] areas = GetBorderArea(r, border_thickness);
-            Directions2D result = new Directions2D();
-
-            if (areas[0].Contains(p)) result.Up = true;
-            if (areas[1].Contains(p)) result.Right = true;
-            if (areas[2].Contains(p)) result.Down = true;
-            if (areas[3].Contains(p)) result.Left = true;
-
-            return result;
-        }
-
-        public static RectangleF[] GetBorderArea(this RectangleF r, float thickness)
-        {
-            RectangleF[] areas = new RectangleF[4];
-            float half_thickness = thickness / 2;
-
-            // Top
-            areas[0] = new RectangleF(r.X - half_thickness, r.Y - half_thickness, r.Width + thickness, thickness);
-
-            // Right
-            areas[1] = new RectangleF(r.X + r.Width - half_thickness, r.Y - half_thickness, thickness, r.Height + thickness);
-
-            // Bottom
-            areas[2] = new RectangleF(r.X - half_thickness, r.Y + r.Height - half_thickness, r.Width + thickness, thickness);
-
-            //Left
-            areas[3] = new RectangleF(r.X - half_thickness, r.Y - half_thickness, thickness, r.Height + thickness);
-
-            return areas;
         }
 
         public enum NumericRelationship
