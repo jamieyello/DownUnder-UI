@@ -37,19 +37,17 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         #region Properties
 
-        public ScrollBars ScrollBars { get; private set; }
+        public Scroll ScrollBars { get; private set; }
         
         public RectangleF ContentArea
         {
             get
             {
                 RectangleF? result = _widgets.AreaCoverage?.Union(Area.SizeOnly());
-                if (result == null) return Area.WithOffset(Scroll.ToPoint2().Inverted());
-                return result.Value.WithOffset(Scroll.ToPoint2().Inverted());
+                if (result == null) return Area.WithOffset(Scroll);
+                return result.Value.WithOffset(Scroll);
             }
         }
-
-        public Scroll Scroll { get; } = new Scroll();
 
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
         public bool FitToContentArea { get; set; } = false;
@@ -81,7 +79,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
 
         private void InitializeScrollbars(object sender, EventArgs args)
         {
-            ScrollBars = new ScrollBars(this, GraphicsDevice);
+            ScrollBars = new Scroll(this, GraphicsDevice);
         }
 
         #endregion
@@ -107,6 +105,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public int Count => ((IList<Widget>)_widgets).Count;
 
         public bool IsReadOnly => ((IList<Widget>)_widgets).IsReadOnly;
+
+        public Point2 Scroll => ScrollBars.ToPoint2().Inverted();
 
         public Widget this[int index] { get => ((IList<Widget>)_widgets)[index]; set => ((IList<Widget>)_widgets)[index] = value; }
 

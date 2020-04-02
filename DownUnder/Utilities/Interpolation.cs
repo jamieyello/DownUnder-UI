@@ -46,9 +46,8 @@ namespace DownUnder.Utility
                 case Type π when typeof(T).IsAssignableFrom(typeof(RectangleF)):
                     return (T)Convert.ChangeType
                         (
-                            RectLerp
+                            ((RectangleF)Convert.ChangeType(initial_object, typeof(RectangleF))).Lerp
                             (
-                                (RectangleF)Convert.ChangeType(initial_object, typeof(RectangleF)),
                                 (RectangleF)Convert.ChangeType(target_object, typeof(RectangleF)),
                                 Plot(progress, interpolation_type)
                             ), typeof(T)
@@ -108,25 +107,6 @@ namespace DownUnder.Utility
                 if (y < 0f) y = 0f;
             }
             return y;
-        }
-
-        /// <summary>
-        /// Performs linear interpolation of <see cref="RectangleF"/>.
-        /// </summary>
-        /// <param name="r1"></param>
-        /// <param name="r2"></param>
-        /// <param name="progress"></param>
-        /// <returns></returns>
-        public static RectangleF RectLerp(RectangleF r1, RectangleF r2, float progress)
-        {
-            float inverse_progress = 1 - progress;
-            return new RectangleF
-                (
-                r1.X * inverse_progress + r2.X * progress,
-                r1.Y * inverse_progress + r2.Y * progress,
-                r1.Width * inverse_progress + r2.Width * progress,
-                r1.Height * inverse_progress + r2.Height * progress
-                );
         }
     }
 }

@@ -99,12 +99,11 @@
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Behaviors\DragableOutlineAnimation.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DragAndDropClone.cs" />
+    <Compile Include="UI\Widgets\Behaviors\AddWidget.cs" />
     <Compile Include="UI\Widgets\Behaviors\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\DataTypes\DeveloperObjects.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
-    <Compile Include="UI\Widgets\DataTypes\Scroll.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
@@ -125,7 +124,7 @@
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\WidgetControls\ScrollBars.cs" />
+    <Compile Include="UI\Widgets\WidgetControls\Scroll.cs" />
     <Compile Include="UI\Widgets\WidgetControls\TextCursor.cs" />
     <Compile Include="Utilities\Camera.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />

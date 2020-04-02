@@ -1,18 +1,13 @@
-﻿using DownUnder.UI.Widgets.BaseWidgets;
-using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class DragAndDropClone : WidgetBehavior
+    public class AddWidget : WidgetBehavior
     {
         public ICloneable DragObject;
 
-        public DragAndDropClone()
+        public AddWidget()
         {
 
         }
@@ -42,8 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void DropObject(object sender, EventArgs args)
         {
-            IAcceptsDrops victim = Parent.ParentWindow.HoveredWidgets.Primary;
-            victim.HandleDrop(Parent.ParentWindow.DraggingObject);
+            ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.HandleDrop(Parent.ParentWindow.DraggingObject);
         }
     }
 }

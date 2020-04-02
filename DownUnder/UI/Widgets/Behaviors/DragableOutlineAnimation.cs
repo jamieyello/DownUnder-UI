@@ -2,6 +2,7 @@
 using System;
 using MonoGame.Extended;
 using DownUnder.Utility;
+using DownUnder.UI.Widgets.Interfaces;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
@@ -12,8 +13,9 @@ namespace DownUnder.UI.Widgets.Behaviors
         private ChangingValue<Color> rect_color = new ChangingValue<Color>();
         private bool drag_rect_to_mouse = false;
         private bool snap_rect_to_mouse = false;
-        private float end_circumference = 20f;
-        
+        private float circumference = 20f;
+        private float _expand_rect_on_release = 1f;
+
         public DragableOutlineAnimation()
         {
             round_amount.Interpolation = InterpolationType.fake_sin;
@@ -56,15 +58,28 @@ namespace DownUnder.UI.Widgets.Behaviors
             round_amount.SetTargetValue(0f);
             rect_color.TransitionSpeed = 1f;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), false);
-            rect.SetTargetValue(rect.GetCurrent().Resized(2f).WithCenter(rect.GetCurrent()), false);
+            rect.SetTargetValue(rect.GetCurrent().Resized(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
         }
 
         private void Update(object sender, EventArgs args)
         {
             if (drag_rect_to_mouse)
             {
-                rect.SetTargetValue(new RectangleF(0, 0, end_circumference, end_circumference).WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
-                if (!rect.IsTransitioning) { snap_rect_to_mouse = true; }
+                bool? is_drop_acceptable = ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
+                if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value)
+                {
+                    // Set to new Widget area
+                    rect.SetTargetValue(dragging_widget.Area.WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
+                    _expand_rect_on_release = 1f;
+                    round_amount.SetTargetValue(.5f);
+                }
+                else
+                {
+                    // Set to default circle
+                    rect.SetTargetValue(new RectangleF(0, 0, circumference, circumference).WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
+                    _expand_rect_on_release = 2f;
+                    round_amount.SetTargetValue(1f);
+                }
             }
             rect.Update(Parent.UpdateData.ElapsedSeconds);
             rect_color.Update(Parent.UpdateData.ElapsedSeconds);

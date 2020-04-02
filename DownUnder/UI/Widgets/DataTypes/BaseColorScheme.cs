@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     [DataContract]
-    public class BaseColorScheme
+    public class BaseColorScheme : ICloneable
     {
         /// <summary> Defines the behavior of the theme when updating as well as what colors a widget accesses in the theme. </summary>
         public enum PaletteCategory
@@ -24,7 +24,9 @@ namespace DownUnder.UI.Widgets.DataTypes
         [DataMember] public List<ElementColors> BackGroundColors { get; set; } = new List<ElementColors>();
         [DataMember] public List<ElementColors> TextColors { get; set; } = new List<ElementColors>();
         [DataMember] public List<ElementColors> OutlineColors { get; set; } = new List<ElementColors>();
-
+        [DataMember] public ElementColors InnerScrollBar { get; set; } = new ElementColors();
+        [DataMember] public ElementColors OuterScrollBar { get; set; } = new ElementColors();
+        
         public BaseColorScheme()
         {
             SetDefaults();
@@ -121,6 +123,9 @@ namespace DownUnder.UI.Widgets.DataTypes
                 c.TextColors.Add((ElementColors)TextColors[(int)category].Clone());
                 c.OutlineColors.Add((ElementColors)OutlineColors[(int)category].Clone());
             }
+
+            c.InnerScrollBar = (ElementColors)InnerScrollBar.Clone();
+            c.OuterScrollBar = (ElementColors)OuterScrollBar.Clone();
 
             return c;
         }
@@ -230,7 +235,15 @@ namespace DownUnder.UI.Widgets.DataTypes
                 r.GetText(PaletteCategory.header_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
                 r.GetText(PaletteCategory.header_widget).SpecialColor = Color.White;
                 r.GetText(PaletteCategory.header_widget).HoveredColor = Color.White;
-                
+
+                r.OuterScrollBar.DefaultColor = new Color(0, 0, 0, 0);
+                r.OuterScrollBar.SpecialColor = new Color(0, 0, 0, 0);
+                r.OuterScrollBar.HoveredColor = new Color(0, 0, 0, 70);
+
+                r.InnerScrollBar.DefaultColor = new Color(100, 100, 100, 100);
+                r.InnerScrollBar.SpecialColor = new Color(255, 255, 255, 255);
+                r.InnerScrollBar.HoveredColor = new Color(200, 200, 200, 100);
+
                 return r;
             }
         }

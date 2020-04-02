@@ -10,25 +10,26 @@ using System.Runtime.Serialization;
 // Bookmark: This is mostly functional. Limit ScrollX and ScrollY for testing and implementation.
 // Todo: Add ImmediateValue/TargetValue to ChangingValue, replacing GetCurrent?
 // Todo: Move the bar before calculating position to optimize responsiveness.
-// Todo: contain this in scroll?
 
 namespace DownUnder.UI.Widgets.WidgetControls
 {
-    /// <summary>
-    /// Scrollbars used commonly in widgets with inner areas. Modifies ScrollX and ScrollY,.
-    /// </summary>
+    /// <summary> Scrollbars used commonly in widgets with inner areas. Modifies ScrollX and ScrollY. </summary>
     [DataContract]
-    public class ScrollBars
+    public class Scroll
     {
+        private ChangingValue<float> X { get; } = new ChangingValue<float>(0f);
+        private ChangingValue<float> Y { get; } = new ChangingValue<float>(0f);
+        private ChangingValue<float> SideBarWidth = new ChangingValue<float>();
+        private ChangingValue<float> BottomBarHeight = new ChangingValue<float>();
+
         private IScrollableWidget _iscrollable_parent;
         private Widget _parent;
         private Texture2D _white_dot;
-        private bool _BottomVisible { get; set; } = false;
-        private bool _SideVisible { get; set; } = false;
         private RectangleF _outer_bar_bottom_area = new RectangleF();
         private RectangleF _inner_bottom_bar_area = new RectangleF();
         private RectangleF _outer_side_bar_area = new RectangleF();
         private RectangleF _inner_side_bar_area = new RectangleF();
+        private RectangleF _bottom_right_square_area = new RectangleF();
 
         // These are used for grabbing and dragging the inner scroll bars.
         private bool _side_bar_held;
@@ -39,19 +40,53 @@ namespace DownUnder.UI.Widgets.WidgetControls
         private float _side_bar_cursor_initial_y_value;
         private float _side_bar_initial_y_value;
 
-        [DataMember] public float Thickness { get; set; } = 20f;
-        [DataMember] public ElementColors SideOuterBarPalette { get; private set; } = new ElementColors(Color.DarkGray);
-        [DataMember] public ElementColors BottomOuterBarPalette { get; private set; } = new ElementColors(Color.DarkGray);
-        [DataMember] public ElementColors SideInnerBarPalette { get; private set; } = new ElementColors(Color.LightGray, Color.White);
-        [DataMember] public ElementColors BottomInnerBarPalette { get; private set; } = new ElementColors(Color.LightGray, Color.White);
+        private float _thickness_backing;
+        private bool _bottom_visible_backing;
+
+        private bool _BottomVisible { get; set; }
+        private bool _SideVisible { get; set; }
+
+        [DataMember] public float Thickness
+        {
+            get => _thickness_backing;
+            set
+            {
+                _thickness_backing = value;
+                _bottom_right_square_area.Size = new Size2(Thickness, Thickness);
+            }
+        }
+        [DataMember] public ElementColors SideOuterBarPalette { get; private set; }
+        [DataMember] public ElementColors BottomOuterBarPalette { get; private set; }
+        [DataMember] public ElementColors SideInnerBarPalette { get; private set; }
+        [DataMember] public ElementColors BottomInnerBarPalette { get; private set; }
+        [DataMember] public ElementColors BottomRightSquarePalette { get; private set; }
+
         [DataMember] public float InnerBarSpacing { get; set; } = 4f;
 
-        public ScrollBars(IScrollableWidget owning_widget, GraphicsDevice graphics_device)
+        public float SidebarHideSpeed
         {
-            if (!(owning_widget is Widget)) throw new Exception("Scrollbars can only be used with widgets.");
-            _iscrollable_parent = owning_widget;
-            _parent = (Widget)owning_widget;
+            get => SideBarWidth.TransitionSpeed;
+            set
+            {
+                SideBarWidth.TransitionSpeed = value;
+                BottomBarHeight.TransitionSpeed = value;
+            }
+        }
+
+        public Scroll(IScrollableWidget parent, GraphicsDevice graphics_device)
+        {
+            _iscrollable_parent = parent;
+            _parent = (Widget)parent;
             _white_dot = DrawingTools.Dot(graphics_device, Color.White);
+
+            SideInnerBarPalette = (ElementColors)_parent.Theme.InnerScrollBar.Clone();
+            BottomInnerBarPalette = (ElementColors)_parent.Theme.InnerScrollBar.Clone();
+            SideOuterBarPalette = (ElementColors)_parent.Theme.OuterScrollBar.Clone();
+            BottomOuterBarPalette = (ElementColors)_parent.Theme.OuterScrollBar.Clone();
+            BottomRightSquarePalette = (ElementColors)_parent.Theme.OuterScrollBar.Clone();
+
+            Thickness = 20f;
+            SidebarHideSpeed = 4f;
         }
 
         public void Draw(SpriteBatch sprite_batch)
@@ -64,8 +99,13 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             if (_BottomVisible)
             {
-                sprite_batch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
+                sprite_batch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
                 sprite_batch.Draw(_white_dot, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
+            }
+
+            if (_SideVisible || _BottomVisible)
+            {
+                sprite_batch.Draw(_white_dot, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
             }
         }
 
@@ -77,11 +117,16 @@ namespace DownUnder.UI.Widgets.WidgetControls
             RectangleF widget_area = _parent.Area;
             RectangleF area_in_window = _parent.AreaInWindow;
 
-            // Claculate size of bars. ---
-            _outer_bar_bottom_area.Height = Thickness;
-            _outer_side_bar_area.Width = Thickness;
-            _inner_bottom_bar_area.Height = Thickness - InnerBarSpacing * 2;
-            _inner_side_bar_area.Width = Thickness - InnerBarSpacing * 2;
+            if (_SideVisible) { SideBarWidth.SetTargetValue(Thickness); } else { SideBarWidth.SetTargetValue(0f); }
+            if (_BottomVisible) { BottomBarHeight.SetTargetValue(Thickness); } else { BottomBarHeight.SetTargetValue(0f); }
+            SideBarWidth.Update(step);
+            BottomBarHeight.Update(step);
+
+            // Calculate size of bars.
+            _outer_bar_bottom_area.Height = BottomBarHeight.GetCurrent();
+            _outer_side_bar_area.Width = SideBarWidth.GetCurrent();
+            _inner_bottom_bar_area.Height = _outer_bar_bottom_area.Height - InnerBarSpacing * 2;
+            _inner_side_bar_area.Width = _outer_side_bar_area.Width - InnerBarSpacing * 2;
 
             Point2 modifier = new Point2();
 
@@ -99,41 +144,50 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
             else { modifier.Y = 1f; _SideVisible = false; }
 
-            _outer_bar_bottom_area.Width = drawing_area.Width;
-            _outer_side_bar_area.Height = drawing_area.Height;
+            _outer_bar_bottom_area.Width = drawing_area.Width - Thickness;
+            _outer_side_bar_area.Height = drawing_area.Height - Thickness;
 
-            _inner_bottom_bar_area.Width = (drawing_area.Width - InnerBarSpacing * 3) * modifier.X;
-            _inner_side_bar_area.Height = (drawing_area.Height - InnerBarSpacing * 3) * modifier.Y;
+            _inner_bottom_bar_area.Width = (drawing_area.Width) * modifier.X;
+            _inner_side_bar_area.Height = (drawing_area.Height) * modifier.Y;
 
-            // Calculate the positions of the bars. ---
+            _bottom_right_square_area.Position = _outer_bar_bottom_area.TopRight();
+            _bottom_right_square_area.Size = new Size2(Thickness, Thickness);
+
+            // Calculate the positions of the bars.
             _outer_bar_bottom_area.X = area_in_window.X;
             _outer_side_bar_area.Y = area_in_window.Y;
-            _outer_bar_bottom_area.Y = area_in_window.Bottom - Thickness;
-            _outer_side_bar_area.X = area_in_window.Right - Thickness;
+            _outer_bar_bottom_area.Y = area_in_window.Bottom - _outer_bar_bottom_area.Height;
+            _outer_side_bar_area.X = area_in_window.Right - _outer_side_bar_area.Width;
 
             _inner_side_bar_area.X = _outer_side_bar_area.X + InnerBarSpacing;
-            _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + _iscrollable_parent.Scroll.Y.GetCurrent() * modifier.Y;
-            _inner_bottom_bar_area.X = _outer_bar_bottom_area.X + InnerBarSpacing + _iscrollable_parent.Scroll.X.GetCurrent() * modifier.X;
+            _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + Y.GetCurrent() * modifier.Y;
+            _inner_bottom_bar_area.X = _outer_bar_bottom_area.X + InnerBarSpacing + X.GetCurrent() * modifier.X;
             _inner_bottom_bar_area.Y = _outer_bar_bottom_area.Y + InnerBarSpacing;
 
             #endregion Position
 
             #region Palette
 
-            // Modify these so the width of the bar matches the outer rather
-            // than the inner bar
-            // Update palettes ---
+            // Update palettes
             Point2 cursor_position = ui_input_state.CursorPosition;
             if (_parent.DrawMode == Widget.DrawingMode.use_render_target) cursor_position = _parent.CursorPosition;
-            if (_inner_bottom_bar_area.Contains(cursor_position)) BottomInnerBarPalette.Hovered = true; else BottomInnerBarPalette.Hovered = false;
-            if (_inner_side_bar_area.Contains(cursor_position)) SideInnerBarPalette.Hovered = true; else SideInnerBarPalette.Hovered = false;
-            if (_outer_bar_bottom_area.Contains(cursor_position)) BottomOuterBarPalette.Hovered = true; else BottomOuterBarPalette.Hovered = false;
-            if (_outer_side_bar_area.Contains(cursor_position)) SideOuterBarPalette.Hovered = true; else SideOuterBarPalette.Hovered = false;
+
+            BottomInnerBarPalette.Hovered = 
+                _inner_bottom_bar_area
+                .ResizedBy(InnerBarSpacing, Directions2D.UpDown)
+                .Contains(cursor_position);
+            SideInnerBarPalette.Hovered = 
+                _inner_side_bar_area
+                .ResizedBy(InnerBarSpacing, Directions2D.LeftRight)
+                .Contains(cursor_position);
+            BottomOuterBarPalette.Hovered = _bottom_bar_held || _outer_bar_bottom_area.Contains(cursor_position);
+            SideOuterBarPalette.Hovered = _side_bar_held || _outer_side_bar_area.Contains(cursor_position);
 
             SideOuterBarPalette.Update(step);
             BottomOuterBarPalette.Update(step);
             SideInnerBarPalette.Update(step);
             BottomInnerBarPalette.Update(step);
+            BottomRightSquarePalette.Update(step);
 
             #endregion Palette
 
@@ -154,7 +208,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 {
                     _bottom_bar_held = true;
                     _bottom_bar_cursor_initial_x_value = ui_input_state.CursorPosition.X;
-                    _bottom_bar_initial_x_value = _iscrollable_parent.Scroll.X.GetCurrent();
+                    _bottom_bar_initial_x_value = X.GetCurrent();
                 }
             }
             else
@@ -168,7 +222,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 {
                     _side_bar_held = true;
                     _side_bar_cursor_initial_y_value = ui_input_state.CursorPosition.Y;
-                    _side_bar_initial_y_value = _iscrollable_parent.Scroll.Y.GetCurrent();
+                    _side_bar_initial_y_value = Y.GetCurrent();
                 }
             }
             else
@@ -179,14 +233,14 @@ namespace DownUnder.UI.Widgets.WidgetControls
             // Apply offset.
             if (_side_bar_held)
             {
-                _iscrollable_parent.Scroll.Y.SetTargetValue(
+                Y.SetTargetValue(
                     _side_bar_initial_y_value +
                     (ui_input_state.CursorPosition.Y - _side_bar_cursor_initial_y_value) / modifier.Y
                     , true);
             }
             if (_bottom_bar_held)
             {
-                _iscrollable_parent.Scroll.X.SetTargetValue(
+                X.SetTargetValue(
                     _bottom_bar_initial_x_value +
                     (ui_input_state.CursorPosition.X - _bottom_bar_cursor_initial_x_value) / modifier.X
                     , true);
@@ -197,14 +251,24 @@ namespace DownUnder.UI.Widgets.WidgetControls
             #region Restraining
 
             // Don't let the scrollbars go out of bounds.
-            if (_iscrollable_parent.Scroll.X.GetCurrent() < 0f) _iscrollable_parent.Scroll.X.SetTargetValue(0f, true);
-            if (_iscrollable_parent.Scroll.Y.GetCurrent() < 0f) _iscrollable_parent.Scroll.Y.SetTargetValue(0f, true);
-            if (_iscrollable_parent.Scroll.X.GetCurrent() > widget_content_area.Width - widget_area.Width)
-                _iscrollable_parent.Scroll.X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
-            if (_iscrollable_parent.Scroll.Y.GetCurrent() > widget_content_area.Height - widget_area.Height)
-                _iscrollable_parent.Scroll.Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
+            if (X.GetCurrent() < 0f) X.SetTargetValue(0f, true);
+            if (Y.GetCurrent() < 0f) Y.SetTargetValue(0f, true);
+            if (X.GetCurrent() > widget_content_area.Width - widget_area.Width)
+                X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
+            if (Y.GetCurrent() > widget_content_area.Height - widget_area.Height)
+                Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
 
             #endregion Restraining
+        }
+
+        public Vector2 ToVector2()
+        {
+            return new Vector2(X.GetCurrent(), Y.GetCurrent());
+        }
+
+        public Point2 ToPoint2()
+        {
+            return new Point2(X.GetCurrent(), Y.GetCurrent());
         }
     }
 }

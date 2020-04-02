@@ -101,6 +101,7 @@ namespace DownUnder
         /// <summary> Calculates the distance between a point and a rectangle. </summary>
         public static double DistanceFrom(this RectangleF rectangle, Point2 point)
         {
+            if (rectangle.Contains(point)) return 0;
             var dx = Math.Max(Math.Max(rectangle.X - point.X, point.X - rectangle.Right), 0);
             var dy = Math.Max(Math.Max(rectangle.Top - point.Y, point.Y - rectangle.Bottom), 0);
             return Math.Sqrt(dx * dx + dy * dy);
@@ -246,6 +247,25 @@ namespace DownUnder
             areas[3] = new RectangleF(r.X - half_thickness, r.Y - half_thickness, thickness, r.Height + thickness);
 
             return areas;
+        }
+
+        /// <summary>
+        /// Performs linear interpolation of <see cref="RectangleF"/>.
+        /// </summary>
+        /// <param name="r1"></param>
+        /// <param name="r2"></param>
+        /// <param name="progress">Value between 0f and 1f to represent the progress between the two <see cref="RectangleF"/>s</param>
+        /// <returns></returns>
+        public static RectangleF Lerp(this RectangleF r1, RectangleF r2, float progress)
+        {
+            float inverse_progress = 1 - progress;
+            return new RectangleF
+                (
+                r1.X * inverse_progress + r2.X * progress,
+                r1.Y * inverse_progress + r2.Y * progress,
+                r1.Width * inverse_progress + r2.Width * progress,
+                r1.Height * inverse_progress + r2.Height * progress
+                );
         }
     }
 }

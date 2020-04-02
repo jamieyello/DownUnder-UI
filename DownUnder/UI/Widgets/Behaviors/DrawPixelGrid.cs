@@ -1,9 +1,6 @@
-﻿using DownUnder.Utilities.DrawingEffects;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities.DrawingEffects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
@@ -37,13 +34,27 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void Update(object sender, EventArgs args)
         {
-            _pixel_grid_effect.Size = Parent.Size;
+            if (Parent is IScrollableWidget s_parent)
+            {
+                _pixel_grid_effect.Size = s_parent.ContentArea.Size;
+            }
+            else
+            {
+                _pixel_grid_effect.Size = Parent.Size;
+            }
             _pixel_grid_effect.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
         private void Draw(object sender, EventArgs args)
         {
-            _pixel_grid_effect.Draw(Parent.SpriteBatch, Parent.PositionInWindow);
+            if (Parent is IScrollableWidget s_parent)
+            {
+                _pixel_grid_effect.Draw(Parent.SpriteBatch, Parent.PositionInWindow - s_parent.Scroll.Inverted()); // Point2 doesn't have + in this version of ME, update later
+            }
+            else
+            {
+                _pixel_grid_effect.Draw(Parent.SpriteBatch, Parent.PositionInWindow);
+            }
         }
     }
 }

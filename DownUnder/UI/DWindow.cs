@@ -7,13 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets;
-using DownUnder.Utility;
 
 namespace DownUnder.UI
 {
@@ -344,7 +342,7 @@ namespace DownUnder.UI
         {
             Console.WriteLine("DWindow.SignalSpawnWindowAsActive: Setting spawned window as active");
             _spawned_window_is_active = 1;
-            Debug.WriteLine($"_spawned_window_is_active = {_spawned_window_is_active}");
+            Console.WriteLine($"_spawned_window_is_active = {_spawned_window_is_active}");
         }
 
         private void AreaSet(RectangleF value)
@@ -355,12 +353,11 @@ namespace DownUnder.UI
             try
             {
                 GraphicsManager.ApplyChanges();
-                ((System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle))
-                    .Location = new System.Drawing.Point((int)value.X, (int)value.Y);
+                OSInterface.SetWindowPosition(this, value.Position.ToPoint());
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}");
+                Console.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}");
             }
 
             Layout.Area = value.SizeOnly();
@@ -375,14 +372,14 @@ namespace DownUnder.UI
             _spawned_window_is_active = 0;
             CreateWindowDelegate.Invoke(window_type, this);
 
-            Debug.WriteLine($"{GetType().Name}: Waiting for spawned window to be active");
+            Console.WriteLine($"{GetType().Name}: Waiting for spawned window to be active");
             // Wait until the window is active to return
             do
             {
-                Debug.WriteLine($"{GetType().Name}.CreateWindow: Waiting for spawned window to be active _spawned_window_is_active = {_spawned_window_is_active}");
+                Console.WriteLine($"{GetType().Name}.CreateWindow: Waiting for spawned window to be active _spawned_window_is_active = {_spawned_window_is_active}");
                 Thread.Sleep(5);
             } while (_spawned_window_is_active != 1);
-            Debug.WriteLine($"{GetType().Name}: Waiting done");
+            Console.WriteLine($"{GetType().Name}: Waiting done");
 
             return Children[Children.Count - 1];
         }

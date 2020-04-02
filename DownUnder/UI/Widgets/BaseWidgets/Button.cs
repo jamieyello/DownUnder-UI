@@ -81,7 +81,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         public void AlignContent()
         {
             Label.Area = Label.Area.WithCenter(Area.SizeOnly());
-            Console.WriteLine($"Set label area to {Label.Area}");
+            //Console.WriteLine($"Set label area to {Label.Area}");
         }
 
         #endregion

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DownUnder
 {
-    public static class LinePaths
+    public static class DrawingExtensions
     {
         public static void DrawRoundedRect(this SpriteBatch spriteBatch, RectangleF rect, float radius, Color color, float thickness = 1f)
         {

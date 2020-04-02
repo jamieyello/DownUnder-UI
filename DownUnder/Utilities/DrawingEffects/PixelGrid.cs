@@ -12,15 +12,14 @@ namespace DownUnder.Utilities.DrawingEffects
         List<List<GridPixel>> _pixel_grid = new List<List<GridPixel>>();
         Point2 _size_backing = new Point2();
         float _spacing_backing = 8f;
-        Color _base_color_backing;
 
         public PixelGrid()
         {
             DefaultPixel = new GridPixel();
-            DefaultPixel.ChangingColor.SetTargetValue(BaseColor);
+            DefaultPixel.ChangingColor.SetTargetValue(InitialColor);
         }
         
-        public Color BaseColor { get; set; } = Color.Red;
+        public Color InitialColor { get; set; } = Color.Red;
 
         public GridPixel DefaultPixel { get; set; }
 
@@ -66,6 +65,18 @@ namespace DownUnder.Utilities.DrawingEffects
                     pixel.Draw(sprite_batch, offset);
                 }
             }
+        }
+        
+        public List<GridPixel> GetAllPixels()
+        {
+            List<GridPixel> result = new List<GridPixel>();
+
+            foreach (List<GridPixel> line in _pixel_grid)
+            {
+                result.AddRange(line);
+            }
+
+            return result;
         }
         
         private void UpdateGridDimensions()

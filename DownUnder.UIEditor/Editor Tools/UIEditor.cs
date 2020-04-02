@@ -38,7 +38,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             
             butt.DrawBackground = true;
             butt.Behaviors.Add(new DragableOutlineAnimation());
-            butt.Behaviors.Add(new DragAndDropClone()
+            butt.Behaviors.Add(new AddWidget()
             {
                 DragObject = new Button()
                 {
@@ -102,7 +102,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             Console.WriteLine($"DrawingArea {widget.DrawingArea}");
             if (widget is IScrollableWidget scroll_widget)
             {
-                Console.WriteLine($"Scroll {scroll_widget.Scroll.Y.GetCurrent()}");
+                Console.WriteLine($"Scroll {scroll_widget.Scroll.Y}");
                 Console.WriteLine($"ContentArea {scroll_widget.ContentArea}");
             }
             Console.WriteLine($"parent AreaInWindow {widget.ParentWidget?.AreaInWindow}");

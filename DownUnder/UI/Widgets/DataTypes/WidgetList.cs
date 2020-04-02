@@ -70,6 +70,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 }
             }
 
+            // Debug because this is still broken
             if (false)
             {
                 for (int i = 0; i < areas.Count; i++)

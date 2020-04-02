@@ -20,20 +20,16 @@ using System.Threading;
 
 // tip: Always remember to update Clone.
 
-// Combine slots with widget.
 // Palettes should have ChangeColorOnHover, functionality should be removed from here.
-// Most update code can be moved
 // By current logic, should DrawMode be an auto-property?
 // DrawingArea doesn't have consistent size between drawing modes.
-// Invert Scroll values by default
 // SignalChildAreaChanged should be called in base area only, _disable_update_area should be in base.
-// Figure out what's causing the massive performance drop that occurs over time.
 // SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Grid dividers are broken
 // Scrollbars are ugly
 // Serialization code is scary
-// Add Intercept Parent.DrawingArea to cursor in bounds extension
+// Convert RectangleF.DistanceFrom to float
 
 namespace DownUnder.UI.Widgets
 {
@@ -57,8 +53,10 @@ namespace DownUnder.UI.Widgets
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
         private float _triple_click_countdown = 0f;
 
+        /// <summary> Used to tell whether the cursor moved or not when checking for double/triple clicks. </summary>
         private Point2 _previous_cursor_position = new Point2();
 
+        /// <summary> A cache of the previous scissor rectangle to check whether the scissor rectangle has to be updated or not. (Performance impact untested) </summary>
         private Rectangle _previous_scissor_rectangle;
 
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
@@ -67,18 +65,25 @@ namespace DownUnder.UI.Widgets
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
 
+        /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/>. </summary>
         private bool _dragging_in = false;
 
+        /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/> that has traveled outside this <see cref="Widget"/>'s area at some point. </summary>
         private bool _dragging_off = false;
 
+        /// <summary> Is true when the user is resizing this Widget. </summary>
         private bool _is_user_resizing = false;
 
+        /// <summary> The sides (if any) the user is resizing. </summary>
         private Directions2D _resize_grab;
 
+        /// <summary> The area of this <see cref="Widget"/> before the user started resizing it. (If the user is resizing) </summary>
         private RectangleF _resizing_initial_area;
 
+        // why is there a second one?
         Directions2D _resizing_direction;
 
+        /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
@@ -332,7 +337,7 @@ namespace DownUnder.UI.Widgets
                 if (ParentWidget == null) { return Position; }
                 if (ParentWidget is IScrollableWidget iscroll_parent)
                 {
-                    return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(iscroll_parent.Scroll.ToPoint2().Inverted());
+                    return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(iscroll_parent.Scroll);
                 }
                 return Position.WithOffset(ParentWidget.PositionInWindow);
             }
@@ -457,7 +462,7 @@ namespace DownUnder.UI.Widgets
                 if (UpdateData.UIInputState == null) return new Point2();
                 if (this is IScrollableWidget)
                 {
-                    return UpdateData.UIInputState.CursorPosition - PositionInWindow + ((IScrollableWidget)this).Scroll.ToVector2();
+                    return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
                 }
                 return UpdateData.UIInputState.CursorPosition - PositionInWindow;
             }
@@ -535,24 +540,8 @@ namespace DownUnder.UI.Widgets
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.UIInputState = ui_input;
 
-            UpdateCursorInput(game_time, ui_input);
+            UpdateCursorInput();
             
-            if (
-                AllowUserResize 
-                && !PassthroughMouse
-                && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))
-                )
-            {
-                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
-                    ParentWindow.InputState.CursorPosition, 
-                    _USER_RESIZE_BOUNDS_SIZE);
-                if (resize_grab != Directions2D.None 
-                    && ParentWindow.ResizeGrabber == null)
-                {
-                    ParentWindow.ResizeGrabber = this;
-                    _resize_grab = resize_grab;
-                }
-            }
             foreach (Widget widget in Children)
             {
                 widget.UpdatePriority(game_time, ui_input);
@@ -560,7 +549,7 @@ namespace DownUnder.UI.Widgets
         }
         
         // Nothing should be invoked here.
-        private void UpdateCursorInput(GameTime game_time, UIInputState ui_input)
+        private void UpdateCursorInput()
         {
             _update_clicked = false;
             _update_double_clicked = false;
@@ -571,7 +560,7 @@ namespace DownUnder.UI.Widgets
             _update_drag = false;
             _update_drop = false;
 
-            if (ui_input.CursorPosition != _previous_cursor_position)
+            if (UpdateData.UIInputState.CursorPosition != _previous_cursor_position)
             {
                 _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
                 _triple_click_countdown = 0f;
@@ -579,10 +568,10 @@ namespace DownUnder.UI.Widgets
             
             if (_double_click_countdown > 0f)
             {
-                _double_click_countdown -= game_time.GetElapsedSeconds();
+                _double_click_countdown -= UpdateData.ElapsedSeconds;
             }
 
-            if (!ui_input.PrimaryClick)
+            if (!UpdateData.UIInputState.PrimaryClick)
             {
                 _dragging_in = false;
                 if (_dragging_off)
@@ -592,18 +581,18 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
-            if (VisibleArea.Contains(ui_input.CursorPosition) && !PassthroughMouse)
+            if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
             {
                 _update_hovered_over = true;
 
-                if (ui_input.PrimaryClickTriggered) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
-                _previous_cursor_position = ui_input.CursorPosition;
+                if (UpdateData.UIInputState.PrimaryClickTriggered) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
+                _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
                 if (_update_clicked) { _dragging_in = true; }
 
                 if (_update_clicked)
                 {
-                    if (ui_input.Control)  // Multi-select if the defined control is held down
+                    if (UpdateData.UIInputState.Control)  // Multi-select if the defined control is held down
                     {
                         if (!IsSelected)
                         {
@@ -644,6 +633,24 @@ namespace DownUnder.UI.Widgets
                     _update_drag = true;
                 }
             }
+
+            // Resizing the window
+            if (
+                AllowUserResize
+                && !PassthroughMouse
+                && ParentWindow.ResizeGrabber == null
+                && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))
+                )
+            {
+                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
+                    ParentWindow.InputState.CursorPosition,
+                    _USER_RESIZE_BOUNDS_SIZE);
+                if (resize_grab != Directions2D.None)
+                {
+                    ParentWindow.ResizeGrabber = this;
+                    _resize_grab = resize_grab;
+                }
+            }
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
@@ -682,7 +689,7 @@ namespace DownUnder.UI.Widgets
                 if ((_resize_grab == Directions2D.UpRight) || (_resize_grab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
                 if ((_resize_grab == Directions2D.UpLeft) || (_resize_grab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
 
-                if (ui_input.PrimaryClickTriggered && !ParentWindow.IsUserResizing)
+                if (_update_clicked && !ParentWindow.IsUserResizing)
                 {
                     if (_resize_grab != Directions2D.None)
                     {
@@ -694,7 +701,7 @@ namespace DownUnder.UI.Widgets
                     }
                 }
 
-                if (!ui_input.PrimaryClick)
+                if (!_update_clicked)
                 {
                     _is_user_resizing = false;
                     ParentWindow.IsUserResizing = false;
@@ -836,7 +843,7 @@ namespace DownUnder.UI.Widgets
                 renders.Add(child.Render());
                 if (child is IScrollableWidget s_widget)
                 {
-                    areas.Add(child.Area.WithOffset(s_widget.Scroll.ToPoint2()));
+                    areas.Add(child.Area.WithOffset(s_widget.Scroll.Inverted()));
                 }
                 else
                 {
@@ -862,7 +869,7 @@ namespace DownUnder.UI.Widgets
                     SpriteBatch.Draw
                         (
                         renders[i],
-                        areas[i].Position.WithOffset(s_this.Scroll.ToPoint2().Inverted()).Floored(),
+                        areas[i].Position.WithOffset(s_this.Scroll).Floored(),
                         Color.White
                         );
                 }
@@ -953,17 +960,14 @@ namespace DownUnder.UI.Widgets
 
             if (i_this.AcceptsDrops)
             {
-                Console.WriteLine("Accepting drop");
                 foreach (Type type in i_this.AcceptedDropTypes)
                 {
                     if (type.IsAssignableFrom(drop?.GetType()))
                     {
-                        Console.WriteLine("Accepted drop");
                         return true;
                     }
                 }
             }
-            Console.WriteLine("Denied drop");
             return false;
         }
 
@@ -1187,7 +1191,6 @@ namespace DownUnder.UI.Widgets
 
             _graphics_updating = false;
         }
-
 
         #endregion
 

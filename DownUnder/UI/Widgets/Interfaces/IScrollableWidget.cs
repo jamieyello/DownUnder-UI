@@ -9,9 +9,9 @@ namespace DownUnder.UI.Widgets.Interfaces
     /// </summary>
     public interface IScrollableWidget
     {
-        ScrollBars ScrollBars { get; }
+        Scroll ScrollBars { get; }
         RectangleF ContentArea { get; }
-        Scroll Scroll { get; }
+        Point2 Scroll { get; }
         bool FitToContentArea { get; set; }
     }
 }

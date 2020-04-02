@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Windows.Forms;
+﻿using DownUnder.UI;
+using Microsoft.Xna.Framework;
 
 namespace DownUnder.Utilities
 {
@@ -22,7 +22,13 @@ namespace DownUnder.Utilities
 
         public static float CaretBlinkTime
         {
-            get => SystemInformation.CaretBlinkTime / 500f;
+            get => System.Windows.Forms.SystemInformation.CaretBlinkTime / 500f;
+        }
+
+        public static void SetWindowPosition(DWindow d_window, Point position)
+        {
+            ((System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(d_window.Window.Handle))
+                    .Location = new System.Drawing.Point((int)position.X, (int)position.Y);
         }
     }
 }
