@@ -1011,9 +1011,15 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrag;
         /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
         public event EventHandler OnDrop;
+        internal event EventHandler OnAddWidgetSpacingChange;
+
+        internal void SignalAddWidgetSpacingChange()
+        {
+            OnAddWidgetSpacingChange?.Invoke(this, EventArgs.Empty);
+        }
 
         #endregion
-        
+
         #region Private/Protected Methods
 
         public void EmbedIn(IParent parent)

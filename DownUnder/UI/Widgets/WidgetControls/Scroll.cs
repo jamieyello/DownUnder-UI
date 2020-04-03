@@ -86,23 +86,17 @@ namespace DownUnder.UI.Widgets.WidgetControls
             BottomRightSquarePalette = (ElementColors)_parent.Theme.OuterScrollBar.Clone();
 
             Thickness = 20f;
-            SidebarHideSpeed = 4f;
+            SidebarHideSpeed = 2f;
         }
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            if (_SideVisible)
-            {
-                sprite_batch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
-                sprite_batch.Draw(_white_dot, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
-            }
-
-            if (_BottomVisible)
-            {
-                sprite_batch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
-                sprite_batch.Draw(_white_dot, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
-            }
-
+            sprite_batch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
+            sprite_batch.Draw(_white_dot, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
+            
+            sprite_batch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
+            sprite_batch.Draw(_white_dot, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
+            
             if (_SideVisible || _BottomVisible)
             {
                 sprite_batch.Draw(_white_dot, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
@@ -112,6 +106,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
         public void Update(float step, UIInputState ui_input_state)
         {
             #region Position / Size
+
             RectangleF widget_content_area = _iscrollable_parent.ContentArea;
             RectangleF drawing_area = _parent.DrawingArea;
             RectangleF widget_area = _parent.Area;

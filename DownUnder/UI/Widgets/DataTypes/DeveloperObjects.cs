@@ -13,6 +13,18 @@ namespace DownUnder.UI.Widgets.DataTypes
         private Widget _last_added_widget_backing;
         private Widget _parent_backing;
 
+        private float _add_widget_spacing_backing = 8f;
+
+        public float AddWidgetSpacing
+        {
+            get => _add_widget_spacing_backing;
+            set
+            {
+                _add_widget_spacing_backing = value;
+                Parent.SignalAddWidgetSpacingChange();
+            }
+        }
+
         public Widget Parent
         {
             get => _parent_backing;
@@ -75,7 +87,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 {
                     if (Parent is Layout l_parent)
                     {
-                        w_drop.Area = w_drop.Area.WithCenter(Parent.CursorPosition);
+                        w_drop.Area = w_drop.Area.WithCenter(Parent.CursorPosition).Rounded(AddWidgetSpacing);
                         l_parent.Add(w_drop);
                     }
                 }

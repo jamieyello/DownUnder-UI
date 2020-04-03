@@ -69,7 +69,9 @@ namespace DownUnder.UI.Widgets.Behaviors
                 if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value)
                 {
                     // Set to new Widget area
-                    rect.SetTargetValue(dragging_widget.Area.WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
+                    rect.SetTargetValue(
+                        dragging_widget.Area.WithCenter(Parent.UpdateData.UIInputState.CursorPosition).Rounded(Parent.DeveloperObjects.AddWidgetSpacing)
+                        , snap_rect_to_mouse);
                     _expand_rect_on_release = 1f;
                     round_amount.SetTargetValue(.5f);
                 }

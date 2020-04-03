@@ -11,7 +11,8 @@ namespace DownUnder.Utilities.DrawingEffects
     {
         List<List<GridPixel>> _pixel_grid = new List<List<GridPixel>>();
         Point2 _size_backing = new Point2();
-        float _spacing_backing = 8f;
+        float _spacing_backing = 10f;
+        float _last_spacing = 10f;
 
         public PixelGrid()
         {
@@ -79,8 +80,10 @@ namespace DownUnder.Utilities.DrawingEffects
             return result;
         }
         
-        private void UpdateGridDimensions()
+        public void UpdateGridDimensions()
         {
+            if (Spacing != _last_spacing) _pixel_grid.Clear();
+
             int required_x = (int)((Spacing + Size.X) / Spacing);
             int required_y = (int)((Spacing + Size.Y) / Spacing);
 

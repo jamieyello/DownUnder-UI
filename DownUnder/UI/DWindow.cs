@@ -396,6 +396,7 @@ namespace DownUnder.UI
             ProcessQueuedEvents();
             HoveredWidgets.Reset();
             ResizeGrabber = null;
+            if (!InputState.PrimaryClick) DraggingObject = null;
             InputState.UpdateAll(this, game_time);
             //Console.WriteLine($"_keyboard_state.IsKeyDown(Keys.Left) = {Keyboard.GetState().IsKeyDown(Keys.Left)}");
             //Console.WriteLine(InputState.TextCursorMovement.Down);

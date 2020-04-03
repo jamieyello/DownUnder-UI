@@ -267,5 +267,15 @@ namespace DownUnder
                 r1.Height * inverse_progress + r2.Height * progress
                 );
         }
+
+        public static RectangleF Rounded(this RectangleF r, float accuracy)
+        {
+            return new RectangleF(
+                ((int)((r.X + accuracy / 2) / accuracy) * accuracy),
+                ((int)((r.Y + accuracy / 2) / accuracy) * accuracy),
+                ((int)((r.Width + accuracy / 2) / accuracy) * accuracy),
+                ((int)((r.Height + accuracy / 2) / accuracy) * accuracy)
+                );
+        }
     }
 }
