@@ -6,7 +6,8 @@ using System.Collections.Generic;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
-    public class DeveloperObjects 
+    /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
+    public class DesignerModeTools 
         : INeedsWidgetParent, IAcceptsDrops
     {
         private bool _is_developer_mode_enabled_backing = false;
@@ -87,11 +88,24 @@ namespace DownUnder.UI.Widgets.DataTypes
                 {
                     if (Parent is Layout l_parent)
                     {
-                        w_drop.Area = w_drop.Area.WithCenter(Parent.CursorPosition).Rounded(AddWidgetSpacing);
+                        w_drop.Area = GetAddWidgetArea(w_drop);
                         l_parent.Add(w_drop);
                     }
                 }
             }
+        }
+        
+        /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>
+        /// <param name="dragging_widget">The <see cref="Widget"/> to be added to this one.</param>
+        /// <param name="position">The *center* position of the new <see cref="Widget"/> to be added. Uses this.Parent.CursorPosition by default.</param>
+        public RectangleF GetAddWidgetArea(Widget dragging_widget, Point2? position = null)
+        {
+            if (position == null) position = Parent.CursorPosition;
+            return dragging_widget
+                .Area
+                .SizeOnly()
+                .WithCenter(position.Value)
+                .Rounded(Parent.DeveloperObjects.AddWidgetSpacing);
         }
 
         #endregion

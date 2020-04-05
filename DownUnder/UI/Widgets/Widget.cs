@@ -480,7 +480,7 @@ namespace DownUnder.UI.Widgets
 
         public BehaviorCollection Behaviors { get; private set; }
 
-        public DeveloperObjects DeveloperObjects { get; set; }
+        public DesignerModeTools DeveloperObjects { get; set; }
 
         #endregion
 
@@ -500,7 +500,7 @@ namespace DownUnder.UI.Widgets
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
-            DeveloperObjects = new DeveloperObjects();
+            DeveloperObjects = new DesignerModeTools();
             DeveloperObjects.Parent = this;
         }
 

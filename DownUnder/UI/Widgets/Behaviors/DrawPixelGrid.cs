@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         PixelGrid _pixel_grid_effect = new PixelGrid();
 
-        public float PixelGlowRadius { get; set; } = 40f;
+        public float PixelGlowRadius { get; set; } = 50f;
 
         /// <summary>
         /// All Events should be added here.
@@ -47,16 +47,13 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             if (Parent.IsPrimaryHovered && Parent.ParentWindow.DraggingObject is Widget widget)
             {
-                RectangleF area = widget.Area
-                    .WithCenter(Parent.UpdateData.UIInputState.CursorPosition)
-                    .Rounded(Parent.DeveloperObjects.AddWidgetSpacing)
-                    .WithOffset(Parent.Position.Inverted());
+                RectangleF area = Parent.DeveloperObjects.GetAddWidgetArea(widget);
 
                 foreach (GridPixel pixel in _pixel_grid_effect.GetAllPixels())
                 {
                     float closeness = (PixelGlowRadius - (float)area.DistanceFrom(pixel.Position)) / PixelGlowRadius;
 
-                    pixel.ChangingColor.SetTargetValue(Color.Lerp(Color.DarkBlue, Color.Blue, closeness), true);
+                    pixel.ChangingColor.SetTargetValue(Color.Lerp(Color.DarkBlue, Color.LightBlue, closeness), true);
                     if (closeness > 0f) pixel.Size = 1f + closeness;
                     else pixel.Size = 1f;
                 }

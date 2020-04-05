@@ -66,12 +66,13 @@ namespace DownUnder.UI.Widgets.Behaviors
             if (drag_rect_to_mouse)
             {
                 bool? is_drop_acceptable = ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
+                Widget victim = Parent.ParentWindow.HoveredWidgets.Primary;
                 if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value)
                 {
                     // Set to new Widget area
                     rect.SetTargetValue(
-                        dragging_widget.Area.WithCenter(Parent.UpdateData.UIInputState.CursorPosition).Rounded(Parent.DeveloperObjects.AddWidgetSpacing)
-                        , snap_rect_to_mouse);
+                        victim.DeveloperObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
+                        snap_rect_to_mouse);
                     _expand_rect_on_release = 1f;
                     round_amount.SetTargetValue(.5f);
                 }
