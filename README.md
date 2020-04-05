@@ -7,4 +7,4 @@ Don't try using this yet!
 
 Talk on Discord: https://discord.gg/bEZPvQE
 
-![A dark themed UI](/Images/good_ui5.gif)
+![A dark themed UI](/Images/good_ui6.gif)
