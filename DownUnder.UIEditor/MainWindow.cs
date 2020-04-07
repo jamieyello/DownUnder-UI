@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI;
-using DownUnder.UI.DataTypes;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.Editor_Tools;
@@ -16,6 +15,13 @@ namespace DownUnder.Widgets
     /// </summary>
     public class MainWindow : DWindow
     {
+        // shader testing --
+
+        Texture2D surge;
+        Effect effect;
+
+        // shader testing --
+        
         /// <summary> Contains all widgets relevant to this editor. (When the editor supports slots this won't be proper) </summary>
         private EditorObjects editor_objects;
 
@@ -27,7 +33,7 @@ namespace DownUnder.Widgets
         {
             Content.RootDirectory = "Content";
         }
-
+        
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -47,17 +53,22 @@ namespace DownUnder.Widgets
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            sprite_batch = new SpriteBatch(GraphicsManager.GraphicsDevice);
-            SpriteFont = Content.Load<SpriteFont>("font");
-            UIImages = new UIImages(GraphicsDevice);
+            LoadDWindow();
 
+            // Create a new SpriteBatch, which can be used to draw textures.
+            SpriteBatch = new SpriteBatch(GraphicsManager.GraphicsDevice);
+            SpriteFont = Content.Load<SpriteFont>("font");
+            
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout2(this);
 
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
             // TODO: use this.Content to load your game content here
+
+            //shader testing---
+            surge = Content.Load<Texture2D>("surge");
+            effect = Content.Load<Effect>("shader");
         }
 
         /// <summary>
@@ -85,10 +96,10 @@ namespace DownUnder.Widgets
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
 
-            sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                      null, null, RasterizerState);
-            DrawDWindow(gameTime, sprite_batch);
-            sprite_batch.End();
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, RasterizerState);
+            DrawDWindow(gameTime, SpriteBatch);
+            SpriteBatch.Draw(surge, new Vector2(), Color.White);
+            SpriteBatch.End();
         }
 
         public void Slot_Layout_OnClick(object sender, EventArgs e)

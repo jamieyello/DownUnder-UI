@@ -1174,7 +1174,7 @@ namespace DownUnder.UI.Widgets
                 if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
                 {
                     size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
-                    ConsoleOutput.WriteLine($"Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
+                    Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
                 }
 
                 // Dispose of previous render target

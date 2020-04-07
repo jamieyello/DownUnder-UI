@@ -19,7 +19,7 @@ namespace DownUnder.UI
     {
         #region Fields/Delegates
 
-        public SpriteBatch sprite_batch;
+        public SpriteBatch SpriteBatch { get; set; }
 
         /// <summary> This delegate is meant to grant the main thread's method to spawn new windows. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
@@ -383,6 +383,11 @@ namespace DownUnder.UI
 
             return Children[Children.Count - 1];
         }
+
+        protected void LoadDWindow()
+        {
+            UIImages = new UIImages(GraphicsDevice);
+        }
         
         protected void UpdateDWindow(GameTime game_time)
         {
@@ -423,7 +428,17 @@ namespace DownUnder.UI
 
         protected void DrawDWindow(GameTime game_time, SpriteBatch sprite_batch = null)
         {
-            Layout.Draw(sprite_batch);
+            if (sprite_batch == null)
+            {
+                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, RasterizerState);
+                Layout.Draw(SpriteBatch);
+                SpriteBatch.End();
+            }
+            else
+            {
+                Layout.Draw(sprite_batch);
+            }
+            
             base.Draw(game_time);
         }
 

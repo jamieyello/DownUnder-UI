@@ -1,7 +1,7 @@
 ﻿using DownUnder.Widgets;
 using System;
 
-namespace TheGame
+namespace UIEditor
 {
 #if WINDOWS || LINUX
     /// <summary>
