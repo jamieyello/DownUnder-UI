@@ -98,6 +98,7 @@ namespace DownUnder.Widgets
 
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, RasterizerState);
             DrawDWindow(gameTime, SpriteBatch);
+            effect.CurrentTechnique.Passes[0].Apply();
             SpriteBatch.Draw(surge, new Vector2(), Color.White);
             SpriteBatch.End();
         }

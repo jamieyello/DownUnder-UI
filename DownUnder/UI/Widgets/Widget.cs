@@ -1,7 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
