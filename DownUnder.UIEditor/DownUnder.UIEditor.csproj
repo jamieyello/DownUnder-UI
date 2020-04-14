@@ -66,7 +66,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\default_widget_shader.fx" />
     <Content Include="Content\shader.fx" />
     <Content Include="Icon.ico" />
   </ItemGroup>

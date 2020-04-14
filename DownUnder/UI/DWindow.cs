@@ -216,6 +216,8 @@ namespace DownUnder.UI
         /// <summary> The default spritefont of this window. Used by contained widgets without a self-defined spritefont. </summary>
         public SpriteFont SpriteFont { get; protected set; }
 
+        public Effect BackgroundEffect { get; set; }
+
         /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
         public float Width
         {
@@ -234,7 +236,7 @@ namespace DownUnder.UI
         public UIImages UIImages { get; protected set; }
 
         /// <summary> <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> used when drawing the UI. (Necessary for clipping) </summary>
-        public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true };
+        public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true, MultiSampleAntiAlias = true };
 
         public object DraggingObject { get; set; }
 
@@ -430,7 +432,7 @@ namespace DownUnder.UI
         {
             if (sprite_batch == null)
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, RasterizerState);
+                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, RasterizerState);
                 Layout.Draw(SpriteBatch);
                 SpriteBatch.End();
             }

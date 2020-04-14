@@ -781,7 +781,12 @@ namespace DownUnder.UI.Widgets
 
             if (DrawBackground)
             {
+                ParentWindow.BackgroundEffect.Parameters["ShadeVisibility"].SetValue(1f);
+                ParentWindow.BackgroundEffect.Parameters["Size"].SetValue(Size);
+                ParentWindow.BackgroundEffect.CurrentTechnique.Passes[0].Apply();
                 sprite_batch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
+                ParentWindow.BackgroundEffect.Parameters["ShadeVisibility"].SetValue(0f);
+                ParentWindow.BackgroundEffect.CurrentTechnique.Passes[0].Apply();
             }
 
             _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
@@ -1095,9 +1100,9 @@ namespace DownUnder.UI.Widgets
                 DrawingTools.DrawBorder(
                     _white_dot,
                     sprite_batch,
-                    DrawingArea.ToRectangle(), 
-                    OutlineThickness, 
-                    Theme.OutlineColor.CurrentColor, 
+                    DrawingArea.ToRectangle(),
+                    OutlineThickness,
+                    Theme.OutlineColor.CurrentColor,
                     OutlineSides
                     );
             }

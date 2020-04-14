@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Diagnostics;
+using MonoGame.Extended;
 
 namespace DownUnder.Widgets
 {
@@ -58,7 +59,8 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
-            
+            BackgroundEffect = Content.Load<Effect>("shader");
+
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout2(this);
 
@@ -67,7 +69,7 @@ namespace DownUnder.Widgets
             // TODO: use this.Content to load your game content here
 
             //shader testing---
-            surge = Content.Load<Texture2D>("surge");
+            surge = Content.Load<Texture2D>("tests");
             effect = Content.Load<Effect>("shader");
         }
 
@@ -95,12 +97,13 @@ namespace DownUnder.Widgets
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
+            
+            DrawDWindow(gameTime);
 
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, RasterizerState);
-            DrawDWindow(gameTime, SpriteBatch);
-            effect.CurrentTechnique.Passes[0].Apply();
-            SpriteBatch.Draw(surge, new Vector2(), Color.White);
-            SpriteBatch.End();
+            //effect.Parameters["Size"].SetValue(new Vector2(200, 100));
+            //effect.CurrentTechnique.Passes[0].Apply();
+            //SpriteBatch.FillRectangle(new RectangleF(0, 0, 200, 100), Color.Moccasin);
+            
         }
 
         public void Slot_Layout_OnClick(object sender, EventArgs e)
