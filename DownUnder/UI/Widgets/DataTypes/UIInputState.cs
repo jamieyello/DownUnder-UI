@@ -35,7 +35,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public bool Control { get; set; } = false;
 
         /// <summary> Used to move the cursor. </summary>
-        public Directions2D TextCursorMovement = new Directions2D() { AllowOpposites = false };
+        public Directions2D TextCursorMovement = new Directions2D() { DisallowOpposites = true };
 
         /// <summary> Used for backspacing text. </summary>
         public bool BackSpace { get; set; } = false;

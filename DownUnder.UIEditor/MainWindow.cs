@@ -59,8 +59,7 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
-            BackgroundEffect = Content.Load<Effect>("shader");
-
+            OverlayEffect = Content.Load<Effect>("shader");
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout2(this);
 

@@ -15,25 +15,25 @@ namespace DownUnder
         public static void DrawRoundedRect(this SpriteBatch spriteBatch, RectangleF rect, float radius, Color color, float thickness = 1f)
         {
             // Top left round
-            DrawCircleQuarters(spriteBatch, rect.Position.WithOffset(new Point2(radius, radius)), radius, DiagonalDirections2D.TopLeft, color, 1f, 1f, thickness);
+            DrawCircleQuarters(spriteBatch, rect.Position.WithOffset(new Point2(radius, radius)), radius, DiagonalDirections2D.TL, color, 1f, 1f, thickness);
 
             // Top line
             spriteBatch.DrawLine(rect.X + radius, rect.Y, rect.X + rect.Width - radius, rect.Y, color, thickness);
 
             // Top right round
-            DrawCircleQuarters(spriteBatch, rect.TopRight().WithOffset(new Point2(-radius, radius)), radius, DiagonalDirections2D.TopRight, color, 1f, 1f, thickness);
+            DrawCircleQuarters(spriteBatch, rect.TopRight().WithOffset(new Point2(-radius, radius)), radius, DiagonalDirections2D.TR, color, 1f, 1f, thickness);
 
             // Right line
             spriteBatch.DrawLine(rect.X + rect.Width, rect.Y + radius, rect.X + rect.Width, rect.Y + rect.Height - radius, color, thickness);
 
             // Bottom right round
-            DrawCircleQuarters(spriteBatch, rect.BottomRight.WithOffset(new Point2(-radius, -radius)), radius, DiagonalDirections2D.BottomRight, color, 1f, 1f, thickness);
+            DrawCircleQuarters(spriteBatch, rect.BottomRight.WithOffset(new Point2(-radius, -radius)), radius, DiagonalDirections2D.BR, color, 1f, 1f, thickness);
 
             // Bottom line
             spriteBatch.DrawLine(rect.X + radius, rect.Y + rect.Height, rect.X + rect.Width - radius, rect.Y + rect.Height, color, thickness);
 
             // Bottom left round
-            DrawCircleQuarters(spriteBatch, rect.BottomLeft().WithOffset(new Point2(radius, -radius)), radius, DiagonalDirections2D.BottomLeft, color, 1f, 1f, thickness);
+            DrawCircleQuarters(spriteBatch, rect.BottomLeft().WithOffset(new Point2(radius, -radius)), radius, DiagonalDirections2D.BL, color, 1f, 1f, thickness);
 
             // Left line
             spriteBatch.DrawLine(rect.X, rect.Y + radius, rect.X, rect.Y + rect.Height - radius, color, thickness);
@@ -51,19 +51,19 @@ namespace DownUnder
                 float thickness = 1f
             )
         {
-            if (directions.bottom_right)
+            if (directions.BottomRight)
             {
                 _DrawCircleQuarter(spriteBatch, center, radius, color, stretch_x, stretch_y, thickness);
             }
-            if (directions.bottom_left)
+            if (directions.BottomLeft)
             {
                 _DrawCircleQuarter(spriteBatch, center, radius, color, -stretch_x, stretch_y, thickness);
             }
-            if (directions.top_right)
+            if (directions.TopRight)
             {
                 _DrawCircleQuarter(spriteBatch, center, radius, color, stretch_x, -stretch_y, thickness);
             }
-            if (directions.top_left)
+            if (directions.TopLeft)
             {
                 _DrawCircleQuarter(spriteBatch, center, radius, color, -stretch_x, -stretch_y, thickness);
             }

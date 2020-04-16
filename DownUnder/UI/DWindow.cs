@@ -216,7 +216,7 @@ namespace DownUnder.UI
         /// <summary> The default spritefont of this window. Used by contained widgets without a self-defined spritefont. </summary>
         public SpriteFont SpriteFont { get; protected set; }
 
-        public Effect BackgroundEffect { get; set; }
+        public Effect OverlayEffect { get; set; }
 
         /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
         public float Width
@@ -428,18 +428,9 @@ namespace DownUnder.UI
             base.Update(game_time);
         }
 
-        protected void DrawDWindow(GameTime game_time, SpriteBatch sprite_batch = null)
+        protected void DrawDWindow(GameTime game_time)
         {
-            if (sprite_batch == null)
-            {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, RasterizerState);
-                Layout.Draw(SpriteBatch);
-                SpriteBatch.End();
-            }
-            else
-            {
-                Layout.Draw(sprite_batch);
-            }
+            Layout.Draw();
             
             base.Draw(game_time);
         }

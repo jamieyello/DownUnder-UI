@@ -4,30 +4,21 @@ using System.Runtime.Serialization;
 namespace DownUnder.Utility
 {
     /// <summary> Represents four (up, down, left, right) directions. </summary>
-    public class Directions2D : ICloneable
+    public struct Directions2D
     {
-        private bool up = false;
-        private bool down = false;
-        private bool left = false;
-        private bool right = false;
+        private bool up;
+        private bool down;
+        private bool left;
+        private bool right;
 
-        public Directions2D() { }
-        public Directions2D(bool up, bool down, bool left, bool right)
-        {
-            this.up = up;
-            this.down = down;
-            this.left = left;
-            this.right = right;
-        }
-
-        [DataMember] public bool AllowOpposites = true;
+        [DataMember] public bool DisallowOpposites;
         
         [DataMember] public bool Up
         {
             get => up;
             set
             {
-                if (!AllowOpposites && value) down = false;
+                if (DisallowOpposites && value) down = false;
                 up = value;
             }
         }
@@ -37,7 +28,7 @@ namespace DownUnder.Utility
             get => left;
             set
             {
-                if (!AllowOpposites && value) right = false;
+                if (DisallowOpposites && value) right = false;
                 left = value;
             }
         }
@@ -47,7 +38,7 @@ namespace DownUnder.Utility
             get => right;
             set
             {
-                if (!AllowOpposites && value) left = false;
+                if (DisallowOpposites && value) left = false;
                 right = value;
             }
         }
@@ -57,7 +48,7 @@ namespace DownUnder.Utility
             get => down;
             set
             {
-                if (!AllowOpposites && value) up = false;
+                if (DisallowOpposites && value) up = false;
                 down = value;
             }
         }
@@ -68,17 +59,6 @@ namespace DownUnder.Utility
             down = false;
             left = false;
             right = false;
-        }
-
-        public object Clone()
-        {
-            Directions2D c = new Directions2D();
-            c.Up = Up;
-            c.Left = Left;
-            c.Right = Right;
-            c.Down = Down;
-
-            return c;
         }
 
         public override string ToString()
@@ -131,7 +111,13 @@ namespace DownUnder.Utility
 
         public static Directions2D operator !(Directions2D d)
         {
-            return new Directions2D(!d.up, !d.down, !d.left, !d.right);
+            return new Directions2D()
+            {
+                up = !d.up,
+                down = !d.down,
+                left = !d.left,
+                right = !d.right
+            };
         }
 
         public override bool Equals(Object obj)
@@ -168,7 +154,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpDownLeftRight
+        /// <summary> Up, Down, Left, Right = true </summary>
+        public static Directions2D UDLR
         {
             get => new Directions2D()
             {
@@ -179,7 +166,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpDownLeft
+        /// <summary> Up, Down, Left = true </summary>
+        public static Directions2D UDL
         {
             get => new Directions2D()
             {
@@ -189,7 +177,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpDownRight
+        /// <summary> Up, Down, Right = true </summary>
+        public static Directions2D UDR
         {
             get => new Directions2D()
             {
@@ -199,7 +188,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpLeftRight
+        /// <summary> Up, Left, Right = true </summary>
+        public static Directions2D ULR
         {
             get => new Directions2D()
             {
@@ -209,7 +199,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D DownLeftRight
+        /// <summary> Down, Left, Right = true </summary>
+        public static Directions2D DLR
         {
             get => new Directions2D()
             {
@@ -219,7 +210,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpDown
+        /// <summary> Up, Down = true </summary>
+        public static Directions2D UD
         {
             get => new Directions2D()
             {
@@ -228,7 +220,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpLeft
+        /// <summary> Up, Left = true </summary>
+        public static Directions2D UL
         {
             get => new Directions2D()
             {
@@ -237,7 +230,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpRight
+        /// <summary> Up, Right = true </summary>
+        public static Directions2D UR
         {
             get => new Directions2D()
             {
@@ -246,7 +240,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D DownLeft
+        /// <summary> Down, Left = true </summary>
+        public static Directions2D DL
         {
             get => new Directions2D()
             {
@@ -255,7 +250,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D DownRight
+        /// <summary> Down, Right = true </summary>
+        public static Directions2D DR
         {
             get => new Directions2D()
             {
@@ -264,7 +260,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D LeftRight
+        /// <summary> Left, Right = true </summary>
+        public static Directions2D LR
         {
             get => new Directions2D()
             {
@@ -273,7 +270,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D UpOnly
+        /// <summary> Up = true </summary>
+        public static Directions2D U
         {
             get => new Directions2D()
             {
@@ -281,7 +279,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D DownOnly
+        /// <summary> Down = true </summary>
+        public static Directions2D D
         {
             get => new Directions2D()
             {
@@ -289,7 +288,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D LeftOnly
+        /// <summary> Left = true </summary>
+        public static Directions2D L
         {
             get => new Directions2D()
             {
@@ -297,7 +297,8 @@ namespace DownUnder.Utility
             };
         }
 
-        public static Directions2D RightOnly
+        /// <summary> Right = true </summary>
+        public static Directions2D R
         {
             get => new Directions2D()
             {

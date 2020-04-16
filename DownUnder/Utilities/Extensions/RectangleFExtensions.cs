@@ -121,14 +121,14 @@ namespace DownUnder
         public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions)
         {
             RectangleF result = r;
-            if (directions & Directions2D.RightOnly) { result.Width += amount; }
-            if (directions & Directions2D.DownOnly) { result.Height += amount; }
-            if (directions & Directions2D.UpOnly)
+            if (directions & Directions2D.R) { result.Width += amount; }
+            if (directions & Directions2D.D) { result.Height += amount; }
+            if (directions & Directions2D.U)
             {
                 result.Y -= amount;
                 result.Height += amount;
             }
-            if (directions & Directions2D.LeftOnly)
+            if (directions & Directions2D.L)
             {
                 result.X -= amount;
                 result.Width += amount;

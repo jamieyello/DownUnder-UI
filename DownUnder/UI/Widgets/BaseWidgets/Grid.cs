@@ -140,7 +140,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         {
             // Create cell
             Layout default_widget = new Layout(this);
-            default_widget.OutlineSides = Directions2D.DownRight;
+            default_widget.OutlineSides = Directions2D.DR;
             default_widget.FitToContentArea = true;
             return default_widget;
         }

@@ -5,75 +5,40 @@ namespace DownUnder.Utility
     /// <summary>
     /// Represents four diagonal directions.
     /// </summary>
-    public class DiagonalDirections2D : ICloneable
+    public struct DiagonalDirections2D
     {
-        public bool top_right;
-        public bool top_left;
-        public bool bottom_right;
-        public bool bottom_left;
-
-        public DiagonalDirections2D() { }
-        public DiagonalDirections2D(bool top_right, bool top_left, bool bottom_right, bool bottom_left)
-        {
-            this.top_right = top_right;
-            this.top_left = top_left;
-            this.bottom_right = bottom_right;
-            this.bottom_left = bottom_left;
-        }
-
+        public bool TopLeft;
+        public bool TopRight;
+        public bool BottomLeft;
+        public bool BottomRight;
+        
         /// <summary> Creates a perpendicular Direction2D by combining directions. (Not rotation.) </summary>
         public Directions2D ToPerpendicular()
         {
             return new Directions2D()
             {
-                Up = top_right || top_left,
-                Down = bottom_left || bottom_right,
-                Left = top_left || bottom_left,
-                Right = top_right || bottom_right
+                Up = TopRight || TopLeft,
+                Down = BottomLeft || BottomRight,
+                Left = TopLeft || BottomLeft,
+                Right = TopRight || BottomRight
             };
-        }
-
-        public object Clone()
-        {
-            DiagonalDirections2D c = new DiagonalDirections2D();
-            c.top_right = top_right;
-            c.top_left = top_left;
-            c.bottom_right = bottom_right;
-            c.bottom_left = bottom_left;
-
-            return c;
         }
 
         public override string ToString()
         {
-            return "{top_right:" + top_right + " top_left:" + top_left + " bottom_right:" + bottom_right + " bottom_left:" + bottom_left + "}";
+            return "{top_left:" + TopLeft + " top_right:" + TopRight + " bottom_left:" + BottomLeft + " bottom_right:" + BottomRight + "}";
         }
 
         public override int GetHashCode()
         {
-            int result = 0;
-            result = (top_right ? 1 : 0) * 1
-                + (top_left ? 1 : 0) * 2
-                + (bottom_right ? 1 : 0) * 4
-                + (bottom_left ? 1 : 0) * 8;
-            return result;
+            return (TopLeft ? 1 : 0)
+                + (TopRight ? 1 : 0) * 2
+                + (BottomLeft ? 1 : 0) * 4
+                + (BottomRight ? 1 : 0) * 8;
         }
 
         public static bool operator ==(DiagonalDirections2D d1, DiagonalDirections2D d2)
         {
-            // Check for null on left side.
-            if (Object.ReferenceEquals(d1, null))
-            {
-                if (Object.ReferenceEquals(d2, null))
-                {
-                    // null == null = true.
-                    return true;
-                }
-
-                // Only the left side is null.
-                return false;
-            }
-            // Equals handles case of null on right side.
             return d1.Equals(d2);
         }
 
@@ -84,39 +49,42 @@ namespace DownUnder.Utility
 
         public static bool operator true(DiagonalDirections2D d)
         {
-            return d.top_left || d.top_right || d.bottom_left || d.bottom_right;
+            return d.TopLeft || d.TopRight || d.BottomLeft || d.BottomRight;
         }
 
         public static bool operator false(DiagonalDirections2D d)
         {
-            return !(d.top_left || d.top_right || d.bottom_left || d.bottom_right);
+            return !(d.TopLeft || d.TopRight || d.BottomLeft || d.BottomRight);
         }
 
         public static DiagonalDirections2D operator !(DiagonalDirections2D d)
         {
-            return new DiagonalDirections2D(!d.top_right, !d.top_left, !d.bottom_right, !d.bottom_left);
+            return new DiagonalDirections2D()
+            {
+                TopLeft = !d.TopLeft,
+                TopRight = !d.TopRight,
+                BottomLeft = !d.BottomLeft,
+                BottomRight = !d.BottomRight
+            };
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (Object.ReferenceEquals(this, obj)) return true;
-
-            return (obj is DiagonalDirections2D) &&
-                ((DiagonalDirections2D)obj).top_right == top_right &&
-                ((DiagonalDirections2D)obj).top_left == top_left &&
-                ((DiagonalDirections2D)obj).bottom_right == bottom_right &&
-                ((DiagonalDirections2D)obj).bottom_left == bottom_left;
+            return (obj is DiagonalDirections2D d_obj) &&
+                d_obj.TopLeft == TopLeft &&
+                d_obj.TopRight == TopRight &&
+                d_obj.BottomLeft == BottomLeft &&
+                d_obj.BottomRight == BottomRight;
         }
 
         public static DiagonalDirections2D operator |(DiagonalDirections2D d1, DiagonalDirections2D d2)
         {
             return new DiagonalDirections2D()
             {
-                top_left = d1.top_left || d2.top_left,
-                top_right = d1.top_right || d2.top_right,
-                bottom_left = d1.bottom_left || d2.bottom_left,
-                bottom_right = d1.bottom_right || d2.bottom_right
+                TopLeft = d1.TopLeft || d2.TopLeft,
+                TopRight = d1.TopRight || d2.TopRight,
+                BottomLeft = d1.BottomLeft || d2.BottomLeft,
+                BottomRight = d1.BottomRight || d2.BottomRight
             };
         }
 
@@ -124,147 +92,162 @@ namespace DownUnder.Utility
         {
             return new DiagonalDirections2D()
             {
-                top_left = d1.top_left && d2.top_left,
-                top_right = d1.top_right && d2.top_right,
-                bottom_left = d1.bottom_left && d2.bottom_left,
-                bottom_right = d1.bottom_right && d2.bottom_right
+                TopLeft = d1.TopLeft && d2.TopLeft,
+                TopRight = d1.TopRight && d2.TopRight,
+                BottomLeft = d1.BottomLeft && d2.BottomLeft,
+                BottomRight = d1.BottomRight && d2.BottomRight
             };
         }
 
-        public static DiagonalDirections2D TopRight_BottomLeft_TopLeft_BottomRight
+        /// <summary> TopLeft, TopRight, BottomLeft, BottomRight = true </summary>
+        public static DiagonalDirections2D TL_TR_BL_BR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                bottom_left = true,
-                top_left = true,
-                bottom_right = true
+                TopLeft = true,
+                TopRight = true,
+                BottomLeft = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_BottomLeft_TopLeft
+        /// <summary> TopLeft, TopRight, BottomLeft = true </summary>
+        public static DiagonalDirections2D TL_TR_BL
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                bottom_left = true,
-                top_left = true
+                TopLeft = true,
+                TopRight = true,
+                BottomLeft = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_BottomLeft_BottomRight
+        /// <summary> TopRight, BottomLeft, BottomRight = true </summary>
+        public static DiagonalDirections2D TR_BL_BR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                bottom_left = true,
-                bottom_right = true
+                TopRight = true,
+                BottomLeft = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_TopLeft_BottomRight
+        /// <summary> TopLeft, TopRight, BottomRight = true </summary>
+        public static DiagonalDirections2D TL_TR_BR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                top_left = true,
-                bottom_right = true
+                TopLeft = true,
+                TopRight = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D BottomLeft_TopLeft_BottomRight
+        /// <summary> TopLeft, BottomLeft, BottomRight = true </summary>
+        public static DiagonalDirections2D TL_BL_BR
         {
             get => new DiagonalDirections2D()
             {
-                bottom_left = true,
-                top_left = true,
-                bottom_right = true
+                TopLeft = true,
+                BottomLeft = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_BottomLeft
+        /// <summary> TopRight, BottomLeft = true </summary>
+        public static DiagonalDirections2D TR_BL
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                bottom_left = true
+                TopRight = true,
+                BottomLeft = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_TopLeft
+        /// <summary> TopLeft, TopRight = true </summary>
+        public static DiagonalDirections2D TL_TR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                top_left = true
+                TopLeft = true,
+                TopRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight_BottomRight
+        /// <summary> TopRight, BottomRight = true </summary>
+        public static DiagonalDirections2D TR_BR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true,
-                bottom_right = true
+                TopRight = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D BottomLeft_TopLeft
+        /// <summary> TopLeft, BottomLeft = true </summary>
+        public static DiagonalDirections2D TL_BL
         {
             get => new DiagonalDirections2D()
             {
-                bottom_left = true,
-                top_left = true
+                TopLeft = true,
+                BottomLeft = true,
             };
         }
 
-        public static DiagonalDirections2D BottomLeft_BottomRight
+        /// <summary> BottomLeft, BottomRight = true </summary>
+        public static DiagonalDirections2D BL_BR
         {
             get => new DiagonalDirections2D()
             {
-                bottom_left = true,
-                bottom_right = true
+                BottomLeft = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopLeft_BottomRight
+        /// <summary> TopLeft, BottomRight = true </summary>
+        public static DiagonalDirections2D TL_BR
         {
             get => new DiagonalDirections2D()
             {
-                top_left = true,
-                bottom_right = true
+                TopLeft = true,
+                BottomRight = true,
             };
         }
 
-        public static DiagonalDirections2D TopRight
+        /// <summary> BottomRight = true </summary>
+        public static DiagonalDirections2D TR
         {
             get => new DiagonalDirections2D()
             {
-                top_right = true
+                TopRight = true,
             };
         }
 
-        public static DiagonalDirections2D BottomLeft
+        /// <summary> BottomLeft = true </summary>
+        public static DiagonalDirections2D BL
         {
             get => new DiagonalDirections2D()
             {
-                bottom_left = true
+                BottomLeft = true,
             };
         }
 
-        public static DiagonalDirections2D TopLeft
+        /// <summary> TopLeft = true </summary>
+        public static DiagonalDirections2D TL
         {
             get => new DiagonalDirections2D()
             {
-                top_left = true
+                TopLeft = true,
             };
         }
 
-        public static DiagonalDirections2D BottomRight
+        /// <summary> BottomRight = true </summary>
+        public static DiagonalDirections2D BR
         {
             get => new DiagonalDirections2D()
             {
-                bottom_right = true
+                BottomRight = true,
             };
         }
 

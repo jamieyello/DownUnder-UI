@@ -15,7 +15,8 @@ sampler s0;
 float2 Size = float2(1, 1);
 
 // Shade
-float ShadeVisibility = 0.8;
+float ShadeVisibility = 0.05;
+float4 ShadeColor = float4(0, 0, 0, 1);
 
 // Border
 float BorderWidth = 70;
@@ -23,15 +24,23 @@ float BorderExponential = 2;
 float BorderVisibility = 1;
 
 // Gradient
-float2 GradientVisibility = float2(0.2, 0.4);
+float2 GradientVisibility = float2(0, 0);
 float2 GradientExponential = float2(1, 1);
 
 // ---
 
 // Methods ---
-float1 VerticalGradient(float y, float height)
+float1 DistanceFromSide(float2 pos, float2 size)
 {
-    return y / height;
+    float left = size.x * pos.x;
+    float top = size.y * pos.y;
+    return min(min(top, size.y - top), min(left, size.x - left));
+}
+
+// pseudo random generator https://gist.github.com/keijiro/ee7bc388272548396870
+float nrand(float2 uv)
+{
+    return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453);
 }
 
 sampler2D SpriteTextureSampler = sampler_state
@@ -51,20 +60,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
     float4 color = input.Color;
     
-    float left = Size.x * input.TextureCoordinates.x;
-    float top = Size.y * input.TextureCoordinates.y;
-    float bottom = Size.y - top;
-    float right = Size.x - left;
-    float distance = min(min(top, bottom), min(left, right));
-    float shade = distance / BorderWidth;
-    shade = 1 - 
+    float shade = 
     (
-        pow(1 - min(shade, 1), BorderExponential) * BorderVisibility
-        + pow(input.TextureCoordinates.x, GradientExponential.x) * GradientVisibility.x
-        + pow(input.TextureCoordinates.y, GradientExponential.y) * GradientVisibility.y
+        pow(1 - min(DistanceFromSide(input.TextureCoordinates, Size) / BorderWidth, 1), BorderExponential) * BorderVisibility // Border
+        + pow(input.TextureCoordinates.x, GradientExponential.x) * GradientVisibility.x // X gradient
+        + pow(input.TextureCoordinates.y, GradientExponential.y) * GradientVisibility.y // Y gradient
     ) * ShadeVisibility;
     
-    color.rgb *= shade;
+    color = 
+        lerp(color, ShadeColor, shade) 
+        + nrand(input.TextureCoordinates) / 255; // Noise dithering 
+    
     return color;
 }
 

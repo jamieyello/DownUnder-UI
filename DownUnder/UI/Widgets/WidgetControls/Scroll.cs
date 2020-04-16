@@ -169,11 +169,11 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             BottomInnerBarPalette.Hovered = 
                 _inner_bottom_bar_area
-                .ResizedBy(InnerBarSpacing, Directions2D.UpDown)
+                .ResizedBy(InnerBarSpacing, Directions2D.UD)
                 .Contains(cursor_position);
             SideInnerBarPalette.Hovered = 
                 _inner_side_bar_area
-                .ResizedBy(InnerBarSpacing, Directions2D.LeftRight)
+                .ResizedBy(InnerBarSpacing, Directions2D.LR)
                 .Contains(cursor_position);
             BottomOuterBarPalette.Hovered = _bottom_bar_held || _outer_bar_bottom_area.Contains(cursor_position);
             SideOuterBarPalette.Hovered = _side_bar_held || _outer_side_bar_area.Contains(cursor_position);

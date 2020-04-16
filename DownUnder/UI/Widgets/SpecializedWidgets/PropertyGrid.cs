@@ -49,7 +49,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                     properties[i].Name)
                 {
                     DrawOutline = true,
-                    OutlineSides = Directions2D.DownRight,
+                    OutlineSides = Directions2D.DR,
                     MinimumHeight = 20 // test
                 });
 
@@ -61,7 +61,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                         )
                     {
                         DrawOutline = true,
-                        OutlineSides = Directions2D.DownRight,
+                        OutlineSides = Directions2D.DR,
                         MinimumHeight = 20
                     }
 );
@@ -74,7 +74,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                         )
                     {
                         DrawOutline = true,
-                        OutlineSides = Directions2D.DownRight,
+                        OutlineSides = Directions2D.DR,
                         MinimumHeight = 20
                     }
                     );
@@ -88,7 +88,7 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
                         )
                     {
                         DrawOutline = true,
-                        OutlineSides = Directions2D.DownRight,
+                        OutlineSides = Directions2D.DR,
                         MinimumHeight = 20
                     };
                     SetCell(1, i, label);

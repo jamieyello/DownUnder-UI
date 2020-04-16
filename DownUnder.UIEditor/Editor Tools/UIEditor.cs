@@ -24,7 +24,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid main_grid = new Grid(this, 2, 1);
             Add(main_grid);
 
-            Layout project = DefaultProject(parent);
+            Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
             
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
@@ -70,14 +70,14 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
         }
 
-        static Layout DefaultProject(DWindow parent)
+        static Layout DefaultProject(IParent parent)
         {
             // Create taskbar
-            Layout project = new Layout()
+            Layout project = new Layout(parent)
             {
                 Size = new Point2(300f, 200f),
                 Spacing = new Size2(30, 30),
-                SnappingPolicy = DiagonalDirections2D.TopLeft,
+                SnappingPolicy = DiagonalDirections2D.TL,
                 DrawOutline = true,
                 DrawBackground = true
             };

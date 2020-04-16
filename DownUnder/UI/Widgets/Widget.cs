@@ -157,10 +157,10 @@ namespace DownUnder.UI.Widgets
         [DataMember] public float OutlineThickness { get; set; } = 1f;
 
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
-        [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UpDownLeftRight;
+        [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
 
         /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
-        [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TopRight_BottomLeft_TopLeft_BottomRight;
+        [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TL_TR_BL_BR;
 
         /// <summary> Unimplemented. </summary>
         [DataMember] public bool Centered { get; set; }
@@ -472,8 +472,7 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                if (DrawMode == DrawingMode.use_render_target) return _local_sprite_batch_backing;
-                return _passed_sprite_batch_backing;
+                return _local_sprite_batch_backing;
             }
         }
 
@@ -683,16 +682,16 @@ namespace DownUnder.UI.Widgets
             }
             else // User has resize cursor over this widget or is in the middle of resizing
             {
-                if ((_resize_grab == Directions2D.UpOnly) || (_resize_grab == Directions2D.DownOnly)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
-                if ((_resize_grab == Directions2D.LeftOnly) || (_resize_grab == Directions2D.RightOnly)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
-                if ((_resize_grab == Directions2D.UpRight) || (_resize_grab == Directions2D.DownLeft)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
-                if ((_resize_grab == Directions2D.UpLeft) || (_resize_grab == Directions2D.DownRight)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
+                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
+                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
+                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
+                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
 
                 if (_update_clicked && !ParentWindow.IsUserResizing)
                 {
                     if (_resize_grab != Directions2D.None)
                     {
-                        _resizing_direction = (Directions2D)_resize_grab.Clone();
+                        _resizing_direction = _resize_grab;
                         ParentWindow.IsUserResizing = true;
                         _is_user_resizing = true;
                         _resizing_initial_area = Area;
@@ -710,10 +709,10 @@ namespace DownUnder.UI.Widgets
                 {
                     RectangleF new_area = _resizing_initial_area;
                     Point2 amount = ui_input.CursorPosition.WithOffset(_repositioning_origin.Inverted());
-                    if (_resizing_direction & Directions2D.RightOnly) { new_area = new_area.ResizedBy(amount.X, Directions2D.RightOnly); }
-                    if (_resizing_direction & Directions2D.DownOnly) { new_area = new_area.ResizedBy(amount.Y, Directions2D.DownOnly); }
-                    if (_resizing_direction & Directions2D.UpOnly) { new_area = new_area.ResizedBy(-amount.Y, Directions2D.UpOnly); }
-                    if (_resizing_direction & Directions2D.LeftOnly) { new_area = new_area.ResizedBy(-amount.X, Directions2D.LeftOnly); }
+                    if (_resizing_direction & Directions2D.R) { new_area = new_area.ResizedBy(amount.X, Directions2D.R); }
+                    if (_resizing_direction & Directions2D.D) { new_area = new_area.ResizedBy(amount.Y, Directions2D.D); }
+                    if (_resizing_direction & Directions2D.U) { new_area = new_area.ResizedBy(-amount.Y, Directions2D.U); }
+                    if (_resizing_direction & Directions2D.L) { new_area = new_area.ResizedBy(-amount.X, Directions2D.L); }
 
                     Area = new_area;
                 }
@@ -749,7 +748,7 @@ namespace DownUnder.UI.Widgets
             switch (DrawMode)
             {
                 case DrawingMode.direct:
-                    DrawDirect(sprite_batch);
+                    DrawDirect();
                     DrawNoClip();
                     break;
 
@@ -765,7 +764,7 @@ namespace DownUnder.UI.Widgets
             }
         }
         
-        private void DrawDirect(SpriteBatch sprite_batch)
+        private void DrawDirect()
         {
             RectangleF visible_area = VisibleArea;
             if (visible_area.Height == 0f || visible_area.Width == 0f) return;
@@ -777,39 +776,40 @@ namespace DownUnder.UI.Widgets
                 return;
             }
 
-            _passed_sprite_batch_backing = sprite_batch;
+            if (!IsGraphicsInitialized) throw new Exception();
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
 
             if (DrawBackground)
             {
-                ParentWindow.BackgroundEffect.Parameters["ShadeVisibility"].SetValue(1f);
-                ParentWindow.BackgroundEffect.Parameters["Size"].SetValue(Size);
-                ParentWindow.BackgroundEffect.CurrentTechnique.Passes[0].Apply();
-                sprite_batch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
-                ParentWindow.BackgroundEffect.Parameters["ShadeVisibility"].SetValue(0f);
-                ParentWindow.BackgroundEffect.CurrentTechnique.Passes[0].Apply();
+                SpriteBatch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
             }
 
-            _previous_scissor_rectangle = sprite_batch.GraphicsDevice.ScissorRectangle;
-            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
+            _previous_scissor_rectangle = SpriteBatch.GraphicsDevice.ScissorRectangle;
+            SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
 
             OnDraw?.Invoke(this, EventArgs.Empty);
+            SpriteBatch.End();
 
             foreach (Widget child in Children)
             {
-                child.DrawDirect(sprite_batch);
+                child.DrawDirect();
             }
 
-            sprite_batch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
+            SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
 
-            DrawOverlay(sprite_batch);
-
-            sprite_batch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
+            DrawOverlay();
+            SpriteBatch.End();
+            SpriteBatch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
         }
 
         private void DrawNoClip()
         {
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
 
+            SpriteBatch.End();
             foreach (Widget child in Children)
             {
                 child.DrawNoClip();
@@ -888,7 +888,7 @@ namespace DownUnder.UI.Widgets
                 }
                 i++;
             }
-            DrawOverlay(SpriteBatch);
+            DrawOverlay();
 
             SpriteBatch.End();
 
@@ -1093,13 +1093,13 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/>. </summary>
-        private void DrawOverlay(SpriteBatch sprite_batch)
+        private void DrawOverlay()
         {
             if (DrawOutline)
             {
                 DrawingTools.DrawBorder(
                     _white_dot,
-                    sprite_batch,
+                    SpriteBatch,
                     DrawingArea.ToRectangle(),
                     OutlineThickness,
                     Theme.OutlineColor.CurrentColor,
@@ -1108,10 +1108,15 @@ namespace DownUnder.UI.Widgets
             }
 
             if (this is IScrollableWidget scroll_widget){
-                scroll_widget.ScrollBars.Draw(sprite_batch);
+                scroll_widget.ScrollBars.Draw(SpriteBatch);
             }
 
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
+            
+            ParentWindow.OverlayEffect.Parameters["ShadeColor"]?.SetValue(Color.Black.ToVector4());
+            ParentWindow.OverlayEffect.Parameters["Size"]?.SetValue(Size);
+            ParentWindow.OverlayEffect.CurrentTechnique.Passes[0].Apply();
+            SpriteBatch.FillRectangle(DrawingArea, Color.Transparent);
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
@@ -1235,8 +1240,8 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).DrawOutline = DrawOutline;
             ((Widget)c).EnterConfirms = EnterConfirms;
             ((Widget)c).MinimumSize = MinimumSize;
-            ((Widget)c).SnappingPolicy = (DiagonalDirections2D)SnappingPolicy.Clone();
-            ((Widget)c).OutlineSides = (Directions2D)OutlineSides.Clone();
+            ((Widget)c).SnappingPolicy = SnappingPolicy;
+            ((Widget)c).OutlineSides = OutlineSides;
             ((Widget)c).Centered = Centered;
             ((Widget)c).DoubleClickTiming = DoubleClickTiming;
             ((Widget)c).Spacing = Spacing;
