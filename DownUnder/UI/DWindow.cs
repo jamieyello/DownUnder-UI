@@ -32,6 +32,7 @@ namespace DownUnder.UI
 
         /// <summary> Used to keep track of this DWindows thread. </summary>
         private static int _thread_id;
+
         private readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
 
         /// <summary> While true, event queues should not be modified. </summary>
@@ -73,17 +74,14 @@ namespace DownUnder.UI
         public StringBuilder CommandText { get; } = new StringBuilder();
 
         /// <summary> The Layout Widget of this window. </summary>
-        public Layout Layout
-        {
+        public Layout Layout {
             get => _layout_backing;
-            set
-            {
-                if (value != null)
-                {
+            set {
+                if (value != null) {
                     value.ParentWindow = this;
                     value.Area = GraphicsDevice.Viewport.Bounds;
                 }
-
+             
                 _layout_backing = value;
             }
         }
@@ -96,102 +94,59 @@ namespace DownUnder.UI
 
         /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
-        
+
         /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
         internal Widget ResizeGrabber { get; set; }
 
         internal bool IsUserResizing { get; set; }
 
         /// <summary> The location of this window on the screen. </summary>
-        public Point2 Position
-        {
+        public Point2 Position {
             get => GraphicsDevice.Viewport.Bounds.Location;
             set => Area = new RectangleF(value, Area.Size);
         }
 
         /// <summary> The size of this window. </summary>
-        public Point2 Size
-        {
+        public Point2 Size {
             get => Area.Size;
             set => Area = new RectangleF(Area.Position, value.ToPoint());
         }
 
         /// <summary> This minimum size allowed when resizing this window. </summary>
-        public Point2 MinimumSize
-        {
+        public Point2 MinimumSize {
             get => _minimum_size_backing;
-            set
-            {
+            set {
                 _minimum_size_backing = value;
                 OSInterface.SetMinimumWindowSize(Window, value.ToPoint());
             }
         }
 
         /// <summary> The location and size of this window. </summary>
-        public RectangleF Area
-        {
-            get
-            {
-                if (!IsActive)
-                {
-                    return new RectangleF();
-                }
-
-                if (IsMainThread)
-                {
-                    // Only accessible by the main thread.
-                    return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
-                }
-                else
-                {
-                    // Because an event based solution caused too many logic issues (too much work), a cache is used here.
-                    return _area_cache;
-                }
+        public RectangleF Area {
+            get {
+                if (!IsActive) return new RectangleF();
+                if (IsMainThread) return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
+                return _area_cache;
             }
-            set
-            {
-                // To make this code safe for cross-thread access, the set method
-                // isn't actually called until UpdateDWindow() triggers the event.
-
-                if (IsMainThread)
-                {
-                    AreaSet(value);
-                }
-                else
-                {
+            set {
+                if (IsMainThread) AreaSet(value);
+                else {
                     // Add the event to the queue
                     _area_set_events.Add(Thread.CurrentThread.ManagedThreadId, new SetGetEvent<RectangleF>(value));
 
                     // Wait for events to process
-                    if (WaitForCrossThreadCompletion)
-                    {
+                    if (WaitForCrossThreadCompletion) {
                         int i = 0;
-                        while (!_area_set_events[Thread.CurrentThread.ManagedThreadId].Completed || _event_queue_is_processing)
-                        {
-                            if (i < 10000000)
-                            {
-                                i += _WAIT_TIME;
-                            }
-
-                            if (i > _WAIT_TIME_WARNING_THRESOLD)
-                            {
-                                Console.WriteLine($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this.");
-                            }
-
-                            if (IsMainThread)
-                            {
-                                ProcessQueuedEvents();
-                            }
-
+                        while (!_area_set_events[Thread.CurrentThread.ManagedThreadId].Completed || _event_queue_is_processing) {
+                            if (i < 10000000) i += _WAIT_TIME;
+                            if (i > _WAIT_TIME_WARNING_THRESOLD) Console.WriteLine($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this."); 
+                            if (IsMainThread) ProcessQueuedEvents();
                             Thread.Sleep(_WAIT_TIME);
                         }
                     }
 
                     // Remove event from queue
-                    if (!_area_set_events.Remove(Thread.CurrentThread.ManagedThreadId))
-                    {
-                        throw new Exception("DWindow: Failed to remove thread id");
-                    }
+                    if (!_area_set_events.Remove(Thread.CurrentThread.ManagedThreadId)) throw new Exception("DWindow: Failed to remove thread id");
                 }
             }
         }
@@ -219,15 +174,13 @@ namespace DownUnder.UI
         public Effect DownunderUberShader { get; set; }
 
         /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
-        public float Width
-        {
+        public float Width {
             get => Area.Width;
             set => Area = Area.WithWidth(value);
         }
 
         /// <summary> The height of this window. (relative to pizels on a 1080p monitor) </summary>
-        public float Height
-        {
+        public float Height {
             get => Area.Height;
             set => Area = Area.WithHeight(value);
         }
@@ -244,19 +197,16 @@ namespace DownUnder.UI
 
         #region Constructors
 
-        public DWindow(DWindow parent = null)
-        {
+        public DWindow(DWindow parent = null) {
             _thread_id = Thread.CurrentThread.ManagedThreadId;
 
-            if (parent != null)
-            {
+            if (parent != null) {
                 Parent = parent;
                 parent.Children.Add(this);
             }
             
-            // What is this?
+            // unneeded possibly
             FirstUpdate += SetThreadID;
-
             Window.ClientSizeChanged += SetLayoutAreaToWindowArea;
             Window.TextInput += ProcessKeys;
             Exiting += ExitAll;
@@ -268,8 +218,7 @@ namespace DownUnder.UI
             IsFixedTimeStep = false;
         }
 
-        protected override void Dispose(bool disposing)
-        {
+        protected override void Dispose(bool disposing) {
             GraphicsManager.Dispose();
             UIImages.Dispose();
             base.Dispose(disposing);
@@ -286,81 +235,45 @@ namespace DownUnder.UI
 
         #region Events
 
-        private void SetThreadID(object sender, EventArgs e)
-        {
-            _thread_id = Thread.CurrentThread.ManagedThreadId;
+        private void SetThreadID(object sender, EventArgs e) => _thread_id = Thread.CurrentThread.ManagedThreadId;
+        
+        private void SetLayoutAreaToWindowArea(object sender, EventArgs e) {
+            if (Layout != null) Layout.Size = Area.Size;
         }
 
-        private void SetLayoutAreaToWindowArea(object sender, EventArgs e)
-        {
-            if (Layout != null)
-            {
-                Layout.Size = Area.Size;
-            }
-        }
-
-        private void ProcessKeys(object sender, TextInputEventArgs e)
-        {
-            if (e.Character == 8) // If the key press is BackSpace
-            {
-                InputState.BackSpace = true;
-            }
-            else if (e.Character == 10 || e.Character == 13)
-            {
+        private void ProcessKeys(object sender, TextInputEventArgs e) {
+            if (e.Character == 8) InputState.BackSpace = true;
+            else if (e.Character == 10 || e.Character == 13) {
                 InputText.Append('\n');
                 InputState.Enter = true;
-            }
-            else
-            {
+            } 
+            else {
                 KeyboardState state = Keyboard.GetState();
-                if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl))
-                {
-                    CommandText.Append(e.Character);
-                }
-                else
-                {
-                    InputText.Append(e.Character);
-                }
+                if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl)) CommandText.Append(e.Character);
+                else InputText.Append(e.Character);
             }
         }
 
-        /// <summary>
-        /// Closes all child windows and removes own reference from parent on exiting.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void ExitAll(object sender, EventArgs args)
-        {
-            // Kill each of the children
-            foreach (DWindow child in Children)
-            {
-                child.Exit();
-            }
-
+        /// <summary> Closes all child windows and removes own reference from parent on exiting. </summary>
+        private void ExitAll(object sender, EventArgs args) { 
+            foreach (DWindow child in Children) child.Exit(); // Kill each of the children
             Parent?.Children.Remove(this);
         }
 
-        public void SignalSpawnWindowAsActive(object sender, EventArgs args)
-        {
+        public void SignalSpawnWindowAsActive(object sender, EventArgs args) {
             Console.WriteLine("DWindow.SignalSpawnWindowAsActive: Setting spawned window as active");
             _spawned_window_is_active = 1;
             Console.WriteLine($"_spawned_window_is_active = {_spawned_window_is_active}");
         }
 
-        private void AreaSet(RectangleF value)
-        {
+        private void AreaSet(RectangleF value) {
             GraphicsManager.PreferredBackBufferWidth = (int)value.Width;
             GraphicsManager.PreferredBackBufferHeight = (int)value.Height;
 
-            try
-            {
+            try {
                 GraphicsManager.ApplyChanges();
                 OSInterface.SetWindowPosition(this, value.Position.ToPoint());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}");
-            }
+            } catch (Exception e) { Console.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}"); }
 
             Layout.Area = value.SizeOnly();
         }
@@ -369,15 +282,11 @@ namespace DownUnder.UI
 
         #region Protected Methods
 
-        public DWindow CreateWindow(Type window_type)
-        {
+        public DWindow CreateWindow(Type window_type) {
             _spawned_window_is_active = 0;
             CreateWindowDelegate.Invoke(window_type, this);
 
-            Console.WriteLine($"{GetType().Name}: Waiting for spawned window to be active");
-            // Wait until the window is active to return
-            do
-            {
+            do { // Wait until the window is active to return
                 Console.WriteLine($"{GetType().Name}.CreateWindow: Waiting for spawned window to be active _spawned_window_is_active = {_spawned_window_is_active}");
                 Thread.Sleep(5);
             } while (_spawned_window_is_active != 1);
@@ -386,11 +295,8 @@ namespace DownUnder.UI
             return Children[Children.Count - 1];
         }
 
-        protected void LoadDWindow()
-        {
-            UIImages = new UIImages(GraphicsDevice);
-        }
-        
+        protected void LoadDWindow() => UIImages = new UIImages(GraphicsDevice);
+
         protected void UpdateDWindow(GameTime game_time)
         {
             _area_cache = Area;
@@ -405,21 +311,15 @@ namespace DownUnder.UI
             ResizeGrabber = null;
             if (!InputState.PrimaryClick) DraggingObject = null;
             InputState.UpdateAll(this, game_time);
-            //Console.WriteLine($"_keyboard_state.IsKeyDown(Keys.Left) = {Keyboard.GetState().IsKeyDown(Keys.Left)}");
-            //Console.WriteLine(InputState.TextCursorMovement.Down);
-            //Input.BufferedKeyboard o = new Input.BufferedKeyboard();
-            //Input.BufferedKeyboard.Test();
+
             //Console.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
-            
+
             InputText.Clear();
             CommandText.Clear();
             Layout.UpdatePriority(game_time, InputState);
-            if (!Window.ClientBounds.Contains(InputState.CursorPosition + Window.ClientBounds.Location))
-            {
-                HoveredWidgets.Reset();
-            }
+            if (!Window.ClientBounds.Contains(InputState.CursorPosition + Window.ClientBounds.Location)) HoveredWidgets.Reset(); 
             Layout.Update(game_time, InputState);
-            
+
             if (UICursorsEnabled) Mouse.SetCursor(UICursor);
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;
@@ -428,21 +328,17 @@ namespace DownUnder.UI
             base.Update(game_time);
         }
 
-        protected void DrawDWindow(GameTime game_time)
-        {
+        protected void DrawDWindow(GameTime game_time) {
             Layout.Draw();
-            
             base.Draw(game_time);
         }
 
         #endregion Protected Methods
 
-        private void ProcessQueuedEvents()
-        {
+        private void ProcessQueuedEvents() {
             _event_queue_is_processing = true;
 
-            foreach (int key in _area_set_events.Keys)
-            {
+            foreach (int key in _area_set_events.Keys) {
                 AreaSet(_area_set_events[key].Value);
                 _area_set_events[key].Completed = true;
             }

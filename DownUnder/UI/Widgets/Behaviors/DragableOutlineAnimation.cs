@@ -16,8 +16,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         private float circumference = 20f;
         private float _expand_rect_on_release = 1f;
 
-        public DragableOutlineAnimation()
-        {
+        public DragableOutlineAnimation() {
             round_amount.Interpolation = InterpolationType.fake_sin;
             round_amount.TransitionSpeed = 1f;
             rect.Interpolation = InterpolationType.linear;
@@ -25,24 +24,21 @@ namespace DownUnder.UI.Widgets.Behaviors
             rect_color.TransitionSpeed = 4f;
         }
 
-        protected override void ConnectToParent()
-        {
+        protected override void ConnectToParent() {
             Parent.OnDrawNoClip += DrawRect;
             Parent.OnUpdate += Update;
             Parent.OnDrag += StartAnimation;
             Parent.OnDrop += EndAnimation;
         }
 
-        internal override void DisconnectFromParent()
-        {
+        internal override void DisconnectFromParent() {
             Parent.OnDrawNoClip -= DrawRect;
             Parent.OnUpdate -= Update;
             Parent.OnDrag -= StartAnimation;
             Parent.OnDrop -= EndAnimation;
         }
 
-        private void StartAnimation(object sender, EventArgs args)
-        {
+        private void StartAnimation(object sender, EventArgs args) {
             drag_rect_to_mouse = true;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), true);
             rect_color.TransitionSpeed = 4f;
@@ -51,8 +47,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             round_amount.SetTargetValue(1f);
         }
 
-        private void EndAnimation(object sender, EventArgs args)
-        {
+        private void EndAnimation(object sender, EventArgs args) {
             drag_rect_to_mouse = false;
             snap_rect_to_mouse = false;
             round_amount.SetTargetValue(0f);
@@ -61,14 +56,11 @@ namespace DownUnder.UI.Widgets.Behaviors
             rect.SetTargetValue(rect.GetCurrent().Resized(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
         }
 
-        private void Update(object sender, EventArgs args)
-        {
-            if (drag_rect_to_mouse)
-            {
+        private void Update(object sender, EventArgs args) {
+            if (drag_rect_to_mouse) {
                 bool? is_drop_acceptable = ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
                 Widget victim = Parent.ParentWindow.HoveredWidgets.Primary;
-                if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value)
-                {
+                if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
                     // Set to new Widget area
                     rect.SetTargetValue(
                         victim.DesignerObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
@@ -76,8 +68,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                     _expand_rect_on_release = 1f;
                     round_amount.SetTargetValue(.5f);
                 }
-                else
-                {
+                else {
                     // Set to default circle
                     rect.SetTargetValue(new RectangleF(0, 0, circumference, circumference).WithCenter(Parent.UpdateData.UIInputState.CursorPosition), snap_rect_to_mouse);
                     _expand_rect_on_release = 2f;
@@ -89,14 +80,12 @@ namespace DownUnder.UI.Widgets.Behaviors
             round_amount.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
-        private void DrawRect(object sender, EventArgs args)
-        {
+        private void DrawRect(object sender, EventArgs args) {
             RectangleF r = rect.GetCurrent();
             Parent.SpriteBatch.DrawRoundedRect(r, Math.Min(r.Width, r.Height) * 0.5f * round_amount.GetCurrent(), rect_color.GetCurrent(), 4f);
         }
 
-        public override object Clone()
-        {
+        public override object Clone() {
             throw new NotImplementedException();
         }
     }

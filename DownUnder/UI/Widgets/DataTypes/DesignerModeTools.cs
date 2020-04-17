@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
-    public class DesignerModeTools 
+    public class DesignerModeTools
         : INeedsWidgetParent, IAcceptsDrops
     {
         private bool _is_developer_mode_enabled_backing = false;
@@ -68,6 +69,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public bool AllowUserResizing { get; set; } = true;
+
+        public DiagonalDirections2D AllowedResizingDirections { get; set; } = DiagonalDirections2D.TL_TR_BL_BR;
 
         public bool AllowHighlight { get; set; } = true;
 

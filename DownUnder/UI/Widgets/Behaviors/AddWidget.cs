@@ -7,11 +7,6 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         public ICloneable DragObject;
 
-        public AddWidget()
-        {
-
-        }
-
         /// <summary>
         /// All Events should be added here.
         /// </summary>
@@ -30,15 +25,8 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent.OnDrop -= DropObject;
         }
 
-        private void SetDragObject(object sender, EventArgs args)
-        {
-            Parent.ParentWindow.DraggingObject = DragObject?.Clone();
-        }
-
-        private void DropObject(object sender, EventArgs args)
-        {
-            ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.HandleDrop(Parent.ParentWindow.DraggingObject);
-        }
+        private void SetDragObject(object sender, EventArgs args) => Parent.ParentWindow.DraggingObject = DragObject?.Clone();
+        private void DropObject(object sender, EventArgs args) => ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.HandleDrop(Parent.ParentWindow.DraggingObject);
 
         public override object Clone()
         {

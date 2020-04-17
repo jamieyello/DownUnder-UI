@@ -8,13 +8,10 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         Widget _parent_backing;
 
-        public Widget Parent
-        {
+        public Widget Parent {
             get => _parent_backing;
-            set
-            {
-                if (_parent_backing != null)
-                {
+            set {
+                if (_parent_backing != null) {
                     if (_parent_backing == value) return;
                     throw new Exception("WidgetBehaviors cannot be reused.");
                 }
@@ -23,7 +20,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
         }
 
-        public bool HasParent { get => Parent != null; }
+        public bool HasParent => Parent != null;
         
         protected abstract void ConnectToParent();
         internal abstract void DisconnectFromParent();
