@@ -101,6 +101,7 @@ namespace DownUnder.UI.Widgets
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
         private bool _update_clicked;
+        private bool _update_clicked_on;
         private bool _update_double_clicked;
         private bool _update_triple_clicked;
         private bool _update_added_to_focused;
@@ -112,7 +113,7 @@ namespace DownUnder.UI.Widgets
         // Various property backing fields.
         protected RectangleF area_backing = new RectangleF();
         private float _double_click_timing_backing = 0.5f;
-        private Point2 _minimum_area_backing = new Point2(1f, 1f);
+        private Point2 _minimum_area_backing = new Point2(15f, 15f);
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
@@ -121,9 +122,8 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
-        private SpriteBatch _local_sprite_batch_backing;
-        private SpriteBatch _passed_sprite_batch_backing;
         private bool _allow_user_resizing_backing = false;
+        private bool _allow_highlight_backing = false;
 
         public enum DrawingMode
         {
@@ -270,7 +270,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> When enabled the user will able to resize this <see cref="Widget"/> with the cursor. </summary>
         [DataMember] public bool AllowUserResize
         {
-            get => DeveloperObjects.IsEditModeEnabled ? DeveloperObjects.AllowUserResizing : _allow_user_resizing_backing;
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowUserResizing : _allow_user_resizing_backing;
             set => _allow_user_resizing_backing = value;
         }
 
@@ -399,7 +399,7 @@ namespace DownUnder.UI.Widgets
                 ParentWindow = value?.ParentWindow;
                 if (value != null)
                 {
-                    value.DeveloperObjects.LastAddedChild = this;
+                    value.DesignerObjects.LastAddedChild = this;
                     DrawMode = value.DrawMode;
                 }
             }
@@ -468,17 +468,24 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
-        public SpriteBatch SpriteBatch
-        {
-            get
-            {
-                return _local_sprite_batch_backing;
-            }
-        }
+        public SpriteBatch SpriteBatch { get; private set; }
 
         public BehaviorCollection Behaviors { get; private set; }
 
-        public DesignerModeTools DeveloperObjects { get; set; }
+        public DesignerModeTools DesignerObjects { get; set; }
+
+        /// <summary> When set to true this <see cref="Widget"/> will become highlighted when focused (in parent <see cref="DWindow.SelectedWidgets"/>). </summary>
+        public bool AllowHighlight
+        {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowHighlight : _allow_highlight_backing;
+            set => _allow_highlight_backing = value;
+        }
+
+        /// <summary> Returns true if this <see cref="Widget"/> is not only focused, but highlighted. </summary>
+        public bool IsHighlighted
+        {
+            get => AllowHighlight && IsSelected;
+        }
 
         #endregion
 
@@ -498,8 +505,8 @@ namespace DownUnder.UI.Widgets
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
-            DeveloperObjects = new DesignerModeTools();
-            DeveloperObjects.Parent = this;
+            DesignerObjects = new DesignerModeTools();
+            DesignerObjects.Parent = this;
         }
 
         ~Widget()
@@ -516,7 +523,7 @@ namespace DownUnder.UI.Widgets
         {
             _white_dot?.Dispose();
             _render_target?.Dispose();
-            _local_sprite_batch_backing?.Dispose();
+            SpriteBatch?.Dispose();
 
             foreach (Widget child in Children)
             {
@@ -549,7 +556,8 @@ namespace DownUnder.UI.Widgets
         // Nothing should be invoked here.
         private void UpdateCursorInput()
         {
-            _update_clicked = false;
+            _update_clicked = UpdateData.UIInputState.PrimaryClickTriggered;
+            _update_clicked_on = false;
             _update_double_clicked = false;
             _update_triple_clicked = false;
             _update_added_to_focused = false;
@@ -583,12 +591,12 @@ namespace DownUnder.UI.Widgets
             {
                 _update_hovered_over = true;
 
-                if (UpdateData.UIInputState.PrimaryClickTriggered) { _update_clicked = true; } // Set clicked to only be true on the frame the cursor clicks.
+                if (UpdateData.UIInputState.PrimaryClickTriggered) { _update_clicked_on = true; } // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
-                if (_update_clicked) { _dragging_in = true; }
+                if (_update_clicked_on) { _dragging_in = true; }
 
-                if (_update_clicked)
+                if (_update_clicked_on)
                 {
                     if (UpdateData.UIInputState.Control)  // Multi-select if the defined control is held down
                     {
@@ -663,12 +671,12 @@ namespace DownUnder.UI.Widgets
                 {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
-                    if (_update_clicked) OnClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
                     if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
                     if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (_update_clicked) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+                if (_update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
                 if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
                 if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
@@ -699,7 +707,7 @@ namespace DownUnder.UI.Widgets
                     }
                 }
 
-                if (!_update_clicked)
+                if (!ui_input.PrimaryClick)
                 {
                     _is_user_resizing = false;
                     ParentWindow.IsUserResizing = false;
@@ -714,7 +722,8 @@ namespace DownUnder.UI.Widgets
                     if (_resizing_direction & Directions2D.U) { new_area = new_area.ResizedBy(-amount.Y, Directions2D.U); }
                     if (_resizing_direction & Directions2D.L) { new_area = new_area.ResizedBy(-amount.X, Directions2D.L); }
 
-                    Area = new_area;
+                    Area = new_area.WithMinimumSize(MinimumSize);
+                    Console.WriteLine($"User resizing new area {new_area}, MinimumSize {MinimumSize}");
                 }
             }
 
@@ -778,14 +787,12 @@ namespace DownUnder.UI.Widgets
 
             if (!IsGraphicsInitialized) throw new Exception();
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-
+            _previous_scissor_rectangle = SpriteBatch.GraphicsDevice.ScissorRectangle;
+            SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
             if (DrawBackground)
             {
                 SpriteBatch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
             }
-
-            _previous_scissor_rectangle = SpriteBatch.GraphicsDevice.ScissorRectangle;
-            SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
 
             OnDraw?.Invoke(this, EventArgs.Empty);
             SpriteBatch.End();
@@ -800,7 +807,19 @@ namespace DownUnder.UI.Widgets
 
             DrawOverlay();
             SpriteBatch.End();
-            SpriteBatch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
+
+            Delegate[] delegates = OnDrawOverlayEffects?.GetInvocationList();
+            if (delegates != null)
+            {
+                foreach (Delegate delegate_ in delegates)
+                {
+                    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                    delegate_.DynamicInvoke(new object[] { this, EventArgs.Empty });
+                    SpriteBatch.End();
+                }
+            }
+
+            //SpriteBatch.GraphicsDevice.ScissorRectangle = _previous_scissor_rectangle;
         }
 
         private void DrawNoClip()
@@ -907,7 +926,7 @@ namespace DownUnder.UI.Widgets
                 throw new Exception($"GraphicsDevice cannot be null.");
             }
             
-            _local_sprite_batch_backing = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
 
             IsGraphicsInitialized = true;
@@ -1001,6 +1020,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
+        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here. </summary>
+        public event EventHandler OnDrawOverlayEffects;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
@@ -1112,11 +1133,6 @@ namespace DownUnder.UI.Widgets
             }
 
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
-            
-            ParentWindow.OverlayEffect.Parameters["ShadeColor"]?.SetValue(Color.Black.ToVector4());
-            ParentWindow.OverlayEffect.Parameters["Size"]?.SetValue(Size);
-            ParentWindow.OverlayEffect.CurrentTechnique.Passes[0].Apply();
-            SpriteBatch.FillRectangle(DrawingArea, Color.Transparent);
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
@@ -1212,12 +1228,12 @@ namespace DownUnder.UI.Widgets
         #region IAcceptsDrops Implementation
 
         // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        bool IAcceptsDrops.AcceptsDrops => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptsDrops : AcceptsDrops;
-        List<Type> IAcceptsDrops.AcceptedDropTypes => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).AcceptedDropTypes : AcceptedDropTypes;
-        bool IAcceptsDrops.IsDropAcceptable(object drop) => DeveloperObjects.IsEditModeEnabled ? ((IAcceptsDrops)DeveloperObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
+        bool IAcceptsDrops.AcceptsDrops => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).AcceptsDrops : AcceptsDrops;
+        List<Type> IAcceptsDrops.AcceptedDropTypes => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).AcceptedDropTypes : AcceptedDropTypes;
+        bool IAcceptsDrops.IsDropAcceptable(object drop) => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
         void IAcceptsDrops.HandleDrop(object drop)
         {
-            if (DeveloperObjects.IsEditModeEnabled) { ((IAcceptsDrops)DeveloperObjects).HandleDrop(drop); } else { HandleDrop(drop); }
+            if (DesignerObjects.IsEditModeEnabled) { ((IAcceptsDrops)DesignerObjects).HandleDrop(drop); } else { HandleDrop(drop); }
         }
 
         void HandleDrop(object drop)
@@ -1253,7 +1269,10 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).debug_output = debug_output;
             ((Widget)c).PassthroughMouse = PassthroughMouse;
             ((Widget)c).AcceptsDrops = AcceptsDrops;
-            ((Widget)c).AllowUserResize = AllowUserResize;
+
+            ((Widget)c)._allow_user_resizing_backing = _allow_user_resizing_backing;
+            ((Widget)c)._allow_highlight_backing = _allow_highlight_backing;
+
             foreach (Type type in AcceptedDropTypes) { ((Widget)c).AcceptedDropTypes.Add(type); }
 
             return c;

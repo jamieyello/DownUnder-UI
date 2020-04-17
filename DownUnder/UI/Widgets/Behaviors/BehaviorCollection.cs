@@ -30,7 +30,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             foreach (WidgetBehavior behavior in _behaviors)
             {
-                behavior.DisconnectEvents();
+                behavior.DisconnectFromParent();
             }
             ((IList<WidgetBehavior>)_behaviors).Clear();
         }
@@ -65,7 +65,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             if (((IList<WidgetBehavior>)_behaviors).Remove(item))
             {
-                item.DisconnectEvents();
+                item.DisconnectFromParent();
                 return true;
             }
             return false;
@@ -73,7 +73,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public void RemoveAt(int index)
         {
-            ((IList<WidgetBehavior>)_behaviors)[index].DisconnectEvents();
+            ((IList<WidgetBehavior>)_behaviors)[index].DisconnectFromParent();
             ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);
         }
 

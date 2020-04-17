@@ -25,7 +25,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             rect_color.TransitionSpeed = 4f;
         }
 
-        protected override void ConnectEvents()
+        protected override void ConnectToParent()
         {
             Parent.OnDrawNoClip += DrawRect;
             Parent.OnUpdate += Update;
@@ -33,7 +33,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent.OnDrop += EndAnimation;
         }
 
-        internal override void DisconnectEvents()
+        internal override void DisconnectFromParent()
         {
             Parent.OnDrawNoClip -= DrawRect;
             Parent.OnUpdate -= Update;
@@ -71,7 +71,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 {
                     // Set to new Widget area
                     rect.SetTargetValue(
-                        victim.DeveloperObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
+                        victim.DesignerObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
                         snap_rect_to_mouse);
                     _expand_rect_on_release = 1f;
                     round_amount.SetTargetValue(.5f);
@@ -93,6 +93,11 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             RectangleF r = rect.GetCurrent();
             Parent.SpriteBatch.DrawRoundedRect(r, Math.Min(r.Width, r.Height) * 0.5f * round_amount.GetCurrent(), rect_color.GetCurrent(), 4f);
+        }
+
+        public override object Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 }

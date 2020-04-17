@@ -46,6 +46,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                     Area = new RectangleF(0, 0, 90, 30),
                 }
             });
+            
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
@@ -81,8 +82,9 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawOutline = true,
                 DrawBackground = true
             };
-            project.DeveloperObjects.IsEditModeEnabled = true;
+            project.DesignerObjects.IsEditModeEnabled = true;
             project.Behaviors.Add(new DrawPixelGrid());
+            project.Behaviors.Add(new ShadingBehavior());
 
             return project;
         }

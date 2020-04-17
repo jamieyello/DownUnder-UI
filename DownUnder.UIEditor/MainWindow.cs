@@ -16,19 +16,12 @@ namespace DownUnder.Widgets
     /// </summary>
     public class MainWindow : DWindow
     {
-        // shader testing --
-
-        Texture2D surge;
-        Effect effect;
-
-        // shader testing --
-        
         /// <summary> Contains all widgets relevant to this editor. (When the editor supports slots this won't be proper) </summary>
         private EditorObjects editor_objects;
 
         // Because this *editor* needs to be able to edit code. A typical window won't.
         /// <summary> Path to the editor's .cs file. </summary>
-        private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
+        //private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
 
         public MainWindow(Layout layout = null, DWindow parent = null) : base(parent)
         {
@@ -59,17 +52,13 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
-            OverlayEffect = Content.Load<Effect>("shader");
+            DownunderUberShader = Content.Load<Effect>("downunder_uber_shader");
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout2(this);
 
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
             // TODO: use this.Content to load your game content here
-
-            //shader testing---
-            surge = Content.Load<Texture2D>("tests");
-            effect = Content.Load<Effect>("shader");
         }
 
         /// <summary>
@@ -98,10 +87,6 @@ namespace DownUnder.Widgets
             // TODO: Add your drawing code here
             
             DrawDWindow(gameTime);
-
-            //effect.Parameters["Size"].SetValue(new Vector2(200, 100));
-            //effect.CurrentTechnique.Passes[0].Apply();
-            //SpriteBatch.FillRectangle(new RectangleF(0, 0, 200, 100), Color.Moccasin);
             
         }
 

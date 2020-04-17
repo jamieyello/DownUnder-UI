@@ -15,11 +15,11 @@ sampler s0;
 float2 Size = float2(1, 1);
 
 // Shade
-float ShadeVisibility = 0.05;
+float ShadeVisibility = 0.5;
 float4 ShadeColor = float4(0, 0, 0, 1);
 
 // Border
-float BorderWidth = 70;
+float BorderWidth = 20;
 float BorderExponential = 2;
 float BorderVisibility = 1;
 

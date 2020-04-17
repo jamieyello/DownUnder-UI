@@ -51,7 +51,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 _is_developer_mode_enabled_backing = value;
                 foreach (Widget child in Parent.Children)
                 {
-                    child.DeveloperObjects.IsEditModeEnabled = value;
+                    child.DesignerObjects.IsEditModeEnabled = value;
                 }
             }
         }
@@ -63,11 +63,13 @@ namespace DownUnder.UI.Widgets.DataTypes
             set
             {
                 _last_added_widget_backing = value;
-                value.DeveloperObjects.IsEditModeEnabled = IsEditModeEnabled || value.DeveloperObjects.IsEditModeEnabled;
+                value.DesignerObjects.IsEditModeEnabled = IsEditModeEnabled || value.DesignerObjects.IsEditModeEnabled;
             }
         }
 
         public bool AllowUserResizing { get; set; } = true;
+
+        public bool AllowHighlight { get; set; } = true;
 
         #region IAcceptsDrops Implementation
 
@@ -105,7 +107,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 .Area
                 .SizeOnly()
                 .WithCenter(position.Value)
-                .Rounded(Parent.DeveloperObjects.AddWidgetSpacing);
+                .Rounded(Parent.DesignerObjects.AddWidgetSpacing);
         }
 
         #endregion

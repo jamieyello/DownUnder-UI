@@ -15,10 +15,10 @@ namespace DownUnder.UI.Widgets.Behaviors
         /// <summary>
         /// All Events should be added here.
         /// </summary>
-        protected override void ConnectEvents()
+        protected override void ConnectToParent()
         {
             _pixel_grid_effect.Size = Parent.Size;
-            _pixel_grid_effect.Spacing = Parent.DeveloperObjects.AddWidgetSpacing;
+            _pixel_grid_effect.Spacing = Parent.DesignerObjects.AddWidgetSpacing;
             Parent.OnDraw += Draw;
             Parent.OnUpdate += Update;
             Parent.OnAddWidgetSpacingChange += UpdateWidgetGrid;
@@ -27,7 +27,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         /// <summary>
         /// All Events added in ConnectEvents should be removed here.
         /// </summary>
-        internal override void DisconnectEvents()
+        internal override void DisconnectFromParent()
         {
             Parent.OnDraw -= Draw;
             Parent.OnUpdate -= Update;
@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             if (Parent.IsPrimaryHovered && Parent.ParentWindow.DraggingObject is Widget widget)
             {
-                RectangleF area = Parent.DeveloperObjects.GetAddWidgetArea(widget);
+                RectangleF area = Parent.DesignerObjects.GetAddWidgetArea(widget);
 
                 foreach (GridPixel pixel in _pixel_grid_effect.GetAllPixels())
                 {
@@ -85,6 +85,11 @@ namespace DownUnder.UI.Widgets.Behaviors
         private void UpdateWidgetGrid(object sender, EventArgs args)
         {
             _pixel_grid_effect.UpdateGridDimensions();
+        }
+
+        public override object Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 }

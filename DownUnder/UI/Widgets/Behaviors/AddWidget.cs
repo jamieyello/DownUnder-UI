@@ -15,7 +15,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         /// <summary>
         /// All Events should be added here.
         /// </summary>
-        protected override void ConnectEvents()
+        protected override void ConnectToParent()
         {
             Parent.OnDrag += SetDragObject;
             Parent.OnDrop += DropObject;
@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         /// <summary>
         /// All Events added in ConnectEvents should be removed here.
         /// </summary>
-        internal override void DisconnectEvents()
+        internal override void DisconnectFromParent()
         {
             Parent.OnDrag -= SetDragObject;
             Parent.OnDrop -= DropObject;
@@ -38,6 +38,11 @@ namespace DownUnder.UI.Widgets.Behaviors
         private void DropObject(object sender, EventArgs args)
         {
             ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.HandleDrop(Parent.ParentWindow.DraggingObject);
+        }
+
+        public override object Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 }

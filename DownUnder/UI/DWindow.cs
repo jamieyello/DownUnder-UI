@@ -216,7 +216,7 @@ namespace DownUnder.UI
         /// <summary> The default spritefont of this window. Used by contained widgets without a self-defined spritefont. </summary>
         public SpriteFont SpriteFont { get; protected set; }
 
-        public Effect OverlayEffect { get; set; }
+        public Effect DownunderUberShader { get; set; }
 
         /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
         public float Width
