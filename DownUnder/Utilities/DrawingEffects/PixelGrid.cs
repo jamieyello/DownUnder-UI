@@ -30,6 +30,7 @@ namespace DownUnder.Utilities.DrawingEffects
             set
             {
                 if (value < 0f) throw new Exception("PixelGrid spacing cannot be negative.");
+                if (value == _spacing_backing) return;
                 _spacing_backing = value;
                 UpdateGridDimensions();
             }
@@ -41,6 +42,7 @@ namespace DownUnder.Utilities.DrawingEffects
             set
             {
                 if (value.IsNegative()) throw new Exception("PixelGrid size cannot be negative.");
+                if (value == _size_backing) return;
                 _size_backing = value;
                 UpdateGridDimensions();
             }

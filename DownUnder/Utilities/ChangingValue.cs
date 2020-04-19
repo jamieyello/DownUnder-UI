@@ -66,11 +66,20 @@ namespace DownUnder.Utility
 
         public void Update(float step)
         {
+            if (interpolation_progress >= 1f)
+            {
+                interpolation_progress = 1f;
+                current_value = target_value;
+                return;
+            }
+            if (interpolation_progress < 0f)
+            {
+                interpolation_progress = 0f;
+                current_value = initial_value;
+                return;
+            }
+
             interpolation_progress += TransitionSpeed * step;
-
-            if (interpolation_progress < 0f) interpolation_progress = 0f;
-            if (interpolation_progress > 1f) interpolation_progress = 1f;
-
             current_value = DownUnder.Utility.Interpolation.GetMiddle(initial_value, target_value, interpolation_progress, Interpolation);
         }
 

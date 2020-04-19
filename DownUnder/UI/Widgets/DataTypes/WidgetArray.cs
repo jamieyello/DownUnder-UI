@@ -12,22 +12,20 @@ namespace DownUnder.UI.Widgets.DataTypes
     {
         private readonly List<WidgetList> _widgets = new List<WidgetList>();
 
-        public Point Dimensions
-        {
-            get => _widgets.Count == 0 || _widgets[0].Count == 0 ?
-                new Point() :
-                new Point(_widgets.Count, _widgets[0].Count);
+        public Point Dimensions {
+            get => Count != 0 && _widgets[0].Count != 0 ?
+                new Point(_widgets.Count, _widgets[0].Count)
+                : new Point();
         }
 
-        public RectangleF? AreaCoverage
-        {
-            get
-            {
-                if (Dimensions.X == 0 || Dimensions.Y == 0) return null;
-                
+        public RectangleF? AreaCoverage {
+            get {
+                Point dimensions = Dimensions;
+                if (dimensions.X == 0 || dimensions.Y == 0) return null;
+
                 RectangleF result = (RectangleF)_widgets[0].AreaCoverage;
 
-                for (int i = 1; i < Dimensions.X; i++)
+                for (int i = 1; i < dimensions.X; i++)
                 {
                     result = result.Union((RectangleF)_widgets[i].AreaCoverage);
                 }
@@ -48,6 +46,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                     _widgets[x].Add((Widget)clone);
                 }
             }
+            Count = _widgets.Count;
         }
         public WidgetArray(List<List<Widget>> widget_array)
         {
@@ -62,30 +61,20 @@ namespace DownUnder.UI.Widgets.DataTypes
                     _widgets[x][y] = widget_array[x][y];
                 }
             }
+
+            Count = _widgets.Count;
         }
 
-        public void SetParent(IParent parent)
-        {
-            foreach (WidgetList widgets in _widgets)
-            {
-                widgets.SetParent(parent);
-            }
-        }
-        
-        public void ExpandAll(float modifier)
-        {
-            foreach (WidgetList list in _widgets)
-            {
-                list.ExpandAll(modifier);
-            }
+        public void SetParent(IParent parent) {
+            foreach (WidgetList widgets in _widgets) widgets.SetParent(parent);
         }
 
-        public void ExpandAll(Point2 modifier)
-        {
-            foreach (WidgetList list in _widgets)
-            {
-                list.ExpandAll(modifier);
-            }
+        public void ExpandAll(float modifier) {
+            foreach (WidgetList list in _widgets) list.ExpandAll(modifier);
+        }
+
+        public void ExpandAll(Point2 modifier) {
+            foreach (WidgetList list in _widgets) list.ExpandAll(modifier);
         }
 
         public void Align(RectangleF? new_area = null)
@@ -138,7 +127,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         public Point IndexOf(Widget widget)
         {
             int index;
-            for (int x = 0; x < Dimensions.X; x++)
+            int dimensions_x = Dimensions.X;
+            for (int x = 0; x < dimensions_x; x++)
             {
                 index = _widgets[x].IndexOf(widget);
                 if (index != -1) return new Point(x, index);
@@ -150,10 +140,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             WidgetList result = new WidgetList();
 
-            foreach (WidgetList widget_list in _widgets)
-            {
-                ((List<Widget>)result).AddRange(widget_list);
-            }
+            foreach (WidgetList widget_list in _widgets) result.AddRange(widget_list);
 
             return result;
         }
@@ -161,7 +148,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         public float InsertSpaceY(int row_index, float space)
         {
             float? space_y = null;
-            for (int y = row_index; y < Dimensions.Y; y++)
+            Point2 dimensions = Dimensions;
+            for (int y = row_index; y < dimensions.Y; y++)
             {
                 foreach (Widget widget in GetRow(y))
                 {
@@ -176,7 +164,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         public float InsertSpaceX(int collumn, float space)
         {
             float? space_x = null;
-            for (int x = collumn; x < Dimensions.Y; x++)
+            int dimensions_y = Dimensions.Y;
+            for (int x = collumn; x < dimensions_y; x++)
             {
                 foreach (Widget widget in GetColumn(x))
                 {
@@ -207,7 +196,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             Point2 fixed_size = new Point2();
 
-            for (int i = 0; i < Dimensions.X; i++)
+            Point2 dimensions = Dimensions;
+            for (int i = 0; i < dimensions.X; i++)
             {
                 float fixed_width = FixedWidthOfColumn(i);
                 if (fixed_width != -1f)
@@ -216,7 +206,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 }
             }
 
-            for (int i = 0; i < Dimensions.Y; i++)
+            for (int i = 0; i < dimensions.Y; i++)
             {
                 float fixed_height = FixedHeightOfRow(i);
                 if (fixed_height != -1f)
@@ -230,7 +220,8 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         private float FixedHeightOfRow(int row)
         {
-            for (int i = 0; i < Dimensions.X; i++)
+            int x = Dimensions.X;
+            for (int i = 0; i < x; i++)
             {
                 if (_widgets[i][row].IsFixedHeight) return _widgets[i][row].Height;
             }
@@ -240,7 +231,8 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         private float FixedWidthOfColumn(int column)
         {
-            for (int i = 0; i < Dimensions.Y; i++)
+            int y = Dimensions.Y;
+            for (int i = 0; i < y; i++)
             {
                 if (_widgets[column][i].IsFixedWidth) return _widgets[column][i].Width;
             }
@@ -250,7 +242,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         #region IList Implementation
 
-        public int Count => _widgets.Count;
+        public int Count { get; private set; }
 
         public bool IsReadOnly => ((IList<WidgetList>)_widgets).IsReadOnly;
 
@@ -260,29 +252,28 @@ namespace DownUnder.UI.Widgets.DataTypes
             set => _widgets[index] = value;
         }
         
-        public int IndexOf(WidgetList item)
-        {
+        public int IndexOf(WidgetList item) {
             return _widgets.IndexOf(item);
         }
 
-        public void Insert(int index, WidgetList item)
-        {
+        public void Insert(int index, WidgetList item) {
             _widgets.Insert(index, item);
+            Count = _widgets.Count;
         }
 
-        void IList<WidgetList>.RemoveAt(int index)
-        {
+        void IList<WidgetList>.RemoveAt(int index) {
             _widgets.RemoveAt(index);
+            Count = _widgets.Count;
         }
 
-        void ICollection<WidgetList>.Add(WidgetList item)
-        {
+        void ICollection<WidgetList>.Add(WidgetList item) {
             _widgets.Add(item);
+            Count = _widgets.Count;
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             _widgets.Clear();
+            Count = 0;
         }
 
         public bool Contains(WidgetList item)
@@ -299,7 +290,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             WidgetList result = new WidgetList();
 
-            for (int x = 0; x < Dimensions.X; x++)
+            Point2 dimensions = Dimensions;
+            for (int x = 0; x < dimensions.X; x++)
             {
                 result.Add(_widgets[x][y]);
             }
@@ -312,9 +304,12 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets.CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(WidgetList item)
-        {
-            return _widgets.Remove(item);
+        public bool Remove(WidgetList item) {
+            if (_widgets.Remove(item)) {
+                Count = _widgets.Count;
+                return true;
+            };
+            return false;
         }
 
         public IEnumerator<WidgetList> GetEnumerator()

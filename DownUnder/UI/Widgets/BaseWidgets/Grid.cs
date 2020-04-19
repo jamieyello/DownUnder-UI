@@ -239,7 +239,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             get
             {
                 WidgetList children = new WidgetList();
-                children.ToList().AddRange(_widgets.ToWidgetList());
+                children.AddRange(_widgets.ToWidgetList());
 
                 foreach(var divider in dividers)
                 {

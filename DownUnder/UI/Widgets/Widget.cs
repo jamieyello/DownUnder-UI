@@ -351,7 +351,7 @@ namespace DownUnder.UI.Widgets
         public WidgetList AllContainedWidgets {
             get {
                 WidgetList result = new WidgetList { this };
-                foreach (Widget child in Children) result.ToList().AddRange(child.AllContainedWidgets);
+                foreach (Widget child in Children) result.AddRange(child.AllContainedWidgets);
                 return result;
             }
         }
