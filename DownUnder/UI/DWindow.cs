@@ -15,38 +15,28 @@ using DownUnder.UI.Widgets;
 
 namespace DownUnder.UI
 {
+    /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
     public abstract class DWindow : Game, IParent
     {
         #region Fields/Delegates
-
-        public SpriteBatch SpriteBatch { get; set; }
-
-        /// <summary> This delegate is meant to grant the main thread's method to spawn new windows. </summary>
+        
+        /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
-
-        /// <summary> The GraphicsDeviceManager used by this widget. Is initiated on creation. </summary>
+        /// <summary> The <see cref="GraphicsDeviceManager"/> used by this <see cref="DWindow"/>. Is initiated on creation. </summary>
         protected readonly GraphicsDeviceManager GraphicsManager;
-
         /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
         private int _spawned_window_is_active = -1;
-
-        /// <summary> Used to keep track of this DWindows thread. </summary>
+        /// <summary> Used to keep track of this <see cref="DWindow"/>'s thread. </summary>
         private static int _thread_id;
-
         private readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
-
         /// <summary> While true, event queues should not be modified. </summary>
         private bool _event_queue_is_processing = false;
-
-        /// <summary> Set to true once the window has updated once. </summary>
+        /// <summary> Set to true once the <see cref="DWindow"/> has updated once. </summary>
         private bool _first_update = false;
-
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         private const int _WAIT_TIME = 5;
-
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         private const int _WAIT_TIME_WARNING_THRESOLD = 100;
-
         // A cache used by Area.
         private RectangleF _area_cache = new RectangleF();
 
@@ -58,20 +48,40 @@ namespace DownUnder.UI
 
         #region Properties
 
+        #region Auto Properties
+
         /// <summary> A reference to each of this window's children. </summary>
         public List<DWindow> Children { get; } = new List<DWindow>();
-
         /// <summary> The window that owns this window. </summary>
         public DWindow Parent { get; set; }
-
         /// <summary> Represents this window's input each frame. </summary>
         public UIInputState InputState { get; } = new UIInputState();
-
         /// <summary> Used for text input. Typed text is added here. </summary>
         public StringBuilder InputText { get; } = new StringBuilder();
-
         /// <summary> Typed CTRL + key combination chars are added here. </summary>
         public StringBuilder CommandText { get; } = new StringBuilder();
+        /// <summary> A delegate to the main program's method to spawn new windows. </summary>
+        public WindowCreate CreateWindowDelegate { get; set; }
+        /// <summary> A reference to all widgets that are selected in this DWindow. </summary>
+        public Focus SelectedWidgets { get; } = new Focus(FocusType.selection);
+        /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
+        public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
+        /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
+        internal Widget ResizeGrabber { get; set; }
+        internal bool IsUserResizing { get; set; }
+        /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
+        public bool WaitForCrossThreadCompletion { get; set; } = true;
+        /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
+        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
+        /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with <see cref="UICursorsEnabled"/>. </summary>
+        internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
+        /// <summary> Set to false to disable UI mouse cursor changes. </summary>
+        public bool UICursorsEnabled { get; set; } = true;
+        /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
+        public SpriteFont SpriteFont { get; protected set; }
+        public Effect DownunderUberShader { get; set; }
+
+        #endregion
 
         /// <summary> The Layout Widget of this window. </summary>
         public Layout Layout {
@@ -81,24 +91,21 @@ namespace DownUnder.UI
                     value.ParentWindow = this;
                     value.Area = GraphicsDevice.Viewport.Bounds;
                 }
-             
+
                 _layout_backing = value;
             }
         }
 
-        /// <summary> A delegate to the main program's method to spawn new windows. </summary>
-        public WindowCreate CreateWindowDelegate { get; set; }
-
-        /// <summary> A reference to all widgets that are selected in this DWindow. </summary>
-        public Focus SelectedWidgets { get; } = new Focus(FocusType.selection);
-
-        /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
-        public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
-
-        /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
-        internal Widget ResizeGrabber { get; set; }
-
-        internal bool IsUserResizing { get; set; }
+        /// <summary> Return a list of all HighLighted <see cref="Widget"/>s in this <see cref="DWindow"/>. </summary>
+        public WidgetList HighLightedWidgets {
+            get {
+                WidgetList result = new WidgetList();
+                foreach (Widget widget in SelectedWidgets.ToWidgetList()) {
+                    if (widget.IsHighlighted) result.Add(widget);
+                }
+                return result;
+            }
+        }
 
         /// <summary> The location of this window on the screen. </summary>
         public Point2 Position {
@@ -150,42 +157,20 @@ namespace DownUnder.UI
                 }
             }
         }
-
-        /// <summary>
-        /// Whether or not this window will wait until the next update to continue 
-        /// when calling certain methods. (Currently only Area.Set) Set to 
-        /// true by default, set to false for faster but delayed multithreading, or
-        /// if Update() is not being called.
-        /// </summary>
-        public bool WaitForCrossThreadCompletion { get; set; } = true;
-
-        /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
-        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
-
-        /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with UICursorsEnabled. </summary>
-        internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
-
-        /// <summary> Set to false to disable UI mouse cursor changes. </summary>
-        public bool UICursorsEnabled { get; set; } = true;
-
-        /// <summary> The default spritefont of this window. Used by contained widgets without a self-defined spritefont. </summary>
-        public SpriteFont SpriteFont { get; protected set; }
-
-        public Effect DownunderUberShader { get; set; }
-
-        /// <summary> The width of this window. (relative to pizels on a 1080p monitor) </summary>
+        
+        /// <summary> The width of this <see cref="DWindow"/>. (relative to pizels on a 1080p monitor) </summary>
         public float Width {
             get => Area.Width;
             set => Area = Area.WithWidth(value);
         }
 
-        /// <summary> The height of this window. (relative to pizels on a 1080p monitor) </summary>
+        /// <summary> The height of this <see cref="DWindow"/>. (relative to pizels on a 1080p monitor) </summary>
         public float Height {
             get => Area.Height;
             set => Area = Area.WithHeight(value);
         }
 
-        /// <summary> A collection of icons used by this window and its widgets. </summary>
+        /// <summary> A collection of icons used by this <see cref="DWindow"/> and its <see cref="Widget"/>s. </summary>
         public UIImages UIImages { get; protected set; }
 
         /// <summary> <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> used when drawing the UI. (Necessary for clipping) </summary>
@@ -254,7 +239,7 @@ namespace DownUnder.UI
             }
         }
 
-        /// <summary> Closes all child windows and removes own reference from parent on exiting. </summary>
+        /// <summary> Closes all child <see cref="DWindow"/>s and removes own reference from parent on exiting. </summary>
         private void ExitAll(object sender, EventArgs args) { 
             foreach (DWindow child in Children) child.Exit(); // Kill each of the children
             Parent?.Children.Remove(this);

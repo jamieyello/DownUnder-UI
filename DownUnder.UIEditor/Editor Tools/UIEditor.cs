@@ -83,6 +83,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawBackground = true
             };
             project.DesignerObjects.IsEditModeEnabled = true;
+            project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.Behaviors.Add(new DrawPixelGrid());
             project.Behaviors.Add(new ShadingBehavior());
 

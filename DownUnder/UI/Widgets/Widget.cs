@@ -33,9 +33,7 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget 
-        : IParent, IDisposable, ICloneable, IAcceptsDrops
-    {
+    [DataContract] public abstract class Widget : IParent, IDisposable, ICloneable, IAcceptsDrops {
         public bool debug_output = false;
 
         #region Fields/Delegates/Enums
@@ -121,7 +119,7 @@ namespace DownUnder.UI.Widgets
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
         private bool _allow_user_resizing_backing = false;
         private bool _allow_highlight_backing = false;
-        DiagonalDirections2D _allowed_resizing_directions_backing;
+        Directions2D _allowed_resizing_directions_backing;
 
         public enum DrawingMode {
             /// <summary> Draw nothing. </summary>
@@ -233,7 +231,7 @@ namespace DownUnder.UI.Widgets
             set => _allow_user_resizing_backing = value;
         }
         
-        [DataMember] public DiagonalDirections2D AllowedResizingDirections {
+        [DataMember] public Directions2D AllowedResizingDirections {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowedResizingDirections : _allowed_resizing_directions_backing;
             set => _allowed_resizing_directions_backing = value;
         }
@@ -422,8 +420,7 @@ namespace DownUnder.UI.Widgets
 
         public void Dispose() => Dispose(true);
 
-        protected virtual void Dispose(bool disposing)
-        {
+        protected virtual void Dispose(bool disposing) {
             _white_dot?.Dispose();
             _render_target?.Dispose();
             SpriteBatch?.Dispose();
@@ -447,7 +444,7 @@ namespace DownUnder.UI.Widgets
             foreach (Widget widget in Children) widget.UpdatePriority(game_time, ui_input);
         }
         
-        // Nothing should be invoked here.
+        // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
         private void UpdateCursorInput() {
             _update_clicked = UpdateData.UIInputState.PrimaryClickTriggered;
             _update_clicked_on = false;
@@ -503,7 +500,6 @@ namespace DownUnder.UI.Widgets
                 _update_drag = true;
             }
             
-
             // Resizing the window
             if (AllowUserResize
                 && !PassthroughMouse
@@ -512,7 +508,7 @@ namespace DownUnder.UI.Widgets
                 Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
                     ParentWindow.InputState.CursorPosition,
                     _USER_RESIZE_BOUNDS_SIZE
-                    );
+                    ) & AllowedResizingDirections;
                 if (resize_grab != Directions2D.None) {
                     ParentWindow.ResizeGrabber = this;
                     _resize_grab = resize_grab;
@@ -541,12 +537,11 @@ namespace DownUnder.UI.Widgets
 
                 IsHoveredOver = _update_hovered_over;
             }
-            else // User has resize cursor over this widget or is in the middle of resizing
-            {
-                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) { ParentWindow.UICursor = MouseCursor.SizeNS; }
-                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) { ParentWindow.UICursor = MouseCursor.SizeWE; }
-                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) { ParentWindow.UICursor = MouseCursor.SizeNESW; }
-                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) { ParentWindow.UICursor = MouseCursor.SizeNWSE; }
+            else { // User has resize cursor over this widget or is in the middle of resizing
+                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
+                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
+                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
+                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
 
                 if (_update_clicked && !ParentWindow.IsUserResizing) {
                     if (_resize_grab != Directions2D.None) {
@@ -566,10 +561,10 @@ namespace DownUnder.UI.Widgets
                 if (_is_user_resizing) {
                     RectangleF new_area = _resizing_initial_area;
                     Point2 amount = ui_input.CursorPosition.WithOffset(_repositioning_origin.Inverted());
-                    if (_resizing_direction & Directions2D.R) { new_area = new_area.ResizedBy(amount.X, Directions2D.R); }
-                    if (_resizing_direction & Directions2D.D) { new_area = new_area.ResizedBy(amount.Y, Directions2D.D); }
-                    if (_resizing_direction & Directions2D.U) { new_area = new_area.ResizedBy(-amount.Y, Directions2D.U); }
-                    if (_resizing_direction & Directions2D.L) { new_area = new_area.ResizedBy(-amount.X, Directions2D.L); }
+                    if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
+                    if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
+                    if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
+                    if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
 
                     Area = new_area.WithMinimumSize(MinimumSize);
                     Console.WriteLine($"User resizing new area {new_area}, MinimumSize {MinimumSize}");

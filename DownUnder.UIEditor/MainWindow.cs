@@ -50,7 +50,6 @@ namespace DownUnder.Widgets
             LoadDWindow();
 
             // Create a new SpriteBatch, which can be used to draw textures.
-            SpriteBatch = new SpriteBatch(GraphicsManager.GraphicsDevice);
             SpriteFont = Content.Load<SpriteFont>("font");
             DownunderUberShader = Content.Load<Effect>("downunder_uber_shader");
             Layout = new UIEditorLayout(this, out editor_objects);

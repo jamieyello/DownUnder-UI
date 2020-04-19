@@ -70,7 +70,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public bool AllowUserResizing { get; set; } = true;
 
-        public DiagonalDirections2D AllowedResizingDirections { get; set; } = DiagonalDirections2D.TL_TR_BL_BR;
+        public Directions2D AllowedResizingDirections { get; set; } = Directions2D.UDLR;
 
         public bool AllowHighlight { get; set; } = true;
 
