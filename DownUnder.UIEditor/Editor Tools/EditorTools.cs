@@ -32,7 +32,7 @@ namespace DownUnder.UIEditor
             //test_grid.InsertDivider(new Label(null, "Last Divider") { IsFixedHeight = false }, 5);
             //test_grid.IsFixedWidth = true;
             //test_grid.debug_output = true;
-            test_grid.debug_output = false;
+            //test_grid.debug_output = false;
             layout.Add(test_grid);
 
             //var test = parent;

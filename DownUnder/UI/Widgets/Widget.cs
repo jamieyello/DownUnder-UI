@@ -95,7 +95,6 @@ namespace DownUnder.UI.Widgets
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
-        private bool _update_clicked;
         private bool _update_clicked_on;
         private bool _update_double_clicked;
         private bool _update_triple_clicked;
@@ -446,7 +445,6 @@ namespace DownUnder.UI.Widgets
         
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
         private void UpdateCursorInput() {
-            _update_clicked = UpdateData.UIInputState.PrimaryClickTriggered;
             _update_clicked_on = false;
             _update_double_clicked = false;
             _update_triple_clicked = false;
@@ -456,13 +454,6 @@ namespace DownUnder.UI.Widgets
             _update_drag = false;
             _update_drop = false;
 
-            if (UpdateData.UIInputState.CursorPosition != _previous_cursor_position) {
-                _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
-                _triple_click_countdown = 0f;
-            }
-            
-            if (_double_click_countdown > 0f) _double_click_countdown -= UpdateData.ElapsedSeconds;
-
             if (!UpdateData.UIInputState.PrimaryClick) {
                 _dragging_in = false;
                 if (_dragging_off) {
@@ -471,17 +462,24 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
+            if (UpdateData.UIInputState.CursorPosition != _previous_cursor_position) {
+                _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
+                _triple_click_countdown = 0f;
+            }
+            
+            if (_double_click_countdown > 0f) _double_click_countdown -= UpdateData.ElapsedSeconds;
+
             if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse) {
                 _update_hovered_over = true;
 
                 if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
-                
+
                 if (_update_clicked_on) {
                     _dragging_in = true;
                     if (UpdateData.UIInputState.Control && !IsSelected) _update_added_to_focused = true;
                     else if (!IsSelected) _update_set_as_focused = true;
-                    }
+
                     if (_triple_click_countdown > 0) {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
@@ -494,13 +492,14 @@ namespace DownUnder.UI.Widgets
                         _triple_click_countdown = _double_click_timing_backing;
                     }
                     _double_click_countdown = _double_click_timing_backing;
+                }
             }
             else if (_dragging_in && !_dragging_off) {
                 _dragging_off = true;
                 _update_drag = true;
             }
             
-            // Resizing the window
+            // Determining window resize
             if (AllowUserResize
                 && !PassthroughMouse
                 && ParentWindow.ResizeGrabber == null
@@ -514,6 +513,8 @@ namespace DownUnder.UI.Widgets
                     _resize_grab = resize_grab;
                 }
             }
+
+            if (debug_output) Console.WriteLine($"_update_double_clicked = {_update_double_clicked}");
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
@@ -543,7 +544,7 @@ namespace DownUnder.UI.Widgets
                 if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
                 if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
 
-                if (_update_clicked && !ParentWindow.IsUserResizing) {
+                if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.IsUserResizing) {
                     if (_resize_grab != Directions2D.None) {
                         _resizing_direction = _resize_grab;
                         ParentWindow.IsUserResizing = true;
@@ -566,8 +567,7 @@ namespace DownUnder.UI.Widgets
                     if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
                     if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
 
-                    Area = new_area.WithMinimumSize(MinimumSize);
-                    Console.WriteLine($"User resizing new area {new_area}, MinimumSize {MinimumSize}");
+                    Area = new_area;
                 }
             }
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
@@ -609,7 +609,11 @@ namespace DownUnder.UI.Widgets
             
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
-            if (DrawBackground) SpriteBatch.FillRectangle(visible_area, Theme.BackgroundColor.CurrentColor);
+            if (DrawBackground)
+                SpriteBatch.FillRectangle(
+                    visible_area, 
+                    (IsHighlighted) ? Color.Yellow : Theme.BackgroundColor.CurrentColor
+                    );
             OnDraw?.Invoke(this, EventArgs.Empty);
             SpriteBatch.End();
 

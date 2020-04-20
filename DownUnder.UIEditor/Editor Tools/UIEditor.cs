@@ -46,7 +46,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                     Area = new RectangleF(0, 0, 90, 30),
                 }
             });
-            
+            butt.debug_output = true;
 
             SpacedList common_controls = new SpacedList(sidebar)
             {
@@ -54,9 +54,9 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
 
             sidebar.SetCell(0, 0, common_controls);
-            common_controls.debug_output = true;
+            //common_controls.debug_output = true;
             common_controls.Add(new Label(null, "eight"));
-            common_controls.debug_output = false;
+            //common_controls.debug_output = false;
             
             Layout property_grid_layout = new Layout(sidebar);
             sidebar.SetCell(0, 1, property_grid_layout);

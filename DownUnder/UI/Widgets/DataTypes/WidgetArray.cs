@@ -24,12 +24,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (dimensions.X == 0 || dimensions.Y == 0) return null;
 
                 RectangleF result = (RectangleF)_widgets[0].AreaCoverage;
-
-                for (int i = 1; i < dimensions.X; i++)
-                {
-                    result = result.Union((RectangleF)_widgets[i].AreaCoverage);
-                }
-
+                for (int i = 1; i < dimensions.X; i++) result = result.Union((RectangleF)_widgets[i].AreaCoverage);
                 return result;
             }
         }
