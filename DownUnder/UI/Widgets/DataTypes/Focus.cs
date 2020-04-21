@@ -7,14 +7,11 @@
     }
 
     /// <summary> Keeps track of widgets that are focused by either hover or selection. </summary>
-    public class Focus
-    {
+    public class Focus {
         private WidgetList _focused_widgets = new WidgetList();
         private readonly FocusType _focus_type;
 
-        public Focus(FocusType focus_type) {
-            _focus_type = focus_type;
-        }
+        public Focus(FocusType focus_type) => _focus_type = focus_type;
 
         public void AddFocus(Widget widget) {
             if (_focused_widgets.Contains(widget)) return;
@@ -29,9 +26,18 @@
         }
 
         public void SetFocus(Widget widget) {
+            if (_focused_widgets.Count == 1 && _focused_widgets[0] == widget) return; // Return if this is the only selected widget
+            if (_focused_widgets.Contains(widget)) { // Remove all but given widget and trigger their lose focus events if other widgets are focused
+                for (int i = _focused_widgets.Count - 1; i >= 0; i--) {
+                    Widget focus_off_widget = _focused_widgets[i];
+                    if (focus_off_widget != widget) {
+                        UnFocus(focus_off_widget);
+                    }
+                }
+                return;
+            }
             Reset();
-            _focused_widgets.Add(widget);
-            widget.TriggerSelectEvent();
+            AddFocus(widget);
         }
 
         public void Reset() {
@@ -43,6 +49,7 @@
 
         public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[_focused_widgets.Count - 1] : null;
 
-        public WidgetList ToWidgetList() => _focused_widgets;
+        /// <summary> Returns a shallow clone of the focused <see cref="Widget"/>s. </summary>
+        public WidgetList ToWidgetList() => new WidgetList(_focused_widgets, true);
     }
 }

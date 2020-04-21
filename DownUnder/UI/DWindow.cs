@@ -66,9 +66,29 @@ namespace DownUnder.UI
         public Focus SelectedWidgets { get; } = new Focus(FocusType.selection);
         /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
-        /// <summary> The <see cref="Widget"/> that has the user resize focus. </summary>
-        internal Widget ResizeGrabber { get; set; }
-        internal bool IsUserResizing { get; set; }
+        /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
+        internal Widget ResizeCursorGrabber { get; set; }
+
+        bool _is_user_resizing_backing;
+        
+        /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
+        internal bool UserResizeModeEnable {
+            get => _is_user_resizing_backing;
+            set {
+                if (value && !_is_user_resizing_backing) {
+                    _is_user_resizing_backing = value;
+                    ResizingWidget = ResizeCursorGrabber;
+                    return;
+                }
+                if (!value) {
+                    _is_user_resizing_backing = value;
+                    ResizingWidget = null;
+                    return;
+                }
+            }
+        }
+        /// <summary> Widget (if any) that is currently being resized. </summary>
+        internal Widget ResizingWidget { get; private set; }
         /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
         public bool WaitForCrossThreadCompletion { get; set; } = true;
         /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
@@ -293,7 +313,7 @@ namespace DownUnder.UI
             }
             ProcessQueuedEvents();
             HoveredWidgets.Reset();
-            ResizeGrabber = null;
+            ResizeCursorGrabber = null;
             if (!InputState.PrimaryClick) DraggingObject = null;
             InputState.UpdateAll(this, game_time);
 

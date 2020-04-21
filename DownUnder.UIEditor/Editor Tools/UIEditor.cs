@@ -26,7 +26,8 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
-            
+            project.debug_output = true;
+
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
 
@@ -46,8 +47,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                     Area = new RectangleF(0, 0, 90, 30),
                 }
             });
-            butt.debug_output = true;
-
+            
             SpacedList common_controls = new SpacedList(sidebar)
             {
                 butt
@@ -84,6 +84,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
             project.DesignerObjects.IsEditModeEnabled = true;
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
+            project.DesignerObjects.AllowHighlight = false;
             //project.Behaviors.Add(new DrawPixelGrid());
             project.Behaviors.Add(new ShadingBehavior());
 

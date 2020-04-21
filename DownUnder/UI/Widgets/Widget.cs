@@ -65,9 +65,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/> that has traveled outside this <see cref="Widget"/>'s area at some point. </summary>
         private bool _dragging_off = false;
 
-        /// <summary> Is true when the user is resizing this Widget. </summary>
-        private bool _is_user_resizing = false;
-
         /// <summary> The sides (if any) the user is resizing. </summary>
         private Directions2D _resize_grab;
 
@@ -358,6 +355,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         public abstract WidgetList Children { get; }
 
+        /// <summary> Gets the index of this <see cref="Widget"/> in its <see cref="ParentWidget"/>. </summary>
+        public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
+
         /// <summary> The SpriteFont used by this <see cref="Widget"/>. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
         public SpriteFont SpriteFont {
             get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
@@ -394,6 +394,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Returns true if this <see cref="Widget"/> is not only focused, but highlighted. </summary>
         public bool IsHighlighted => AllowHighlight && IsSelected;
+
+        private bool _IsBeingResized => ParentWindow.UserResizeModeEnable && ParentWindow.ResizingWidget == this;
 
         #endregion
 
@@ -440,6 +442,7 @@ namespace DownUnder.UI.Widgets
             UpdateData.UIInputState = ui_input;
 
             UpdateCursorInput();
+            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             foreach (Widget widget in Children) widget.UpdatePriority(game_time, ui_input);
         }
         
@@ -477,9 +480,10 @@ namespace DownUnder.UI.Widgets
 
                 if (_update_clicked_on) {
                     _dragging_in = true;
-                    if (UpdateData.UIInputState.Control && !IsSelected) _update_added_to_focused = true;
-                    else if (!IsSelected) _update_set_as_focused = true;
 
+                    if (UpdateData.UIInputState.Control) _update_added_to_focused = true;
+                    else _update_set_as_focused = true;
+                    
                     if (_triple_click_countdown > 0) {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
@@ -487,7 +491,6 @@ namespace DownUnder.UI.Widgets
                     }
                     if (_double_click_countdown > 0) {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
-                        if (!IsSelected) _update_set_as_focused = true;
                         _update_double_clicked = true;
                         _triple_click_countdown = _double_click_timing_backing;
                     }
@@ -502,27 +505,27 @@ namespace DownUnder.UI.Widgets
             // Determining window resize
             if (AllowUserResize
                 && !PassthroughMouse
-                && ParentWindow.ResizeGrabber == null
+                && (
+                    ParentWindow.ResizeCursorGrabber == null ? // is there an existing grabber?
+                    true : ParentWindow?.ResizeCursorGrabber.ParentWidget == ParentWidget ? // does it share the same parent?
+                    Index > ParentWindow?.ResizeCursorGrabber.Index : false
+                )
                 && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))) {
                 Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
                     ParentWindow.InputState.CursorPosition,
                     _USER_RESIZE_BOUNDS_SIZE
                     ) & AllowedResizingDirections;
                 if (resize_grab != Directions2D.None) {
-                    ParentWindow.ResizeGrabber = this;
+                    ParentWindow.ResizeCursorGrabber = this;
                     _resize_grab = resize_grab;
                 }
             }
-
-            if (debug_output) Console.WriteLine($"_update_double_clicked = {_update_double_clicked}");
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input) {
-            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
-            
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (ParentWindow.ResizeGrabber != this && !ParentWindow.IsUserResizing) {
+            if (ParentWindow.ResizeCursorGrabber != this && !_IsBeingResized) {
                 if (IsPrimaryHovered && ParentWindow.IsActive) {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
@@ -544,22 +547,21 @@ namespace DownUnder.UI.Widgets
                 if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
                 if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
 
-                if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.IsUserResizing) {
+                if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
                     if (_resize_grab != Directions2D.None) {
                         _resizing_direction = _resize_grab;
-                        ParentWindow.IsUserResizing = true;
-                        _is_user_resizing = true;
+                        ParentWindow.UserResizeModeEnable = true;
                         _resizing_initial_area = Area;
                         _repositioning_origin = InputState.CursorPosition;
                     }
                 }
 
-                if (!ui_input.PrimaryClick) {
-                    _is_user_resizing = false;
-                    ParentWindow.IsUserResizing = false;
+                if (!ui_input.PrimaryClick)
+                {
+                    ParentWindow.UserResizeModeEnable = false;
                 }
-
-                if (_is_user_resizing) {
+                
+                if (_IsBeingResized) {
                     RectangleF new_area = _resizing_initial_area;
                     Point2 amount = ui_input.CursorPosition.WithOffset(_repositioning_origin.Inverted());
                     if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);

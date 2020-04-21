@@ -10,14 +10,13 @@ namespace DownUnder.UI.Widgets.DataTypes
     public class WidgetList : IList<Widget>
     {
         private List<Widget> _widgets { get; set; } = new List<Widget>();
+        private bool _is_read_only;
 
-        public WidgetList() { }
-        public WidgetList(List<Widget> widget_list)
+        public WidgetList(bool is_read_only = false) { _is_read_only = is_read_only; }
+        public WidgetList(List<Widget> widget_list, bool is_read_only = false)
         {
-            foreach (Widget widget in widget_list)
-            {
-                ((IList<Widget>)_widgets).Add(widget);
-            }
+            foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
+            _is_read_only = is_read_only;
 
             Count = _widgets.Count;
         }
@@ -176,29 +175,33 @@ namespace DownUnder.UI.Widgets.DataTypes
             foreach (Widget widget in _widgets) widget.Height = height;
         }
 
+        private void ThrowReadOnlyException() => throw new Exception($"This {GetType().Name} is read only.");
+
         #region IList Implementation
 
         public Widget this[int index]
         {
             get => ((IList<Widget>)_widgets)[index];
-            set => ((IList<Widget>)_widgets)[index] = value;
+            set {
+                if (_is_read_only) ThrowReadOnlyException();
+                ((IList<Widget>)_widgets)[index] = value;
+            }
         }
 
         public int Count { get; private set; } = 0;
 
-        public bool IsReadOnly => ((IList<Widget>)_widgets).IsReadOnly;
+        public bool IsReadOnly => _is_read_only;
         
-        public static implicit operator List<Widget>(WidgetList v)
-        {
-            return v._widgets;
-        }
+        public static implicit operator List<Widget>(WidgetList v) => new List<Widget>(v);
 
         public void Add(Widget widget) {
+            if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).Add(widget);
             Count = _widgets.Count;
         }
 
         public void Clear() {
+            if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).Clear();
             Count = 0;
         }
@@ -209,11 +212,13 @@ namespace DownUnder.UI.Widgets.DataTypes
         public int IndexOf(Widget widget) => ((IList<Widget>)_widgets).IndexOf(widget);
 
         public void Insert(int index, Widget widget) {
+            if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).Insert(index, widget);
             Count = _widgets.Count;
         }
 
         public bool Remove(Widget widget) {
+            if (_is_read_only) ThrowReadOnlyException();
             if (((IList<Widget>)_widgets).Remove(widget)) {
                 Count = _widgets.Count;
                 return true;
@@ -222,6 +227,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public void RemoveAt(int index) {
+            if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).RemoveAt(index);
             Count = _widgets.Count;
         }
@@ -229,6 +235,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         IEnumerator IEnumerable.GetEnumerator() => ((IList<Widget>)_widgets).GetEnumerator();
 
         public void AddRange(WidgetList allContainedWidgets) {
+            if (_is_read_only) ThrowReadOnlyException();
             _widgets.AddRange(allContainedWidgets);
             Count = _widgets.Count;
         }
