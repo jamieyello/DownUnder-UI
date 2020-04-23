@@ -98,6 +98,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             return c;
         }
 
+        protected override void HandleChildRemoval(Widget widget)
+        {
+            Widget child = _widgets[_widgets.IndexOf(widget)];
+            child.Dispose();
+            _widgets.Remove(child);
+        }
+
         #endregion Overrides
 
         #region IList Implementation

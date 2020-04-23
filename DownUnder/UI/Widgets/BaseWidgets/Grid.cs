@@ -233,6 +233,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             throw new NotImplementedException();
         }
 
+        protected override void HandleChildRemoval(Widget widget)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         public override WidgetList Children
         {

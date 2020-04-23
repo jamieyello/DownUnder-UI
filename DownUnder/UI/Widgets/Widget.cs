@@ -77,6 +77,8 @@ namespace DownUnder.UI.Widgets
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
 
+        private WidgetUpdateFlags _post_update_flags = new WidgetUpdateFlags();
+
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
 
@@ -168,7 +170,6 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
-        public WidgetUpdateFlags UpdateFlags { get; set; } = new WidgetUpdateFlags();
 
         #endregion
 
@@ -455,9 +456,15 @@ namespace DownUnder.UI.Widgets
 
         #region Public/Internal Methods
 
+        public void Update(GameTime game_time, UIInputState input_state) {
+            UpdatePriority(game_time, InputState);
+            UpdateEvents(game_time);
+            UpdatePost(out bool deleted);
+        }
+
         // Nothing should be invoked in UpdatePriority.
         /// <summary> Updates this <see cref="Widget"/> and all children recursively. This is called before <see cref="Update(GameTime, UIInputState)"/> and updates all logic that should occur beforehand. </summary>
-        internal void UpdatePriority(GameTime game_time, UIInputState ui_input) {
+        private void UpdatePriority(GameTime game_time, UIInputState ui_input) {
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.UIInputState = ui_input;
@@ -540,12 +547,12 @@ namespace DownUnder.UI.Widgets
                 _resize_grab = Directions2D.None;
             }
 
-            if (AllowDelete && (InputState.BackSpace || InputState.Delete) && IsHighlighted) UpdateFlags.Delete = true;
-            if (AllowCopy && InputState.Copy && IsHighlighted) UpdateFlags.Copy = true;
-            if (AllowCut && InputState.Cut && IsHighlighted) UpdateFlags.Cut = true;
+            if (AllowDelete && (InputState.BackSpace || InputState.Delete) && IsHighlighted) _post_update_flags.Delete = true;
+            if (AllowCopy && InputState.Copy && IsHighlighted) _post_update_flags.Copy = true;
+            if (AllowCut && InputState.Cut && IsHighlighted) _post_update_flags.Cut = true;
         }
 
-        internal void UpdateResizeGrab() {
+        private void UpdateResizeGrab() {
             if (
                 !ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this
@@ -584,7 +591,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
-        internal void Update(GameTime game_time, UIInputState ui_input) {
+        private void UpdateEvents(GameTime game_time) {
             // Skip some normal behavior if the user has the resize cursor over this widget
             if (
                 !ParentWindow.UserResizeModeEnable
@@ -609,17 +616,33 @@ namespace DownUnder.UI.Widgets
 
             if (_IsBeingResized) SetAsFocused();
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
-            if (ui_input.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
+            if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
             
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             OnUpdate?.Invoke(this, EventArgs.Empty);
-            foreach (Widget widget in Children) widget.Update(game_time, ui_input);
+            foreach (Widget widget in Children) widget.UpdateEvents(game_time);
         }
 
-        public void UpdatePost()
-        {
-            //if 
+        private void UpdatePost(out bool deleted) {
+            if (_post_update_flags.Delete)
+            {
+                ParentWidget.RemoveChild(this);
+                deleted = true;
+                return;
+            }
+
+            WidgetList children = Children;
+            for (int i = 0; i < children.Count; i++)
+            {
+                children[i].UpdatePost(out bool deleted_);
+                if (deleted_)
+                {
+                    children = Children;
+                    i--;
+                }
+            }
+            deleted = false;
         }
 
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
@@ -759,6 +782,15 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Used by internal <see cref="Focus"/> object. </summary>
         internal void TriggerSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
+
+        public void Delete() => _post_update_flags.Delete = true;
+
+        private void RemoveChild(Widget widget) {
+            if (!Children.Contains(widget)) throw new Exception("Given widget is not owned by this widget.");
+            HandleChildRemoval(widget);
+        }
+
+        protected abstract void HandleChildRemoval(Widget widget);
 
         /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
         //public void ConnectEvents()

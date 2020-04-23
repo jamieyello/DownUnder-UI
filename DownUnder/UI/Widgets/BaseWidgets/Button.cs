@@ -131,6 +131,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             base.SignalChildAreaChanged();
         }
 
+        protected override void HandleChildRemoval(Widget widget)
+        {
+            throw new NotImplementedException();
+        }
+
         public override Point2 MinimumSize
         {
             get => base.MinimumSize;

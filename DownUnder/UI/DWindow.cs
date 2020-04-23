@@ -321,9 +321,9 @@ namespace DownUnder.UI
 
             InputText.Clear();
             CommandText.Clear();
-            Layout.UpdatePriority(game_time, InputState);
-            if (!Window.ClientBounds.Contains(InputState.CursorPosition + Window.ClientBounds.Location)) HoveredWidgets.Reset(); 
+
             Layout.Update(game_time, InputState);
+            //Layout.
 
             if (UICursorsEnabled) Mouse.SetCursor(UICursor);
             UICursor = MouseCursor.Arrow;

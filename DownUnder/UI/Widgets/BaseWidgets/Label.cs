@@ -209,6 +209,11 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             ParentWidget?.SignalChildAreaChanged();
         }
 
+        protected override void HandleChildRemoval(Widget widget)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
