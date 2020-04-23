@@ -107,6 +107,7 @@
     <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
+    <Compile Include="UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
     <Compile Include="UI\Widgets\Interfaces\IAcceptsDrops.cs" />
     <Compile Include="UI\Widgets\Interfaces\IEditorWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\INeedsWidgetParent.cs" />

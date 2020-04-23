@@ -74,6 +74,12 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public bool AllowHighlight { get; set; } = true;
 
+        public bool AllowDelete { get; set; } = true;
+
+        public bool AllowCopy { get; set; } = true;
+
+        public bool AllowCut { get; set; } = true;
+
         #region IAcceptsDrops Implementation
 
         public bool AcceptsDrops { get; private set; } = false;
@@ -102,14 +108,14 @@ namespace DownUnder.UI.Widgets.DataTypes
         
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>
         /// <param name="dragging_widget">The <see cref="Widget"/> to be added to this one.</param>
-        /// <param name="position">The *center* position of the new <see cref="Widget"/> to be added. Uses this.Parent.CursorPosition by default.</param>
-        public RectangleF GetAddWidgetArea(Widget dragging_widget, Point2? position = null)
+        /// <param name="center">The *center* position of the new <see cref="Widget"/> to be added. Uses this.Parent.CursorPosition by default.</param>
+        public RectangleF GetAddWidgetArea(Widget dragging_widget, Point2? center = null)
         {
-            if (position == null) position = Parent.CursorPosition;
+            if (center == null) center = Parent.CursorPosition;
             return dragging_widget
                 .Area
                 .SizeOnly()
-                .WithCenter(position.Value)
+                .WithCenter(center.Value)
                 .Rounded(Parent.DesignerObjects.AddWidgetSpacing);
         }
 

@@ -116,6 +116,9 @@ namespace DownUnder.UI.Widgets
         private bool _allow_user_resizing_backing = false;
         private bool _allow_highlight_backing = false;
         Directions2D _allowed_resizing_directions_backing;
+        bool _allow_delete_backing;
+        bool _allow_copy_backing;
+        bool _allow_cut_backing;
 
         public enum DrawingMode {
             /// <summary> Draw nothing. </summary>
@@ -165,7 +168,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
-        
+        public WidgetUpdateFlags UpdateFlags { get; set; } = new WidgetUpdateFlags();
+
         #endregion
 
         #region Non-auto properties
@@ -180,8 +184,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
-        [DataMember] public virtual RectangleF Area
-        {
+        [DataMember] public virtual RectangleF Area {
             get => area_backing;
             set {
                 if (IsFixedWidth) value.Width = area_backing.Width;
@@ -202,8 +205,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
-        [DataMember] public BaseColorScheme Theme
-        {
+        [DataMember] public BaseColorScheme Theme {
             get => _theme_backing;
             set {
                 _theme_backing = value;
@@ -227,9 +229,28 @@ namespace DownUnder.UI.Widgets
             set => _allow_user_resizing_backing = value;
         }
         
+        /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
         [DataMember] public Directions2D AllowedResizingDirections {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowedResizingDirections : _allowed_resizing_directions_backing;
             set => _allowed_resizing_directions_backing = value;
+        }
+
+        /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can delete this <see cref="Widget"/> with the defined <see cref="UIInputState.Delete"/> or <see cref="UIInputState.BackSpace"/> (when highlighted). </summary>
+        [DataMember] public bool AllowDelete {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowDelete : _allow_delete_backing;
+            set => _allow_delete_backing = value;
+        }        
+
+        /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can copy this <see cref="Widget"/> with the defined <see cref="UIInputState.Copy"/> (when highlighted). </summary>
+        [DataMember] public bool AllowCopy {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCopy : _allow_copy_backing;
+            set => _allow_copy_backing = value;
+        }      
+        
+        /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can cut this <see cref="Widget"/> with the defined <see cref="UIInputState.Cut"/> (when highlighted). </summary>
+        [DataMember] public bool AllowCut {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCut : _allow_cut_backing;
+            set => _allow_cut_backing = value;
         }
 
         #endregion
@@ -442,6 +463,7 @@ namespace DownUnder.UI.Widgets
             UpdateData.UIInputState = ui_input;
 
             UpdateCursorInput();
+            UpdateResizeGrab();
             if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             foreach (Widget widget in Children) widget.UpdatePriority(game_time, ui_input);
         }
@@ -474,16 +496,13 @@ namespace DownUnder.UI.Widgets
 
             if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse) {
                 _update_hovered_over = true;
-
                 if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
                 if (_update_clicked_on) {
                     _dragging_in = true;
-
                     if (UpdateData.UIInputState.Control) _update_added_to_focused = true;
                     else _update_set_as_focused = true;
-                    
                     if (_triple_click_countdown > 0) {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
@@ -505,11 +524,6 @@ namespace DownUnder.UI.Widgets
             // Determining window resize
             if (AllowUserResize
                 && !PassthroughMouse
-                && (
-                    ParentWindow.ResizeCursorGrabber == null ? // is there an existing grabber?
-                    true : ParentWindow?.ResizeCursorGrabber.ParentWidget == ParentWidget ? // does it share the same parent?
-                    Index > ParentWindow?.ResizeCursorGrabber.Index : false
-                )
                 && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))) {
                 Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
                     ParentWindow.InputState.CursorPosition,
@@ -520,12 +534,63 @@ namespace DownUnder.UI.Widgets
                     _resize_grab = resize_grab;
                 }
             }
+
+            if (ParentWindow.ResizeCursorGrabber != null && ParentWindow.ResizeCursorGrabber != this && VisibleArea.Contains(ParentWindow.InputState.CursorPosition)) {
+                ParentWindow.ResizeCursorGrabber = null;
+                _resize_grab = Directions2D.None;
+            }
+
+            if (AllowDelete && (InputState.BackSpace || InputState.Delete) && IsHighlighted) UpdateFlags.Delete = true;
+            if (AllowCopy && InputState.Copy && IsHighlighted) UpdateFlags.Copy = true;
+            if (AllowCut && InputState.Cut && IsHighlighted) UpdateFlags.Cut = true;
+        }
+
+        internal void UpdateResizeGrab() {
+            if (
+                !ParentWindow.UserResizeModeEnable
+                && ParentWindow.ResizeCursorGrabber != this
+                && !_IsBeingResized
+                ) return;
+
+            // User has resize cursor over this widget or is in the middle of resizing
+            if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
+            if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
+            if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
+            if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
+
+            if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
+                if (_resize_grab != Directions2D.None) {
+                    _resizing_direction = _resize_grab;
+                    ParentWindow.UserResizeModeEnable = true;
+                    _resizing_initial_area = Area;
+                    _repositioning_origin = InputState.CursorPosition;
+                }
+            }
+            
+            if (!UpdateData.UIInputState.PrimaryClick) ParentWindow.UserResizeModeEnable = false;
+
+            if (_IsBeingResized) {
+                RectangleF new_area = _resizing_initial_area;
+                Point2 amount = UpdateData.UIInputState.CursorPosition.WithOffset(_repositioning_origin.Inverted());
+                if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
+                if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
+                if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
+                if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
+
+                RectangleF new_area2 = new_area;
+                //if (ParentWidget != null) new_area2 = 
+                Area = new_area;
+            }
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         internal void Update(GameTime game_time, UIInputState ui_input) {
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (ParentWindow.ResizeCursorGrabber != this && !_IsBeingResized) {
+            if (
+                !ParentWindow.UserResizeModeEnable
+                && ParentWindow.ResizeCursorGrabber != this 
+                && !_IsBeingResized
+                ) {
                 if (IsPrimaryHovered && ParentWindow.IsActive) {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
@@ -541,37 +606,8 @@ namespace DownUnder.UI.Widgets
 
                 IsHoveredOver = _update_hovered_over;
             }
-            else { // User has resize cursor over this widget or is in the middle of resizing
-                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
-                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
-                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
-                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
 
-                if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
-                    if (_resize_grab != Directions2D.None) {
-                        _resizing_direction = _resize_grab;
-                        ParentWindow.UserResizeModeEnable = true;
-                        _resizing_initial_area = Area;
-                        _repositioning_origin = InputState.CursorPosition;
-                    }
-                }
-
-                if (!ui_input.PrimaryClick)
-                {
-                    ParentWindow.UserResizeModeEnable = false;
-                }
-                
-                if (_IsBeingResized) {
-                    RectangleF new_area = _resizing_initial_area;
-                    Point2 amount = ui_input.CursorPosition.WithOffset(_repositioning_origin.Inverted());
-                    if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
-                    if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
-                    if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
-                    if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
-
-                    Area = new_area;
-                }
-            }
+            if (_IsBeingResized) SetAsFocused();
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
             if (ui_input.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
             
@@ -579,6 +615,11 @@ namespace DownUnder.UI.Widgets
             if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in Children) widget.Update(game_time, ui_input);
+        }
+
+        public void UpdatePost()
+        {
+            //if 
         }
 
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
@@ -609,7 +650,7 @@ namespace DownUnder.UI.Widgets
                 return;
             }
             
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
             if (DrawBackground)
                 SpriteBatch.FillRectangle(
@@ -957,6 +998,9 @@ namespace DownUnder.UI.Widgets
             ((Widget)c)._allow_user_resizing_backing = _allow_user_resizing_backing;
             ((Widget)c)._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
             ((Widget)c)._allow_highlight_backing = _allow_highlight_backing;
+            ((Widget)c)._allow_delete_backing = _allow_delete_backing;
+            ((Widget)c)._allow_copy_backing = _allow_copy_backing;
+            ((Widget)c)._allow_cut_backing = _allow_cut_backing;
 
             foreach (Type type in AcceptedDropTypes) ((Widget)c).AcceptedDropTypes.Add(type);
             foreach (WidgetBehavior behavior in Behaviors) ((Widget)c).Behaviors.Add((WidgetBehavior)behavior.Clone());

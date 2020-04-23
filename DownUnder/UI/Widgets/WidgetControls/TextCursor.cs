@@ -325,7 +325,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 {
                     char[] t = new char[_HighlightLength];
                     edit_text.CopyTo(_HighlightPosition, t, 0, _HighlightLength);
-                    OSInterface.CopyToClipBoard(new string(t));
+                    OSInterface.CopyTextToClipBoard(new string(t));
                 }
                 if (inp.Cut) DeleteHighlightedText();
             }
