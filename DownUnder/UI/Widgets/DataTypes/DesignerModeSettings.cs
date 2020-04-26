@@ -8,109 +8,71 @@ using System.Collections.Generic;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
-    public class DesignerModeTools
-        : INeedsWidgetParent, IAcceptsDrops
-    {
+    public class DesignerModeSettings : INeedsWidgetParent, IAcceptsDrops {
         private bool _is_developer_mode_enabled_backing = false;
-        private Widget _last_added_widget_backing;
         private Widget _parent_backing;
-
         private float _add_widget_spacing_backing = 8f;
 
-        public float AddWidgetSpacing
-        {
+        public float AddWidgetSpacing {
             get => _add_widget_spacing_backing;
-            set
-            {
+            set {
                 _add_widget_spacing_backing = value;
                 Parent.SignalAddWidgetSpacingChange();
             }
         }
 
-        public Widget Parent
-        {
+        public Widget Parent {
             get => _parent_backing;
-            set
-            {
+            set {
                 if (_parent_backing == value) return;
                 if (_parent_backing != null) throw new Exception("DeveloperObjects cannot be reused.");
                 _parent_backing = value;
 
-                if (_parent_backing is Layout)
-                {
+                if (_parent_backing is Layout parent) {
                     AcceptsDrops = true;
                     AcceptedDropTypes.Add(typeof(Widget));
+                    parent.OnAddWidget += (sender, args) => {
+                        if (IsEditModeEnabled) parent.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
+                    };
                 }
             }
         }
 
-        public bool IsEditModeEnabled
-        {
+        public bool IsEditModeEnabled {
             get => _is_developer_mode_enabled_backing;
-            set
-            {
+            set {
                 _is_developer_mode_enabled_backing = value;
-                foreach (Widget child in Parent.Children)
-                {
+                foreach (Widget child in Parent.Children) {
                     child.DesignerObjects.IsEditModeEnabled = value;
                 }
             }
         }
-
-        /// <summary> Is set when a child's <see cref="Widget.ParentWidget"/> is set./ </summary>
-        public Widget LastAddedChild
-        {
-            get => _last_added_widget_backing;
-            set
-            {
-                _last_added_widget_backing = value;
-                value.DesignerObjects.IsEditModeEnabled = IsEditModeEnabled || value.DesignerObjects.IsEditModeEnabled;
-            }
-        }
-
-        public bool AllowUserResizing { get; set; } = true;
-
+        
+        public Widget.UserResizePolicyType UserResizingPolicy { get; set; } = Widget.UserResizePolicyType.require_highlight;
         public Directions2D AllowedResizingDirections { get; set; } = Directions2D.UDLR;
-
         public bool AllowHighlight { get; set; } = true;
-
         public bool AllowDelete { get; set; } = true;
-
         public bool AllowCopy { get; set; } = true;
-
         public bool AllowCut { get; set; } = true;
 
         #region IAcceptsDrops Implementation
 
         public bool AcceptsDrops { get; private set; } = false;
-
         public List<Type> AcceptedDropTypes { get; private set; } = new List<Type>();
 
-        public bool IsDropAcceptable(object drop)
-        {
-            return Parent.IsDropAcceptable(drop);
-        }
+        public bool IsDropAcceptable(object drop) => Parent.IsDropAcceptable(drop);
 
-        public void HandleDrop(object drop)
-        {
-            if (IsDropAcceptable(drop))
-            {
-                if (drop is Widget w_drop)
-                {
-                    if (Parent is Layout l_parent)
-                    {
-                        w_drop.Area = GetAddWidgetArea(w_drop);
-                        l_parent.Add(w_drop);
-                    }
-                }
+        public void HandleDrop(object drop) {
+            if (IsDropAcceptable(drop) && drop is Widget w_drop && Parent is Layout l_parent) {
+                w_drop.Area = GetAddWidgetArea(w_drop);
+                l_parent.Add(w_drop);
             }
         }
         
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>
         /// <param name="dragging_widget">The <see cref="Widget"/> to be added to this one.</param>
         /// <param name="center">The *center* position of the new <see cref="Widget"/> to be added. Uses this.Parent.CursorPosition by default.</param>
-        public RectangleF GetAddWidgetArea(Widget dragging_widget, Point2? center = null)
-        {
+        public RectangleF GetAddWidgetArea(Widget dragging_widget, Point2? center = null) {
             if (center == null) center = Parent.CursorPosition;
             return dragging_widget
                 .Area

@@ -17,8 +17,7 @@ namespace DownUnder.UIEditor.Editor_Tools
         /// <summary> What made the first UI that made the first UI? This. </summary>
         /// <param name="editor_objects"> Shortcut to several widgets relevant to the UI. </param>
         public UIEditorLayout(DWindow parent, out EditorObjects editor_objects)
-            : base(parent)
-        {
+            : base(parent) {
             EmbedIn(parent);
 
             Grid main_grid = new Grid(this, 2, 1);
@@ -26,7 +25,7 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
-            project.debug_output = true;
+            //project.debug_output = true;
 
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
@@ -39,12 +38,11 @@ namespace DownUnder.UIEditor.Editor_Tools
             
             butt.DrawBackground = true;
             butt.Behaviors.Add(new DragableOutlineAnimation());
-            butt.Behaviors.Add(new AddWidget()
-            {
-                DragObject = new Button()
-                {
+            butt.Behaviors.Add(new AddWidget() {
+                DragObject = new Button() {
                     SnappingPolicy = DiagonalDirections2D.None,
                     Area = new RectangleF(0, 0, 90, 30),
+                    debug_output = true
                 }
             });
             
@@ -83,6 +81,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                 DrawBackground = true
             };
             project.DesignerObjects.IsEditModeEnabled = true;
+            project.DesignerObjects.UserResizingPolicy = UserResizePolicyType.allow;
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.DesignerObjects.AllowHighlight = false;
             //project.Behaviors.Add(new DrawPixelGrid());

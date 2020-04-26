@@ -13,7 +13,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             set {
                 if (_parent_backing != null) {
                     if (_parent_backing == value) return;
-                    throw new Exception("WidgetBehaviors cannot be reused.");
+                    throw new Exception("WidgetBehaviors cannot be reused. Call Clone() to create a copy.");
                 }
                 _parent_backing = value;
                 ConnectToParent();

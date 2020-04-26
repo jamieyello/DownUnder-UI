@@ -96,7 +96,7 @@
     <Compile Include="UI\Widgets\Behaviors\AddWidget.cs" />
     <Compile Include="UI\Widgets\Behaviors\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\ShadingBehavior.cs" />
-    <Compile Include="UI\Widgets\DataTypes\DesignerModeTools.cs" />
+    <Compile Include="UI\Widgets\DataTypes\DesignerModeSettings.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />

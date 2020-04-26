@@ -115,12 +115,12 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private DrawingMode _draw_mode_backing = DrawingMode.direct;
-        private bool _allow_user_resizing_backing = false;
         private bool _allow_highlight_backing = false;
         Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
+        UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
 
         public enum DrawingMode {
             /// <summary> Draw nothing. </summary>
@@ -129,6 +129,12 @@ namespace DownUnder.UI.Widgets
             direct,
             /// <summary> Draw this and all children to a private <see cref="RenderTarget2D"/> before drawing to the current <see cref="RenderTarget2D"/>. (Will clear the target unless disabled)</summary>
             use_render_target
+        }
+
+        public enum UserResizePolicyType {
+            disallow,
+            allow,
+            require_highlight
         }
 
         #endregion
@@ -222,12 +228,6 @@ namespace DownUnder.UI.Widgets
                 _draw_mode_backing = value;
                 foreach (Widget child in Children) child.DrawMode = value;
             }
-        }
-
-        /// <summary> When enabled the user will able to resize this <see cref="Widget"/> with the cursor. </summary>
-        [DataMember] public bool AllowUserResize {
-            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowUserResizing : _allow_user_resizing_backing;
-            set => _allow_user_resizing_backing = value;
         }
         
         /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
@@ -345,7 +345,6 @@ namespace DownUnder.UI.Widgets
                 ParentWindow = value?.ParentWindow;
                 if (value == null) return;
                 
-                value.DesignerObjects.LastAddedChild = this;
                 DrawMode = value.DrawMode;
             }
         }
@@ -406,12 +405,17 @@ namespace DownUnder.UI.Widgets
 
         public BehaviorCollection Behaviors { get; private set; }
 
-        public DesignerModeTools DesignerObjects { get; set; }
+        public DesignerModeSettings DesignerObjects { get; set; }
 
         /// <summary> When set to true this <see cref="Widget"/> will become highlighted when focused (in parent <see cref="DWindow.SelectedWidgets"/>). </summary>
         public bool AllowHighlight {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowHighlight : _allow_highlight_backing;
             set => _allow_highlight_backing = value;
+        }
+
+        public UserResizePolicyType UserResizePolicy {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.UserResizingPolicy : _user_resize_policy_backing;
+            set => _user_resize_policy_backing = value;
         }
 
         /// <summary> Returns true if this <see cref="Widget"/> is not only focused, but highlighted. </summary>
@@ -435,7 +439,7 @@ namespace DownUnder.UI.Widgets
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
-            DesignerObjects = new DesignerModeTools();
+            DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
         }
 
@@ -527,37 +531,48 @@ namespace DownUnder.UI.Widgets
                 _dragging_off = true;
                 _update_drag = true;
             }
-            
-            // Determining window resize
-            if (AllowUserResize
-                && !PassthroughMouse
-                && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))) {
-                Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
-                    ParentWindow.InputState.CursorPosition,
-                    _USER_RESIZE_BOUNDS_SIZE
-                    ) & AllowedResizingDirections;
-                if (resize_grab != Directions2D.None) {
-                    ParentWindow.ResizeCursorGrabber = this;
-                    _resize_grab = resize_grab;
+
+            if (UserResizePolicy == UserResizePolicyType.allow || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted))
+            {
+                // Determining window resize
+                if (!PassthroughMouse
+                    && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition)))
+                {
+                    Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
+                        ParentWindow.InputState.CursorPosition,
+                        _USER_RESIZE_BOUNDS_SIZE
+                        ) & AllowedResizingDirections;
+                    if (resize_grab != Directions2D.None)
+                    {
+                        ParentWindow.ResizeCursorGrabber = this;
+                        _resize_grab = resize_grab;
+                    }
                 }
             }
 
-            if (ParentWindow.ResizeCursorGrabber != null && ParentWindow.ResizeCursorGrabber != this && VisibleArea.Contains(ParentWindow.InputState.CursorPosition)) {
-                ParentWindow.ResizeCursorGrabber = null;
-                _resize_grab = Directions2D.None;
-            }
+            // Reset if this is overlapping a previous grab
+            //if (ParentWindow.ResizeCursorGrabber != null && ParentWindow.ResizeCursorGrabber != this && VisibleArea.Contains(ParentWindow.InputState.CursorPosition)) {
+            //    ParentWindow.ResizeCursorGrabber = null;
+            //    _resize_grab = Directions2D.None;
+            //}
 
-            if (AllowDelete && (InputState.BackSpace || InputState.Delete) && IsHighlighted) _post_update_flags.Delete = true;
-            if (AllowCopy && InputState.Copy && IsHighlighted) _post_update_flags.Copy = true;
-            if (AllowCut && InputState.Cut && IsHighlighted) _post_update_flags.Cut = true;
+            if (IsHighlighted) {
+                if (AllowDelete && (InputState.BackSpace || InputState.Delete)) _post_update_flags.Delete = true;
+                if (AllowCopy && InputState.Copy) _post_update_flags.Copy = true;
+                if (AllowCut && InputState.Cut) _post_update_flags.Cut = true;
+            }
         }
 
+        int o = 0;
         private void UpdateResizeGrab() {
+            if (debug_output) Console.WriteLine("IsSelected " + IsSelected + " AllowHighlight " + AllowHighlight + " IsEditModeEnabled " + DesignerObjects.IsEditModeEnabled);
             if (
                 !ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this
                 && !_IsBeingResized
                 ) return;
+
+            
 
             // User has resize cursor over this widget or is in the middle of resizing
             if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
@@ -593,11 +608,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         private void UpdateEvents(GameTime game_time) {
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (
-                !ParentWindow.UserResizeModeEnable
+            if (!ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this 
-                && !_IsBeingResized
-                ) {
+                && !_IsBeingResized) {
                 if (IsPrimaryHovered && ParentWindow.IsActive) {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
@@ -1027,7 +1040,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).PassthroughMouse = PassthroughMouse;
             ((Widget)c).AcceptsDrops = AcceptsDrops;
 
-            ((Widget)c)._allow_user_resizing_backing = _allow_user_resizing_backing;
+            ((Widget)c)._user_resize_policy_backing = _user_resize_policy_backing;
             ((Widget)c)._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
             ((Widget)c)._allow_highlight_backing = _allow_highlight_backing;
             ((Widget)c)._allow_delete_backing = _allow_delete_backing;
