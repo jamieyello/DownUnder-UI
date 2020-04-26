@@ -58,8 +58,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
             _disable_area_update = false;
         }
 
-        public Label(IParent parent, SpriteFont sprite_font, string text = "")
-            : base(parent) {
+        public Label(IParent parent, SpriteFont sprite_font, string text = "") : base(parent) {
             SpriteFont = sprite_font;
             SetDefaults();
             Text = text;

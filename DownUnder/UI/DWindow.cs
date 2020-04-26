@@ -13,13 +13,9 @@ using MonoGame.Extended;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets;
 
-namespace DownUnder.UI
-{
+namespace DownUnder.UI {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
-    public abstract class DWindow : Game, IParent
-    {
-        #region Fields/Delegates
-        
+    public abstract class DWindow : Game, IParent {
         /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
         /// <summary> The <see cref="GraphicsDeviceManager"/> used by this <see cref="DWindow"/>. Is initiated on creation. </summary>
@@ -40,11 +36,9 @@ namespace DownUnder.UI
         // A cache used by Area.
         private RectangleF _area_cache = new RectangleF();
 
-        // Various property backing fields.
         private Layout _layout_backing;
         private Point2 _minimum_size_backing;
-
-        #endregion Fields/Delegates
+        bool _is_user_resizing_backing;
 
         #region Properties
 
@@ -68,8 +62,6 @@ namespace DownUnder.UI
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
         /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
         internal Widget ResizeCursorGrabber { get; set; }
-
-        bool _is_user_resizing_backing;
         
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
         internal bool UserResizeModeEnable {
@@ -211,8 +203,10 @@ namespace DownUnder.UI
             }
             
             // unneeded possibly
-            FirstUpdate += SetThreadID;
-            Window.ClientSizeChanged += SetLayoutAreaToWindowArea;
+            FirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
+            Window.ClientSizeChanged += (sender, e) => {
+                if (Layout != null) Layout.Size = Area.Size;
+            };
             Window.TextInput += ProcessKeys;
             Exiting += ExitAll;
 
@@ -239,12 +233,6 @@ namespace DownUnder.UI
         #endregion
 
         #region Events
-
-        private void SetThreadID(object sender, EventArgs e) => _thread_id = Thread.CurrentThread.ManagedThreadId;
-        
-        private void SetLayoutAreaToWindowArea(object sender, EventArgs e) {
-            if (Layout != null) Layout.Size = Area.Size;
-        }
 
         private void ProcessKeys(object sender, TextInputEventArgs e) {
             if (e.Character == 8) InputState.BackSpace = true;
@@ -302,8 +290,7 @@ namespace DownUnder.UI
 
         protected void LoadDWindow() => UIImages = new UIImages(GraphicsDevice);
 
-        protected void UpdateDWindow(GameTime game_time)
-        {
+        protected void UpdateDWindow(GameTime game_time) {
             _area_cache = Area;
             Updating?.Invoke(this, EventArgs.Empty);
             if (!_first_update)

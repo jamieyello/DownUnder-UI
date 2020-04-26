@@ -49,6 +49,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
         
         public Widget.UserResizePolicyType UserResizingPolicy { get; set; } = Widget.UserResizePolicyType.require_highlight;
+        public Widget.UserResizePolicyType UserRepositionPolicy { get; set; } = Widget.UserResizePolicyType.allow;
         public Directions2D AllowedResizingDirections { get; set; } = Directions2D.UDLR;
         public bool AllowHighlight { get; set; } = true;
         public bool AllowDelete { get; set; } = true;

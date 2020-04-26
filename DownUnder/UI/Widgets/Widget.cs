@@ -121,7 +121,8 @@ namespace DownUnder.UI.Widgets
         bool _allow_copy_backing;
         bool _allow_cut_backing;
         UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
-
+        UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
+        
         public enum DrawingMode {
             /// <summary> Draw nothing. </summary>
             disable,
@@ -418,6 +419,11 @@ namespace DownUnder.UI.Widgets
             set => _user_resize_policy_backing = value;
         }
 
+        public UserResizePolicyType UserRepositionPolicy {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.UserRepositionPolicy : _user_reposition_policy_backing;
+            set => _user_reposition_policy_backing = value;
+        }
+
         /// <summary> Returns true if this <see cref="Widget"/> is not only focused, but highlighted. </summary>
         public bool IsHighlighted => AllowHighlight && IsSelected;
 
@@ -532,11 +538,12 @@ namespace DownUnder.UI.Widgets
                 _update_drag = true;
             }
 
-            if (UserResizePolicy == UserResizePolicyType.allow || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted))
+            if (UserResizePolicy == UserResizePolicyType.allow 
+                || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted))
             {
                 // Determining window resize
                 if (!PassthroughMouse
-                    && (ParentWidget == null || ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition)))
+                    && (ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition)))
                 {
                     Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
                         ParentWindow.InputState.CursorPosition,
@@ -548,6 +555,16 @@ namespace DownUnder.UI.Widgets
                         _resize_grab = resize_grab;
                     }
                 }
+            }
+            if (UserRepositionPolicy == UserResizePolicyType.allow
+                || (UserRepositionPolicy == UserResizePolicyType.require_highlight && IsHighlighted))
+            {
+                if (VisibleArea.Contains(InputState.CursorPosition))
+                {
+                    ParentWindow.ResizeCursorGrabber = this;
+                    _resize_grab = Directions2D.UDLR;
+                }
+                
             }
 
             // Reset if this is overlapping a previous grab
@@ -562,24 +579,23 @@ namespace DownUnder.UI.Widgets
                 if (AllowCut && InputState.Cut) _post_update_flags.Cut = true;
             }
         }
-
-        int o = 0;
+        
         private void UpdateResizeGrab() {
-            if (debug_output) Console.WriteLine("IsSelected " + IsSelected + " AllowHighlight " + AllowHighlight + " IsEditModeEnabled " + DesignerObjects.IsEditModeEnabled);
             if (
                 !ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this
                 && !_IsBeingResized
                 ) return;
 
-            
-
             // User has resize cursor over this widget or is in the middle of resizing
-            if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
-            if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
-            if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
-            if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
-
+            if (_resize_grab == Directions2D.UDLR) ParentWindow.UICursor = MouseCursor.SizeAll;
+            else
+            {
+                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
+                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
+                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
+                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
+            }
             if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
                 if (_resize_grab != Directions2D.None) {
                     _resizing_direction = _resize_grab;
@@ -594,11 +610,13 @@ namespace DownUnder.UI.Widgets
             if (_IsBeingResized) {
                 RectangleF new_area = _resizing_initial_area;
                 Point2 amount = UpdateData.UIInputState.CursorPosition.WithOffset(_repositioning_origin.Inverted());
-                if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
-                if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
-                if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
-                if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
-
+                if (_resizing_direction == Directions2D.UDLR) new_area = new_area.WithOffset(amount);
+                else {
+                    if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
+                    if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
+                    if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
+                    if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
+                }
                 RectangleF new_area2 = new_area;
                 //if (ParentWidget != null) new_area2 = 
                 Area = new_area;
@@ -984,7 +1002,7 @@ namespace DownUnder.UI.Widgets
                 // Dispose of previous render target
                 if (_render_target != null) {
                     _render_target.Dispose();
-                    while (!_render_target.IsDisposed) { }
+                    while (!_render_target.IsDisposed) { Thread.Sleep(10); }
                 }
 
                 _render_target = new RenderTarget2D(
@@ -1041,6 +1059,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).AcceptsDrops = AcceptsDrops;
 
             ((Widget)c)._user_resize_policy_backing = _user_resize_policy_backing;
+            ((Widget)c)._user_reposition_policy_backing = _user_reposition_policy_backing;
             ((Widget)c)._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
             ((Widget)c)._allow_highlight_backing = _allow_highlight_backing;
             ((Widget)c)._allow_delete_backing = _allow_delete_backing;
