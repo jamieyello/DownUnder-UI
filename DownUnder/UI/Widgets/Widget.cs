@@ -66,7 +66,7 @@ namespace DownUnder.UI.Widgets
         private bool _dragging_off = false;
 
         /// <summary> The sides (if any) the user is resizing. </summary>
-        private Directions2D _resize_grab;
+        //private Directions2D _resize_grab;
 
         /// <summary> The area of this <see cref="Widget"/> before the user started resizing it. (If the user is resizing) </summary>
         private RectangleF _resizing_initial_area;
@@ -467,26 +467,28 @@ namespace DownUnder.UI.Widgets
         #region Public/Internal Methods
 
         public void Update(GameTime game_time, UIInputState input_state) {
-            UpdatePriority(game_time, InputState);
-            UpdateEvents(game_time);
-            UpdatePost(out bool deleted);
+            UpdateGroupUpdateData(game_time, input_state);
+            UpdateGroupInput();
+            UpdateGroupResizeGrab();
+            UpdateGroupHoverFocus();
+            UpdateGroupEvents(game_time);
+            UpdateGroupPost(out bool deleted);
+        }
+        
+        private void UpdateGroupHoverFocus() {
+            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
+            foreach (Widget widget in Children) widget.UpdateGroupHoverFocus();
         }
 
-        // Nothing should be invoked in UpdatePriority.
-        /// <summary> Updates this <see cref="Widget"/> and all children recursively. This is called before <see cref="Update(GameTime, UIInputState)"/> and updates all logic that should occur beforehand. </summary>
-        private void UpdatePriority(GameTime game_time, UIInputState ui_input) {
+        private void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input) {
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.UIInputState = ui_input;
-
-            UpdateCursorInput();
-            UpdateResizeGrab();
-            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
-            foreach (Widget widget in Children) widget.UpdatePriority(game_time, ui_input);
+            foreach (Widget widget in Children) widget.UpdateGroupUpdateData(game_time, ui_input);
         }
-        
+
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
-        private void UpdateCursorInput() {
+        private void UpdateGroupInput() {
             _update_clicked_on = false;
             _update_double_clicked = false;
             _update_triple_clicked = false;
@@ -537,7 +539,7 @@ namespace DownUnder.UI.Widgets
                 _dragging_off = true;
                 _update_drag = true;
             }
-
+            
             if (UserResizePolicy == UserResizePolicyType.allow 
                 || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted))
             {
@@ -549,56 +551,44 @@ namespace DownUnder.UI.Widgets
                         ParentWindow.InputState.CursorPosition,
                         _USER_RESIZE_BOUNDS_SIZE
                         ) & AllowedResizingDirections;
+                    
                     if (resize_grab != Directions2D.None)
                     {
                         ParentWindow.ResizeCursorGrabber = this;
-                        _resize_grab = resize_grab;
+                        ParentWindow.ResizingDirections = resize_grab;
                     }
                 }
             }
-            if (UserRepositionPolicy == UserResizePolicyType.allow
+            if ((UserRepositionPolicy == UserResizePolicyType.allow
                 || (UserRepositionPolicy == UserResizePolicyType.require_highlight && IsHighlighted))
-            {
-                if (VisibleArea.Contains(InputState.CursorPosition))
-                {
-                    ParentWindow.ResizeCursorGrabber = this;
-                    _resize_grab = Directions2D.UDLR;
-                }
-                
+                && VisibleArea.Contains(InputState.CursorPosition)) {
+                ParentWindow.ResizeCursorGrabber = this;
+                ParentWindow.ResizingDirections = Directions2D.UDLR;
             }
-
-            // Reset if this is overlapping a previous grab
-            //if (ParentWindow.ResizeCursorGrabber != null && ParentWindow.ResizeCursorGrabber != this && VisibleArea.Contains(ParentWindow.InputState.CursorPosition)) {
-            //    ParentWindow.ResizeCursorGrabber = null;
-            //    _resize_grab = Directions2D.None;
-            //}
 
             if (IsHighlighted) {
                 if (AllowDelete && (InputState.BackSpace || InputState.Delete)) _post_update_flags.Delete = true;
                 if (AllowCopy && InputState.Copy) _post_update_flags.Copy = true;
                 if (AllowCut && InputState.Cut) _post_update_flags.Cut = true;
             }
+
+            foreach (Widget widget in Children) widget.UpdateGroupInput();
+
         }
-        
-        private void UpdateResizeGrab() {
+
+        private void UpdateGroupResizeGrab() {
             if (
                 !ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this
-                && !_IsBeingResized
-                ) return;
+                && !_IsBeingResized) {
+                foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
+                return;
+            }
 
             // User has resize cursor over this widget or is in the middle of resizing
-            if (_resize_grab == Directions2D.UDLR) ParentWindow.UICursor = MouseCursor.SizeAll;
-            else
-            {
-                if ((_resize_grab == Directions2D.U) || (_resize_grab == Directions2D.D)) ParentWindow.UICursor = MouseCursor.SizeNS;
-                if ((_resize_grab == Directions2D.L) || (_resize_grab == Directions2D.R)) ParentWindow.UICursor = MouseCursor.SizeWE;
-                if ((_resize_grab == Directions2D.UR) || (_resize_grab == Directions2D.DL)) ParentWindow.UICursor = MouseCursor.SizeNESW;
-                if ((_resize_grab == Directions2D.UL) || (_resize_grab == Directions2D.DR)) ParentWindow.UICursor = MouseCursor.SizeNWSE;
-            }
             if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
-                if (_resize_grab != Directions2D.None) {
-                    _resizing_direction = _resize_grab;
+                if (ParentWindow.ResizingDirections != Directions2D.None) {
+                    _resizing_direction = ParentWindow.ResizingDirections;
                     ParentWindow.UserResizeModeEnable = true;
                     _resizing_initial_area = Area;
                     _repositioning_origin = InputState.CursorPosition;
@@ -621,10 +611,12 @@ namespace DownUnder.UI.Widgets
                 //if (ParentWidget != null) new_area2 = 
                 Area = new_area;
             }
+
+            foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
-        private void UpdateEvents(GameTime game_time) {
+        private void UpdateGroupEvents(GameTime game_time) {
             // Skip some normal behavior if the user has the resize cursor over this widget
             if (!ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this 
@@ -652,23 +644,20 @@ namespace DownUnder.UI.Widgets
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             OnUpdate?.Invoke(this, EventArgs.Empty);
-            foreach (Widget widget in Children) widget.UpdateEvents(game_time);
+            foreach (Widget widget in Children) widget.UpdateGroupEvents(game_time);
         }
 
-        private void UpdatePost(out bool deleted) {
-            if (_post_update_flags.Delete)
-            {
+        private void UpdateGroupPost(out bool deleted) {
+            if (_post_update_flags.Delete) {
                 ParentWidget.RemoveChild(this);
                 deleted = true;
                 return;
             }
 
             WidgetList children = Children;
-            for (int i = 0; i < children.Count; i++)
-            {
-                children[i].UpdatePost(out bool deleted_);
-                if (deleted_)
-                {
+            for (int i = 0; i < children.Count; i++) {
+                children[i].UpdateGroupPost(out bool deleted_);
+                if (deleted_) {
                     children = Children;
                     i--;
                 }

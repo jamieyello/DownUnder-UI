@@ -25,6 +25,7 @@ namespace DownUnder.UIEditor.Editor_Tools
 
             Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
+            ((Layout)main_grid.GetCell(0, 0)).ChangeColorOnMouseOver = false;
             //project.debug_output = true;
 
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
@@ -50,6 +51,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             {
                 butt
             };
+            common_controls.ChangeColorOnMouseOver = false;
 
             sidebar.SetCell(0, 0, common_controls);
             //common_controls.debug_output = true;

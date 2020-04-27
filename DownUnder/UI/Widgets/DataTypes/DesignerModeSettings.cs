@@ -43,7 +43,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             set {
                 _is_developer_mode_enabled_backing = value;
                 foreach (Widget child in Parent.Children) {
-                    child.DesignerObjects.IsEditModeEnabled = value;
+                    if (!(child.Parent is Button)) child.DesignerObjects.IsEditModeEnabled = value;
                 }
             }
         }

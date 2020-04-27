@@ -12,6 +12,7 @@ using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets;
+using DownUnder.Utility;
 
 namespace DownUnder.UI {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
@@ -62,7 +63,8 @@ namespace DownUnder.UI {
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
         /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
         internal Widget ResizeCursorGrabber { get; set; }
-        
+        internal Directions2D ResizingDirections { get; set; }
+
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
         internal bool UserResizeModeEnable {
             get => _is_user_resizing_backing;
@@ -309,9 +311,15 @@ namespace DownUnder.UI {
             InputText.Clear();
             CommandText.Clear();
 
+            ResizingDirections = Directions2D.None;
             Layout.Update(game_time, InputState);
-            //Layout.
-
+            if (ResizingDirections == Directions2D.UDLR) UICursor = MouseCursor.SizeAll;
+            else {
+                if ((ResizingDirections == Directions2D.U) || (ResizingDirections == Directions2D.D)) UICursor = MouseCursor.SizeNS;
+                if ((ResizingDirections == Directions2D.L) || (ResizingDirections == Directions2D.R)) UICursor = MouseCursor.SizeWE;
+                if ((ResizingDirections == Directions2D.UR) || (ResizingDirections == Directions2D.DL)) UICursor = MouseCursor.SizeNESW;
+                if ((ResizingDirections == Directions2D.UL) || (ResizingDirections == Directions2D.DR)) UICursor = MouseCursor.SizeNWSE;
+            }
             if (UICursorsEnabled) Mouse.SetCursor(UICursor);
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;

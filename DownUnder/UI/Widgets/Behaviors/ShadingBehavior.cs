@@ -38,6 +38,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public override object Clone()
         {
             ShadingBehavior c = new ShadingBehavior();
+            c.shading_effect = shading_effect.Clone();
             return c;
         }
     }
