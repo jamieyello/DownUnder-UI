@@ -40,54 +40,34 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Used by some drawing code. </summary>
         private Texture2D _white_dot;
-
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
-
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
-
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
         private float _triple_click_countdown = 0f;
-
         /// <summary> Used to tell whether the cursor moved or not when checking for double/triple clicks. </summary>
         private Point2 _previous_cursor_position = new Point2();
-
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
         private bool _graphics_updating = false;
-
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
         private bool _graphics_in_use = false;
-
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/>. </summary>
         private bool _dragging_in = false;
-
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/> that has traveled outside this <see cref="Widget"/>'s area at some point. </summary>
         private bool _dragging_off = false;
-
-        /// <summary> The sides (if any) the user is resizing. </summary>
-        //private Directions2D _resize_grab;
-
         /// <summary> The area of this <see cref="Widget"/> before the user started resizing it. (If the user is resizing) </summary>
         private RectangleF _resizing_initial_area;
-
-        // why is there a second one?
         Directions2D _resizing_direction;
-
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-
         private WidgetUpdateFlags _post_update_flags = new WidgetUpdateFlags();
-
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
-
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         private const int _WAIT_TIME = 5;
-
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         private const int _MAX_WAIT_TIME = 100;
-
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
         private const float _USER_RESIZE_BOUNDS_SIZE = 20f;
 
@@ -114,7 +94,6 @@ namespace DownUnder.UI.Widgets
         private BaseColorScheme _theme_backing;
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
-        private DrawingMode _draw_mode_backing = DrawingMode.direct;
         private bool _allow_highlight_backing = false;
         Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
@@ -123,7 +102,7 @@ namespace DownUnder.UI.Widgets
         UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         
-        public enum DrawingMode {
+        public enum DrawingModeType {
             /// <summary> Draw nothing. </summary>
             disable,
             /// <summary> Draw directly to the current <see cref="RenderTarget2D"/> without switching or clearing it. (default) </summary>
@@ -152,6 +131,8 @@ namespace DownUnder.UI.Widgets
         [DataMember] public virtual bool DrawBackground { get; set; } = true;
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember] public bool DrawOutline { get; set; } = true;
+        /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
+        [DataMember] public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
         /// <summary> How thick the outline should be. 1 by default. </summary>
         [DataMember] public float OutlineThickness { get; set; } = 1f;
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
@@ -174,9 +155,12 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool AcceptsDrops { get; set; }
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
         [DataMember] public List<Type> AcceptedDropTypes { get; set; } = new List<Type>();
-
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
+        /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
+        public SpriteBatch SpriteBatch { get; private set; }
+        public BehaviorCollection Behaviors { get; private set; }
+        public DesignerModeSettings DesignerObjects { get; set; }
 
         #endregion
 
@@ -220,16 +204,6 @@ namespace DownUnder.UI.Widgets
                 if (_theme_backing != null) _theme_backing.Parent = this;
             }
         }
-
-        /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed, <see cref="DrawingMode.direct"/> should be used for performance. </summary>
-        [DataMember] public DrawingMode DrawMode
-        {
-            get => _draw_mode_backing;
-            set {
-                _draw_mode_backing = value;
-                foreach (Widget child in Children) child.DrawMode = value;
-            }
-        }
         
         /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
         [DataMember] public Directions2D AllowedResizingDirections {
@@ -257,8 +231,8 @@ namespace DownUnder.UI.Widgets
 
         #endregion
 
-        #region Derivatives of previous properties
-
+        #region Non-serialized properties
+    
         /// <summary> The width of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Width { get => Area.Width; set => Area = Area.WithWidth(value); }
         /// <summary> The height of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
@@ -275,11 +249,7 @@ namespace DownUnder.UI.Widgets
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
         /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
-
-        #endregion
-
-        #region Other various non-serialized properties
-
+        
         /// <summary> Returns true if this <see cref="Widget"/> is hovered over. </summary>
         public bool IsHoveredOver {
             get => _is_hovered_over_backing;
@@ -293,10 +263,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Returns true if this <see cref="Widget"/> is being hovered over as well as on top of all the other <see cref="Widget"/>s being hovered over. </summary>
         public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
-
         /// <summary> Returns true if this <see cref="Widget"/> has been initialized graphically. Setting this <see cref="Widget"/>'s <see cref="Parent"/> to an initialized <see cref="Widget"/> or <see cref="DWindow"/> will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
-
         /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
         public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
@@ -309,11 +277,19 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> The position of this <see cref="Widget"/> relative to the <see cref="RenderTarget2D"/> being used. </summary>
+        private Point2 PositionInRender {
+            get {
+                if (ParentWidget == null || DrawingMode == DrawingModeType.use_render_target) { return Position; }
+                if (ParentWidget is IScrollableWidget iscroll_parent) return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(iscroll_parent.Scroll);
+                return Position.WithOffset(ParentWidget.PositionInRender);
+            }
+        }
+
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
         public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
-
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        public RectangleF DrawingArea => DrawMode == DrawingMode.use_render_target ? Area : AreaInWindow;
+        public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
 
         /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
         public IParent Parent {
@@ -344,24 +320,17 @@ namespace DownUnder.UI.Widgets
             set {
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
-                if (value == null) return;
-                
-                DrawMode = value.DrawMode;
             }
         }
 
         /// <summary> Returns true if this <see cref="Widget"/> is owned by a parent. </summary>
         public bool IsOwned => Parent != null;
-
         /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
-
         /// <summary> Represents the window's input each frame. </summary>
         public UIInputState InputState => ParentWindow?.InputState;
-
         /// <summary> Returns true if this is the main selected <see cref="Widget"/>. </summary>
         public bool IsPrimarySelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.Primary == this;
-
         /// <summary>Returns true if this <see cref="Widget"/> is selected. </summary>
         public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
 
@@ -376,10 +345,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         public abstract WidgetList Children { get; }
-
         /// <summary> Gets the index of this <see cref="Widget"/> in its <see cref="ParentWidget"/>. </summary>
         public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
-
         /// <summary> The SpriteFont used by this <see cref="Widget"/>. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
         public SpriteFont SpriteFont {
             get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
@@ -400,13 +367,6 @@ namespace DownUnder.UI.Widgets
                 return UpdateData.UIInputState.CursorPosition - PositionInWindow;
             }
         }
-
-        /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
-        public SpriteBatch SpriteBatch { get; private set; }
-
-        public BehaviorCollection Behaviors { get; private set; }
-
-        public DesignerModeSettings DesignerObjects { get; set; }
 
         /// <summary> When set to true this <see cref="Widget"/> will become highlighted when focused (in parent <see cref="DWindow.SelectedWidgets"/>). </summary>
         public bool AllowHighlight {
@@ -547,7 +507,7 @@ namespace DownUnder.UI.Widgets
                 if (!PassthroughMouse
                     && (ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition)))
                 {
-                    Directions2D resize_grab = DrawingArea.GetCursorHoverOnBorders(
+                    Directions2D resize_grab = AreaInWindow.GetCursorHoverOnBorders(
                         ParentWindow.InputState.CursorPosition,
                         _USER_RESIZE_BOUNDS_SIZE
                         ) & AllowedResizingDirections;
@@ -573,7 +533,6 @@ namespace DownUnder.UI.Widgets
             }
 
             foreach (Widget widget in Children) widget.UpdateGroupInput();
-
         }
 
         private void UpdateGroupResizeGrab() {
@@ -667,23 +626,22 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
         public void Draw(SpriteBatch sprite_batch = null) {
-            switch (DrawMode) {
-                case DrawingMode.direct:
+            switch (DrawingMode) {
+                case DrawingModeType.direct:
                     DrawDirect();
                     DrawNoClip();
                     break;
 
-                case DrawingMode.use_render_target:
+                case DrawingModeType.use_render_target:
                     DrawUsingRenderTargets();
                     break;
 
-                case DrawingMode.disable: break;
+                case DrawingModeType.disable: break;
                 default: throw new Exception("DrawingMode not supported in Draw.");
             }
         }
         
-        private void DrawDirect()
-        {
+        private void DrawDirect() {
             RectangleF visible_area = VisibleArea;
             if (visible_area.Height == 0f || visible_area.Width == 0f) return;
 
@@ -752,8 +710,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Widget child in Children) {
                 renders.Add(child.Render());
-                if (child is IScrollableWidget s_widget) areas.Add(child.Area.WithOffset(s_widget.Scroll.Inverted()));
-                else areas.Add(child.Area);
+                areas.Add(child.Area);
             }
             
             GraphicsDevice.SetRenderTarget(_render_target);
@@ -788,7 +745,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Initializes all graphics related content. </summary>
         private void InitializeGraphics() {
             if (IsGraphicsInitialized) return;
-
             if (GraphicsDevice == null) throw new Exception($"GraphicsDevice cannot be null.");
             
             SpriteBatch = new SpriteBatch(GraphicsDevice);
@@ -874,8 +830,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
-        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
         public event EventHandler OnDrawOverlayEffects;
+        /// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
+        public event EventHandler OnDrawRenderEffects;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
@@ -958,14 +916,15 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes() {
-            foreach (Widget child in Children) {
-                child.UpdateRenderTargetSizes();
+            if (DrawingMode == DrawingModeType.use_render_target) {
+                if (this is IScrollableWidget s_this) UpdateRenderTargetSize(DrawingArea.Size);
+                else UpdateRenderTargetSize(Size);
             }
 
-            if (this is IScrollableWidget s_this) UpdateRenderTargetSize(s_this.ContentArea.Size);
-            else UpdateRenderTargetSize(Size);
+            foreach (Widget child in Children) child.UpdateRenderTargetSizes();
         }
         private void UpdateRenderTargetSize(Point2 size) {
+            if (_render_target != null && (int)size.X == _render_target.Width && (int)size.Y == _render_target.Height) return;
             _graphics_updating = true;
 
             if (_graphics_in_use) {
@@ -982,29 +941,27 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            if (size.ToPoint() != _render_target?.Size().ToPoint()) {
-                if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE) {
-                    size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
-                    Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
-                }
-
-                // Dispose of previous render target
-                if (_render_target != null) {
-                    _render_target.Dispose();
-                    while (!_render_target.IsDisposed) { Thread.Sleep(10); }
-                }
-
-                _render_target = new RenderTarget2D(
-                    GraphicsDevice,
-                    (int)size.X,
-                    (int)size.Y,
-                    false,
-                    SurfaceFormat.Vector4,
-                    DepthFormat.Depth24,
-                    0,
-                    RenderTargetUsage.DiscardContents);
+            
+            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE) {
+                size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
+                Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
             }
-
+            
+            if (_render_target != null) {
+                _render_target.Dispose();
+                while (!_render_target.IsDisposed) { Thread.Sleep(10); }
+            }
+           
+            _render_target = new RenderTarget2D(
+                GraphicsDevice,
+                (int)size.X,
+                (int)size.Y,
+                false,
+                SurfaceFormat.Vector4,
+                DepthFormat.Depth24,
+                0,
+                RenderTargetUsage.DiscardContents);
+            
             _graphics_updating = false;
         }
 
@@ -1042,7 +999,7 @@ namespace DownUnder.UI.Widgets
             ((Widget)c).IsFixedWidth = IsFixedWidth;
             ((Widget)c).IsFixedHeight = IsFixedHeight;
             ((Widget)c).PaletteUsage = PaletteUsage;
-            ((Widget)c).DrawMode = DrawMode;
+            ((Widget)c).DrawingMode = DrawingMode;
             ((Widget)c).debug_output = debug_output;
             ((Widget)c).PassthroughMouse = PassthroughMouse;
             ((Widget)c).AcceptsDrops = AcceptsDrops;

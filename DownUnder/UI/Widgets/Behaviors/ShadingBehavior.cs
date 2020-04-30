@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void InitializeEffect(object sender, EventArgs args)
         {
-            shading_effect = Parent.ParentWindow.DownunderUberShader.Clone();
+            shading_effect = Parent.ParentWindow.EffectCollection.BlurEffect.Clone();
         }
 
         private void DrawEffect(object sender, EventArgs args)

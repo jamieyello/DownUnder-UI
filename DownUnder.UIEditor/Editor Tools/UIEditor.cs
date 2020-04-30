@@ -26,6 +26,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
             ((Layout)main_grid.GetCell(0, 0)).ChangeColorOnMouseOver = false;
+            ((Layout)main_grid.GetCell(0, 0)).Behaviors.Add(new ShadingBehavior());
             //project.debug_output = true;
 
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
@@ -42,8 +43,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             butt.Behaviors.Add(new AddWidget() {
                 DragObject = new Button() {
                     SnappingPolicy = DiagonalDirections2D.None,
-                    Area = new RectangleF(0, 0, 90, 30),
-                    debug_output = true
+                    Area = new RectangleF(0, 0, 90, 30)
                 }
             });
             
@@ -62,7 +62,9 @@ namespace DownUnder.UIEditor.Editor_Tools
             sidebar.SetCell(0, 1, property_grid_layout);
 
             PropertyGrid property_grid = new PropertyGrid(property_grid_layout, project);
+            property_grid.debug_output = true;
             property_grid_layout.Add(property_grid);
+            property_grid_layout.debug_output = true;
 
             editor_objects = new EditorObjects
             {

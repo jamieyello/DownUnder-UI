@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.WidgetControls;
+using DownUnder.UI.Widgets.WidgetElements;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.Interfaces

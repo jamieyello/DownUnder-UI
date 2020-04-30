@@ -93,8 +93,8 @@ namespace DownUnder.UI {
         public bool UICursorsEnabled { get; set; } = true;
         /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
         public SpriteFont SpriteFont { get; protected set; }
-        public Effect DownunderUberShader { get; set; }
-
+        public DownUnderEffects EffectCollection = new DownUnderEffects();
+        
         #endregion
 
         /// <summary> The Layout Widget of this window. </summary>

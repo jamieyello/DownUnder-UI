@@ -69,7 +69,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\downunder_uber_shader.fx" />
+    <Content Include="Content\gaussian_blur.fx" />
+    <Content Include="Content\gradient.fx" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.UI.Widgets.WidgetControls;
+using DownUnder.UI.Widgets.WidgetElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;

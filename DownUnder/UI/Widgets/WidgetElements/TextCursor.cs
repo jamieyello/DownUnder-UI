@@ -8,7 +8,7 @@ using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.Utilities;
 
-namespace DownUnder.UI.Widgets.WidgetControls
+namespace DownUnder.UI.Widgets.WidgetElements
 {
     /// <summary> The blinking vertical line used in typing. Also handles highlighted text. </summary>
     class TextCursor

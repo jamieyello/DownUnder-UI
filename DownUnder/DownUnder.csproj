@@ -97,6 +97,7 @@
     <Compile Include="UI\Widgets\Behaviors\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\ShadingBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\DesignerModeSettings.cs" />
+    <Compile Include="UI\Widgets\DataTypes\DownUnderEffects.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
@@ -120,8 +121,8 @@
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\WidgetControls\Scroll.cs" />
-    <Compile Include="UI\Widgets\WidgetControls\TextCursor.cs" />
+    <Compile Include="UI\Widgets\WidgetElements\Scroll.cs" />
+    <Compile Include="UI\Widgets\WidgetElements\TextCursor.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />
     <Compile Include="Utilities\Directions2D.cs" />
     <Compile Include="Utilities\DrawingEffects\GridPixel.cs" />

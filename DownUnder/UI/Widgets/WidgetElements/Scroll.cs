@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 // Todo: Add ImmediateValue/TargetValue to ChangingValue, replacing GetCurrent?
 // Todo: Move the bar before calculating position to optimize responsiveness.
 
-namespace DownUnder.UI.Widgets.WidgetControls
+namespace DownUnder.UI.Widgets.WidgetElements
 {
     /// <summary> Scrollbars used commonly in widgets with inner areas. Modifies ScrollX and ScrollY. </summary>
     [DataContract]
@@ -91,6 +91,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
         public void Draw(SpriteBatch sprite_batch)
         {
+            if (_parent.debug_output) Console.WriteLine(_outer_side_bar_area);
             sprite_batch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
             sprite_batch.Draw(_white_dot, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
             
@@ -126,14 +127,12 @@ namespace DownUnder.UI.Widgets.WidgetControls
             Point2 modifier = new Point2();
 
             // Calculate modifiers for the size of the inner bar.
-            if (drawing_area.Width.Rounded() < widget_content_area.Width.Rounded())
-            {
+            if (drawing_area.Width.Rounded() < widget_content_area.Width.Rounded()) {
                 modifier.X = widget_area.Width / widget_content_area.Width;
                 _BottomVisible = true;
             }
             else { modifier.X = 1f; _BottomVisible = false; }
-            if (drawing_area.Height.Rounded() < widget_content_area.Height.Rounded())
-            {
+            if (drawing_area.Height.Rounded() < widget_content_area.Height.Rounded()) {
                 modifier.Y = widget_area.Height / widget_content_area.Height;
                 _SideVisible = true;
             }
@@ -149,10 +148,10 @@ namespace DownUnder.UI.Widgets.WidgetControls
             _bottom_right_square_area.Size = new Size2(Thickness, Thickness);
 
             // Calculate the positions of the bars.
-            _outer_bar_bottom_area.X = area_in_window.X;
-            _outer_side_bar_area.Y = area_in_window.Y;
-            _outer_bar_bottom_area.Y = area_in_window.Bottom - _outer_bar_bottom_area.Height;
-            _outer_side_bar_area.X = area_in_window.Right - _outer_side_bar_area.Width;
+            _outer_bar_bottom_area.X = drawing_area.X;
+            _outer_side_bar_area.Y = drawing_area.Y;
+            _outer_bar_bottom_area.Y = drawing_area.Bottom - _outer_bar_bottom_area.Height;
+            _outer_side_bar_area.X = drawing_area.Right - _outer_side_bar_area.Width;
 
             _inner_side_bar_area.X = _outer_side_bar_area.X + InnerBarSpacing;
             _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + Y.GetCurrent() * modifier.Y;
@@ -165,7 +164,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
 
             // Update palettes
             Point2 cursor_position = ui_input_state.CursorPosition;
-            if (_parent.DrawMode == Widget.DrawingMode.use_render_target) cursor_position = _parent.CursorPosition;
+            if (_parent.DrawingMode == Widget.DrawingModeType.use_render_target) cursor_position = _parent.CursorPosition;
 
             BottomInnerBarPalette.Hovered = 
                 _inner_bottom_bar_area
@@ -196,8 +195,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
 
             // Hold/Continue holding the bars.
-            if ((BottomInnerBarPalette.Hovered && ui_input_state.PrimaryClickTriggered && _BottomVisible) || _bottom_bar_held)
-            {
+            if ((BottomInnerBarPalette.Hovered && ui_input_state.PrimaryClickTriggered && _BottomVisible) || _bottom_bar_held) {
                 BottomInnerBarPalette.SpecialColorEnabled = true;
                 if (!_bottom_bar_held)
                 {
@@ -206,12 +204,9 @@ namespace DownUnder.UI.Widgets.WidgetControls
                     _bottom_bar_initial_x_value = X.GetCurrent();
                 }
             }
-            else
-            {
-                BottomInnerBarPalette.SpecialColorEnabled = false;
-            }
-            if ((SideInnerBarPalette.Hovered && ui_input_state.PrimaryClickTriggered && _SideVisible) || _side_bar_held)
-            {
+            else BottomInnerBarPalette.SpecialColorEnabled = false;
+            
+            if ((SideInnerBarPalette.Hovered && ui_input_state.PrimaryClickTriggered && _SideVisible) || _side_bar_held) {
                 SideInnerBarPalette.SpecialColorEnabled = true;
                 if (!_side_bar_held)
                 {
@@ -220,21 +215,16 @@ namespace DownUnder.UI.Widgets.WidgetControls
                     _side_bar_initial_y_value = Y.GetCurrent();
                 }
             }
-            else
-            {
-                SideInnerBarPalette.SpecialColorEnabled = false;
-            }
-
+            else SideInnerBarPalette.SpecialColorEnabled = false;
+            
             // Apply offset.
-            if (_side_bar_held)
-            {
+            if (_side_bar_held) {
                 Y.SetTargetValue(
                     _side_bar_initial_y_value +
                     (ui_input_state.CursorPosition.Y - _side_bar_cursor_initial_y_value) / modifier.Y
                     , true);
             }
-            if (_bottom_bar_held)
-            {
+            if (_bottom_bar_held) {
                 X.SetTargetValue(
                     _bottom_bar_initial_x_value +
                     (ui_input_state.CursorPosition.X - _bottom_bar_cursor_initial_x_value) / modifier.X
@@ -242,9 +232,7 @@ namespace DownUnder.UI.Widgets.WidgetControls
             }
 
             #endregion Grabbing and dragging the bars
-
-            #region Restraining
-
+            
             // Don't let the scrollbars go out of bounds.
             if (X.GetCurrent() < 0f) X.SetTargetValue(0f, true);
             if (Y.GetCurrent() < 0f) Y.SetTargetValue(0f, true);
@@ -252,8 +240,6 @@ namespace DownUnder.UI.Widgets.WidgetControls
                 X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
             if (Y.GetCurrent() > widget_content_area.Height - widget_area.Height)
                 Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
-
-            #endregion Restraining
         }
 
         public Vector2 ToVector2()
