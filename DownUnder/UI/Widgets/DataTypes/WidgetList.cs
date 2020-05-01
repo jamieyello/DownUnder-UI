@@ -101,28 +101,18 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public float CombinedHeight
-        {
-            get
-            {
+        public float CombinedHeight {
+            get {
                 float result = 0f;
-                foreach (Widget widget in _widgets)
-                {
-                    result += widget.Height;
-                }
+                foreach (Widget widget in _widgets) result += widget.Height;
                 return result;
             }
         }
 
-        public float CombinedWidth
-        {
-            get
-            {
+        public float CombinedWidth {
+            get {
                 float result = 0f;
-                foreach (Widget widget in _widgets)
-                {
-                    result += widget.Width;
-                }
+                foreach (Widget widget in _widgets) result += widget.Width;
                 return result;
             }
         }

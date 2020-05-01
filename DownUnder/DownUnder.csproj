@@ -132,6 +132,7 @@
     <Compile Include="Utilities\Extensions\ConversionExtensions.cs" />
     <Compile Include="Utilities\Extensions\DrawingExtensions.cs" />
     <Compile Include="Utilities\Extensions\RectangleFExtensions.cs" />
+    <Compile Include="Utilities\Extensions\WidgetExtensions.cs" />
     <Compile Include="Utilities\Interpolation.cs" />
     <Compile Include="Utilities\OSInterface.cs" />
     <Compile Include="Utilities\Serialization\CSCreator.cs" />
