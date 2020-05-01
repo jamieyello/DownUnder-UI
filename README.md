@@ -9,6 +9,6 @@ Talk on Discord: https://discord.gg/bEZPvQE
 
 ![A dark themed UI](/Images/good_ui8.gif)
 
-This is pretty complicated stuff, as you can see by the diagram below.
+Construction is ongoing
 
 ![wtf](/Images/good_ui9.gif)
