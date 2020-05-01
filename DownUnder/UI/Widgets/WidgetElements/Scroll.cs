@@ -60,21 +60,17 @@ namespace DownUnder.UI.Widgets.WidgetElements
         [DataMember] public ElementColors SideInnerBarPalette { get; private set; }
         [DataMember] public ElementColors BottomInnerBarPalette { get; private set; }
         [DataMember] public ElementColors BottomRightSquarePalette { get; private set; }
-
         [DataMember] public float InnerBarSpacing { get; set; } = 4f;
 
-        public float SidebarHideSpeed
-        {
+        public float SidebarHideSpeed {
             get => SideBarWidth.TransitionSpeed;
-            set
-            {
+            set {
                 SideBarWidth.TransitionSpeed = value;
                 BottomBarHeight.TransitionSpeed = value;
             }
         }
 
-        public Scroll(IScrollableWidget parent, GraphicsDevice graphics_device)
-        {
+        public Scroll(IScrollableWidget parent, GraphicsDevice graphics_device) {
             _iscrollable_parent = parent;
             _parent = (Widget)parent;
             _white_dot = DrawingTools.Dot(graphics_device, Color.White);
@@ -89,23 +85,17 @@ namespace DownUnder.UI.Widgets.WidgetElements
             SidebarHideSpeed = 2f;
         }
 
-        public void Draw(SpriteBatch sprite_batch)
-        {
-            if (_parent.debug_output) Console.WriteLine(_outer_side_bar_area);
+        public void Draw(SpriteBatch sprite_batch) {
             sprite_batch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
             sprite_batch.Draw(_white_dot, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
             
             sprite_batch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
             sprite_batch.Draw(_white_dot, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
             
-            if (_SideVisible || _BottomVisible)
-            {
-                sprite_batch.Draw(_white_dot, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
-            }
+            if (_SideVisible || _BottomVisible) sprite_batch.Draw(_white_dot, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
         }
 
-        public void Update(float step, UIInputState ui_input_state)
-        {
+        public void Update(float step, UIInputState ui_input_state) {
             #region Position / Size
 
             RectangleF widget_content_area = _iscrollable_parent.ContentArea;

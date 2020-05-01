@@ -657,7 +657,7 @@ namespace DownUnder.UI.Widgets
 
             for (int i = tree.Count - 1; i >= 1; i--) {
                 if (tree[i].DrawingMode == DrawingModeType.use_render_target) {
-                    tree[i].Render2();
+                    tree[i].Render();
                     swapped_render_target = true;
                 }
             }
@@ -666,13 +666,13 @@ namespace DownUnder.UI.Widgets
             DrawDirect(_local_sprite_batch);
         }
 
-        private void Render2()
+        private void Render()
         {
             GraphicsDevice.SetRenderTarget(_render_target);
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawContent();
             foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-            DrawOverlay2();
+            DrawOverlay();
             SpriteBatch.End();
         }
 
@@ -681,13 +681,15 @@ namespace DownUnder.UI.Widgets
 
             if (DrawingMode == DrawingModeType.use_render_target)
             {
-                //_passed_sprite_batch.Draw(_render_target, DrawingArea.ToRectangle(), Color.White);
+                SpriteBatch.Begin();
+                SpriteBatch.Draw(_render_target, Position, Color.White);
+                SpriteBatch.End();
                 return;
             }
 
             DrawContent();
             foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-            DrawOverlay2();
+            DrawOverlay();
         }
 
         /// <summary> Draws content without altering render target or spritebatch. </summary>
@@ -695,14 +697,12 @@ namespace DownUnder.UI.Widgets
         {
             RectangleF visible_area = VisibleArea;
             Rectangle previous_scissor_area = new Rectangle();
-            if (DrawingMode == DrawingModeType.direct)
-            {
+            if (DrawingMode == DrawingModeType.direct) {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
             }
-            if (DrawBackground)
-            {
-                if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(visible_area, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
+            if (DrawBackground) {
+                if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(DrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
                 else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
             }
             OnDraw?.Invoke(this, EventArgs.Empty);
@@ -710,7 +710,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch.. </summary>
-        private void DrawOverlay2() {
+        private void DrawOverlay() {
             Rectangle previous_scissor_area = new Rectangle();
             if (DrawingMode == DrawingModeType.direct)
             {
@@ -733,39 +733,6 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private void DrawUsingRenderTargets()
-        {
-            var previous_render_targets = GraphicsDevice.GetRenderTargets();
-            Render();
-            GraphicsDevice.SetRenderTargets(previous_render_targets);
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(_render_target, Area.ToRectangle(), Color.White);
-            SpriteBatch.End();
-        }
-
-        //Delegate[] delegates = OnDrawOverlayEffects?.GetInvocationList();
-        //if (delegates == null) return;
-        //foreach (Delegate delegate_ in delegates) {
-        //    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //    delegate_.DynamicInvoke(new object[] { this, EventArgs.Empty });
-        //    SpriteBatch.End();
-        //}
-        //switch (DrawingMode) {
-        //    case DrawingModeType.direct:
-        //        _local_sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //        DrawDirect(_local_sprite_batch);
-        //        _local_sprite_batch.End();
-        //        //DrawNoClip();
-        //        break;
-        //
-        //    case DrawingModeType.use_render_target:
-        //        DrawUsingRenderTargets();
-        //        break;
-        //
-        //    case DrawingModeType.disable: break;
-        //    default: throw new Exception("DrawingMode not supported in Draw.");
-        //}
-
         private void DrawNoClip() {
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
@@ -773,54 +740,6 @@ namespace DownUnder.UI.Widgets
             foreach (Widget child in Children) child.DrawNoClip();
         }
 
-        /// <summary> Renders this <see cref="Widget"/> with all children inside. </summary>
-        /// <returns> This <see cref="Widget"/>'s render. </returns>
-        private RenderTarget2D Render() {
-            UpdateRenderTargetSizes();
-
-            _graphics_in_use = true;
-            if (_graphics_updating) {
-                _graphics_in_use = false;
-                return _render_target;
-            }
-
-            List<RenderTarget2D> renders = new List<RenderTarget2D>();
-            List<RectangleF> areas = new List<RectangleF>();
-
-            foreach (Widget child in Children) {
-                renders.Add(child.Render());
-                areas.Add(child.Area);
-            }
-            
-            GraphicsDevice.SetRenderTarget(_render_target);
-            if (DrawBackground) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
-            SpriteBatch.Begin();
-            OnDraw?.Invoke(this, EventArgs.Empty);
-
-            int i = 0;
-            foreach (Widget child in Children) {
-                if (this is IScrollableWidget s_this) {
-                    SpriteBatch.Draw (
-                        renders[i],
-                        areas[i].Position.WithOffset(s_this.Scroll).Floored(),
-                        Color.White
-                        );
-                }
-                else {
-                    SpriteBatch.Draw (
-                        renders[i], 
-                        areas[i].ToRectangle(),
-                        Color.White
-                        );
-                }
-                i++;
-            }
-            DrawOverlay();
-            SpriteBatch.End();
-            _graphics_in_use = false;
-            return _render_target;
-        }
-        
         /// <summary> Initializes all graphics related content. </summary>
         private void InitializeGraphics() {
             if (IsGraphicsInitialized) return;
@@ -962,26 +881,6 @@ namespace DownUnder.UI.Widgets
             }
 
             Area = new_area.WithMinimumSize(MinimumSize);
-        }
-
-        /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/>. </summary>
-        private void DrawOverlay() {
-            if (DrawOutline) {
-                DrawingTools.DrawBorder(
-                    _white_dot,
-                    SpriteBatch,
-                    DrawingArea.ToRectangle(),
-                    OutlineThickness,
-                    Theme.OutlineColor.CurrentColor,
-                    OutlineSides
-                    );
-            }
-
-            if (this is IScrollableWidget scroll_widget){
-                scroll_widget.ScrollBars.Draw(SpriteBatch);
-            }
-
-            OnDrawOverlay?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
