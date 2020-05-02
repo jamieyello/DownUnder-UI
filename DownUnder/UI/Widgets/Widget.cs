@@ -41,6 +41,8 @@ namespace DownUnder.UI.Widgets
         private Texture2D _white_dot;
         /// <summary> The render target this Widget uses to draw to. </summary>
         private RenderTarget2D _render_target;
+        private SpriteBatch _local_sprite_batch;
+        private SpriteBatch _passed_sprite_batch;
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
         private float _double_click_countdown = 0f;
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
@@ -160,9 +162,7 @@ namespace DownUnder.UI.Widgets
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public BehaviorCollection Behaviors { get; private set; }
         public DesignerModeSettings DesignerObjects { get; set; }
-
-        private SpriteBatch _local_sprite_batch;
-        private SpriteBatch _passed_sprite_batch;
+        public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
 
         #endregion
 
@@ -282,7 +282,8 @@ namespace DownUnder.UI.Widgets
         /// <summary> The position of this <see cref="Widget"/> relative to the <see cref="RenderTarget2D"/> being used. </summary>
         private Point2 PositionInRender {
             get {
-                if (ParentWidget == null || DrawingMode == DrawingModeType.use_render_target) { return Position; }
+                if (DrawingMode == DrawingModeType.use_render_target) return new Point2();
+                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) { return Position; }
                 if (ParentWidget is IScrollableWidget iscroll_parent) return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(iscroll_parent.Scroll);
                 return Position.WithOffset(ParentWidget.PositionInRender);
             }
@@ -292,6 +293,12 @@ namespace DownUnder.UI.Widgets
         public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
+        public RectangleF VisibleDrawingArea {
+            get {
+                if (DrawingMode == DrawingModeType.use_render_target || ParentWidget == null) return Area;
+                return DrawingArea.Intersection(ParentWidget.DrawingArea);
+            }
+        }
 
         /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
         public IParent Parent {
@@ -666,8 +673,7 @@ namespace DownUnder.UI.Widgets
             DrawDirect(_local_sprite_batch);
         }
 
-        private void Render()
-        {
+        private void Render() {
             GraphicsDevice.SetRenderTarget(_render_target);
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawContent();
@@ -679,8 +685,7 @@ namespace DownUnder.UI.Widgets
         private void DrawDirect(SpriteBatch sprite_batch) {
             _passed_sprite_batch = sprite_batch;
 
-            if (DrawingMode == DrawingModeType.use_render_target)
-            {
+            if (DrawingMode == DrawingModeType.use_render_target) {
                 SpriteBatch.Begin();
                 SpriteBatch.Draw(_render_target, Position, Color.White);
                 SpriteBatch.End();
@@ -693,16 +698,14 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draws content without altering render target or spritebatch. </summary>
-        private void DrawContent()
-        {
-            RectangleF visible_area = VisibleArea;
+        private void DrawContent() {
             Rectangle previous_scissor_area = new Rectangle();
             if (DrawingMode == DrawingModeType.direct) {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = visible_area.ToRectangle();
+                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
             }
             if (DrawBackground) {
-                if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(DrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
+                if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(VisibleDrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
                 else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
             }
             OnDraw?.Invoke(this, EventArgs.Empty);
@@ -712,10 +715,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch.. </summary>
         private void DrawOverlay() {
             Rectangle previous_scissor_area = new Rectangle();
-            if (DrawingMode == DrawingModeType.direct)
-            {
+            if (DrawingMode == DrawingModeType.direct) {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
             }
             if (DrawOutline) {
                 DrawingTools.DrawBorder(

@@ -13,6 +13,7 @@ using MonoGame.Extended;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets;
 using DownUnder.Utility;
+using DownUnder.UI.Widgets.Behaviors;
 
 namespace DownUnder.UI {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
@@ -64,6 +65,8 @@ namespace DownUnder.UI {
         /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
         internal Widget ResizeCursorGrabber { get; set; }
         internal Directions2D ResizingDirections { get; set; }
+        /// <summary> A collection of basic general use <see cref="WidgetBehavior"/>s. </summary>
+        public BehaviorLibraryAccessor BehaviorLibrary { get; } = new BehaviorLibraryAccessor();
 
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
         internal bool UserResizeModeEnable {
@@ -81,7 +84,7 @@ namespace DownUnder.UI {
                 }
             }
         }
-        /// <summary> Widget (if any) that is currently being resized. </summary>
+        /// <summary> <see cref="Widget"/> (if any) that is currently being resized. </summary>
         internal Widget ResizingWidget { get; private set; }
         /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
         public bool WaitForCrossThreadCompletion { get; set; } = true;
@@ -290,7 +293,11 @@ namespace DownUnder.UI {
             return Children[Children.Count - 1];
         }
 
-        protected void LoadDWindow() => UIImages = new UIImages(GraphicsDevice);
+        protected void LoadDWindow() {
+            UIImages = new UIImages(GraphicsDevice);
+            EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
+            EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
+        }
 
         protected void UpdateDWindow(GameTime game_time) {
             _area_cache = Area;

@@ -3,7 +3,7 @@ using System;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class AddWidget : WidgetBehavior
+    public class DragAndDropSource : WidgetBehavior
     {
         public ICloneable DragObject;
 

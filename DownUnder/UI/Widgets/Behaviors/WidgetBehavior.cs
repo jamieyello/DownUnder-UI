@@ -7,7 +7,7 @@ namespace DownUnder.UI.Widgets.Behaviors
     public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable
     {
         Widget _parent_backing;
-
+        
         public Widget Parent {
             get => _parent_backing;
             set {

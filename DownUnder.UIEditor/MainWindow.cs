@@ -51,8 +51,7 @@ namespace DownUnder.Widgets
 
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteFont = Content.Load<SpriteFont>("font");
-            EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
-            EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
+            
             Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = EditorTools.TestLayout2(this);
 

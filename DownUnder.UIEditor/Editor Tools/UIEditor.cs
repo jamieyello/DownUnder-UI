@@ -39,8 +39,8 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
             
             butt.DrawBackground = true;
-            butt.Behaviors.Add(new DragableOutlineAnimation());
-            butt.Behaviors.Add(new AddWidget() {
+            butt.Behaviors.Add(butt.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            butt.Behaviors.Add(new DragAndDropSource() {
                 DragObject = new Button() {
                     SnappingPolicy = DiagonalDirections2D.None,
                     Area = new RectangleF(0, 0, 90, 30)

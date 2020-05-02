@@ -2,12 +2,14 @@
 using System;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework;
+using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors
-{
-    public class ShadingBehavior : WidgetBehavior
+namespace DownUnder.UI.Widgets.Behaviors {
+    [DataContract] public class ShadingBehavior : WidgetBehavior
     {
         Effect shading_effect;
+
+        [DataMember] public Color ShadeColor { get; set; } = Color.Black;
 
         protected override void ConnectToParent()
         {
@@ -29,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void DrawEffect(object sender, EventArgs args)
         {
-            shading_effect.Parameters["ShadeColor"]?.SetValue(Color.Black.ToVector4());
+            shading_effect.Parameters["ShadeColor"]?.SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["Size"]?.SetValue(Parent.Size);
             shading_effect.CurrentTechnique.Passes[0].Apply();
             Parent.SpriteBatch.FillRectangle(Parent.DrawingArea, Color.Transparent);
