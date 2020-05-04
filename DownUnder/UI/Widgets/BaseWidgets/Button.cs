@@ -57,7 +57,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         }
         
         public override WidgetList Children => _children_backing;
-        protected override void HandleChildRemoval(Widget widget) => throw new NotImplementedException();
+        protected override void HandleChildDelete(Widget widget) => throw new NotImplementedException();
 
         protected override object DerivedClone() {
             Button c = new Button();

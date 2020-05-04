@@ -651,6 +651,7 @@ namespace DownUnder.UI.Widgets
             _local_sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawTree();
             _local_sprite_batch.End();
+            foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
             return;
         }
 
@@ -680,6 +681,7 @@ namespace DownUnder.UI.Widgets
             foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
             DrawOverlay();
             SpriteBatch.End();
+            DrawOverlayEffects(OnDrawOverlayEffects);
         }
 
         private void DrawDirect(SpriteBatch sprite_batch) {
@@ -735,7 +737,18 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
+        private void DrawOverlayEffects(EventHandler handler) {
+            Delegate[] delegates = handler?.GetInvocationList();
+            if (delegates == null) return;
+            foreach (Delegate delegate_ in delegates) {
+                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                delegate_.DynamicInvoke(new object[] { this, EventArgs.Empty });
+                SpriteBatch.End();
+            }
+        }
+
         private void DrawNoClip() {
+            if (OnDrawNoClip == null) return;
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
             SpriteBatch.End();
@@ -763,10 +776,10 @@ namespace DownUnder.UI.Widgets
 
         private void RemoveChild(Widget widget) {
             if (!Children.Contains(widget)) throw new Exception("Given widget is not owned by this widget.");
-            HandleChildRemoval(widget);
+            HandleChildDelete(widget);
         }
 
-        protected abstract void HandleChildRemoval(Widget widget);
+        protected abstract void HandleChildDelete(Widget widget);
 
         /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
         //public void ConnectEvents()

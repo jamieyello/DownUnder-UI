@@ -125,7 +125,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         }
 
         protected override object DerivedClone() => throw new NotImplementedException();
-        protected override void HandleChildRemoval(Widget widget) => throw new NotImplementedException();
+        protected override void HandleChildDelete(Widget widget) => throw new NotImplementedException();
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="Parent"/>, if any) </summary>
         public override RectangleF Area {
             get {

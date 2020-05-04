@@ -80,7 +80,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         }
 
         public override WidgetList Children => new WidgetList();
-        protected override void HandleChildRemoval(Widget widget) => throw new NotImplementedException();
+        protected override void HandleChildDelete(Widget widget) => throw new NotImplementedException();
 
         /// <summary> When set to true pressing enter while this <see cref="Label"/> is the primarily selected one will trigger confirmation events. </summary>
         public override bool EnterConfirms {

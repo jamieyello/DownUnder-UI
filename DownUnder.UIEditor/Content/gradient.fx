@@ -17,12 +17,12 @@ float ShadeVisibility = 0.5;
 float4 ShadeColor = float4(0, 0, 0, 1);
 
 // Border
-float BorderWidth = 20;
-float BorderExponential = 2;
+float BorderWidth = 40;
+float BorderExponential = 1;
 float BorderVisibility = 1;
 
 // Gradient
-float2 GradientVisibility = float2(0, 0);
+float2 GradientVisibility = float2(.5, .5);
 float2 GradientExponential = float2(1, 1);
 
 // ---

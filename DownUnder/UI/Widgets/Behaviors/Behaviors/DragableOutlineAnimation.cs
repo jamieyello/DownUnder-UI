@@ -53,7 +53,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             round_amount.SetTargetValue(0f);
             rect_color.TransitionSpeed = 1f;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), false);
-            rect.SetTargetValue(rect.GetCurrent().Resized(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
+            rect.SetTargetValue(rect.GetCurrent().ResizedBy(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
         }
 
         private void Update(object sender, EventArgs args) {

@@ -122,11 +122,11 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public void ExpandAll(float modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.Resized(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.ResizedBy(modifier);
         }
 
         public void ExpandAll(Point2 modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.Resized(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.ResizedBy(modifier);
         }
 
         /// <summary> Set all the widget's width values to match each other. </summary>
