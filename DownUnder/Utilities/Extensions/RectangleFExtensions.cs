@@ -77,7 +77,7 @@ namespace DownUnder {
                 r.X - bs.Left,
                 r.Y - bs.Top,
                 r.Width + bs.Left + bs.Right,
-                r.Height + bs.Top + bs.Down
+                r.Height + bs.Top + bs.Bottom
                 );
         
         public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions) {

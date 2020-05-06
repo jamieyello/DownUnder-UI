@@ -6,6 +6,7 @@ using DownUnder.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
+using System.ComponentModel;
 
 namespace DownUnder.UIEditor
 {
@@ -76,8 +77,19 @@ namespace DownUnder.UIEditor
             return layout;
         }
 
-        private static void PrintDisplayArea(object sender, EventArgs args)
-        {
+        public static Layout TestLayout4(DWindow parent) {
+            Layout layout = new Layout(parent);
+            UI.Widgets.BaseWidgets.BorderContainer container = new UI.Widgets.BaseWidgets.BorderContainer();
+            container.Size = new Point2(400, 300);
+            container.Parent = layout;
+            container.ContainedWidget = new Button();
+            container.SnappingPolicy = DiagonalDirections2D.None;
+            container.TopBorderWidget = new Label(container, "Top Border");
+            layout.Add(container);
+            return layout;
+        }
+
+        private static void PrintDisplayArea(object sender, EventArgs args) {
             Widget w = (Widget)sender;
             Console.WriteLine($"DisplayArea {w.DrawingArea}");
         }
