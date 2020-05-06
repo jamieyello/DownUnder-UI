@@ -11,4 +11,4 @@ Talk on Discord: https://discord.gg/bEZPvQE
 
 Construction is ongoing
 
-![wtf](/Images/good_ui9.gif)
+![wtf](/Images/better_diagram.gif)
