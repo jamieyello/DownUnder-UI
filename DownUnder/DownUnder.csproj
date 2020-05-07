@@ -122,7 +122,6 @@
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
     <Compile Include="UI\Widgets\Interfaces\IWidgetChild.cs" />
-    <Compile Include="UI\Widgets\SpecializedWidgets\ItemTreeGrid.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
@@ -144,7 +143,6 @@
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
-    <Compile Include="Utilities\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Application Notes.txt" />

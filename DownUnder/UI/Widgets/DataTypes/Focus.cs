@@ -11,6 +11,8 @@
         private WidgetList _focused_widgets = new WidgetList();
         private readonly FocusType _focus_type;
 
+        public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[_focused_widgets.Count - 1] : null;
+
         public Focus(FocusType focus_type) => _focus_type = focus_type;
 
         public void AddFocus(Widget widget) {
@@ -46,9 +48,6 @@
         }
 
         public bool IsWidgetFocused(Widget widget) => _focused_widgets.Contains(widget);
-
-        public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[_focused_widgets.Count - 1] : null;
-
         /// <summary> Returns a shallow clone of the focused <see cref="Widget"/>s. </summary>
         public WidgetList ToWidgetList() => new WidgetList(_focused_widgets, true);
     }

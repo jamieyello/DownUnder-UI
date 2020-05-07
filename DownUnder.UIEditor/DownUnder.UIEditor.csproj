@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Editor Tools\EditorObjects.cs" />
-    <Compile Include="Editor Tools\EditorTools.cs" />
+    <Compile Include="Editor Tools\TestLayouts.cs" />
     <Compile Include="Editor Tools\UIEditor.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Program.cs" />

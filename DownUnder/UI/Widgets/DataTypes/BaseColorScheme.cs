@@ -4,14 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes
-{
-    [DataContract]
-    public class BaseColorScheme : ICloneable
-    {
+namespace DownUnder.UI.Widgets.DataTypes {
+    [DataContract] public class BaseColorScheme : ICloneable {
         /// <summary> Defines the behavior of the theme when updating as well as what colors a widget accesses in the theme. </summary>
-        public enum PaletteCategory
-        {
+        public enum PaletteCategory {
             default_widget = 0,
             text_widget = 1,
             text_edit_widget = 2,
@@ -27,15 +23,10 @@ namespace DownUnder.UI.Widgets.DataTypes
         [DataMember] public ElementColors InnerScrollBar { get; set; } = new ElementColors();
         [DataMember] public ElementColors OuterScrollBar { get; set; } = new ElementColors();
         
-        public BaseColorScheme()
-        {
-            SetDefaults();
-        }
-
-        private void SetDefaults()
-        {
-            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory)))
-            {
+        public BaseColorScheme()=> SetDefaults();
+        
+        private void SetDefaults() {
+            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory))) {
                 BackGroundColors.Add(new ElementColors(Color.LimeGreen));
                 TextColors.Add(new ElementColors());
                 OutlineColors.Add(new ElementColors());
@@ -43,54 +34,17 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public ElementColors BackgroundColor => GetBackground(Parent.PaletteUsage);
-
-        public ElementColors GetBackground(PaletteCategory category)
-        {
-            return BackGroundColors[(int)category];
-        }
-
+        public ElementColors GetBackground(PaletteCategory category) => BackGroundColors[(int)category];
         public ElementColors TextColor => GetText(Parent.PaletteUsage);
-
-        public ElementColors GetText(PaletteCategory category)
-        {
-            return TextColors[(int)category];
-        }
-
+        public ElementColors GetText(PaletteCategory category) => TextColors[(int)category];
         public ElementColors OutlineColor => GetOutline(Parent.PaletteUsage);
-
-        public ElementColors GetOutline(PaletteCategory category)
-        {
-            return OutlineColors[(int)category];
-        }
-
-        public void Update(GameTime game_time)
-        {
+        public ElementColors GetOutline(PaletteCategory category) => OutlineColors[(int)category];
+         
+        public void Update(GameTime game_time) {
             GetBackground(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
             GetText(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
             GetOutline(Parent.PaletteUsage).Update(game_time.GetElapsedSeconds());
-
-            if (Parent.ChangeColorOnMouseOver)
-            {
-                SetHovered(Parent.IsPrimaryHovered);
-            }
-
-            switch (Parent.PaletteUsage)
-            {
-                case PaletteCategory.default_widget:
-                    break;
-
-                case PaletteCategory.header_widget:
-                    break;
-
-                case PaletteCategory.text_widget:
-                    break;
-
-                case PaletteCategory.text_edit_widget:
-                    break;
-
-                default:
-                    break;
-            }
+            if (Parent.ChangeColorOnMouseOver) SetHovered(Parent.IsPrimaryHovered);
         }
 
         private void SetHovered(bool hovered)
@@ -100,25 +54,21 @@ namespace DownUnder.UI.Widgets.DataTypes
             GetOutline(Parent.PaletteUsage).Hovered = hovered;
         }
 
-        private void ForceComplete()
-        {
-            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory)))
-            {
+        public void ForceComplete() {
+            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory))) {
                 BackGroundColors[(int)category].ForceComplete();
                 TextColors[(int)category].ForceComplete();
                 OutlineColors[(int)category].ForceComplete();
             }
         }
 
-        public object Clone()
-        {
+        public object Clone() {
             BaseColorScheme c = new BaseColorScheme();
             c.BackGroundColors.Clear();
             c.OutlineColors.Clear();
             c.TextColors.Clear();
 
-            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory)))
-            {
+            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory))) {
                 c.BackGroundColors.Add((ElementColors)BackGroundColors[(int)category].Clone());
                 c.TextColors.Add((ElementColors)TextColors[(int)category].Clone());
                 c.OutlineColors.Add((ElementColors)OutlineColors[(int)category].Clone());
@@ -131,10 +81,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         /// <summary> The basic MonoGame-esque CornFlowerBlue theme. </summary>
-        public static BaseColorScheme Default
-        {
-            get
-            {
+        public static BaseColorScheme Default {
+            get {
                 BaseColorScheme r = new BaseColorScheme();
 
                 // default_widget theme
@@ -186,55 +134,65 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
         
         /// <summary> A black theme. </summary>
-        public static BaseColorScheme Dark
-        {
-            get
-            {
+        public static BaseColorScheme Dark {
+            get {
                 BaseColorScheme r = new BaseColorScheme();
 
                 // default_widget theme
-                r.GetOutline(PaletteCategory.default_widget).DefaultColor = Color.Black.ShiftBrightness(1.35f);
-                r.GetOutline(PaletteCategory.default_widget).SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                r.GetOutline(PaletteCategory.default_widget).HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                r.GetBackground(PaletteCategory.default_widget).DefaultColor = Color.Black.ShiftBrightness(1.07f);
-                r.GetBackground(PaletteCategory.default_widget).SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                r.GetBackground(PaletteCategory.default_widget).HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                r.GetText(PaletteCategory.default_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
-                r.GetText(PaletteCategory.default_widget).SpecialColor = Color.White;
-                r.GetText(PaletteCategory.default_widget).HoveredColor = Color.White;
+                ElementColors e = r.GetOutline(PaletteCategory.default_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
+                e = r.GetBackground(PaletteCategory.default_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.07f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
+                e = r.GetText(PaletteCategory.default_widget);
+                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
+                e.SpecialColor = Color.White;
+                e.HoveredColor = Color.White;
 
                 // text_widget theme
-                r.GetOutline(PaletteCategory.text_widget).DefaultColor = Color.Black.ShiftBrightness(1.35f);
-                r.GetOutline(PaletteCategory.text_widget).SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                r.GetOutline(PaletteCategory.text_widget).HoveredColor = Color.Black.ShiftBrightness(1.5f);
-                r.GetBackground(PaletteCategory.text_widget).DefaultColor = Color.Black.ShiftBrightness(1.1f);
-                r.GetBackground(PaletteCategory.text_widget).SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                r.GetBackground(PaletteCategory.text_widget).HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                r.GetText(PaletteCategory.text_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
-                r.GetText(PaletteCategory.text_widget).SpecialColor = Color.White;
-                r.GetText(PaletteCategory.text_widget).HoveredColor = Color.White;
+                e = r.GetOutline(PaletteCategory.text_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
+                e = r.GetBackground(PaletteCategory.text_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.1f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
+                e = r.GetText(PaletteCategory.text_widget);
+                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
+                e.SpecialColor = Color.White;
+                e.HoveredColor = Color.White;
 
                 // text_edit_widget theme
-                r.GetOutline(PaletteCategory.text_edit_widget).DefaultColor = Color.Black.ShiftBrightness(1.6f);
-                r.GetOutline(PaletteCategory.text_edit_widget).SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                r.GetOutline(PaletteCategory.text_edit_widget).HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                r.GetBackground(PaletteCategory.text_edit_widget).DefaultColor = Color.Black.ShiftBrightness(1.15f);
-                r.GetBackground(PaletteCategory.text_edit_widget).SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                r.GetBackground(PaletteCategory.text_edit_widget).HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                r.GetText(PaletteCategory.text_edit_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
-                r.GetText(PaletteCategory.text_edit_widget).SpecialColor = Color.White;
-                r.GetText(PaletteCategory.text_edit_widget).HoveredColor = Color.White;
+                e = r.GetOutline(PaletteCategory.text_edit_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.6f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
+                e = r.GetBackground(PaletteCategory.text_edit_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.15f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
+                e = r.GetText(PaletteCategory.text_edit_widget);
+                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
+                e.SpecialColor = Color.White;
+                e.HoveredColor = Color.White;
 
                 // header_widget theme
-                r.GetOutline(PaletteCategory.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.35f);
-                r.GetOutline(PaletteCategory.header_widget).SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                r.GetOutline(PaletteCategory.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                r.GetBackground(PaletteCategory.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.07f);
-                r.GetBackground(PaletteCategory.header_widget).SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                r.GetBackground(PaletteCategory.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                r.GetText(PaletteCategory.header_widget).DefaultColor = Color.White.ShiftBrightness(0.75f);
-                r.GetText(PaletteCategory.header_widget).SpecialColor = Color.White;
-                r.GetText(PaletteCategory.header_widget).HoveredColor = Color.White;
+                e = r.GetOutline(PaletteCategory.header_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
+                e = r.GetBackground(PaletteCategory.header_widget);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.07f);
+                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
+                e = r.GetText(PaletteCategory.header_widget);
+                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
+                e.SpecialColor = Color.White;
+                e.HoveredColor = Color.White;
 
                 r.OuterScrollBar.DefaultColor = new Color(0, 0, 0, 0);
                 r.OuterScrollBar.SpecialColor = new Color(0, 0, 0, 0);

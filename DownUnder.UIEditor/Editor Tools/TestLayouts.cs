@@ -6,11 +6,10 @@ using DownUnder.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
-using System.ComponentModel;
 
 namespace DownUnder.UIEditor
 {
-    internal static class EditorTools
+    internal static class TestLayouts
     {
         public static Layout TestLayout(DWindow parent)
         {

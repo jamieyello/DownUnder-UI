@@ -13,38 +13,31 @@ namespace DownUnder.UI.Widgets.DataTypes
         private bool _is_read_only;
 
         public WidgetList(bool is_read_only = false) { _is_read_only = is_read_only; }
-        public WidgetList(List<Widget> widget_list, bool is_read_only = false)
-        {
+        public WidgetList(List<Widget> widget_list, bool is_read_only = false) {
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
             _is_read_only = is_read_only;
 
             Count = _widgets.Count;
         }
 
-        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true)
-        {
+        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true) {
             if (_widgets.Count == 0) return;
             max_width = max_width - spacing;
 
             // Read the areas of the widgets just once (areas)
             List<RectangleF> areas = new List<RectangleF>();
-            foreach (Widget widget in _widgets)
-            {
-                areas.Add(widget.Area);
-            }
-
+            foreach (Widget widget in _widgets) areas.Add(widget.Area);
+            
             // Determine the number of widgets that should be in a row (row_x_count)
             Point2 point;
             int row_x_count = areas.Count;
             point = new Point2(spacing, spacing);
             int this_row_count = 0;
 
-            for (int i = 0; i < areas.Count; i++)
-            {
+            for (int i = 0; i < areas.Count; i++) {
                 point.X += areas[i].Width + spacing;
                 this_row_count++;
-                if (point.X > max_width)
-                {
+                if (point.X > max_width) {
                     row_x_count = Math.Min(this_row_count, row_x_count);
                     this_row_count = 0;
                     point.X = spacing * 2;
@@ -59,13 +52,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             float row_height = MaxSize.Y + spacing;
             point = new Point2(spacing, spacing);
             int x = 0;
-            for (int i = 0; i < _widgets.Count; i++)
-            {
+            for (int i = 0; i < _widgets.Count; i++) {
                 point.X = max_width * ((float)(x) / (row_x_count)) + spacing;
                 _widgets[i].Area = areas[i].WithPosition(point);
 
-                if (++x == row_x_count)
-                {
+                if (++x == row_x_count) {
                     x = 0;
                     point.Y += row_height;
                 }
@@ -169,8 +160,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         #region IList Implementation
 
-        public Widget this[int index]
-        {
+        public Widget this[int index] {
             get => ((IList<Widget>)_widgets)[index];
             set {
                 if (_is_read_only) ThrowReadOnlyException();

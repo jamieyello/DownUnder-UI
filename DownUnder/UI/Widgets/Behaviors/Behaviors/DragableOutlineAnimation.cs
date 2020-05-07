@@ -4,10 +4,8 @@ using MonoGame.Extended;
 using DownUnder.Utility;
 using DownUnder.UI.Widgets.Interfaces;
 
-namespace DownUnder.UI.Widgets.Behaviors
-{
-    public class DragableOutlineAnimation : WidgetBehavior
-    {
+namespace DownUnder.UI.Widgets.Behaviors {
+    public class DragableOutlineAnimation : WidgetBehavior {
         private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
         private ChangingValue<float> round_amount = new ChangingValue<float>(0f);
         private ChangingValue<Color> rect_color = new ChangingValue<Color>();

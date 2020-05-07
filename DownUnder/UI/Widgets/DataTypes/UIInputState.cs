@@ -5,11 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
 //Todo: Trigger inputs shopuld not have set parameters
-namespace DownUnder.UI.Widgets.DataTypes
-{
+namespace DownUnder.UI.Widgets.DataTypes {
     /// <summary> Used to communicate to widgets input. Can be updated or set manually. </summary>
-    public class UIInputState
-    {
+    public class UIInputState {
         private Vector2 _previous_mouse_wheel_scroll = new Vector2(Mouse.GetState().HorizontalScrollWheelValue, Mouse.GetState().ScrollWheelValue);
         private MouseState _mouse_state = Mouse.GetState();
         private MouseState _previous_mouse_state = Mouse.GetState();
@@ -21,84 +19,58 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         /// <summary> True when primary input is held down./ </summary>
         public bool PrimaryClick { get; set; } = false;
-        
         /// <summary> True the frame primary input is held down./ </summary>
         public bool PrimaryClickTriggered { get; set; } = false;
-
         /// <summary> Used when secondary input is held down. </summary>
         public bool SecondaryClick { get; set; } = false;
-
         /// <summary> True the frame secondary input is held down. </summary>
         public bool SecondaryClickTriggered { get; set; } = false;
-
         /// <summary> Used for selecting multiple widgets. </summary>
         public bool Control { get; set; } = false;
-
         /// <summary> Used to move the cursor. </summary>
         public Directions2D TextCursorMovement = new Directions2D() { DisallowOpposites = true };
-
         /// <summary> Used for backspacing text. </summary>
         public bool BackSpace { get; set; } = false;
-
         /// <summary> Used to represent the Enter key. </summary>
         public bool Enter { get; set; } = false;
-
         /// <summary> The mouse position relative to the parent window. </summary>
         public Point2 CursorPosition { get; set; } = new Point2();
-
         /// <summary> Used for text input. </summary>
         public string Text { get; set; } = "";
-
         public Vector2 Scroll { get; set; } = new Vector2();
-        
         /// <summary> Represents the shift key./ </summary>
         public bool Shift { get; set; } = false;
-
         /// <summary> Represents the DEL delete key. </summary>
         public bool Delete { get; set; } = false;
-
         /// <summary> Represents the INS insert key. </summary>
         public bool Insert { get; set; } = false;
-
         /// <summary> Represents the home key. </summary>
         public bool Home { get; set; } = false;
-
         /// <summary> Represents the end key. </summary>
         public bool End { get; set; } = false;
-
         /// <summary> Represents the state of Caps Lock. </summary>
         public bool CapsLock { get; set; } = false;
-
         /// <summary> Represents the state of Num Lock. </summary>
         public bool NumLock { get; set; } = false;
-
         /// <summary> Used to select all items/text. </summary>
         public bool SelectAll { get; set; } = false;
-
         /// <summary> Used to copy items/text. </summary>
         public bool Copy { get; set; } = false;
-
         /// <summary> Used to cut items/text. </summary>
         public bool Cut { get; set; } = false;
-
         /// <summary> Used to paste items/text. </summary>
         public bool Paste { get; set; } = false;
-
         /// <summary> Used to save the current state/project to file. (ctrl + s) </summary>
         public bool Save { get; set; } = false;
-
         /// <summary> Used to create a new project. </summary>
         public bool New { get; set; } = false;
-
         /// <summary> Used to undo changes to items/text. </summary>
         public bool Undo { get; set; } = false;
-
         /// <summary> Used to redo changes to items/text. </summary>
         public bool Redo { get; set; } = false;
 
         /// <summary> Set this UIUnputState's values to the typical input from a mouse + keyboard. </summary>
-        public void UpdateAll(DWindow dwindow, GameTime game_time)
-        {
+        public void UpdateAll(DWindow dwindow, GameTime game_time) {
             _previous_mouse_state = _mouse_state;
             _mouse_state = Mouse.GetState(dwindow.Window);
             _previous_keyboard_state = _keyboard_state;
@@ -107,22 +79,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             PrimaryClick = _mouse_state.LeftButton == ButtonState.Pressed;
             SecondaryClick = _mouse_state.RightButton == ButtonState.Pressed;
 
-            if (PrimaryClick && _previous_mouse_state.LeftButton == ButtonState.Released)
-            {
-                PrimaryClickTriggered = true;
-            }
-            else
-            {
-                PrimaryClickTriggered = false;
-            }
-            if (SecondaryClick && _previous_mouse_state.RightButton == ButtonState.Released)
-            {
-                SecondaryClickTriggered = true;
-            }
-            else
-            {
-                SecondaryClickTriggered = false;
-            }
+            PrimaryClickTriggered = PrimaryClick && _previous_mouse_state.LeftButton == ButtonState.Released;
+            SecondaryClickTriggered = SecondaryClick && _previous_mouse_state.RightButton == ButtonState.Released;
 
             CursorPosition = _mouse_state.Position;
 
@@ -133,8 +91,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         /// <summary> Set this UIUnputState's values to the typical input from a keyboard. Doesn't update cursor values. </summary>
-        public void UpdateKeyboardInput(DWindow dwindow, GameTime game_time)
-        {
+        public void UpdateKeyboardInput(DWindow dwindow, GameTime game_time) {
             buffered_keyboard.Update(game_time.GetElapsedSeconds());
 
             TextCursorMovement.Left = buffered_keyboard.IsKeyTriggered(Keys.Left);
@@ -159,8 +116,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             New = false;
             Undo = false;
             Redo = false;
-            foreach (char c in dwindow.CommandText.ToString())
-            {
+            foreach (char c in dwindow.CommandText.ToString()) {
                 //Console.WriteLine((int)c);
                 if (c == 1) SelectAll = true;
                 if (c == 3) Copy = true;
@@ -174,10 +130,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
             _previous_insert_key_down = _insert_key_down;
             _insert_key_down = buffered_keyboard.IsKeyTriggered(Keys.Insert);
-            if (_insert_key_down && !_previous_insert_key_down)
-            {
-                Insert = !Insert;
-            }
+            if (_insert_key_down && !_previous_insert_key_down) Insert = !Insert;
         }
     }
 }

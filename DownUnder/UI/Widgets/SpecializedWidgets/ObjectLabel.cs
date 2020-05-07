@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using DownUnder.UI.Widgets.BaseWidgets;
