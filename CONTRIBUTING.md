@@ -6,7 +6,7 @@ Basic Program Structure Overview and Design Philosophy
   
   For familiarity the framework is designed to resemble Microsoft's Visual Forms and Qt as closely as possible. DWindow is the base abstract class for all windows created, Widget is the base abstract class for all modular parts of the window, as per the traditional format. A new DWindow project will create a something that resembles a new MonoGame project very closely as well, as a DWindow inherits MonoGame's default Game class. As a result the framework does not interfere with or alter a MonoGame developer's normal workflow.
 
-Formatting Notes
+Formatting
   -
   - int is not used for fields/properties defining anything spacial. float should be used due to scaling.
   - All values representing size/space are relative to pixels on a 1080p monitor. All values representing time are relative to a second.
