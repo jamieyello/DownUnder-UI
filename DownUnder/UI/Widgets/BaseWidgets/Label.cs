@@ -33,14 +33,14 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         [DataMember] public virtual bool EditingEnabled {
             get => _editing_enabled_backing;
             set {
-                _text_cursor.Active = value ? false : _text_cursor.Active;
+                if (_text_cursor != null) _text_cursor.Active = value ? false : _text_cursor.Active;
                 _editing_enabled_backing = value;
             }
         }
 
         /// <summary> The displayed text of this <see cref="Label"/>. </summary>
         [DataMember] public string Text {
-            get => _text_cursor.Active ? _text_cursor.Text : _text_backing;
+            get => _text_cursor != null && _text_cursor.Active ? _text_cursor.Text : _text_backing;
             set {
                 _text_backing = value;
                 SignalChildAreaChanged();

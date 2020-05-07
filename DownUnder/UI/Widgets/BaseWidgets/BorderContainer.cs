@@ -97,7 +97,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         protected override object DerivedClone() {
             BorderContainer c = new BorderContainer();
             c.BorderSize = BorderSize;
-            c.ContainedWidget = (Widget)ContainedWidget.Clone();
+            if (ContainedWidget != null) c.ContainedWidget = (Widget)ContainedWidget.Clone();
             return c;
         }
 

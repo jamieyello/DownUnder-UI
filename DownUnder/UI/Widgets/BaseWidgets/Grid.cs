@@ -124,7 +124,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             _widgets[x][y] = widget;
         }
 
-        protected override object DerivedClone() => throw new NotImplementedException();
+        protected override object DerivedClone() 
+        {
+            Grid c = new Grid(null, Dimensions.X, Dimensions.Y);
+            Console.WriteLine("WARNING: Grid clone incomplete.");
+            return c;
+        }
+
         protected override void HandleChildDelete(Widget widget) => throw new NotImplementedException();
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="Parent"/>, if any) </summary>
         public override RectangleF Area {

@@ -43,9 +43,7 @@ namespace DownUnder.UI {
         bool _is_user_resizing_backing;
 
         #region Properties
-
         #region Auto Properties
-
         /// <summary> A reference to each of this window's children. </summary>
         public List<DWindow> Children { get; } = new List<DWindow>();
         /// <summary> The window that owns this window. </summary>
@@ -67,6 +65,21 @@ namespace DownUnder.UI {
         internal Directions2D ResizingDirections { get; set; }
         /// <summary> A collection of basic general use <see cref="WidgetBehavior"/>s. </summary>
         public BehaviorLibraryAccessor BehaviorLibrary { get; } = new BehaviorLibraryAccessor();
+        /// <summary> <see cref="Widget"/> (if any) that is currently being resized. </summary>
+        internal Widget ResizingWidget { get; private set; }
+        /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
+        public bool WaitForCrossThreadCompletion { get; set; } = true;
+        /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
+        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
+        /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with <see cref="UICursorsEnabled"/>. </summary>
+        internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
+        /// <summary> Set to false to disable UI mouse cursor changes. </summary>
+        public bool UICursorsEnabled { get; set; } = true;
+        /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
+        public SpriteFont SpriteFont { get; protected set; }
+        public DownUnderEffects EffectCollection = new DownUnderEffects();
+
+        #endregion
 
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
         internal bool UserResizeModeEnable {
@@ -84,21 +97,6 @@ namespace DownUnder.UI {
                 }
             }
         }
-        /// <summary> <see cref="Widget"/> (if any) that is currently being resized. </summary>
-        internal Widget ResizingWidget { get; private set; }
-        /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
-        public bool WaitForCrossThreadCompletion { get; set; } = true;
-        /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
-        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
-        /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with <see cref="UICursorsEnabled"/>. </summary>
-        internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
-        /// <summary> Set to false to disable UI mouse cursor changes. </summary>
-        public bool UICursorsEnabled { get; set; } = true;
-        /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
-        public SpriteFont SpriteFont { get; protected set; }
-        public DownUnderEffects EffectCollection = new DownUnderEffects();
-        
-        #endregion
 
         /// <summary> The Layout Widget of this window. </summary>
         public Layout Layout {
@@ -219,7 +217,8 @@ namespace DownUnder.UI {
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
             MinimumSize = new Point2(100, 100);
-            IsFixedTimeStep = false;
+            double temp = (1000d / 144) * 10000d;
+            TargetElapsedTime = new TimeSpan((long)temp);
         }
 
         protected override void Dispose(bool disposing) {

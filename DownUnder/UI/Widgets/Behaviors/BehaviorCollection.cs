@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
@@ -24,6 +25,19 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             item.Parent = _parent;
             ((IList<WidgetBehavior>)_behaviors).Add(item);
+        }
+
+        public void AddRange(List<WidgetBehavior> items)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                Add(items[i]);
+            }
+        }
+
+        public void AddRange(BehaviorCollection items)
+        {
+            AddRange(items.ToList());
         }
 
         public void Clear()

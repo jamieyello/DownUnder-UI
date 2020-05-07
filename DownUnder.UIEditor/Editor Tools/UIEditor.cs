@@ -32,31 +32,95 @@ namespace DownUnder.UIEditor.Editor_Tools
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);
             main_grid.SetCell(1, 0, sidebar);
 
-            Button butt = new Button(null)
-            {
+            Button add_button = new Button(null) {
                 Size = new Point2(100, 100),
-                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout")
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout"),
+                Text = "Button"
             };
-            
-            butt.DrawBackground = true;
-            butt.Behaviors.Add(butt.BehaviorLibrary.Visual.DragableOutlineAnimation);
-            butt.Behaviors.Add(new DragAndDropSource() {
+            add_button.Behaviors.Add(add_button.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_button.Behaviors.Add(new DragAndDropSource() {
                 DragObject = new Button() {
                     SnappingPolicy = DiagonalDirections2D.None,
                     Area = new RectangleF(0, 0, 90, 30)
                 }
             });
+
+            Button add_layout = new Button() {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/layout"),
+                Text = "Layout"
+            };
+            add_layout.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_layout.Behaviors.Add(new DragAndDropSource() {
+                DragObject = new Layout() {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 100, 100)
+                }
+            });
+
+            Button add_label = new Button() {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/label"),
+                Text = "Label"
+            };
+            add_label.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_label.Behaviors.Add(new DragAndDropSource() {
+                DragObject = new Label() {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 90, 30),
+                    Text = "New Label"
+                }
+            });
             
-            SpacedList common_controls = new SpacedList(sidebar)
-            {
-                butt
+            Button add_container = new Button() {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/label"),
+                Text = "Container"
+            };
+            add_container.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_container.Behaviors.Add(new DragAndDropSource() {
+                DragObject = new BorderContainer() {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 50, 50),
+                }
+            });            
+
+            Button add_grid = new Button() {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/grid"),
+                Text = "Grid"
+            };
+            add_grid.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_grid.Behaviors.Add(new DragAndDropSource() {
+                DragObject = new Grid(null, 2, 3) {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 50, 50),
+                }
+            });
+
+            Button add_spaced_list = new Button() {
+                Size = new Point2(100, 100),
+                Image = parent.Content.Load<Texture2D>("Images/Widget Icons/spaced_list"),
+                Text = "Spaced List"
+            };
+            add_spaced_list.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
+            add_spaced_list.Behaviors.Add(new DragAndDropSource() {
+                DragObject = new SpacedList() {
+                    SnappingPolicy = DiagonalDirections2D.None,
+                    Area = new RectangleF(0, 0, 50, 50),
+                }
+            });
+
+            SpacedList common_controls = new SpacedList(sidebar) {
+                add_button,
+                add_layout,
+                add_label,
+                add_container,
+                add_grid,
+                add_spaced_list
             };
             common_controls.ChangeColorOnMouseOver = false;
-
             sidebar.SetCell(0, 0, common_controls);
-            //common_controls.debug_output = true;
-            common_controls.Add(new Label(null, "eight"));
-            //common_controls.debug_output = false;
             
             Layout property_grid_layout = new Layout(sidebar);
             sidebar.SetCell(0, 1, property_grid_layout);
@@ -66,16 +130,13 @@ namespace DownUnder.UIEditor.Editor_Tools
             property_grid_layout.Add(property_grid);
             property_grid_layout.debug_output = true;
 
-            editor_objects = new EditorObjects
-            {
+            editor_objects = new EditorObjects {
                 project = project,
                 property_grid = property_grid
             };
         }
 
-        static Layout DefaultProject(IParent parent)
-        {
-            // Create taskbar
+        static Layout DefaultProject(IParent parent) {
             Layout project = new Layout(parent)
             {
                 Size = new Point2(300f, 200f),
@@ -96,13 +157,11 @@ namespace DownUnder.UIEditor.Editor_Tools
             return project;
         }
 
-        private static void DiagnoseAreaToggled(object sender, EventArgs args)
-        {
+        private static void DiagnoseAreaToggled(object sender, EventArgs args) {
             if (((Widget)sender).debug_output) DiagnoseArea(sender, args);
         }
 
-        private static void DiagnoseArea(object sender, EventArgs args)
-        {
+        private static void DiagnoseArea(object sender, EventArgs args) {
             Widget widget = (Widget)sender;
             Console.WriteLine();
             Console.WriteLine($"Area {widget.Area}");
@@ -118,12 +177,10 @@ namespace DownUnder.UIEditor.Editor_Tools
             Console.WriteLine();
         }
 
-        private static void DiagnoseChildren(object sender, EventArgs args)
-        {
+        private static void DiagnoseChildren(object sender, EventArgs args) {
             Widget w_sender = (Widget)sender;
             Console.WriteLine($"w_s.Children Count {w_sender.Children.Count}");
-            for (int i = 0; i < w_sender.Children.Count; i++)
-            {
+            for (int i = 0; i < w_sender.Children.Count; i++) {
                 Console.WriteLine($"{i} {w_sender.Children[i].Area}");
             }
         }
