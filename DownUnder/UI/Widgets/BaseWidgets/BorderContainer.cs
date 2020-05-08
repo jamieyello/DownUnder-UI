@@ -3,19 +3,16 @@ using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
-using System.Windows;
 
-namespace DownUnder.UI.Widgets.BaseWidgets {
+namespace DownUnder.UI.Widgets.BaseWidgets
+{
     /// <summary> A <see cref="Widget"/> that gives a border to one other <see cref="Widget"/>. One <see cref="Widget"/> can be contained on each of the four sides. </summary>
     [DataContract] public class BorderContainer : Widget {
         private Widget _widget;
         bool _update_area = true;
         private BorderSize _border_size_backing = new BorderSize(5f);
 
-        [DataMember] public Widget TopBorderWidget { get; set; }
-        [DataMember] public Widget DownBorderWidget { get; set; }
-        [DataMember] public Widget LeftBorderWidget { get; set; }
-        [DataMember] public Widget RightBorderWidget { get; set; }
+        [DataMember] public GenericDirections2D<ContainerBorder> Borders { get; set; } = new GenericDirections2D<ContainerBorder>(new object[] { });
 
         public BorderSize BorderSize {
             get => _border_size_backing; 
@@ -27,12 +24,13 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
 
         public override WidgetList Children {
             get {
+                if (Borders.HasNull) return new WidgetList();
                 WidgetList result = new WidgetList();
                 if (_widget != null) result.Add(_widget);
-                if (TopBorderWidget != null) result.Add(TopBorderWidget);
-                if (DownBorderWidget != null) result.Add(DownBorderWidget);
-                if (LeftBorderWidget != null) result.Add(LeftBorderWidget);
-                if (RightBorderWidget != null) result.Add(RightBorderWidget);
+                if (Borders.Up.Widget != null) result.Add(Borders.Up.Widget);
+                if (Borders.Down.Widget != null) result.Add(Borders.Down.Widget);
+                if (Borders.Left.Widget != null) result.Add(Borders.Left.Widget);
+                if (Borders.Right.Widget != null) result.Add(Borders.Right.Widget);
                 return result;
             }
         }
@@ -67,19 +65,20 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         }
 
         private void ArangeContents(Point2 new_size) {
+            if (Borders.HasNull) return;
             bool _previous_update_area = _update_area;
             _update_area = false;
 
             RectangleF center = new RectangleF(0f, 0f, new_size.X, new_size.Y).ResizedBy(-BorderSize);
             
-            if (TopBorderWidget != null) {
-                float widget_height = TopBorderWidget.Height;
+            if (Borders.Down.Widget != null) {
+                float widget_height = Borders.Down.Widget.Height;
                 RectangleF widget_area = new RectangleF(
                     0f, 
                     0f, 
                     new_size.X,
                     widget_height);
-                TopBorderWidget.Area = widget_area;
+                Borders.Down.Widget.Area = widget_area;
                 center = center.ResizedBy(-widget_area.Height, Directions2D.U);
             }
 

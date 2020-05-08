@@ -83,7 +83,7 @@ namespace DownUnder.UIEditor
             container.Parent = layout;
             container.ContainedWidget = new Button();
             container.SnappingPolicy = DiagonalDirections2D.None;
-            container.TopBorderWidget = new Label(container, "Top Border");
+            container.Borders.Up.Widget = new Label(container, "Top Border");
             layout.Add(container);
             return layout;
         }
