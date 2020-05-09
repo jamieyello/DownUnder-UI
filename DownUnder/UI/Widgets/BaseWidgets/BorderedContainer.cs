@@ -12,7 +12,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         private BorderSize _border_size_backing = new BorderSize(5f);
 
         [DataMember] public GenericDirections2D<ContainerBorder> Borders { get; set; } = new GenericDirections2D<ContainerBorder>(new object[] { });
-
+        
         public BorderSize BorderSize {
             get => _border_size_backing; 
             set {
@@ -69,15 +69,41 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
 
         public void ArangeContents(Point2 new_size) {
             Console.WriteLine("Arranging contents");
-            if (Borders.HasNull) return;
+            if (Borders.HasNull) throw new Exception();
             bool _previous_update_area = _update_area;
             _update_area = false;
 
             RectangleF center = new RectangleF(0f, 0f, new_size.X, new_size.Y).ResizedBy(-BorderSize);
-            
+
+            RectangleF top_area = new RectangleF();
             if (Borders.Up.Widget != null) {
                 Borders.Up.Widget.Area = new RectangleF(0f, 0f, new_size.X, Borders.Up.Widget.Height);
-                center = center.ResizedBy(-Borders.Up.Widget.Height, Directions2D.U);
+                top_area = Borders.Up.Widget.Area;
+                center = center.ResizedBy(-top_area.Height, Directions2D.U);
+            }
+
+            RectangleF bottom_area = new RectangleF();
+            if (Borders.Down.Widget != null) {
+                bottom_area = Borders.Down.Widget.Area;
+                bottom_area = new RectangleF(0f, 0f, new_size.X, bottom_area.Height);
+                Borders.Down.Widget.Area = bottom_area;
+                bottom_area = Borders.Down.Widget.Area;
+                Borders.Down.Widget.Y = new_size.Y - bottom_area.Height;
+                center = center.ResizedBy(-bottom_area.Height, Directions2D.D);
+            }
+
+            if (Borders.Left.Widget != null) {
+                Borders.Left.Widget.Area = new RectangleF(0f, top_area.Height, Borders.Left.Widget.Width, new_size.Y - top_area.Height - bottom_area.Height);
+                RectangleF left_area = Borders.Left.Widget.Area;
+                center = center.ResizedBy(-left_area.Width, Directions2D.L);
+            }
+
+            if (Borders.Right.Widget != null)
+            {
+                float right_width = Borders.Right.Widget.Width;
+                Borders.Right.Widget.Area = new RectangleF(new_size.X - right_width, top_area.Height, right_width, new_size.Y - top_area.Height - bottom_area.Height);
+                RectangleF right_area = Borders.Right.Widget.Area;
+                center = center.ResizedBy(-right_area.Width, Directions2D.R);
             }
 
             if (_widget != null) _widget.Area = center;
