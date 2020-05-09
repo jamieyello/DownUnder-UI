@@ -78,7 +78,7 @@ namespace DownUnder.UIEditor
 
         public static Layout TestLayout4(DWindow parent) {
             Layout layout = new Layout(parent);
-            UI.Widgets.BaseWidgets.BorderContainer container = new UI.Widgets.BaseWidgets.BorderContainer();
+            UI.Widgets.BaseWidgets.BorderedContainer container = new UI.Widgets.BaseWidgets.BorderedContainer();
             container.Size = new Point2(400, 300);
             container.Parent = layout;
             container.ContainedWidget = new Button();

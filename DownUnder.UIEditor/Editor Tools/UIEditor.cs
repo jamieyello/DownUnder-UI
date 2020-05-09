@@ -79,7 +79,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             };
             add_container.Behaviors.Add(add_layout.BehaviorLibrary.Visual.DragableOutlineAnimation);
             add_container.Behaviors.Add(new DragAndDropSource() {
-                DragObject = new BorderContainer() {
+                DragObject = new BorderedContainer() {
                     SnappingPolicy = DiagonalDirections2D.None,
                     Area = new RectangleF(0, 0, 50, 50),
                 }

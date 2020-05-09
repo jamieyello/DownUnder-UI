@@ -4,10 +4,9 @@ using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.BaseWidgets
-{
+namespace DownUnder.UI.Widgets.BaseWidgets {
     /// <summary> A <see cref="Widget"/> that gives a border to one other <see cref="Widget"/>. One <see cref="Widget"/> can be contained on each of the four sides. </summary>
-    [DataContract] public class BorderContainer : Widget {
+    [DataContract] public class BorderedContainer : Widget {
         private Widget _widget;
         bool _update_area = true;
         private BorderSize _border_size_backing = new BorderSize(5f);
@@ -54,37 +53,35 @@ namespace DownUnder.UI.Widgets.BaseWidgets
             }
         }
 
-        public BorderContainer(Widget widget = null, Widget parent = null) : base(parent) {
+        public BorderedContainer(Widget widget = null, Widget parent = null) : base(parent) {
             ContainedWidget = widget;
             SetDefaults();
         }
 
         private void SetDefaults() {
+            Borders.Up.Parent = this;
+            Borders.Down.Parent = this;
+            Borders.Left.Parent = this;
+            Borders.Right.Parent = this;
             ChangeColorOnMouseOver = false;
             DesignerObjects.IsEditModeEnabled = true;
         }
 
-        private void ArangeContents(Point2 new_size) {
+        public void ArangeContents(Point2 new_size) {
+            Console.WriteLine("Arranging contents");
             if (Borders.HasNull) return;
             bool _previous_update_area = _update_area;
             _update_area = false;
 
             RectangleF center = new RectangleF(0f, 0f, new_size.X, new_size.Y).ResizedBy(-BorderSize);
             
-            if (Borders.Down.Widget != null) {
-                float widget_height = Borders.Down.Widget.Height;
-                RectangleF widget_area = new RectangleF(
-                    0f, 
-                    0f, 
-                    new_size.X,
-                    widget_height);
-                Borders.Down.Widget.Area = widget_area;
-                center = center.ResizedBy(-widget_area.Height, Directions2D.U);
+            if (Borders.Up.Widget != null) {
+                Borders.Up.Widget.Area = new RectangleF(0f, 0f, new_size.X, Borders.Up.Widget.Height);
+                center = center.ResizedBy(-Borders.Up.Widget.Height, Directions2D.U);
             }
 
             if (_widget != null) _widget.Area = center;
             _update_area = _previous_update_area;
-            if (_update_area) base.SignalChildAreaChanged();
         }
 
         internal override void SignalChildAreaChanged() {
@@ -94,7 +91,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         }
 
         protected override object DerivedClone() {
-            BorderContainer c = new BorderContainer();
+            BorderedContainer c = new BorderedContainer();
             c.BorderSize = BorderSize;
             if (ContainedWidget != null) c.ContainedWidget = (Widget)ContainedWidget.Clone();
             return c;

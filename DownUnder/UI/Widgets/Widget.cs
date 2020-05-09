@@ -25,12 +25,10 @@ using System.Threading;
 // SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Grid dividers are broken
-// Scrollbars are ugly
 // Serialization code is scary
 // Convert RectangleF.DistanceFrom to float
 
-namespace DownUnder.UI.Widgets
-{
+namespace DownUnder.UI.Widgets {
     /// <summary> A visible window object. </summary>
     [DataContract] public abstract class Widget : IParent, IDisposable, ICloneable, IAcceptsDrops {
         public bool debug_output = false;
