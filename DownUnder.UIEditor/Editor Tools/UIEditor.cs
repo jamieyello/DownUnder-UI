@@ -5,6 +5,7 @@ using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
@@ -26,7 +27,9 @@ namespace DownUnder.UIEditor.Editor_Tools
             Layout project = DefaultProject(this);
             ((Layout)main_grid.GetCell(0, 0)).Add(project);
             ((Layout)main_grid.GetCell(0, 0)).ChangeColorOnMouseOver = false;
-            ((Layout)main_grid.GetCell(0, 0)).Behaviors.Add(new ShadingBehavior());
+            //var s = new ShadingBehavior();
+            //s.ShadeColor = Color.Black;
+            //((Layout)main_grid.GetCell(0, 0)).Behaviors.Add(s);
             //project.debug_output = true;
 
             Grid sidebar = new Grid(main_grid, 1, 2, null, true);

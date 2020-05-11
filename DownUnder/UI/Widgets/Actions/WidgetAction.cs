@@ -1,11 +1,12 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.UI.Widgets.Behaviors;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors {
-    /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
-    public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable {
+namespace DownUnder.UI.Widgets.Actions {
+    /// <summary> A <see cref="WidgetAction"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this deletes itself on finishing execution. </summary>
+    public abstract class WidgetAction : INeedsWidgetParent {
         Widget _parent_backing;
-        
+
         public Widget Parent {
             get => _parent_backing;
             set {
@@ -19,9 +20,15 @@ namespace DownUnder.UI.Widgets.Behaviors {
         }
 
         public bool HasParent => Parent != null;
-        
+        public bool IsCompleted { get; protected set; } = false;
+
         protected abstract void ConnectToParent();
         internal abstract void DisconnectFromParent();
-        public abstract object Clone();
+        public abstract object InitialClone();
+
+        protected void EndAction() {
+            IsCompleted = true;
+            _parent_backing.Actions.Remove(this);
+        }
     }
 }

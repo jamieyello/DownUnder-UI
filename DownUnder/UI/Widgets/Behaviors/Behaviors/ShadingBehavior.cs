@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
     [DataContract] public class ShadingBehavior : WidgetBehavior {
         Effect shading_effect;
 
-        [DataMember] public Color ShadeColor { get; set; } = Color.Black;
+        [DataMember] public Color ShadeColor { get; set; } = Color.Yellow;
 
         protected override void ConnectToParent() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);
@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
         }
 
         private void DrawEffect(object sender, EventArgs args) {
-            shading_effect.Parameters["ShadeColor"]?.SetValue(ShadeColor.ToVector4());
+            shading_effect.Parameters["ShadeColor"].SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["Size"]?.SetValue(Parent.Size);
             shading_effect.CurrentTechnique.Passes[0].Apply();
             Parent.SpriteBatch.FillRectangle(Parent.DrawingArea, Color.Transparent);
@@ -35,6 +35,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
         public override object Clone() {
             ShadingBehavior c = new ShadingBehavior();
             c.shading_effect = shading_effect.Clone();
+            c.ShadeColor = ShadeColor;
             return c;
         }
     }

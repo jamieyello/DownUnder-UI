@@ -9,14 +9,14 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
     [DataContract] public class BorderedContainer : Widget {
         private Widget _widget;
         bool _update_area = true;
-        private BorderSize _border_size_backing = new BorderSize(5f);
+        private BorderSize _border_spacing_backing = new BorderSize(5f);
 
         [DataMember] public GenericDirections2D<ContainerBorder> Borders { get; set; } = new GenericDirections2D<ContainerBorder>(new object[] { });
         
-        public BorderSize BorderSize {
-            get => _border_size_backing; 
+        public BorderSize BorderSpacing {
+            get => _border_spacing_backing; 
             set {
-                _border_size_backing = value;
+                _border_spacing_backing = value;
                 if (_widget != null) ArangeContents(_widget.Size);
             }
         }
@@ -73,7 +73,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
             bool _previous_update_area = _update_area;
             _update_area = false;
 
-            RectangleF center = new RectangleF(0f, 0f, new_size.X, new_size.Y).ResizedBy(-BorderSize);
+            RectangleF center = new RectangleF(0f, 0f, new_size.X, new_size.Y).ResizedBy(-BorderSpacing);
 
             RectangleF top_area = new RectangleF();
             if (Borders.Up.Widget != null) {
@@ -98,8 +98,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
                 center = center.ResizedBy(-left_area.Width, Directions2D.L);
             }
 
-            if (Borders.Right.Widget != null)
-            {
+            if (Borders.Right.Widget != null) {
                 float right_width = Borders.Right.Widget.Width;
                 Borders.Right.Widget.Area = new RectangleF(new_size.X - right_width, top_area.Height, right_width, new_size.Y - top_area.Height - bottom_area.Height);
                 RectangleF right_area = Borders.Right.Widget.Area;
@@ -118,7 +117,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
 
         protected override object DerivedClone() {
             BorderedContainer c = new BorderedContainer();
-            c.BorderSize = BorderSize;
+            c.BorderSpacing = BorderSpacing;
             if (ContainedWidget != null) c.ContainedWidget = (Widget)ContainedWidget.Clone();
             return c;
         }

@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
+﻿using DownUnder.UI.Widgets.Actions;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
@@ -27,6 +28,7 @@ using System.Threading;
 // Grid dividers are broken
 // Serialization code is scary
 // Convert RectangleF.DistanceFrom to float
+// Add ICloneable and INeedsParent to BehaviorCollection
 
 namespace DownUnder.UI.Widgets {
     /// <summary> A visible window object. </summary>
@@ -159,6 +161,7 @@ namespace DownUnder.UI.Widgets {
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public BehaviorCollection Behaviors { get; private set; }
+        public ActionCollection Actions { get; private set; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
 
@@ -428,6 +431,7 @@ namespace DownUnder.UI.Widgets {
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
+            Actions = new ActionCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
         }
@@ -646,16 +650,12 @@ namespace DownUnder.UI.Widgets {
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
         public void Draw() {
             UpdateRenderTargetSizes();
-            _local_sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawTree();
-            _local_sprite_batch.End();
             foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
             return;
         }
 
-        /// <summary>
-        /// Todo; Document this complicated drawing code.
-        /// </summary>
+        // https://github.com/jamieyello/DownUnder-UI/blob/master/Images/better_diagram.gif
         private void DrawTree() {
             WidgetList tree = WidgetExtensions.GetChildrenByDepth(this);
             bool swapped_render_target = false;
@@ -669,7 +669,9 @@ namespace DownUnder.UI.Widgets {
             }
 
             if (swapped_render_target) GraphicsDevice.SetRenderTargets(previous_render_targets);
+            _local_sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawDirect(_local_sprite_batch);
+            _local_sprite_batch.End();
         }
 
         private void Render() {
@@ -1005,6 +1007,8 @@ namespace DownUnder.UI.Widgets {
 
             foreach (Type type in AcceptedDropTypes) ((Widget)c).AcceptedDropTypes.Add(type);
             foreach (WidgetBehavior behavior in Behaviors) ((Widget)c).Behaviors.Add((WidgetBehavior)behavior.Clone());
+            // should actions be cloned?
+            //foreach (WidgetAction action in Actions) ((Widget)c).Actions.Add((WidgetAction)action.Clone());
 
             return c;
         }

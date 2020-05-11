@@ -89,6 +89,9 @@
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
+    <Compile Include="UI\Widgets\Actions\ActionCollection.cs" />
+    <Compile Include="UI\Widgets\Actions\Actions\PositionSetAction.cs" />
+    <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\BorderedContainer.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\SpacedList.cs" />
@@ -141,6 +144,7 @@
     <Compile Include="Utilities\Extensions\WidgetExtensions.cs" />
     <Compile Include="Utilities\Interpolation.cs" />
     <Compile Include="Utilities\OSInterface.cs" />
+    <Compile Include="Utilities\PropertyHelper.cs" />
     <Compile Include="Utilities\Serialization\CSCreator.cs" />
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />

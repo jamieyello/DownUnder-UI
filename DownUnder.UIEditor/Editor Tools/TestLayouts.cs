@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Actions.Actions;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
@@ -78,7 +79,7 @@ namespace DownUnder.UIEditor
 
         public static Layout TestLayout4(DWindow parent) {
             Layout layout = new Layout(parent);
-            UI.Widgets.BaseWidgets.BorderedContainer container = new UI.Widgets.BaseWidgets.BorderedContainer();
+            BorderedContainer container = new BorderedContainer();
             container.Size = new Point2(400, 300);
             container.Parent = layout;
             container.ContainedWidget = new Button();
@@ -88,6 +89,26 @@ namespace DownUnder.UIEditor
             container.Borders.Left.Widget = new Label(container, "left Sorder");
             container.Borders.Right.Widget = new Label(container, "right Sorder");
             layout.Add(container);
+            return layout;
+        }
+
+        public static Layout TestLayout5(DWindow parent)
+        {
+            Layout layout = new Layout(parent);
+            Button button = new Button();
+            button.SnappingPolicy = DiagonalDirections2D.None;
+            button.Area = new RectangleF(50, 50, 100, 30);
+            button.OnClick += (obj, sender) =>
+            {
+                button.Actions.Add(new PropertyTransitionAction<Point2>(nameof(button.Position), new Point2()));
+            };
+
+            Layout moving_window = new Layout();
+            moving_window.SnappingPolicy = DiagonalDirections2D.None;
+            moving_window.Area = new RectangleF(10, 10, 400, 300);
+            moving_window.Add(button);
+            layout.Add(moving_window);
+
             return layout;
         }
 

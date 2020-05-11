@@ -66,7 +66,18 @@ namespace DownUnder
         {
             return MathHelper.Max(p.X, p.Y);
         }
-        
+
+        /// <summary> Performs linear interpolation of <see cref="Point2"/>. </summary>
+        /// <param name="progress">Value between 0f and 1f to represent the progress between the two <see cref="Point2"/>s</param>
+        public static Point2 Lerp(this Point2 p1, Point2 p2, float progress)
+        {
+            float inverse_progress = 1 - progress;
+            return new Point2(
+                p1.X * inverse_progress + p2.X * progress,
+                p1.Y * inverse_progress + p2.Y * progress
+                );
+        }
+
         /// <summary> Returns new <see cref="Color"/> with brightness shifted by a percentage. </summary>
         /// <param name="percentage"></param>
         public static Color ShiftBrightness(this Color c, float percentage)
