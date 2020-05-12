@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
+﻿using Downunder.Utility;
+using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -64,7 +65,6 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
             Borders.Left.Parent = this;
             Borders.Right.Parent = this;
             ChangeColorOnMouseOver = false;
-            DesignerObjects.IsEditModeEnabled = true;
         }
 
         public void ArangeContents(Point2 new_size) {

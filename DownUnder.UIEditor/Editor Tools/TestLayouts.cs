@@ -112,13 +112,21 @@ namespace DownUnder.UIEditor
             return layout;
         }
 
+        public static Layout TestLayout6(DWindow parent)
+        {
+            Layout layout = new Layout(parent);
+            BorderedContainer container = WidgetStuff.MenuBar();
+            container.SnappingPolicy = DiagonalDirections2D.None;
+            layout.Add(container);
+            return layout;
+        }
+
         private static void PrintDisplayArea(object sender, EventArgs args) {
             Widget w = (Widget)sender;
             Console.WriteLine($"DisplayArea {w.DrawingArea}");
         }
 
-        public static Layout ScrollTestLayout(IParent parent, SpriteFont sprite_font, out EditorObjects editor_objects)
-        {
+        public static Layout ScrollTestLayout(IParent parent, SpriteFont sprite_font, out EditorObjects editor_objects) {
             Layout inner_layout = new Layout(parent);
             inner_layout.Name = "test_layout";
             //inner_layout.Size.Set(500, 400);

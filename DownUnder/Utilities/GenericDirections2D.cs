@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace Downunder.Utility {
     [DataContract] public class GenericDirections2D <T> {
         T up_backing;
         T down_backing;

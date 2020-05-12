@@ -29,6 +29,8 @@ using System.Threading;
 // Serialization code is scary
 // Convert RectangleF.DistanceFrom to float
 // Add ICloneable and INeedsParent to BehaviorCollection
+// Wonder if Directions2D should be enum
+// Try removing all "parent" parameters from Widgets
 
 namespace DownUnder.UI.Widgets {
     /// <summary> A visible window object. </summary>

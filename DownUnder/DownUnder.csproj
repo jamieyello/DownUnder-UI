@@ -109,7 +109,8 @@
     <Compile Include="UI\Widgets\DataTypes\DownUnderEffects.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
-    <Compile Include="UI\Widgets\DataTypes\GenericDirections2D.cs" />
+    <Compile Include="UI\Widgets\Widgets.cs" />
+    <Compile Include="Utilities\GenericDirections2D.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />

@@ -4,10 +4,10 @@ using System.Reflection;
 
 // https://www.youtube.com/watch?v=J4nM-F1kxs8
 
-namespace DownUnder.UI.Widgets.Actions.Actions
-{
-    public class PropertyTransitionAction<T> : WidgetAction
-    {
+namespace DownUnder.UI.Widgets.Actions.Actions {
+    /// <summary> Transition a given property to a given value over time. </summary>
+    /// <typeparam name="T"></typeparam>
+    public class PropertyTransitionAction<T> : WidgetAction {
         private ChangingValue<T> _changing_value;
         private T _target_value;
         private PropertyInfo _property_info;
@@ -25,6 +25,7 @@ namespace DownUnder.UI.Widgets.Actions.Actions
         protected override void ConnectToParent() {
             _property_info = typeof(Widget).GetProperty(_nameof_property);
             _changing_value = new ChangingValue<T>((T)_property_info.GetValue(Parent));
+            _changing_value.SetTargetValue(_target_value);
             Parent.OnUpdate += Update;
             Console.WriteLine("Connected");
         }
@@ -41,6 +42,7 @@ namespace DownUnder.UI.Widgets.Actions.Actions
             }
 
             _changing_value.Update(((Widget)sender).UpdateData.ElapsedSeconds);
+            Console.WriteLine(_changing_value.GetCurrent());
             _property_info.SetValue(Parent, _changing_value.GetCurrent());
             if (!_changing_value.IsTransitioning) EndAction();
         }
