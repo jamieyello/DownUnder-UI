@@ -1,4 +1,6 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Actions.Actions;
+using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -20,7 +22,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             Count = _widgets.Count;
         }
 
-        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true) {
+        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true, InterpolationSettings? interpolation = null) {
             if (_widgets.Count == 0) return;
             max_width = max_width - spacing;
 
@@ -54,9 +56,18 @@ namespace DownUnder.UI.Widgets.DataTypes
             int x = 0;
             for (int i = 0; i < _widgets.Count; i++) {
                 point.X = max_width * ((float)(x) / (row_x_count)) + spacing;
-                _widgets[i].Area = areas[i].WithPosition(point);
 
-                if (++x == row_x_count) {
+                if (interpolation == null)
+                {
+                    _widgets[i].Area = areas[i].WithPosition(point);
+                }
+                else
+                {
+                    _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i].WithPosition(point), interpolation));
+                }
+
+                if (++x == row_x_count)
+                {
                     x = 0;
                     point.Y += row_height;
                 }

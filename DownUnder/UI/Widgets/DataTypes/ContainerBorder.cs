@@ -19,7 +19,6 @@ namespace DownUnder.UI.Widgets.DataTypes {
             set {
                 if (value == _widget_backing) return;
                 _widget_backing = value;
-                _widget_backing = _parent_backing;
                 _parent_backing.ArangeContents(_parent_backing.Size);
             }
         }

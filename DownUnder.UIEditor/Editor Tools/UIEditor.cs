@@ -153,7 +153,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.DesignerObjects.AllowHighlight = false;
             project.DesignerObjects.UserRepositionPolicy = UserResizePolicyType.disallow;
-            //project.Behaviors.Add(new DrawPixelGrid());
+            project.Behaviors.Add(new DrawPixelGrid());
             project.Behaviors.Add(new ShadingBehavior());
             project.DrawingMode = DrawingModeType.use_render_target;
 

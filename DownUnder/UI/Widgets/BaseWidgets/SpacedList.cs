@@ -1,4 +1,7 @@
 ﻿using System;
+using DownUnder.UI.Widgets.Actions.Actions;
+using DownUnder.Utilities;
+using DownUnder.Utility;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.BaseWidgets {
@@ -6,6 +9,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         private bool _disable_update_area = false;
 
         public float ListSpacing { get; set; } = 30f;
+        /// <summary> Ther interpolation that will be used when aligning the <see cref="Widget"/>s. Set to null for none. </summary>
+        public InterpolationSettings? WidgetMovement { get; set; } = InterpolationSettings.Fast;
 
         public SpacedList(Widget parent = null) : base(parent) => SetDefaults();
         private void SetDefaults() {
@@ -18,7 +23,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
             set {
                 base.Area = value;
                 _disable_update_area = true;
-                _widgets.AlignHorizontalWrap(area_backing.Width, false, ListSpacing);
+                _widgets.AlignHorizontalWrap(area_backing.Width, false, ListSpacing, true, WidgetMovement);
                 _disable_update_area = false;
             }
         }

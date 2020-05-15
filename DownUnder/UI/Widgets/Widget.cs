@@ -34,7 +34,8 @@ using System.Threading;
 
 namespace DownUnder.UI.Widgets {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget : IParent, IDisposable, ICloneable, IAcceptsDrops {
+    [DataContract] public abstract class Widget : 
+        IParent, IDisposable, ICloneable, IAcceptsDrops {
         public bool debug_output = false;
 
         #region Fields/Delegates/Enums
@@ -627,6 +628,7 @@ namespace DownUnder.UI.Widgets {
             
             Theme.Update(game_time);
             if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
+            Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in Children) widget.UpdateGroupEvents(game_time);
         }

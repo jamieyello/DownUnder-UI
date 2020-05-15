@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.Utilities;
+using System;
 using System.Collections.Generic;
 
 namespace DownUnder.Utility
@@ -15,6 +16,15 @@ namespace DownUnder.Utility
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         public float TransitionSpeed { get; set; } = 1f;
         public bool IsTransitioning { get => interpolation_progress != 1f; }
+        public InterpolationSettings InterpolationSettings 
+        {
+            get => new InterpolationSettings(Interpolation, TransitionSpeed);
+            set
+            {
+                Interpolation = value.Interpolation;
+                TransitionSpeed = value.TransitionSpeed;
+            }
+        }
 
         public ChangingValue()
         {

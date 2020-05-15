@@ -1,12 +1,8 @@
 ﻿using DownUnder.UI.Widgets.BaseWidgets;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets {
+namespace DownUnder.UI.Widgets
+{
     public static class WidgetStuff {
         public static BorderedContainer MenuBar(Widget parent = null, Widget widget = null) {
             BorderedContainer container = new BorderedContainer();

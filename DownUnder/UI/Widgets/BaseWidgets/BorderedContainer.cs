@@ -65,6 +65,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
             Borders.Left.Parent = this;
             Borders.Right.Parent = this;
             ChangeColorOnMouseOver = false;
+            DesignerObjects.IsEditModeEnabled = true;
         }
 
         public void ArangeContents(Point2 new_size) {
