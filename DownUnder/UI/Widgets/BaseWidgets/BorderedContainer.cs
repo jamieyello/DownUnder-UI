@@ -69,7 +69,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
         }
 
         public void ArangeContents(Point2 new_size) {
-            Console.WriteLine("Arranging contents");
+            //Console.WriteLine("Arranging contents");
             if (Borders.HasNull) throw new Exception();
             bool _previous_update_area = _update_area;
             _update_area = false;

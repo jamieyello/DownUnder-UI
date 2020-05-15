@@ -99,9 +99,8 @@ namespace DownUnder.UI.Widgets.WidgetElements
             #region Position / Size
 
             RectangleF widget_content_area = _iscrollable_parent.ContentArea;
-            RectangleF drawing_area = _parent.DrawingArea;
+            RectangleF drawing_area = _parent.DrawingAreaUnscrolled;
             RectangleF widget_area = _parent.Area;
-            RectangleF area_in_window = _parent.AreaInWindow;
 
             if (_SideVisible) { SideBarWidth.SetTargetValue(Thickness); } else { SideBarWidth.SetTargetValue(0f); }
             if (_BottomVisible) { BottomBarHeight.SetTargetValue(Thickness); } else { BottomBarHeight.SetTargetValue(0f); }

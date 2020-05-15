@@ -78,6 +78,7 @@ namespace DownUnder.UI
         /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
         public SpriteFont SpriteFont { get; protected set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
+        Point2 IParent.PositionInRender => new Point2();
 
         #endregion
 

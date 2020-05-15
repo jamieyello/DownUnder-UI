@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
     [DataContract] public class ShadingBehavior : WidgetBehavior {
         Effect shading_effect;
 
-        [DataMember] public Color ShadeColor { get; set; } = Color.Yellow;
+        [DataMember] public Color ShadeColor { get; set; } = Color.Black;
 
         protected override void ConnectToParent() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);

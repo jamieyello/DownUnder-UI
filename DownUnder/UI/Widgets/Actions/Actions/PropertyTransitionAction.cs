@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Actions.Actions {
             else Interpolation = new InterpolationSettings(InterpolationType.fake_sin, 1f);
         }
 
-        internal override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName :  false;
+        internal override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
         
         public override object InitialClone() => new PropertyTransitionAction<T>(PropertyName, _target_value);
         

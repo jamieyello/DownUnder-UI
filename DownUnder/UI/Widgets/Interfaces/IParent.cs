@@ -10,5 +10,6 @@ namespace DownUnder.UI.Widgets.Interfaces {
         float Width { get; }
         float Height { get; }
         Point2 Size { get; }
+        Point2 PositionInRender { get; }
     }
 }

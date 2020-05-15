@@ -123,6 +123,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                 add_spaced_list
             };
             common_controls.ChangeColorOnMouseOver = false;
+            common_controls.ListSpacing = 40f;
             sidebar.SetCell(0, 0, common_controls);
             
             Layout property_grid_layout = new Layout(sidebar);
@@ -153,7 +154,7 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.DesignerObjects.AllowHighlight = false;
             project.DesignerObjects.UserRepositionPolicy = UserResizePolicyType.disallow;
-            project.Behaviors.Add(new DrawPixelGrid());
+            //project.Behaviors.Add(new DrawPixelGrid());
             project.Behaviors.Add(new ShadingBehavior());
             project.DrawingMode = DrawingModeType.use_render_target;
 

@@ -283,13 +283,14 @@ namespace DownUnder.UI.Widgets {
             }
         }
 
+        Point2 IParent.PositionInRender => PositionInRender;
+
         /// <summary> The position of this <see cref="Widget"/> relative to the <see cref="RenderTarget2D"/> being used. </summary>
-        private Point2 PositionInRender {
+        internal Point2 PositionInRender {
             get {
-                if (DrawingMode == DrawingModeType.use_render_target) return new Point2();
-                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) { return Position; }
-                if (ParentWidget is IScrollableWidget iscroll_parent) return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(iscroll_parent.Scroll);
-                return Position.WithOffset(ParentWidget.PositionInRender);
+                if (DrawingMode == DrawingModeType.use_render_target) return (this is IScrollableWidget s_this) ? s_this.Scroll : new Point2();
+                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) return (this is IScrollableWidget s_this) ? Position.WithOffset(s_this.Scroll) : Position;
+                return (this is IScrollableWidget s_this_) ? Position.WithOffset(ParentWidget.PositionInRender).WithOffset(s_this_.Scroll) : Position.WithOffset(ParentWidget.PositionInRender);
             }
         }
 
@@ -297,10 +298,12 @@ namespace DownUnder.UI.Widgets {
         public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
+        /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
+        public RectangleF DrawingAreaUnscrolled => (this is IScrollableWidget s_this) ? DrawingArea.WithOffset(s_this.Scroll.Inverted()) : DrawingArea;
         public RectangleF VisibleDrawingArea {
             get {
                 if (DrawingMode == DrawingModeType.use_render_target || ParentWidget == null) return Area;
-                return DrawingArea.Intersection(ParentWidget.DrawingArea);
+                return AreaInWindow.Intersection(ParentWidget.VisibleDrawingArea);
             }
         }
 
@@ -363,7 +366,7 @@ namespace DownUnder.UI.Widgets {
         public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
         
         /// <summary> How many children deep this <see cref="Widget"/> is. </summary>
-        public int Depth  {
+        public int Depth {
             get {
                 int result = 0;
                 Widget widget = this;
@@ -692,8 +695,9 @@ namespace DownUnder.UI.Widgets {
             _passed_sprite_batch = sprite_batch;
 
             if (DrawingMode == DrawingModeType.use_render_target) {
-                SpriteBatch.Begin();
-                SpriteBatch.Draw(_render_target, Position, Color.White);
+                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                if (Parent == null) SpriteBatch.Draw(_render_target, Position, Color.White);
+                else SpriteBatch.Draw(_render_target, Position.WithOffset(Parent.PositionInRender), Color.White);
                 SpriteBatch.End();
                 return;
             }
@@ -729,7 +733,7 @@ namespace DownUnder.UI.Widgets {
                 DrawingTools.DrawBorder(
                     _white_dot,
                     SpriteBatch,
-                    DrawingArea.ToRectangle(),
+                    DrawingAreaUnscrolled.ToRectangle(),
                     OutlineThickness,
                     Theme.OutlineColor.CurrentColor,
                     OutlineSides
