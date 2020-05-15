@@ -1,14 +1,12 @@
-﻿using System;
-using DownUnder.UI.Widgets.Actions.Actions;
-using DownUnder.Utilities;
-using DownUnder.Utility;
+﻿using DownUnder.Utilities;
 using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.BaseWidgets {
+namespace DownUnder.UI.Widgets.BaseWidgets
+{
     public class SpacedList : Layout {
         private bool _disable_update_area = false;
 
-        public float ListSpacing { get; set; } = 30f;
+        public float ListSpacing { get; set; } = 0f;
         /// <summary> Ther interpolation that will be used when aligning the <see cref="Widget"/>s. Set to null for none. </summary>
         public InterpolationSettings? WidgetMovement { get; set; } = InterpolationSettings.Fast;
 

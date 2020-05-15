@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.Editor_Tools;
@@ -51,11 +52,10 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteFont = Content.Load<SpriteFont>("font");
 
-            Layout = new UIEditorLayout(this, out editor_objects);
             //Layout = TestLayouts.TestLayout4(this);
             //Layout = TestLayouts.TestLayout5(this);
-            //Layout = TestLayouts.TestLayout6(this);
-
+            MainWidget = TestLayouts.TestLayout5(this);
+            MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
             // TODO: use this.Content to load your game content here

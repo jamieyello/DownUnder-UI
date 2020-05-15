@@ -7,9 +7,13 @@ namespace DownUnder.UI.Widgets.Actions {
     public abstract class WidgetAction : INeedsWidgetParent {
         Widget _parent_backing;
         public enum DuplicatePolicy {
+            /// <summary> Override any existing matching <see cref="WidgetAction"/>. </summary>
             override_,
+            /// <summary> Execute alongside any matching <see cref="WidgetAction"/>. </summary>
             parallel,
+            /// <summary> Execute after any matching <see cref="WidgetAction"/> are done. </summary>
             wait,
+            /// <summary> Do not execute if a matching <see cref="WidgetAction"/> is being executed. </summary>
             cancel
         }
 

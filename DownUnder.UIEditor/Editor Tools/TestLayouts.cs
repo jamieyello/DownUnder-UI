@@ -100,7 +100,7 @@ namespace DownUnder.UIEditor
             button.Area = new RectangleF(50, 50, 100, 30);
             button.OnClick += (obj, sender) =>
             {
-                button.Actions.Add(new PropertyTransitionAction<Point2>(nameof(button.Position), new Point2()));
+                button.Actions.Add(new PropertyTransitionAction<Point2>(nameof(button.Position), new Point2(button.X + 40, 0)) { Policy = UI.Widgets.Actions.WidgetAction.DuplicatePolicy.override_ });
             };
 
             Layout moving_window = new Layout();

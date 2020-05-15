@@ -10,12 +10,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using MonoGame.Extended;
-using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets;
 using DownUnder.Utility;
 using DownUnder.UI.Widgets.Behaviors;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI
+{
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
     public abstract class DWindow : Game, IParent {
         /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
@@ -38,7 +38,7 @@ namespace DownUnder.UI {
         // A cache used by Area.
         private RectangleF _area_cache = new RectangleF();
 
-        private Layout _layout_backing;
+        private Widget _widget_backing;
         private Point2 _minimum_size_backing;
         bool _is_user_resizing_backing;
 
@@ -98,16 +98,16 @@ namespace DownUnder.UI {
             }
         }
 
-        /// <summary> The Layout Widget of this window. </summary>
-        public Layout Layout {
-            get => _layout_backing;
+        /// <summary> The primary <see cref="Widget"/> of this window. </summary>
+        public Widget MainWidget {
+            get => _widget_backing;
             set {
                 if (value != null) {
                     value.ParentWindow = this;
                     value.Area = GraphicsDevice.Viewport.Bounds;
                 }
 
-                _layout_backing = value;
+                _widget_backing = value;
             }
         }
 
@@ -208,7 +208,7 @@ namespace DownUnder.UI {
             // unneeded possibly
             FirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
             Window.ClientSizeChanged += (sender, e) => {
-                if (Layout != null) Layout.Size = Area.Size;
+                if (MainWidget != null) MainWidget.Size = Area.Size;
             };
             Window.TextInput += ProcessKeys;
             Exiting += ExitAll;
@@ -272,7 +272,7 @@ namespace DownUnder.UI {
                 OSInterface.SetWindowPosition(this, value.Position.ToPoint());
             } catch (Exception e) { Console.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}"); }
 
-            Layout.Area = value.SizeOnly();
+            MainWidget.Area = value.SizeOnly();
         }
 
         #endregion Event Handlers
@@ -318,7 +318,7 @@ namespace DownUnder.UI {
             CommandText.Clear();
 
             ResizingDirections = Directions2D.None;
-            Layout.Update(game_time, InputState);
+            MainWidget.Update(game_time, InputState);
             if (ResizingDirections == Directions2D.UDLR) UICursor = MouseCursor.SizeAll;
             else {
                 if ((ResizingDirections == Directions2D.U) || (ResizingDirections == Directions2D.D)) UICursor = MouseCursor.SizeNS;
@@ -335,7 +335,7 @@ namespace DownUnder.UI {
         }
 
         protected void DrawDWindow(GameTime game_time) {
-            Layout.Draw();
+            MainWidget.Draw();
             base.Draw(game_time);
         }
 
