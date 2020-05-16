@@ -41,7 +41,6 @@ namespace DownUnder.UI.Widgets.WidgetElements
         private float _side_bar_initial_y_value;
 
         private float _thickness_backing;
-        private bool _bottom_visible_backing;
 
         private bool _BottomVisible { get; set; }
         private bool _SideVisible { get; set; }

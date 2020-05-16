@@ -5,7 +5,7 @@ using System.Reflection;
 
 // https://www.youtube.com/watch?v=J4nM-F1kxs8
 
-namespace DownUnder.UI.Widgets.Actions.Actions {
+namespace DownUnder.UI.Widgets.Actions {
     /// <summary> Transition a given property to a given value over time. </summary>
     /// <typeparam name="T"></typeparam>
     public class PropertyTransitionAction<T> : WidgetAction {

@@ -194,6 +194,8 @@ namespace DownUnder.UI
 
         public object DraggingObject { get; set; }
 
+        IParent IParent.Parent => ((IParent)Parent).Parent;
+
         #endregion Properties
 
         #region Constructors

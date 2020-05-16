@@ -32,7 +32,8 @@ using System.Threading;
 // Wonder if Directions2D should be enum
 // Try removing all "parent" parameters from Widgets
 
-namespace DownUnder.UI.Widgets {
+namespace DownUnder.UI.Widgets
+{
     /// <summary> A visible window object. </summary>
     [DataContract] public abstract class Widget : 
         IParent, IDisposable, ICloneable, IAcceptsDrops {
@@ -294,16 +295,74 @@ namespace DownUnder.UI.Widgets {
             }
         }
 
-        /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
-        public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
         /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
         public RectangleF DrawingAreaUnscrolled => (this is IScrollableWidget s_this) ? DrawingArea.WithOffset(s_this.Scroll.Inverted()) : DrawingArea;
-        public RectangleF VisibleDrawingArea {
+
+        /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
+        public RectangleF VisibleArea2 => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
+        public RectangleF VisibleArea
+        {
+            get
+            {
+                List<Widget> tree = Parents;
+                tree.Reverse();
+                tree.Add(this);
+                RectangleF result = tree[0].Area;
+                Point2 offset = new Point2();
+                for (int i = 1; i < tree.Count; i++)
+                {
+                    if (tree[i - 1] is IScrollableWidget tree_s) result = result.Intersection(tree[i].Area.WithOffset(tree_s.Scroll.Inverted())).SizeOnly();
+                    else result = result.Intersection(tree[i].Area).SizeOnly();
+                    offset = offset.WithOffset(tree[i].Position);
+
+                }
+                return result.WithOffset(offset);
+            }
+        }
+
+        public RectangleF VisibleDrawingArea => VisibleArea;
+        public RectangleF VisibleDrawingArea2 {
             get {
-                if (DrawingMode == DrawingModeType.use_render_target || ParentWidget == null) return Area;
-                return AreaInWindow.Intersection(ParentWidget.VisibleDrawingArea);
+                List<Widget> tree = RenderParents;
+                tree.Reverse();
+                tree.Add(this);
+                RectangleF result = tree[0].Area;
+                Point2 offset = new Point2();
+                for (int i = 1; i < tree.Count; i++) {
+                    result = result.Intersection(tree[i].Area).SizeOnly();
+                    if (tree[i - 1] is IScrollableWidget tree_s) offset = offset.WithOffset(tree[i].Position).WithOffset(tree_s.Scroll);
+                    else offset = offset.WithOffset(tree[i].Position);
+                }
+                return result.WithOffset(offset);
+            }
+        }
+
+        /// <summary> [UNTESTED] Return a recursive list of all parents of this <see cref="Widget"/>, ending at the parent <see cref="DWindow"/>. </summary>
+        public List<Widget> Parents {
+            get {
+                List<Widget> parents = new List<Widget>();
+                Widget parent = ParentWidget;
+                while (parent != null) {
+                    parents.Add(parent);
+                    parent = parent.ParentWidget;
+                }
+                return parents;
+            }
+        }
+
+        /// <summary> Returns a parent tree up to the first render target with this <see cref="Parent"/> being first. </summary>
+        private List<Widget> RenderParents {
+            get {
+                List<Widget> parents = new List<Widget>();
+                Widget parent = ParentWidget;
+                while (parent != null) {
+                    parents.Add(parent);
+                    if (parent.DrawingMode == DrawingModeType.use_render_target) break;
+                    parent = parent.ParentWidget;
+                }
+                return parents;
             }
         }
 

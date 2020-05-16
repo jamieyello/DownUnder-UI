@@ -5,7 +5,6 @@ using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
 using DownUnder.Utility;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
@@ -134,6 +133,11 @@ namespace DownUnder.UIEditor.Editor_Tools
             property_grid_layout.Add(property_grid);
             property_grid_layout.debug_output = true;
 
+            //sidebar.debug_output = true;
+            //sidebar.DrawBackground = true;
+            //sidebar.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Visible drawing area = "));
+            //sidebar.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleArea), "Visible area = "));
+
             editor_objects = new EditorObjects {
                 project = project,
                 property_grid = property_grid
@@ -154,7 +158,6 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.DesignerObjects.AllowHighlight = false;
             project.DesignerObjects.UserRepositionPolicy = UserResizePolicyType.disallow;
-            //project.Behaviors.Add(new DrawPixelGrid());
             project.Behaviors.Add(new ShadingBehavior());
             project.DrawingMode = DrawingModeType.use_render_target;
 
