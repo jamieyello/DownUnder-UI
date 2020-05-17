@@ -133,11 +133,6 @@ namespace DownUnder.UIEditor.Editor_Tools
             property_grid_layout.Add(property_grid);
             property_grid_layout.debug_output = true;
 
-            //sidebar.debug_output = true;
-            //sidebar.DrawBackground = true;
-            //sidebar.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Visible drawing area = "));
-            //sidebar.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleArea), "Visible area = "));
-
             editor_objects = new EditorObjects {
                 project = project,
                 property_grid = property_grid

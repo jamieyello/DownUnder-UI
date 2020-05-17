@@ -301,45 +301,51 @@ namespace DownUnder.UI.Widgets
         public RectangleF DrawingAreaUnscrolled => (this is IScrollableWidget s_this) ? DrawingArea.WithOffset(s_this.Scroll.Inverted()) : DrawingArea;
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
-        public RectangleF VisibleArea2 => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
-        public RectangleF VisibleArea
-        {
-            get
-            {
+        //public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
+        public RectangleF VisibleArea {
+            get {
                 List<Widget> tree = Parents;
-                tree.Reverse();
-                tree.Add(this);
-                RectangleF result = tree[0].Area;
-                Point2 offset = new Point2();
-                for (int i = 1; i < tree.Count; i++)
-                {
-                    if (tree[i - 1] is IScrollableWidget tree_s) result = result.Intersection(tree[i].Area.WithOffset(tree_s.Scroll.Inverted())).SizeOnly();
-                    else result = result.Intersection(tree[i].Area).SizeOnly();
-                    offset = offset.WithOffset(tree[i].Position);
+                tree.Insert(0, this);
+                RectangleF result = Area;
 
+                // start at the parent, go up the tree
+                for (int i = 1; i < tree.Count; i++) {
+                    if (tree[i] is IScrollableWidget next_widget) {
+                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
+                        result = result.Intersection(tree[i].Area);
+                    }
+                    else {
+                        result.Position = result.Position.WithOffset(tree[i].Position);
+                        result = result.Intersection(tree[i].Area);
+                    }
                 }
-                return result.WithOffset(offset);
+                return result;
             }
         }
 
-        public RectangleF VisibleDrawingArea => VisibleArea;
-        public RectangleF VisibleDrawingArea2 {
+        public RectangleF VisibleDrawingArea {
             get {
                 List<Widget> tree = RenderParents;
-                tree.Reverse();
-                tree.Add(this);
+                tree.Insert(0, this);
                 RectangleF result = tree[0].Area;
-                Point2 offset = new Point2();
+
+                // start at the parent, go up the tree
                 for (int i = 1; i < tree.Count; i++) {
-                    result = result.Intersection(tree[i].Area).SizeOnly();
-                    if (tree[i - 1] is IScrollableWidget tree_s) offset = offset.WithOffset(tree[i].Position).WithOffset(tree_s.Scroll);
-                    else offset = offset.WithOffset(tree[i].Position);
+                    if (tree[i].DrawingMode == DrawingModeType.use_render_target) return result;
+                    if (tree[i] is IScrollableWidget next_widget) {
+                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
+                        result = result.Intersection(tree[i].Area);
+                    }
+                    else {
+                        result.Position = result.Position.WithOffset(tree[i].Position);
+                        result = result.Intersection(tree[i].Area);
+                    }
                 }
-                return result.WithOffset(offset);
+                return result;
             }
         }
 
-        /// <summary> [UNTESTED] Return a recursive list of all parents of this <see cref="Widget"/>, ending at the parent <see cref="DWindow"/>. </summary>
+        /// <summary> [UNTESTED] Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
         public List<Widget> Parents {
             get {
                 List<Widget> parents = new List<Widget>();
@@ -769,6 +775,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Draws content without altering render target or spritebatch. </summary>
         private void DrawContent() {
             Rectangle previous_scissor_area = new Rectangle();
+
             if (DrawingMode == DrawingModeType.direct) {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();

@@ -125,6 +125,7 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DragAndDropSource.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\ShadingBehavior.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Static Accessors\DebugBehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\VisualBehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />
     <Compile Include="UI\Widgets\DataTypes\ContainerBorder.cs" />

@@ -19,7 +19,6 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public override object Clone() => new WritePropertyToConsole(_nameof_property, _pre_text, _post_text);
         
-
         protected override void ConnectToParent() {
             _property_info = typeof(Widget).GetProperty(_nameof_property);
             Parent.OnUpdate += WriteLine;
