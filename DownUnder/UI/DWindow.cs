@@ -219,9 +219,11 @@ namespace DownUnder.UI
             GraphicsManager = new GraphicsDeviceManager(this);
             Window.AllowUserResizing = true;
             IsMouseVisible = true;
+            
             MinimumSize = new Point2(100, 100);
             double temp = (1000d / 144) * 10000d;
             TargetElapsedTime = new TimeSpan((long)temp);
+            //Window.IsBorderless = true;
         }
 
         protected override void Dispose(bool disposing) {

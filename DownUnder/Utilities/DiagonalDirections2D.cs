@@ -37,6 +37,8 @@ namespace DownUnder.Utility
              + (BottomLeft ? 1 : 0) * 4
              + (BottomRight ? 1 : 0) * 8;
 
+        public bool HasMultiple => Convert.ToByte(TopLeft) + Convert.ToByte(TopRight) + Convert.ToByte(BottomLeft) + Convert.ToByte(BottomRight) <= 1;
+
         public static bool operator ==(DiagonalDirections2D d1, DiagonalDirections2D d2) => d1.Equals(d2);
         public static bool operator !=(DiagonalDirections2D d1, DiagonalDirections2D d2) => !(d1 == d2);
         public static bool operator true(DiagonalDirections2D d) => d.TopLeft || d.TopRight || d.BottomLeft || d.BottomRight;

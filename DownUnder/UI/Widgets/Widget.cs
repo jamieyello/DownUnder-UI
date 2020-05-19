@@ -319,6 +319,7 @@ namespace DownUnder.UI.Widgets
                         result = result.Intersection(tree[i].Area);
                     }
                 }
+
                 return result;
             }
         }
@@ -331,21 +332,27 @@ namespace DownUnder.UI.Widgets
 
                 // start at the parent, go up the tree
                 for (int i = 1; i < tree.Count; i++) {
-                    if (tree[i].DrawingMode == DrawingModeType.use_render_target) return result;
-                    if (tree[i] is IScrollableWidget next_widget) {
-                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
-                        result = result.Intersection(tree[i].Area);
-                    }
-                    else {
+                    if (tree[i].DrawingMode != DrawingModeType.use_render_target)
+                    {
+                        //if (tree[i] is IScrollableWidget next_widget) result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
+                        //else
                         result.Position = result.Position.WithOffset(tree[i].Position);
                         result = result.Intersection(tree[i].Area);
                     }
+                    else
+                    {
+
+                    }
+                    
                 }
+
+                // this fixes the inner stuff
+                //if (DrawingMode == DrawingModeType.use_render_target) return result.SizeOnly();
                 return result;
             }
         }
 
-        /// <summary> [UNTESTED] Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
+        /// <summary> Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
         public List<Widget> Parents {
             get {
                 List<Widget> parents = new List<Widget>();

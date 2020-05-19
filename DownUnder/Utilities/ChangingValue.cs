@@ -16,35 +16,41 @@ namespace DownUnder.Utility
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         public float TransitionSpeed { get; set; } = 1f;
         public bool IsTransitioning { get => interpolation_progress != 1f; }
-        public InterpolationSettings InterpolationSettings 
-        {
+        public InterpolationSettings InterpolationSettings {
             get => new InterpolationSettings(Interpolation, TransitionSpeed);
-            set
-            {
+            set {
                 Interpolation = value.Interpolation;
                 TransitionSpeed = value.TransitionSpeed;
             }
         }
 
-        public ChangingValue()
-        {
-        }
+        public ChangingValue() {}
 
-        public ChangingValue(T value)
-        {
+        public ChangingValue(T value) {
             initial_value = value;
             current_value = value;
             target_value = value;
         }
 
-        public void SetTargetValue(T target_value, float transition_speed, bool instant = false)
+        public ChangingValue(T initial_value, T target_value, InterpolationSettings interpolation)
         {
+            this.initial_value = initial_value;
+            current_value = initial_value;
+            this.target_value = target_value;
+            InterpolationSettings = interpolation;
+        }
+
+        public ChangingValue(T target_value, InterpolationSettings interpolation) {
+            InterpolationSettings = interpolation;
+            SetTargetValue(target_value);
+        }
+
+        public void SetTargetValue(T target_value, float transition_speed, bool instant = false) {
             TransitionSpeed = transition_speed;
             SetTargetValue(target_value);
         }
 
-        public void SetTargetValue(T target_value, bool instant = false)
-        {
+        public void SetTargetValue(T target_value, bool instant = false) {
             // Return if target value is met
             if (EqualityComparer<T>.Default.Equals(target_value, current_value)) return;
 
@@ -59,31 +65,20 @@ namespace DownUnder.Utility
             initial_value = current_value;
 
             // If instant is true, the interpolation will immediately finish.
-            if (instant)
-            {
-                ForceComplete();
-            }
-            else
-            {
-                interpolation_progress = 0f;
-            }
+            if (instant) ForceComplete();
+            else interpolation_progress = 0f;
         }
 
-        public void ForceComplete()
-        {
-            Update(1f);
-        }
-
+        public void ForceComplete() => Update(1f);
+        
         public void Update(float step)
         {
-            if (interpolation_progress >= 1f)
-            {
+            if (interpolation_progress >= 1f) {
                 interpolation_progress = 1f;
                 current_value = target_value;
                 return;
             }
-            if (interpolation_progress < 0f)
-            {
+            if (interpolation_progress < 0f) {
                 interpolation_progress = 0f;
                 current_value = initial_value;
                 return;
@@ -93,13 +88,9 @@ namespace DownUnder.Utility
             current_value = DownUnder.Utility.Interpolation.GetMiddle(initial_value, target_value, interpolation_progress, Interpolation);
         }
 
-        public T GetCurrent()
-        {
-            return current_value;
-        }
+        public T GetCurrent() => current_value;
 
-        public object Clone()
-        {
+        public object Clone() {
             var c = new ChangingValue<T>();
             c.interpolation_progress = interpolation_progress;
             c.Interpolation = Interpolation;

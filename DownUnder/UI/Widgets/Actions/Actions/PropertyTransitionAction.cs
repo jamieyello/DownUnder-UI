@@ -12,16 +12,16 @@ namespace DownUnder.UI.Widgets.Actions {
         private ChangingValue<T> _changing_value;
         private readonly T _target_value;
         private PropertyInfo _property_info;
-        public readonly string PropertyName;
+        private InterpolationSettings _interpolation;
 
-        public T TargetValue { get; set; }
-        public InterpolationSettings Interpolation;
+        public readonly string PropertyName;
+        public bool IsTransitioning => _changing_value == null ? false : _changing_value.IsTransitioning;
 
         public PropertyTransitionAction(string nameof_property, T target_value, InterpolationSettings? interpolation = null) {
             PropertyName = nameof_property;
             _target_value = target_value;
-            if (interpolation != null) Interpolation = interpolation.Value;
-            else Interpolation = new InterpolationSettings(InterpolationType.fake_sin, 1f);
+            if (interpolation != null) _interpolation = interpolation.Value;
+            else _interpolation = new InterpolationSettings(InterpolationType.fake_sin, 1f);
         }
 
         internal override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
@@ -31,7 +31,7 @@ namespace DownUnder.UI.Widgets.Actions {
         protected override void ConnectToParent() {
             _property_info = typeof(Widget).GetProperty(PropertyName);
             _changing_value = new ChangingValue<T>((T)_property_info.GetValue(Parent));
-            _changing_value.InterpolationSettings = Interpolation;
+            _changing_value.InterpolationSettings = _interpolation;
 
             _changing_value.SetTargetValue(_target_value);
             Parent.OnUpdate += Update;

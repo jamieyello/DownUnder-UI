@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
@@ -8,6 +9,7 @@ using DownUnder.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
+using System.Linq;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
@@ -40,12 +42,20 @@ namespace DownUnder.UIEditor.Editor_Tools
                 Text = "Button"
             };
             add_button.Behaviors.Add(add_button.BehaviorLibrary.Visual.DragableOutlineAnimation);
-            add_button.Behaviors.Add(new DragAndDropSource() {
-                DragObject = new Button() {
+            var drag = new DragAndDropSource()
+            {
+                DragObject = new Button()
+                {
                     SnappingPolicy = DiagonalDirections2D.None,
                     Area = new RectangleF(0, 0, 90, 30)
                 }
-            });
+            };
+            add_button.Behaviors.Add(drag);
+            drag.OnSetWindowClone += (obj, sender) =>
+            {
+                ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "New button VisibleDrawingArea = "));
+                ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(Area), "New button Area = "));
+            };
 
             Button add_layout = new Button() {
                 Size = new Point2(100, 100),
@@ -132,6 +142,8 @@ namespace DownUnder.UIEditor.Editor_Tools
             property_grid.debug_output = true;
             property_grid_layout.Add(property_grid);
             property_grid_layout.debug_output = true;
+
+            project.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Project VisisbleDrawingArea = "));
 
             editor_objects = new EditorObjects {
                 project = project,

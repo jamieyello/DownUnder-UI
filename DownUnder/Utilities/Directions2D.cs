@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonoGame.Extended;
+using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder.Utility
@@ -51,6 +52,28 @@ namespace DownUnder.Utility
                 if (DisallowOpposites && value) up = false;
                 down = value;
             }
+        }
+
+        public bool HasMultiple => Convert.ToByte(Up) + Convert.ToByte(Down) + Convert.ToByte(Left) + Convert.ToByte(Right) <= 1;
+
+        public Point2 ValueInDirection(float value)
+        {
+            Point2 result = new Point2();
+            if (Up) result.Y -= value;
+            if (Down) result.Y += value;
+            if (Left) result.X -= value;
+            if (Right) result.X += value;
+            return result;
+        }
+        
+        public Point2 ValueInDirection(Size2 value)
+        {
+            Point2 result = new Point2();
+            if (Up) result.Y -= value.Height;
+            if (Down) result.Y += value.Height;
+            if (Left) result.X -= value.Width;
+            if (Right) result.X += value.Width;
+            return result;
         }
 
         public void Clear()
