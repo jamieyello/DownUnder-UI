@@ -54,7 +54,7 @@ namespace DownUnder.Utility
             }
         }
 
-        public bool HasMultiple => Convert.ToByte(Up) + Convert.ToByte(Down) + Convert.ToByte(Left) + Convert.ToByte(Right) <= 1;
+        public bool HasMultiple => Convert.ToByte(Up) + Convert.ToByte(Down) + Convert.ToByte(Left) + Convert.ToByte(Right) > 1;
 
         public Point2 ValueInDirection(float value)
         {

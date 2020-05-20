@@ -60,9 +60,8 @@ namespace DownUnder.UI.Widgets.BaseWidgets
         }
 
         protected override void HandleChildDelete(Widget widget) {
-            Widget child = _widgets[_widgets.IndexOf(widget)];
-            child.Dispose();
-            _widgets.Remove(child);
+            widget.Dispose();
+            _widgets.Remove(widget);
         }
 
         public int Count => ((IList<Widget>)_widgets).Count; 

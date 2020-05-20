@@ -36,9 +36,9 @@ namespace DownUnder.UI.Widgets.Actions {
         public bool IsCompleted { get; protected set; } = false;
 
         protected abstract void ConnectToParent();
-        internal abstract void DisconnectFromParent();
+        public abstract void DisconnectFromParent();
         public abstract object InitialClone();
-        internal abstract bool Matches(WidgetAction action);
+        public abstract bool Matches(WidgetAction action);
 
         protected void EndAction() {
             IsCompleted = true;

@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Actions {
             else _interpolation = new InterpolationSettings(InterpolationType.fake_sin, 1f);
         }
 
-        internal override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
+        public override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
         
         public override object InitialClone() => new PropertyTransitionAction<T>(PropertyName, _target_value);
         
@@ -37,7 +37,7 @@ namespace DownUnder.UI.Widgets.Actions {
             Parent.OnUpdate += Update;
         }
 
-        internal override void DisconnectFromParent() {
+        public override void DisconnectFromParent() {
             Parent.OnUpdate -= Update;
         }
 

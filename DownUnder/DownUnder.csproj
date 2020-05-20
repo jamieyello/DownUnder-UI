@@ -112,7 +112,7 @@
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionCollection.cs" />
-    <Compile Include="UI\Widgets\Actions\Actions\LayoutSlide.cs" />
+    <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />

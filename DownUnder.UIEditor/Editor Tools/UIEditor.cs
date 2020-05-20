@@ -5,7 +5,9 @@ using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.SpecializedWidgets;
+using DownUnder.Utilities;
 using DownUnder.Utility;
+using DownUnder.Widgets;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
@@ -42,7 +44,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                 Text = "Button"
             };
             add_button.Behaviors.Add(add_button.BehaviorLibrary.Visual.DragableOutlineAnimation);
-            var drag = new DragAndDropSource()
+            var add_button_drag = new DragAndDropSource()
             {
                 DragObject = new Button()
                 {
@@ -50,12 +52,7 @@ namespace DownUnder.UIEditor.Editor_Tools
                     Area = new RectangleF(0, 0, 90, 30)
                 }
             };
-            add_button.Behaviors.Add(drag);
-            drag.OnSetWindowClone += (obj, sender) =>
-            {
-                ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "New button VisibleDrawingArea = "));
-                ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(Area), "New button Area = "));
-            };
+            add_button.Behaviors.Add(add_button_drag);
 
             Button add_layout = new Button() {
                 Size = new Point2(100, 100),
@@ -141,9 +138,16 @@ namespace DownUnder.UIEditor.Editor_Tools
             PropertyGrid property_grid = new PropertyGrid(property_grid_layout, project);
             property_grid.debug_output = true;
             property_grid_layout.Add(property_grid);
-            property_grid_layout.debug_output = true;
+            //property_grid_layout.debug_output = true;
 
-            project.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Project VisisbleDrawingArea = "));
+
+            //add_button_drag.OnSetWindowClone += (obj, sender) =>
+            //{
+            //    ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "New button VisibleDrawingArea = "));
+            //    ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(Area), "New button Area = "));
+            //};
+            //project.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Project VisisbleDrawingArea = "));
+            project.OnPassthroughClick += SetNewPropertyGrid;
 
             editor_objects = new EditorObjects {
                 project = project,
@@ -169,6 +173,17 @@ namespace DownUnder.UIEditor.Editor_Tools
             project.DrawingMode = DrawingModeType.use_render_target;
 
             return project;
+        }
+
+        private void SetNewPropertyGrid(object sender, EventArgs args)
+        {
+            MainWindow main_window = (MainWindow)((Widget)sender).ParentWindow;
+            Layout grid_layout = (Layout)main_window.editor_objects.property_grid.ParentWidget;
+            Widget target = main_window.SelectedWidgets.Primary;
+            if (target == null) target = main_window.HoveredWidgets.Primary;
+            PropertyGrid property_grid = new PropertyGrid(grid_layout, target);
+            var slide = new AutoLayoutSlide(property_grid, Directions2D.R, InterpolationSettings.Fast) { Policy = WidgetAction.DuplicatePolicy.wait };
+            grid_layout.Actions.Add(slide);
         }
 
         private static void DiagnoseAreaToggled(object sender, EventArgs args) {

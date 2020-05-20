@@ -17,7 +17,7 @@ namespace DownUnder.Widgets
     public class MainWindow : DWindow
     {
         /// <summary> Contains all widgets relevant to this editor. (When the editor supports slots this won't be proper) </summary>
-        private EditorObjects editor_objects;
+        internal EditorObjects editor_objects;
 
         // Because this *editor* needs to be able to edit code. A typical window won't.
         /// <summary> Path to the editor's .cs file. </summary>

@@ -75,6 +75,8 @@ namespace DownUnder.UI.Widgets
         private const int _MAX_WAIT_TIME = 100;
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
         private const float _USER_RESIZE_BOUNDS_SIZE = 20f;
+        /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
+        private bool _has_updated = false;
 
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
@@ -521,7 +523,7 @@ namespace DownUnder.UI.Widgets
         protected virtual void Dispose(bool disposing) {
             _white_dot?.Dispose();
             _render_target?.Dispose();
-            SpriteBatch?.Dispose();
+            _local_sprite_batch?.Dispose();
             foreach (Widget child in Children) child.Dispose(true);
 
             GC.SuppressFinalize(this);
@@ -549,6 +551,7 @@ namespace DownUnder.UI.Widgets
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.UIInputState = ui_input;
+            _has_updated = true;
             foreach (Widget widget in Children) widget.UpdateGroupUpdateData(game_time, ui_input);
         }
 
@@ -677,11 +680,12 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
         private void UpdateGroupEvents(GameTime game_time) {
+            if (!_has_updated) return;
             // Skip some normal behavior if the user has the resize cursor over this widget
             if (!ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this 
                 && !_IsBeingResized) {
-                if (IsPrimaryHovered && ParentWindow.IsActive) {
+                if (IsPrimaryHovered) {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
                     if (_update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
@@ -689,13 +693,14 @@ namespace DownUnder.UI.Widgets
                     if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (_update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
-                if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
-                if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
                 if (_update_drag) OnDrag?.Invoke(this, EventArgs.Empty);
 
                 IsHoveredOver = _update_hovered_over;
             }
+
+            if (_update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+            if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
+            if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
             if (_IsBeingResized) SetAsFocused();
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
@@ -853,7 +858,12 @@ namespace DownUnder.UI.Widgets
         /// <summary> Used by internal <see cref="Focus"/> object. </summary>
         internal void TriggerSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
 
-        public void Delete() => _post_update_flags.Delete = true;
+        /// <summary> Disposes this <see cref="Widget"/> and removes it from its parent. </summary>
+        /// <param name="now"> Set to true to delete this <see cref="Widget"/> on calling this, false to delete on next update. </param>
+        public void Delete(bool now = false) {
+            if (now) ParentWidget.RemoveChild(this);
+            else _post_update_flags.Delete = true;
+        }
 
         private void RemoveChild(Widget widget) {
             if (!Children.Contains(widget)) throw new Exception("Given widget is not owned by this widget.");
