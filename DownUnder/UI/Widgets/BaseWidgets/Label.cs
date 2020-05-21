@@ -90,7 +90,7 @@ namespace DownUnder.UI.Widgets.BaseWidgets {
 
         /// <summary> Minimum size allowed when setting this <see cref="Label"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public override Point2 MinimumSize {
-            get => !ConstrainAreaToText || !IsGraphicsInitialized ? base.MinimumSize : base.MinimumSize.Max(SpriteFont.MeasureString(Text));
+            get => !ConstrainAreaToText || !IsGraphicsInitialized  ? base.MinimumSize : base.MinimumSize.Max(SpriteFont.MeasureString(Text));
             set => base.MinimumSize = value;
         }
         

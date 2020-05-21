@@ -18,14 +18,20 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets
             set => _grid_insert_backing = value;
         }
 
-        public ObjectLabel(Widget parent, SpriteFont sprite_font, object obj) : base(parent, sprite_font, obj.ToString()) => SetDefaults(obj);
+        public ObjectLabel(Widget parent, object obj) : base(parent, obj?.ToString()) => SetDefaults(obj);
         private void SetDefaults(object obj) {
             OnConfirm += Confirm;
             OnDoubleClick += DoubleClickAction;
             TextEntryRules.IsSingleLine = true;
             EnterConfirms = true;
-            
-            if (obj is string) {
+            if (obj == null) 
+            {
+                _obj = obj;
+                _text_editable = false;
+                _GridInsert = true;
+                EditingEnabled = false;
+            }
+            else if (obj is string) {
                 _text_editable = true;
                 TextEntryRules = TextEntryRuleSet.String;
             }

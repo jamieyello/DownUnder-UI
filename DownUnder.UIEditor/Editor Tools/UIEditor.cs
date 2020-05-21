@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DownUnder.UIEditor.Editor_Tools
 {
@@ -147,7 +149,9 @@ namespace DownUnder.UIEditor.Editor_Tools
             //    ((Widget)((DragAndDropSource)obj).Parent.ParentWindow.DraggingObject).Behaviors.Add(new WritePropertyToConsole(nameof(Area), "New button Area = "));
             //};
             //project.Behaviors.Add(new WritePropertyToConsole(nameof(VisibleDrawingArea), "Project VisisbleDrawingArea = "));
-            project.OnPassthroughClick += SetNewPropertyGrid;
+            
+            project.OnPassthroughClick += SetNewPropertyGridAsync;
+            //project.OnPassthroughClick += WaitAsync;
 
             editor_objects = new EditorObjects {
                 project = project,
@@ -175,14 +179,25 @@ namespace DownUnder.UIEditor.Editor_Tools
             return project;
         }
 
-        private void SetNewPropertyGrid(object sender, EventArgs args)
+        private async void WaitAsync(object sender, EventArgs args)
+        {
+            Console.WriteLine("Waiting...");
+            await Task.Run(() => Thread.Sleep(3000));
+            Console.WriteLine("Done waiting.");
+        }
+
+        private async void SetNewPropertyGridAsync(object sender, EventArgs args)
         {
             MainWindow main_window = (MainWindow)((Widget)sender).ParentWindow;
             Layout grid_layout = (Layout)main_window.editor_objects.property_grid.ParentWidget;
             Widget target = main_window.SelectedWidgets.Primary;
             if (target == null) target = main_window.HoveredWidgets.Primary;
-            PropertyGrid property_grid = new PropertyGrid(grid_layout, target);
-            var slide = new AutoLayoutSlide(property_grid, Directions2D.R, InterpolationSettings.Fast) { Policy = WidgetAction.DuplicatePolicy.wait };
+            
+            Console.WriteLine("Creating property grid...");
+            PropertyGrid property_grid = await Task.Run(() => new PropertyGrid(grid_layout, target));
+            Console.WriteLine("Created property grid.");
+
+            AutoLayoutSlide slide = new AutoLayoutSlide(property_grid, Directions2D.R, InterpolationSettings.Fast) { Policy = WidgetAction.DuplicatePolicy.wait };
             grid_layout.Actions.Add(slide);
         }
 

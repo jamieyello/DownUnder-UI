@@ -2,7 +2,9 @@
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.SpecializedWidgets {
     public class PropertyGrid : Grid {
@@ -23,52 +25,26 @@ namespace DownUnder.UI.Widgets.SpecializedWidgets {
             }
         }
         
-        public PropertyGrid(IParent parent, object obj) : base(parent, 2, obj.GetType().GetProperties().Length) {
+        public PropertyGrid(IParent parent, object obj) : base(parent, 2, obj.GetType().GetProperties().Length)
+        {
             var properties = obj.GetType().GetProperties();
             if (properties.Length == 0) throw new Exception("No properties in object.");
-            
-            for (int i = 0; i < properties.Length; i++) {
-                SetCell(0, i, new Label(
-                    this,
-                    parent.SpriteFont,
-                    properties[i].Name) {
-                    DrawOutline = true,
-                    OutlineSides = Directions2D.DR,
-                    MinimumHeight = 20 // test
-                });
 
-                if (properties[i].GetIndexParameters().Length != 0) {
-                    SetCell(1, i, new Label(
-                        this,
-                        parent.SpriteFont,
-                        "Collection...") {
-                        DrawOutline = true,
-                        OutlineSides = Directions2D.DR,
-                        MinimumHeight = 20
-                    });
-                }
-                else if (properties[i].GetValue(obj) == null) {
-                    SetCell(1, i, new Label(
-                        this,
-                        parent.SpriteFont, 
-                        "null") {
-                        DrawOutline = true,
-                        OutlineSides = Directions2D.DR,
-                        MinimumHeight = 20
-                    });
-                }
-                else {
-                    var label = new ObjectLabel(
-                        this,
-                        parent.SpriteFont,
-                        properties[i].GetValue(obj)) {
-                        DrawOutline = true,
-                        OutlineSides = Directions2D.DR,
-                        MinimumHeight = 20
-                    };
+            Parallel.ForEach(properties, (property, state, index) => {
+                int i = (int)index;
+                SetCell(0, i, new Label(this, properties[index].Name) { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 });
+
+                if (property.GetIndexParameters().Length != 0)
+                    SetCell(1, i, new Label(this, "Collection...") { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 });
+                else if (properties[index].GetValue(obj) == null) 
+                    SetCell(1, i, new Label(this, "null") { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 });
+                else
+                {
+                    var label = new ObjectLabel(this, properties[index].GetValue(obj)) { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 };
                     SetCell(1, i, label);
                 }
-            }
+            });
+            
         }
     }
 }
