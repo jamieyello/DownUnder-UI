@@ -11,11 +11,11 @@ namespace DownUnder.Utility
         [NonSerialized] private T current_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T target_value = (T)Activator.CreateInstance(typeof(T));
 
-        private float interpolation_progress = 0f; // From 0f to 1f
+        public float Progress { get; private set; } = 0f; // From 0f to 1f
 
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         public float TransitionSpeed { get; set; } = 1f;
-        public bool IsTransitioning { get => interpolation_progress != 1f; }
+        public bool IsTransitioning { get => Progress != 1f; }
         public InterpolationSettings InterpolationSettings {
             get => new InterpolationSettings(Interpolation, TransitionSpeed);
             set {
@@ -66,33 +66,33 @@ namespace DownUnder.Utility
 
             // If instant is true, the interpolation will immediately finish.
             if (instant) ForceComplete();
-            else interpolation_progress = 0f;
+            else Progress = 0f;
         }
 
         public void ForceComplete() => Update(1f);
         
         public void Update(float step)
         {
-            if (interpolation_progress >= 1f) {
-                interpolation_progress = 1f;
+            if (Progress >= 1f) {
+                Progress = 1f;
                 current_value = target_value;
                 return;
             }
-            if (interpolation_progress < 0f) {
-                interpolation_progress = 0f;
+            if (Progress < 0f) {
+                Progress = 0f;
                 current_value = initial_value;
                 return;
             }
 
-            interpolation_progress += TransitionSpeed * step;
-            current_value = DownUnder.Utility.Interpolation.GetMiddle(initial_value, target_value, interpolation_progress, Interpolation);
+            Progress += TransitionSpeed * step;
+            current_value = DownUnder.Utility.Interpolation.GetMiddle(initial_value, target_value, Progress, Interpolation);
         }
 
         public T GetCurrent() => current_value;
 
         public object Clone() {
             var c = new ChangingValue<T>();
-            c.interpolation_progress = interpolation_progress;
+            c.Progress = Progress;
             c.Interpolation = Interpolation;
             c.TransitionSpeed = TransitionSpeed;
 

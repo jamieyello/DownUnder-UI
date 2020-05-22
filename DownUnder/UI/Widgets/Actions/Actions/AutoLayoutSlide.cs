@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Actions
             if (direction == Directions2D.None) throw new Exception($"No direction given.");
             _new_widget = new_widget;
             _direction = direction;
-            _interpolation = interpolation == null ? InterpolationSettings.Fast : interpolation.Value;
+            _interpolation = interpolation == null ? InterpolationSettings.Default : interpolation.Value;
         }
 
         public override object InitialClone()
@@ -63,6 +63,7 @@ namespace DownUnder.UI.Widgets.Actions
         private void Align()
         {
             _new_widget.Position = _new_widget_area.GetCurrent().Position;
+            _old_widget.Position = _new_widget_start.Position.WithOffset(_new_widget_end.Position).MultipliedBy(_new_widget_area.Progress).Inverted();
         }
 
         protected override bool Matches(WidgetAction action)
