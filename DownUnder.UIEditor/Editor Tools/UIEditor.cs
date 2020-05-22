@@ -196,11 +196,11 @@ namespace DownUnder.UIEditor.Editor_Tools
             grid_layout.Actions.Add(new AutoLayoutSlide(new PropertyGrid(grid_layout, target), Directions2D.R));
             //good working single threaded code above
             //broken dogshit below
-            grid_layout.Actions.Add(new AsyncLayoutSlide(Task.Run(() => (Widget)new PropertyGrid(grid_layout, target)), Directions2D.R, InterpolationSettings.Default)
-            {
-                DuplicatePolicy = WidgetAction.DuplicatePolicyType.wait,
-                DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
-            });
+            //grid_layout.Actions.Add(new AsyncLayoutSlide(Task.Run(() => (Widget)new PropertyGrid(grid_layout, target)), Directions2D.R, InterpolationSettings.Default)
+            //{
+            //    DuplicatePolicy = WidgetAction.DuplicatePolicyType.wait,
+            //    DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
+            //});
         }
 
         private static void DiagnoseAreaToggled(object sender, EventArgs args) {
