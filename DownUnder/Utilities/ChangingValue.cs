@@ -12,6 +12,7 @@ namespace DownUnder.Utility
         [NonSerialized] private T target_value = (T)Activator.CreateInstance(typeof(T));
 
         public float Progress { get; private set; } = 0f; // From 0f to 1f
+        public float ProgressPlotted => Utility.Interpolation.Plot(Progress, Interpolation);
 
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         public float TransitionSpeed { get; set; } = 1f;
@@ -85,7 +86,7 @@ namespace DownUnder.Utility
             }
 
             Progress += TransitionSpeed * step;
-            current_value = DownUnder.Utility.Interpolation.GetMiddle(initial_value, target_value, Progress, Interpolation);
+            current_value = Utility.Interpolation.GetMiddle(initial_value, target_value, Progress, Interpolation);
         }
 
         public T GetCurrent() => current_value;

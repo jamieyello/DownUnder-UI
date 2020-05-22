@@ -63,7 +63,7 @@ namespace DownUnder.UI.Widgets.Actions
         private void Align()
         {
             _new_widget.Position = _new_widget_area.GetCurrent().Position;
-            _old_widget.Position = _new_widget_start.Position.WithOffset(_new_widget_end.Position).MultipliedBy(_new_widget_area.Progress).Inverted();
+            _old_widget.Position = _new_widget_start.Position.WithOffset(_new_widget_end.Position).MultipliedBy(_new_widget_area.ProgressPlotted).Inverted();
         }
 
         protected override bool Matches(WidgetAction action)
