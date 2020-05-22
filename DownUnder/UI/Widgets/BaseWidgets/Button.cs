@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets.BaseWidgets {
-    public class Button : Widget {
+    public sealed class Button : Widget {
         private bool _disable_update_area = false;
         private WidgetList _children_backing = new WidgetList();
         private Texture2D _image_backing;

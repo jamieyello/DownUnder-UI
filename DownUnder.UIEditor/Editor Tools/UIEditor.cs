@@ -186,19 +186,21 @@ namespace DownUnder.UIEditor.Editor_Tools
             Console.WriteLine("Done waiting.");
         }
 
-        private async void SetNewPropertyGridAsync(object sender, EventArgs args)
+        private void SetNewPropertyGridAsync(object sender, EventArgs args)
         {
             MainWindow main_window = (MainWindow)((Widget)sender).ParentWindow;
             Layout grid_layout = (Layout)main_window.editor_objects.property_grid.ParentWidget;
             Widget target = main_window.SelectedWidgets.Primary;
             if (target == null) target = main_window.HoveredWidgets.Primary;
-            
-            Console.WriteLine("Creating property grid...");
-            PropertyGrid property_grid = await Task.Run(() => new PropertyGrid(grid_layout, target));
-            Console.WriteLine("Created property grid.");
 
-            AutoLayoutSlide slide = new AutoLayoutSlide(property_grid, Directions2D.R, InterpolationSettings.Fast) { Policy = WidgetAction.DuplicatePolicy.wait };
-            grid_layout.Actions.Add(slide);
+            grid_layout.Actions.Add(new AutoLayoutSlide(new PropertyGrid(grid_layout, target), Directions2D.R));
+            //good working single threaded code above
+            //broken dogshit below
+            grid_layout.Actions.Add(new AsyncLayoutSlide(Task.Run(() => (Widget)new PropertyGrid(grid_layout, target)), Directions2D.R, InterpolationSettings.Default)
+            {
+                DuplicatePolicy = WidgetAction.DuplicatePolicyType.wait,
+                DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
+            });
         }
 
         private static void DiagnoseAreaToggled(object sender, EventArgs args) {

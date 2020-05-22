@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.BaseWidgets {
     /// <summary> A <see cref="Widget"/> that gives a border to one other <see cref="Widget"/>. One <see cref="Widget"/> can be contained on each of the four sides. </summary>
-    [DataContract] public class BorderedContainer : Widget {
+    [DataContract] public sealed class BorderedContainer : Widget {
         private Widget _widget;
         bool _update_area = true;
         private BorderSize _border_spacing_backing = new BorderSize(5f);

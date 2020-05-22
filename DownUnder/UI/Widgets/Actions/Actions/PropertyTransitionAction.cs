@@ -22,10 +22,19 @@ namespace DownUnder.UI.Widgets.Actions {
             _target_value = target_value;
             if (interpolation != null) _interpolation = interpolation.Value;
             else _interpolation = new InterpolationSettings(InterpolationType.fake_sin, 1f);
+
+            DuplicateDefinition = DuplicateDefinitionType.matches_result;
+            DuplicatePolicy = DuplicatePolicyType.cancel;
         }
 
-        public override bool Matches(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
-        
+        protected override bool InterferesWith(WidgetAction action) => (action is PropertyTransitionAction<T> p_action) ? PropertyName == p_action.PropertyName : false;
+
+        protected override bool Matches(WidgetAction action)
+        {
+            return action is PropertyTransitionAction<T> action_t
+                && action_t._target_value.Equals(_target_value);
+        }
+
         public override object InitialClone() => new PropertyTransitionAction<T>(PropertyName, _target_value);
         
         protected override void ConnectToParent() {
@@ -37,7 +46,7 @@ namespace DownUnder.UI.Widgets.Actions {
             Parent.OnUpdate += Update;
         }
 
-        public override void DisconnectFromParent() {
+        protected override void DisconnectFromParent() {
             Parent.OnUpdate -= Update;
         }
 

@@ -336,9 +336,8 @@ namespace DownUnder.UI.Widgets
                 for (int i = 1; i < tree.Count; i++) {
                     if (tree[i].DrawingMode != DrawingModeType.use_render_target)
                     {
-                        //if (tree[i] is IScrollableWidget next_widget) result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
-                        //else
-                        result.Position = result.Position.WithOffset(tree[i].Position);
+                        if (tree[i] is IScrollableWidget next_widget) result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
+                        else result.Position = result.Position.WithOffset(tree[i].Position);
                         result = result.Intersection(tree[i].Area);
                     }
                     else
