@@ -31,6 +31,7 @@ using System.Threading;
 // Add ICloneable and INeedsParent to BehaviorCollection
 // Wonder if Directions2D should be enum
 // Try removing all "parent" parameters from Widgets
+// Speed up Widget creation by not initializing unneeded graphics objects for DrawingMode.direct Widgets
 
 namespace DownUnder.UI.Widgets
 {
