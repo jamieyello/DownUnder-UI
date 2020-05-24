@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Widgets.BaseWidgets;
-using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -28,13 +27,13 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (_parent_backing != null) throw new Exception("DeveloperObjects cannot be reused.");
                 _parent_backing = value;
 
-                if (_parent_backing is Layout parent) {
+                //if (_parent_backing is Layout parent) {
                     AcceptsDrops = true;
                     AcceptedDropTypes.Add(typeof(Widget));
-                    parent.OnAddWidget += (sender, args) => {
-                        if (IsEditModeEnabled) parent.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
+                _parent_backing.OnAddWidget += (sender, args) => {
+                        if (IsEditModeEnabled) _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
                     };
-                }
+                //}
             }
         }
 
@@ -42,9 +41,9 @@ namespace DownUnder.UI.Widgets.DataTypes
             get => _is_developer_mode_enabled_backing;
             set {
                 _is_developer_mode_enabled_backing = value;
-                foreach (Widget child in Parent.Children) {
-                    if (!(child.Parent is Button)) child.DesignerObjects.IsEditModeEnabled = value;
-                }
+                //foreach (Widget child in Parent.Children) {
+                //    if (!(child.Parent is Button)) child.DesignerObjects.IsEditModeEnabled = value;
+                //}
             }
         }
         
@@ -64,10 +63,10 @@ namespace DownUnder.UI.Widgets.DataTypes
         public bool IsDropAcceptable(object drop) => Parent.IsDropAcceptable(drop);
 
         public void HandleDrop(object drop) {
-            if (IsDropAcceptable(drop) && drop is Widget w_drop && Parent is Layout l_parent) {
-                w_drop.Area = GetAddWidgetArea(w_drop);
-                l_parent.Add(w_drop);
-            }
+            //if (IsDropAcceptable(drop) && drop is Widget w_drop && Parent is Layout l_parent) {
+            //    w_drop.Area = GetAddWidgetArea(w_drop);
+            //    l_parent.Add(w_drop);
+            //}
         }
         
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>

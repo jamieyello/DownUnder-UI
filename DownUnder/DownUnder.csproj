@@ -115,6 +115,7 @@
     <Compile Include="UI\Widgets\Actions\Actions\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Button.cs" />
@@ -141,7 +142,7 @@
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
-    <Compile Include="UI\Widgets\BaseWidgets\Grid.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\GridOld.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
@@ -152,7 +153,6 @@
     <Compile Include="UI\Widgets\Interfaces\IScrollableWidget.cs" />
     <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
     <Compile Include="UI\Widgets\BaseWidgets\Label.cs" />
-    <Compile Include="UI\Widgets\BaseWidgets\Layout.cs" />
     <Compile Include="UI\Widgets\Interfaces\IWidgetChild.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\SpecializedWidgets\PropertyGrid.cs" />

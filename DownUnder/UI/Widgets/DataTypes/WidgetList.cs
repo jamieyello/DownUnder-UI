@@ -167,6 +167,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             foreach (Widget widget in _widgets) widget.Height = height;
         }
 
+        //public WidgetArray ToArray(int x, int y)
+        //{
+        //    return new WidgetArray(_widgets, x, y);
+        //}
+        
         private void ThrowReadOnlyException() => throw new Exception($"This {GetType().Name} is read only.");
 
         #region IList Implementation
@@ -230,6 +235,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets.AddRange(allContainedWidgets);
             Count = _widgets.Count;
         }
+
+        public WidgetList GetRange(int index, int count) => new WidgetList(_widgets.GetRange(index, count));
 
         #endregion
     }

@@ -1,11 +1,10 @@
-﻿using DownUnder.UI.Widgets.BaseWidgets;
-using DownUnder.UI.Widgets.SpecializedWidgets;
+﻿using DownUnder.UI.Widgets;
 
 namespace DownUnder.UIEditor
 {
     class EditorObjects
     {
-        public Layout project;
-        public PropertyGrid property_grid;
+        public Widget project;
+        public Widget property_grid;
     }
 }

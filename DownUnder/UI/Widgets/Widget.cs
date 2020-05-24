@@ -2,11 +2,13 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.UI.Widgets.WidgetElements;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -36,8 +38,9 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public abstract class Widget : 
-        IParent, IDisposable, ICloneable, IAcceptsDrops {
+    [DataContract] public sealed class Widget : 
+        IParent, IDisposable, ICloneable, IAcceptsDrops, IList<Widget>, IScrollableWidget
+    {
         public bool debug_output = false;
 
         #region Fields/Delegates/Enums
@@ -92,7 +95,7 @@ namespace DownUnder.UI.Widgets
         private bool _update_drop;
 
         // Various property backing fields.
-        protected RectangleF area_backing = new RectangleF();
+        private RectangleF area_backing = new RectangleF();
         private float _double_click_timing_backing = 0.5f;
         private Point2 _minimum_area_backing = new Point2(15f, 15f);
         private SpriteFont _sprite_font_backing;
@@ -136,7 +139,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
         /// <summary> If set to false, the background color will not be drawn. </summary>
-        [DataMember] public virtual bool DrawBackground { get; set; } = true;
+        [DataMember] public bool DrawBackground { get; set; } = true;
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember] public bool DrawOutline { get; set; } = true;
         /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
@@ -150,7 +153,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> The distance from the edges of the widget this is snapped to. </summary>
         [DataMember] public Size2 Spacing { get; set; }
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
-        [DataMember] public virtual bool EnterConfirms { get; set; } = true;
+        [DataMember] public bool EnterConfirms { get; set; } = true;
         /// <summary> What this <see cref="Widget"/> should be regarded as when accessing the <see cref="Theme"/>'s defined colors. </summary>
         [DataMember] public BaseColorScheme.PaletteCategory PaletteUsage { get; set; } = BaseColorScheme.PaletteCategory.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
@@ -186,17 +189,21 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
-        [DataMember] public virtual RectangleF Area {
+        [DataMember] public RectangleF Area {
             get => area_backing;
             set {
                 if (IsFixedWidth) value.Width = area_backing.Width;
                 if (IsFixedHeight) value.Height = area_backing.Height;
                 area_backing = value.WithMinimumSize(MinimumSize);
+                foreach (var child in Children)
+                {
+                    if (EmbedChildren) child.EmbedIn(area_backing);
+                }
             }
         }
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
-        [DataMember] public virtual Point2 MinimumSize {
+        [DataMember] public Point2 MinimumSize {
             get => _minimum_area_backing;
             set {
                 if (value.X < 1) throw new Exception("Minimum area width must be at least 1.");
@@ -263,7 +270,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns true if this <see cref="Widget"/> is hovered over. </summary>
         public bool IsHoveredOver {
             get => _is_hovered_over_backing;
-            protected set {
+            private set {
                 _previous_is_hovered_over_backing = _is_hovered_over_backing;
                 _is_hovered_over_backing = value;
                 if (value && !_previous_is_hovered_over_backing) OnHover?.Invoke(this, EventArgs.Empty);
@@ -276,7 +283,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns true if this <see cref="Widget"/> has been initialized graphically. Setting this <see cref="Widget"/>'s <see cref="Parent"/> to an initialized <see cref="Widget"/> or <see cref="DWindow"/> will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
         /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
-        public virtual RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
+        public RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
         /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
         public Point2 PositionInWindow {
@@ -434,7 +441,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        public abstract WidgetList Children { get; }
+        public WidgetList Children { get; private set; } = new WidgetList();
 
         /// <summary> Gets the index of this <see cref="Widget"/> in its <see cref="ParentWidget"/>. </summary>
         public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
@@ -514,13 +521,15 @@ namespace DownUnder.UI.Widgets
             Actions = new ActionCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
+            if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
+            else OnGraphicsInitialized += InitializeScrollbars;
         }
 
         ~Widget() => Dispose(true);
 
         public void Dispose() => Dispose(true);
 
-        protected virtual void Dispose(bool disposing) {
+        private void Dispose(bool disposing) {
             _white_dot?.Dispose();
             _render_target?.Dispose();
             _local_sprite_batch?.Dispose();
@@ -870,8 +879,6 @@ namespace DownUnder.UI.Widgets
             HandleChildDelete(widget);
         }
 
-        protected abstract void HandleChildDelete(Widget widget);
-
         /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
         //public void ConnectEvents()
         //{
@@ -990,13 +997,13 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
-        protected void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
+        private void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
 
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
-        protected void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
+        private void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Called by a child <see cref="Widget"/> to signal that it's area has changed. </summary>
-        internal virtual void SignalChildAreaChanged() => ParentWidget?.SignalChildAreaChanged();
+        internal void SignalChildAreaChanged() => ParentWidget?.SignalChildAreaChanged();
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes() {
@@ -1066,7 +1073,10 @@ namespace DownUnder.UI.Widgets
         #region ICloneable Implementation
 
         public object Clone() {
-            object c = DerivedClone();
+            Widget c = new Widget();
+            for (int i = 0; i < Children.Count; i++) c.Children.Add((Widget)Children[i].Clone());
+            c.FitToContentArea = FitToContentArea;
+
             ((Widget)c).Name = Name;
             ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
             ((Widget)c).DrawBackground = DrawBackground;
@@ -1104,10 +1114,96 @@ namespace DownUnder.UI.Widgets
             return c;
         }
 
-        // This is for implementing cloning in derived classes. They'll return their
-        // clone for their own fields, and 'Widget' will add the base fields to it.
-        // See https://stackoverflow.com/questions/19119623/clone-derived-class-from-base-class-method
-        protected abstract object DerivedClone();
+        #endregion
+
+        #region Ilist
+
+        public event EventHandler OnListChange;
+        public event EventHandler OnAddWidget;
+        public event EventHandler OnRemoveWidget;
+
+        public Scroll ScrollBars { get; private set; }
+        /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
+        [DataMember] public bool FitToContentArea { get; set; } = false;
+        [DataMember] public bool EmbedChildren { get; set; } = true;
+        public Widget LastAddedWidget { get; private set; }
+        public Widget LastRemovedWidget { get; private set; }
+
+        public RectangleF ContentArea
+        {
+            get
+            {
+                RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
+                if (result == null) return Area.WithOffset(Scroll);
+                return result.Value.WithOffset(Scroll);
+            }
+        }
+
+        private void InitializeScrollbars(object sender, EventArgs args) => ScrollBars = new Scroll(this, GraphicsDevice);
+
+        private void HandleChildDelete(Widget widget)
+        {
+            widget.Dispose();
+            Children.Remove(widget);
+        }
+
+        public int Count => ((IList<Widget>)Children).Count;
+        public bool IsReadOnly => ((IList<Widget>)Children).IsReadOnly;
+        public Point2 Scroll => ScrollBars.ToPoint2().Inverted();
+        public Widget this[int index] { get => ((IList<Widget>)Children)[index]; set => ((IList<Widget>)Children)[index] = value; }
+        public int IndexOf(Widget item) => ((IList<Widget>)Children).IndexOf(item);
+        public void CopyTo(Widget[] array, int arrayIndex) => ((IList<Widget>)Children).CopyTo(array, arrayIndex);
+        public bool Contains(Widget item) => ((IList<Widget>)Children).Contains(item);
+        public IEnumerator<Widget> GetEnumerator() => ((IList<Widget>)Children).GetEnumerator();
+        IEnumerator<Widget> IEnumerable<Widget>.GetEnumerator() => ((IList<Widget>)Children).GetEnumerator();
+
+        public void Insert(int index, Widget widget)
+        {
+            widget.Parent = this;
+            if (EmbedChildren) widget.EmbedIn(Area);
+            ((IList<Widget>)Children).Insert(index, widget);
+            LastAddedWidget = widget;
+            OnAddWidget?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RemoveAt(int index)
+        {
+            ((IList<Widget>)Children).RemoveAt(index);
+            OnRemoveWidget?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Add(Widget widget)
+        {
+            widget.Parent = this;
+            if (EmbedChildren) widget.EmbedIn(Area);
+            ((IList<Widget>)Children).Add(widget);
+            LastAddedWidget = widget;
+            OnAddWidget?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Clear()
+        {
+            for (int i = Children.Count; i >= 0; i--) Remove(Children[0]);
+        }
+
+        public bool Remove(Widget widget)
+        {
+            if (((IList<Widget>)Children).Remove(widget))
+            {
+                OnRemoveWidget?.Invoke(this, EventArgs.Empty);
+                OnListChange?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+            return false;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IList<Widget>)Children).GetEnumerator();
+        }
 
         #endregion
     }

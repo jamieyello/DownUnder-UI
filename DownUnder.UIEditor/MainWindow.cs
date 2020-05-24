@@ -1,8 +1,6 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.BaseWidgets;
 using DownUnder.UIEditor;
-using DownUnder.UIEditor.Editor_Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,7 +21,7 @@ namespace DownUnder.Widgets
         /// <summary> Path to the editor's .cs file. </summary>
         //private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
 
-        public MainWindow(Layout layout = null, DWindow parent = null) : base(parent)
+        public MainWindow(Widget layout = null, DWindow parent = null) : base(parent)
         {
             Content.RootDirectory = "Content";
         }
@@ -55,8 +53,10 @@ namespace DownUnder.Widgets
             //Layout = TestLayouts.TestLayout4(this);
             //Layout = TestLayouts.TestLayout5(this);
             //MainWidget = TestLayouts.TestLayout5(this);
-            MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
+            //MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
+
+            MainWidget = TestLayouts.NewLayout(this);
 
             // TODO: use this.Content to load your game content here
         }
