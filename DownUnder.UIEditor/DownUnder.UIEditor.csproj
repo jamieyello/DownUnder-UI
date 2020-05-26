@@ -67,9 +67,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Editor Tools\EditorObjects.cs" />
-    <Compile Include="Editor Tools\TestLayouts.cs" />
-    <Compile Include="Editor Tools\UIEditor.cs" />
+    <Compile Include="EditorTools\EditorObjects.cs" />
+    <Compile Include="EditorTools\TestLayouts.cs" />
+    <Compile Include="EditorTools\UIEditor.cs" />
+    <Compile Include="EditorTools\Widgets.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

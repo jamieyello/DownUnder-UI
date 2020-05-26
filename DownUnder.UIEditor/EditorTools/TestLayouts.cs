@@ -1,7 +1,10 @@
 ﻿using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors.Behaviors;
+using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UIEditor
 {
@@ -11,11 +14,16 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget(parent);
 
-            layout.Add(new Widget()
+            Widget new_widget = new Widget()
             {
                 SnappingPolicy = DiagonalDirections2D.None,
                 Area = new RectangleF(100, 100, 200, 150)
-            });
+            };
+            layout.Add(new_widget);
+
+            GridFormat grid_formatter = new GridFormat(2, 2);
+            new_widget.Behaviors.Add(grid_formatter);
+            grid_formatter[0, 0].Behaviors.Add(new DrawText() { Text = "test" });
 
             return layout;
         }

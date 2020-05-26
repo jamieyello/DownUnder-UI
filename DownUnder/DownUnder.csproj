@@ -115,7 +115,8 @@
     <Compile Include="UI\Widgets\Actions\Actions\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Behaviors\FormatAsUniformGrid.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormatter.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
@@ -139,13 +140,12 @@
     <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridSettings.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridWriter.cs" />
-    <Compile Include="UI\Widgets\Widgets.cs" />
+    <Compile Include="UI\Widgets\BasicWidgets.cs" />
     <Compile Include="Utilities\GenericDirections2D.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Behaviors\GridOld.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetArray.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />

@@ -1,6 +1,7 @@
 ﻿using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UIEditor;
+using DownUnder.UIEditor.EditorTools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -56,7 +57,9 @@ namespace DownUnder.Widgets
             //MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
-            MainWidget = TestLayouts.NewLayout(this);
+            //MainWidget = TestLayouts.NewLayout(this);
+
+            MainWidget = EditorWidgets.UIEditor(this);
 
             // TODO: use this.Content to load your game content here
         }

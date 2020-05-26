@@ -1,4 +1,6 @@
-﻿using MonoGame.Extended;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -15,12 +17,13 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         /// <summary> Returns the reference of a Widget at a given coordinate. </summary>
-        public static Widget Get(WidgetList widgets, int width, int x, int y) =>
-            widgets[x % width + (y / width) * width];
+        public static Widget Get(WidgetList widgets, int width, int height, int x, int y) {
+            if (x >= width || y >= height) throw new Exception("Index out of bounds.");
+            return widgets[x % width + ((y + 1) / width) * width];
+        }
         
-
-        public static Point2 GridIndexOf(int width, int index) => 
-            new Point2(index % width, (index / width) * width);
+        public static Point IndexOf(int width, int index) => 
+            new Point(index % width, (index / width) * width);
 
         /// <summary> The total height/width of contained widgets that won't resize. </summary>
         public static Point2 FixedContentSizeTotal(WidgetList widgets, int width, int height) {
