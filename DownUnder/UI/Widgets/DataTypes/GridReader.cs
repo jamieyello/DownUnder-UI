@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary> Returns the reference of a Widget at a given coordinate. </summary>
         public static Widget Get(WidgetList widgets, int width, int height, int x, int y) {
             if (x >= width || y >= height) throw new Exception("Index out of bounds.");
-            return widgets[x % width + ((y + 1) / width) * width];
+            return widgets[x % width + (y / width) * width];
         }
         
         public static Point IndexOf(int width, int index) => 

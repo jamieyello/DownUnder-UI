@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             Parent.OnDrop += DropObject;
         }
 
-        internal override void DisconnectFromParent() {
+        protected override void DisconnectFromParent() {
             Parent.OnDrag -= SetDragObject;
             Parent.OnDrop -= DropObject;
         }
@@ -24,7 +24,9 @@ namespace DownUnder.UI.Widgets.Behaviors {
         public event EventHandler OnSetWindowClone;
 
         public override object Clone() {
-            throw new NotImplementedException();
+            DragAndDropSource c = new DragAndDropSource();
+            c.DragObject = (ICloneable)DragObject.Clone();
+            return c;
         }
     }
 }

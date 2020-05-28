@@ -29,7 +29,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             Parent.OnDrop += EndAnimation;
         }
 
-        internal override void DisconnectFromParent() {
+        protected override void DisconnectFromParent() {
             Parent.OnDrawNoClip -= DrawRect;
             Parent.OnUpdate -= Update;
             Parent.OnDrag -= StartAnimation;

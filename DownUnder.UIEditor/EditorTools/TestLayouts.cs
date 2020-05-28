@@ -1,10 +1,8 @@
 ﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors.Behaviors;
-using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using MonoGame.Extended;
-using System;
 
 namespace DownUnder.UIEditor
 {

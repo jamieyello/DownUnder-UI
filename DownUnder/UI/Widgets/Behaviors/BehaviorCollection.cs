@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public void AddRange(BehaviorCollection items) => AddRange(items.ToList());
         
         public void Clear() {
-            foreach (WidgetBehavior behavior in _behaviors) behavior.DisconnectFromParent();
+            foreach (WidgetBehavior behavior in _behaviors) behavior.Disconnect();
             ((IList<WidgetBehavior>)_behaviors).Clear();
         }
 
@@ -42,14 +42,14 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public bool Remove(WidgetBehavior item) {
             if (((IList<WidgetBehavior>)_behaviors).Remove(item)) {
-                item.DisconnectFromParent();
+                item.Disconnect();
                 return true;
             }
             return false;
         }
 
         public void RemoveAt(int index) {
-            ((IList<WidgetBehavior>)_behaviors)[index].DisconnectFromParent();
+            ((IList<WidgetBehavior>)_behaviors)[index].Disconnect();
             ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);
         }
 

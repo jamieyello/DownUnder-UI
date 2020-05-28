@@ -149,7 +149,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
         [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
         /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
-        [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.TL_TR_BL_BR;
+        [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.None;
         /// <summary> The distance from the edges of the widget this is snapped to. </summary>
         [DataMember] public Size2 Spacing { get; set; }
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
@@ -194,7 +194,12 @@ namespace DownUnder.UI.Widgets
             set {
                 if (IsFixedWidth) value.Width = area_backing.Width;
                 if (IsFixedHeight) value.Height = area_backing.Height;
+                RectangleF previous_area = area_backing;
                 area_backing = value.WithMinimumSize(MinimumSize);
+                if (area_backing == previous_area) return;
+                OnAreaChange?.Invoke(this, EventArgs.Empty);
+                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, EventArgs.Empty);
+                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, EventArgs.Empty);
                 foreach (var child in Children)
                 {
                     if (EmbedChildren) child.EmbedIn(area_backing);
@@ -959,6 +964,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrag;
         /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
         public event EventHandler OnDrop;
+        public event EventHandler OnResize;
+        public event EventHandler OnResposition;
+        public event EventHandler OnAreaChange;
+        
         internal event EventHandler OnAddWidgetSpacingChange;
         
         internal void SignalAddWidgetSpacingChange() => OnAddWidgetSpacingChange?.Invoke(this, EventArgs.Empty);

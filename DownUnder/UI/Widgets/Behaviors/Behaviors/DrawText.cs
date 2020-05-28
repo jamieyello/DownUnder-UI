@@ -1,7 +1,7 @@
 ﻿using MonoGame.Extended;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors
 {
     public class DrawText : WidgetBehavior
     {
@@ -20,7 +20,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
             Parent.OnDraw += Draw;
         }
 
-        internal override void DisconnectFromParent()
+        protected override void DisconnectFromParent()
         {
             Parent.OnDraw -= Draw;
         }

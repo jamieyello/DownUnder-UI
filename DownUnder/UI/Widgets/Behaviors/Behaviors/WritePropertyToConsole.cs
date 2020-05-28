@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent.OnUpdate += WriteLine;
         }
 
-        internal override void DisconnectFromParent() => Parent.OnUpdate -= WriteLine;
+        protected override void DisconnectFromParent() => Parent.OnUpdate -= WriteLine;
 
         private void WriteLine(object sender, EventArgs args) => Console.WriteLine(_pre_text + _property_info.GetValue(Parent).ToString() + _post_text);
     }

@@ -1,22 +1,18 @@
-﻿using DownUnder.UI.DataTypes;
-using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets.Behaviors.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors
 {
+    /// <summary> A behavior that keeps children in a grid formation. </summary>
     public class GridFormat : WidgetBehavior
     {
         private int width;
         private int height;
 
         public Widget Filler;
+        public bool DisposeOldOnSet = true;
 
         public GridFormat(int width, int height, Widget filler = null)
         {
@@ -29,12 +25,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
         {
             if (Filler == null) Filler = DefaultCell();
             GridWriter.InsertFiller(Parent, width, height, Filler);
-            GridWriter.Align(Parent.Children, width, height, Parent.Area.SizeOnly());
+            Align(this, EventArgs.Empty);
+            Parent.OnResize += Align;
         }
 
-        internal override void DisconnectFromParent()
+        protected override void DisconnectFromParent()
         {
-            throw new NotImplementedException();
+            Parent.OnResize -= Align;
         }
 
         public override object Clone()
@@ -54,8 +51,18 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
         public Widget this[int x, int y]
         {
             get => Parent.Children[y * width + x];
-            set => Parent.Children[y * width + x] = value;
+            set
+            {
+                value.Parent = Parent;
+                if (DisposeOldOnSet) Parent.Children[y * width + x].Dispose();
+                Parent.Children[y * width + x] = value;
+            }
         }
         public Point IndexOf(Widget widget) => GridReader.IndexOf(width, Parent.Children.IndexOf(widget));
+
+        private void Align(object sender, EventArgs args)
+        {
+            GridWriter.Align(Parent.Children, width, height, Parent.Area.SizeOnly());
+        }
     }
 }

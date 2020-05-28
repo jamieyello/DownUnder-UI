@@ -16,7 +16,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             Parent.OnDrawOverlayEffects += DrawEffect;
         }
 
-        internal override void DisconnectFromParent() {
+        protected override void DisconnectFromParent() {
             Parent.OnGraphicsInitialized -= InitializeEffect;
             Parent.OnDrawOverlayEffects -= DrawEffect;
         }
