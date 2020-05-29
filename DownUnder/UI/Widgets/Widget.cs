@@ -967,7 +967,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnResize;
         public event EventHandler OnResposition;
         public event EventHandler OnAreaChange;
-        
+        public event EventHandler OnListChange;
+        public event EventHandler OnAddWidget;
+        public event EventHandler OnRemoveWidget;
+
         internal event EventHandler OnAddWidgetSpacingChange;
         
         internal void SignalAddWidgetSpacingChange() => OnAddWidgetSpacingChange?.Invoke(this, EventArgs.Empty);
@@ -1126,10 +1129,6 @@ namespace DownUnder.UI.Widgets
         #endregion
 
         #region Ilist
-
-        public event EventHandler OnListChange;
-        public event EventHandler OnAddWidget;
-        public event EventHandler OnRemoveWidget;
 
         public Scroll ScrollBars { get; private set; }
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>

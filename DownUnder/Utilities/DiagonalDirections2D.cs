@@ -74,6 +74,7 @@ namespace DownUnder.Utility
                 BottomRight = d1.BottomRight && d2.BottomRight
             };
 
+        public static DiagonalDirections2D All => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
         public static DiagonalDirections2D TL_TR_BL_BR => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
         public static DiagonalDirections2D TL_TR_BL => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true };
         public static DiagonalDirections2D TR_BL_BR => new DiagonalDirections2D { TopRight = true, BottomLeft = true, BottomRight = true };

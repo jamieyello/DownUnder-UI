@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,13 @@ namespace DownUnder.UI.Widgets.Behaviors
         public BehaviorCollection(Widget parent) => _parent = parent;
         private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
         public WidgetBehavior this[int index] { get => ((IList<WidgetBehavior>)_behaviors)[index]; set => ((IList<WidgetBehavior>)_behaviors)[index] = value; }
+        public T Get<T>() {
+            foreach (WidgetBehavior behavior in this) {
+                if (behavior.GetType() == typeof(T)) return (T)Convert.ChangeType(behavior, typeof(T));
+            }
+
+            return default;
+        }
         public int Count => ((IList<WidgetBehavior>)_behaviors).Count;
         public bool IsReadOnly => ((IList<WidgetBehavior>)_behaviors).IsReadOnly;
 
