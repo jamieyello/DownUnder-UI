@@ -44,6 +44,13 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             Widget[] widgets = new Widget[Properties.Length * 2];
 
+            for (int i = 0; i < Properties.Length * 2; i++)
+            {
+                Parent.Children.Add(new Widget());
+            }
+
+            return;
+
             Parallel.ForEach(Properties, (property, state, index) => {
                 int i = (int)index;
                 Widget widget = new Widget(Parent) { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 };

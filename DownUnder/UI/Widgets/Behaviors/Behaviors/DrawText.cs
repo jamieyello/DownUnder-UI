@@ -5,8 +5,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     public class DrawText : WidgetBehavior
     {
-        public enum TextPositioningPolicy
-        {
+        public enum TextPositioningPolicy {
             top_left,
             center
         }
@@ -15,13 +14,11 @@ namespace DownUnder.UI.Widgets.Behaviors
         public Point2 TextPosition { get; set; } = new Point2();
         public TextPositioningPolicy TextPositioning { get; set; } = TextPositioningPolicy.top_left;
 
-        protected override void ConnectToParent()
-        {
+        protected override void ConnectToParent() {
             Parent.OnDraw += Draw;
         }
 
-        protected override void DisconnectFromParent()
-        {
+        protected override void DisconnectFromParent() {
             Parent.OnDraw -= Draw;
         }
 
@@ -33,8 +30,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             return c;
         }
 
-        private void Draw(object sender, EventArgs args)
-        {
+        private void Draw(object sender, EventArgs args) {
             Parent.SpriteBatch.DrawString(Parent.SpriteFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.PaletteUsage).CurrentColor);
         }
     }

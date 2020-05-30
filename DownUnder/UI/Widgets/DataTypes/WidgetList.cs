@@ -14,6 +14,12 @@ namespace DownUnder.UI.Widgets.DataTypes
         private List<Widget> _widgets { get; set; } = new List<Widget>();
         private bool _is_read_only;
 
+        public Widget LastAddedWidget;
+        public Widget LastRemovedWidget;
+
+        public event EventHandler OnAdd;
+        public event EventHandler OnRemove;
+
         public WidgetList(bool is_read_only = false) { _is_read_only = is_read_only; }
         public WidgetList(List<Widget> widget_list, bool is_read_only = false) {
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
@@ -193,13 +199,14 @@ namespace DownUnder.UI.Widgets.DataTypes
         public void Add(Widget widget) {
             if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).Add(widget);
+            LastAddedWidget = widget;
+            OnAdd?.Invoke(this, EventArgs.Empty);
             Count = _widgets.Count;
         }
 
         public void Clear() {
             if (_is_read_only) ThrowReadOnlyException();
-            ((IList<Widget>)_widgets).Clear();
-            Count = 0;
+            for (int i = _widgets.Count - 1; i >= 0; i--) RemoveAt(i);
         }
 
         public bool Contains(Widget widget) => ((IList<Widget>)_widgets).Contains(widget);
@@ -211,12 +218,17 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (_is_read_only) ThrowReadOnlyException();
             ((IList<Widget>)_widgets).Insert(index, widget);
             Count = _widgets.Count;
+            LastAddedWidget = widget;
+            OnAdd?.Invoke(this, EventArgs.Empty);
+            
         }
 
         public bool Remove(Widget widget) {
             if (_is_read_only) ThrowReadOnlyException();
             if (((IList<Widget>)_widgets).Remove(widget)) {
                 Count = _widgets.Count;
+                LastRemovedWidget = widget;
+                OnRemove?.Invoke(this, EventArgs.Empty);
                 return true;
             }
             return false;
@@ -224,16 +236,20 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void RemoveAt(int index) {
             if (_is_read_only) ThrowReadOnlyException();
+            LastRemovedWidget = _widgets[index];
             ((IList<Widget>)_widgets).RemoveAt(index);
             Count = _widgets.Count;
+            OnRemove?.Invoke(this, EventArgs.Empty);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => ((IList<Widget>)_widgets).GetEnumerator();
 
-        public void AddRange(WidgetList allContainedWidgets) {
+        public void AddRange(WidgetList widgets) {
             if (_is_read_only) ThrowReadOnlyException();
-            _widgets.AddRange(allContainedWidgets);
-            Count = _widgets.Count;
+            for (int i = 0; i < widgets.Count; i++)
+            {
+                Add(widgets[i]);
+            }
         }
 
         public WidgetList GetRange(int index, int count) => new WidgetList(_widgets.GetRange(index, count));

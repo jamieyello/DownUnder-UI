@@ -528,6 +528,10 @@ namespace DownUnder.UI.Widgets
             DesignerObjects.Parent = this;
             if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeScrollbars;
+            Children.OnAdd += InvokeOnAddChild;
+            Children.OnRemove += InvokeOnRemoveChild;
+            OnAddChild += (sender, args) => { LastAddedWidget.Parent = this; };
+            OnRemoveChild += (sender, args) => { };
         }
 
         ~Widget() => Dispose(true);
@@ -967,9 +971,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnResize;
         public event EventHandler OnResposition;
         public event EventHandler OnAreaChange;
-        public event EventHandler OnListChange;
-        public event EventHandler OnAddWidget;
-        public event EventHandler OnRemoveWidget;
+        public event EventHandler OnAddChild;
+        public event EventHandler OnRemoveChild;
 
         internal event EventHandler OnAddWidgetSpacingChange;
         
@@ -1044,7 +1047,6 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            
             if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE) {
                 size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
                 Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
@@ -1134,8 +1136,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
         [DataMember] public bool FitToContentArea { get; set; } = false;
         [DataMember] public bool EmbedChildren { get; set; } = true;
-        public Widget LastAddedWidget { get; private set; }
-        public Widget LastRemovedWidget { get; private set; }
 
         public RectangleF ContentArea
         {
@@ -1155,63 +1155,24 @@ namespace DownUnder.UI.Widgets
             Children.Remove(widget);
         }
 
-        public int Count => ((IList<Widget>)Children).Count;
-        public bool IsReadOnly => ((IList<Widget>)Children).IsReadOnly;
+        public int IndexOf(Widget item) => Children.IndexOf(item);
+        public void Insert(int index, Widget item) => Children.Insert(index, item);
+        public void RemoveAt(int index) => Children.RemoveAt(index);
+        public void Add(Widget item) => Children.Add(item);
+        public void Clear() => Children.Clear();
+        public bool Contains(Widget item) => Children.Contains(item);
+        public void CopyTo(Widget[] array, int arrayIndex) => Children.CopyTo(array, arrayIndex);
+        public bool Remove(Widget item) => Children.Remove(item);
+        public IEnumerator<Widget> GetEnumerator() => Children.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Children.GetEnumerator();
         public Point2 Scroll => ScrollBars.ToPoint2().Inverted();
-        public Widget this[int index] { get => ((IList<Widget>)Children)[index]; set => ((IList<Widget>)Children)[index] = value; }
-        public int IndexOf(Widget item) => ((IList<Widget>)Children).IndexOf(item);
-        public void CopyTo(Widget[] array, int arrayIndex) => ((IList<Widget>)Children).CopyTo(array, arrayIndex);
-        public bool Contains(Widget item) => ((IList<Widget>)Children).Contains(item);
-        public IEnumerator<Widget> GetEnumerator() => ((IList<Widget>)Children).GetEnumerator();
-        IEnumerator<Widget> IEnumerable<Widget>.GetEnumerator() => ((IList<Widget>)Children).GetEnumerator();
-
-        public void Insert(int index, Widget widget)
-        {
-            widget.Parent = this;
-            if (EmbedChildren) widget.EmbedIn(Area);
-            ((IList<Widget>)Children).Insert(index, widget);
-            LastAddedWidget = widget;
-            OnAddWidget?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void RemoveAt(int index)
-        {
-            ((IList<Widget>)Children).RemoveAt(index);
-            OnRemoveWidget?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void Add(Widget widget)
-        {
-            widget.Parent = this;
-            if (EmbedChildren) widget.EmbedIn(Area);
-            ((IList<Widget>)Children).Add(widget);
-            LastAddedWidget = widget;
-            OnAddWidget?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void Clear()
-        {
-            for (int i = Children.Count; i >= 0; i--) Remove(Children[0]);
-        }
-
-        public bool Remove(Widget widget)
-        {
-            if (((IList<Widget>)Children).Remove(widget))
-            {
-                OnRemoveWidget?.Invoke(this, EventArgs.Empty);
-                OnListChange?.Invoke(this, EventArgs.Empty);
-                return true;
-            }
-            return false;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IList<Widget>)Children).GetEnumerator();
-        }
+        public int Count => Children.Count;
+        public bool IsReadOnly => Children.IsReadOnly;
+        public Widget this[int index] { get => Children[index]; set => Children[index] = value; }
+        public Widget LastAddedWidget => Children.LastAddedWidget;
+        public Widget LastRemovedWidget => Children.LastRemovedWidget;
+        internal void InvokeOnAddChild(object sender, EventArgs args) => OnAddChild?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnRemoveChild(object sender, EventArgs args) => OnRemoveChild?.Invoke(this, EventArgs.Empty);
 
         #endregion
     }

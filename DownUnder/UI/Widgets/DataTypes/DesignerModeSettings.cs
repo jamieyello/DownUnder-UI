@@ -30,7 +30,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 //if (_parent_backing is Layout parent) {
                     AcceptsDrops = true;
                     AcceptedDropTypes.Add(typeof(Widget));
-                _parent_backing.OnAddWidget += (sender, args) => {
+                _parent_backing.OnAddChild += (sender, args) => {
                         if (IsEditModeEnabled) _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
                     };
                 //}

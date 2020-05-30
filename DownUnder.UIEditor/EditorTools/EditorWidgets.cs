@@ -3,6 +3,7 @@ using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System.Diagnostics;
 
 namespace DownUnder.UIEditor.EditorTools
 {
@@ -27,6 +28,18 @@ namespace DownUnder.UIEditor.EditorTools
             inner_property_edit_widget.Behaviors.Add(new AddPropertyEditChildren { EditObject = new RectangleF() });
             inner_property_edit_widget.Behaviors.Add(new GridFormat(2, inner_property_edit_widget.Behaviors.Get<AddPropertyEditChildren>().Properties.Length));
             property_grid_container.Add(inner_property_edit_widget);
+
+            inner_property_edit_widget.OnUpdate += (sender, args) => {
+                Widget widget = (Widget)sender;
+                Debug.WriteLine($" child count = {widget.Children.Count}");
+
+                int i = 0;
+                foreach(Widget child in widget.Children)
+                {
+                    Debug.WriteLine($"area {i++} = {child.Area}");
+                }
+
+            };
 
             return layout;
         }
