@@ -3,7 +3,9 @@ using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace DownUnder.UIEditor.EditorTools
 {
@@ -22,26 +24,24 @@ namespace DownUnder.UIEditor.EditorTools
 
             Widget property_grid_container = new Widget();
             Widget inner_property_edit_widget = new Widget() { SnappingPolicy = DiagonalDirections2D.TL_TR_BL_BR };
-            //side_grid[0, 1] = 
 
             side_grid[0, 1] = property_grid_container;
             inner_property_edit_widget.Behaviors.Add(new AddPropertyEditChildren { EditObject = new RectangleF() });
             inner_property_edit_widget.Behaviors.Add(new GridFormat(2, inner_property_edit_widget.Behaviors.Get<AddPropertyEditChildren>().Properties.Length));
             property_grid_container.Add(inner_property_edit_widget);
 
-            inner_property_edit_widget.OnUpdate += (sender, args) => {
-                Widget widget = (Widget)sender;
-                Debug.WriteLine($" child count = {widget.Children.Count}");
-
-                int i = 0;
-                foreach(Widget child in widget.Children)
-                {
-                    Debug.WriteLine($"area {i++} = {child.Area}");
-                }
-
-            };
+            inner_property_edit_widget.debug_output = true;
 
             return layout;
+        }
+
+        public static Widget PropertyGrid(object obj, PropertyInfo property)
+        {
+            Widget property_grid = new Widget() { Size = new Point2(400, 400) };
+            AddPropertyEditChildren addPropertyEditChildren = new AddPropertyEditChildren { EditObject = new RectangleF() };
+            property_grid.Behaviors.Add(addPropertyEditChildren);
+            property_grid.Behaviors.Add(new GridFormat(2, addPropertyEditChildren.Properties.Length));
+            return property_grid;
         }
     }
 }

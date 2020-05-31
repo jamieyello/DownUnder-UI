@@ -17,6 +17,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
 
+        /// <summary> Invoked whenever a widget is added or removed. </summary>
         public event EventHandler OnAdd;
         public event EventHandler OnRemove;
 
@@ -173,11 +174,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             foreach (Widget widget in _widgets) widget.Height = height;
         }
 
-        //public WidgetArray ToArray(int x, int y)
-        //{
-        //    return new WidgetArray(_widgets, x, y);
-        //}
-        
         private void ThrowReadOnlyException() => throw new Exception($"This {GetType().Name} is read only.");
 
         #region IList Implementation
@@ -186,7 +182,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             get => ((IList<Widget>)_widgets)[index];
             set {
                 if (_is_read_only) ThrowReadOnlyException();
+                LastRemovedWidget = _widgets[index];
+                LastAddedWidget = value;
                 ((IList<Widget>)_widgets)[index] = value;
+                OnRemove.Invoke(this, EventArgs.Empty);
+                OnAdd.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -220,7 +220,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             Count = _widgets.Count;
             LastAddedWidget = widget;
             OnAdd?.Invoke(this, EventArgs.Empty);
-            
         }
 
         public bool Remove(Widget widget) {
@@ -246,8 +245,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void AddRange(WidgetList widgets) {
             if (_is_read_only) ThrowReadOnlyException();
-            for (int i = 0; i < widgets.Count; i++)
-            {
+            for (int i = 0; i < widgets.Count; i++) {
                 Add(widgets[i]);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -16,8 +17,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             SetSize(widgets, width, height, new_area.Size);
             AutoSizeAllWidgets(widgets, width, height);
             AutoSpaceAllWidgets(widgets, width, height, new_area.Position);
-
-
         }
 
         /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>
