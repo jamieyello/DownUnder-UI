@@ -12,7 +12,6 @@ namespace DownUnder.UI.Widgets.DataTypes
     public class WidgetList : IList<Widget>
     {
         private List<Widget> _widgets { get; set; } = new List<Widget>();
-        private bool _is_read_only;
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
@@ -21,10 +20,11 @@ namespace DownUnder.UI.Widgets.DataTypes
         public event EventHandler OnAdd;
         public event EventHandler OnRemove;
 
-        public WidgetList(bool is_read_only = false) { _is_read_only = is_read_only; }
+        public WidgetList() { IsReadOnly = false; }
+        public WidgetList(bool is_read_only = false) { IsReadOnly = is_read_only; }
         public WidgetList(List<Widget> widget_list, bool is_read_only = false) {
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
-            _is_read_only = is_read_only;
+            IsReadOnly = is_read_only;
 
             Count = _widgets.Count;
         }
@@ -181,10 +181,10 @@ namespace DownUnder.UI.Widgets.DataTypes
         public Widget this[int index] {
             get => ((IList<Widget>)_widgets)[index];
             set {
-                if (_is_read_only) ThrowReadOnlyException();
+                if (IsReadOnly) ThrowReadOnlyException();
                 LastRemovedWidget = _widgets[index];
                 LastAddedWidget = value;
-                ((IList<Widget>)_widgets)[index] = value;
+                _widgets[index] = value;
                 OnRemove.Invoke(this, EventArgs.Empty);
                 OnAdd.Invoke(this, EventArgs.Empty);
             }
@@ -192,39 +192,40 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public int Count { get; private set; } = 0;
 
-        public bool IsReadOnly => _is_read_only;
-        
+        public bool IsReadOnly { get; }
+
         public static implicit operator List<Widget>(WidgetList v) => new List<Widget>(v);
+        public static implicit operator Widget[](WidgetList v) => v._widgets.ToArray();
 
         public void Add(Widget widget) {
-            if (_is_read_only) ThrowReadOnlyException();
-            ((IList<Widget>)_widgets).Add(widget);
+            if (IsReadOnly) ThrowReadOnlyException();
+            _widgets.Add(widget);
             LastAddedWidget = widget;
             OnAdd?.Invoke(this, EventArgs.Empty);
             Count = _widgets.Count;
         }
 
         public void Clear() {
-            if (_is_read_only) ThrowReadOnlyException();
+            if (IsReadOnly) ThrowReadOnlyException();
             for (int i = _widgets.Count - 1; i >= 0; i--) RemoveAt(i);
         }
 
-        public bool Contains(Widget widget) => ((IList<Widget>)_widgets).Contains(widget);
-        public void CopyTo(Widget[] array, int array_index) => ((IList<Widget>)_widgets).CopyTo(array, array_index);
-        public IEnumerator<Widget> GetEnumerator() => ((IList<Widget>)_widgets).GetEnumerator();
-        public int IndexOf(Widget widget) => ((IList<Widget>)_widgets).IndexOf(widget);
+        public bool Contains(Widget widget) => _widgets.Contains(widget);
+        public void CopyTo(Widget[] array, int array_index) => _widgets.CopyTo(array, array_index);
+        public IEnumerator<Widget> GetEnumerator() => _widgets.GetEnumerator();
+        public int IndexOf(Widget widget) => _widgets.IndexOf(widget);
 
         public void Insert(int index, Widget widget) {
-            if (_is_read_only) ThrowReadOnlyException();
-            ((IList<Widget>)_widgets).Insert(index, widget);
+            if (IsReadOnly) ThrowReadOnlyException();
+            _widgets.Insert(index, widget);
             Count = _widgets.Count;
             LastAddedWidget = widget;
             OnAdd?.Invoke(this, EventArgs.Empty);
         }
 
         public bool Remove(Widget widget) {
-            if (_is_read_only) ThrowReadOnlyException();
-            if (((IList<Widget>)_widgets).Remove(widget)) {
+            if (IsReadOnly) ThrowReadOnlyException();
+            if (_widgets.Remove(widget)) {
                 Count = _widgets.Count;
                 LastRemovedWidget = widget;
                 OnRemove?.Invoke(this, EventArgs.Empty);
@@ -234,17 +235,17 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public void RemoveAt(int index) {
-            if (_is_read_only) ThrowReadOnlyException();
+            if (IsReadOnly) ThrowReadOnlyException();
             LastRemovedWidget = _widgets[index];
-            ((IList<Widget>)_widgets).RemoveAt(index);
+            _widgets.RemoveAt(index);
             Count = _widgets.Count;
             OnRemove?.Invoke(this, EventArgs.Empty);
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IList<Widget>)_widgets).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _widgets.GetEnumerator();
 
         public void AddRange(WidgetList widgets) {
-            if (_is_read_only) ThrowReadOnlyException();
+            if (IsReadOnly) ThrowReadOnlyException();
             for (int i = 0; i < widgets.Count; i++) {
                 Add(widgets[i]);
             }

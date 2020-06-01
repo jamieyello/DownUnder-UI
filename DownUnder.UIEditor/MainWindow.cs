@@ -1,4 +1,5 @@
-﻿using DownUnder.UI;
+﻿using DownUnder.Content.Utilities.Serialization;
+using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.EditorTools;
@@ -60,6 +61,9 @@ namespace DownUnder.Widgets
             //MainWidget = TestLayouts.NewLayout(this);
 
             MainWidget = EditorWidgets.UIEditor(this);
+
+            XmlHelper.ToXmlFile(new Widget(), "test.xml");
+            Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
 
             // TODO: use this.Content to load your game content here
         }

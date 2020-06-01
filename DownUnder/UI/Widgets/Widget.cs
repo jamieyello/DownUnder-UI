@@ -134,6 +134,8 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
+        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
+        [DataMember] public WidgetList Children { get; private set; } = new WidgetList();
         /// <summary> The name of this <see cref="Widget"/>. </summary>
         [DataMember] public string Name { get; set; }
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
@@ -200,9 +202,8 @@ namespace DownUnder.UI.Widgets
                 OnAreaChange?.Invoke(this, EventArgs.Empty);
                 if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, EventArgs.Empty);
                 if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, EventArgs.Empty);
-                foreach (var child in Children)
-                {
-                    if (EmbedChildren) child.EmbedIn(area_backing);
+                if (EmbedChildren && Children != null) {
+                    foreach (var child in Children) child.EmbedIn(area_backing);
                 }
             }
         }
@@ -405,7 +406,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> The <see cref="DWindow"/> that owns this <see cref="Widget"/>. </summary>
         public DWindow ParentWindow {
             get => _parent_window_backing;
-            set {
+            private set {
                 _parent_window_backing = value;
                 if (value != null) {
                     InitializeGraphics();
@@ -419,7 +420,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> The <see cref="Widget"/> that owns this <see cref="Widget"/>. (if one exists) </summary>
         public Widget ParentWidget {
             get => _parent_widget_backing;
-            set {
+            private set {
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
             }
@@ -444,9 +445,6 @@ namespace DownUnder.UI.Widgets
                 return result;
             }
         }
-
-        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        public WidgetList Children { get; private set; } = new WidgetList();
 
         /// <summary> Gets the index of this <see cref="Widget"/> in its <see cref="ParentWidget"/>. </summary>
         public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
@@ -481,7 +479,7 @@ namespace DownUnder.UI.Widgets
         public Point2 CursorPosition {
             get {
                 if (UpdateData.UIInputState == null) return new Point2();
-                if (this is IScrollableWidget) return UpdateData.UIInputState.CursorPosition - PositionInWindow - ((IScrollableWidget)this).Scroll.ToVector2();
+                if (this is IScrollableWidget) return UpdateData.UIInputState.CursorPosition - PositionInWindow - (this).Scroll.ToVector2();
                 return UpdateData.UIInputState.CursorPosition - PositionInWindow;
             }
         }
@@ -513,6 +511,7 @@ namespace DownUnder.UI.Widgets
 
         #region Constructors/Destructors
 
+        public Widget() => SetDefaults();
         public Widget(IParent parent = null) {
             SetDefaults();
             Parent = parent;
@@ -968,10 +967,15 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrag;
         /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
         public event EventHandler OnDrop;
+        /// <summary> Invoked when this <see cref="Widget"/>'s size changes. </summary>
         public event EventHandler OnResize;
+        /// <summary> Invoked when this <see cref="Widget"/>'s position changes. </summary>
         public event EventHandler OnResposition;
+        /// <summary> Invoked when this <see cref="Widget"/>'s area changes. </summary>
         public event EventHandler OnAreaChange;
+        /// <summary> Invoked when a <see cref="Widget"/> is added to this one. (See added <see cref="Widget"/> in <see cref="LastAddedWidget"/>.) </summary>
         public event EventHandler OnAddChild;
+        /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
 
         internal event EventHandler OnAddWidgetSpacingChange;
@@ -1091,39 +1095,37 @@ namespace DownUnder.UI.Widgets
             for (int i = 0; i < Children.Count; i++) c.Children.Add((Widget)Children[i].Clone());
             c.FitToContentArea = FitToContentArea;
 
-            ((Widget)c).Name = Name;
-            ((Widget)c).ChangeColorOnMouseOver = ChangeColorOnMouseOver;
-            ((Widget)c).DrawBackground = DrawBackground;
-            ((Widget)c).Theme = (BaseColorScheme)Theme.Clone();
-            ((Widget)c).OutlineThickness = OutlineThickness;
-            ((Widget)c).DrawOutline = DrawOutline;
-            ((Widget)c).EnterConfirms = EnterConfirms;
-            ((Widget)c).MinimumSize = MinimumSize;
-            ((Widget)c).SnappingPolicy = SnappingPolicy;
-            ((Widget)c).OutlineSides = OutlineSides;
-            ((Widget)c).DoubleClickTiming = DoubleClickTiming;
-            ((Widget)c).Spacing = Spacing;
-            ((Widget)c).Area = Area; 
-            ((Widget)c).IsFixedWidth = IsFixedWidth;
-            ((Widget)c).IsFixedHeight = IsFixedHeight;
-            ((Widget)c).PaletteUsage = PaletteUsage;
-            ((Widget)c).DrawingMode = DrawingMode;
-            ((Widget)c).debug_output = debug_output;
-            ((Widget)c).PassthroughMouse = PassthroughMouse;
-            ((Widget)c).AcceptsDrops = AcceptsDrops;
+            c.Name = Name;
+            c.ChangeColorOnMouseOver = ChangeColorOnMouseOver;
+            c.DrawBackground = DrawBackground;
+            c.Theme = (BaseColorScheme)Theme.Clone();
+            c.OutlineThickness = OutlineThickness;
+            c.DrawOutline = DrawOutline;
+            c.EnterConfirms = EnterConfirms;
+            c.MinimumSize = MinimumSize;
+            c.SnappingPolicy = SnappingPolicy;
+            c.OutlineSides = OutlineSides;
+            c.DoubleClickTiming = DoubleClickTiming;
+            c.Spacing = Spacing;
+            c.Area = Area;
+            c.IsFixedWidth = IsFixedWidth;
+            c.IsFixedHeight = IsFixedHeight;
+            c.PaletteUsage = PaletteUsage;
+            c.DrawingMode = DrawingMode;
+            c.debug_output = debug_output;
+            c.PassthroughMouse = PassthroughMouse;
+            c.AcceptsDrops = AcceptsDrops;
 
-            ((Widget)c)._user_resize_policy_backing = _user_resize_policy_backing;
-            ((Widget)c)._user_reposition_policy_backing = _user_reposition_policy_backing;
-            ((Widget)c)._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
-            ((Widget)c)._allow_highlight_backing = _allow_highlight_backing;
-            ((Widget)c)._allow_delete_backing = _allow_delete_backing;
-            ((Widget)c)._allow_copy_backing = _allow_copy_backing;
-            ((Widget)c)._allow_cut_backing = _allow_cut_backing;
+            c._user_resize_policy_backing = _user_resize_policy_backing;
+            c._user_reposition_policy_backing = _user_reposition_policy_backing;
+            c._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
+            c._allow_highlight_backing = _allow_highlight_backing;
+            c._allow_delete_backing = _allow_delete_backing;
+            c._allow_copy_backing = _allow_copy_backing;
+            c._allow_cut_backing = _allow_cut_backing;
 
-            foreach (Type type in AcceptedDropTypes) ((Widget)c).AcceptedDropTypes.Add(type);
-            foreach (WidgetBehavior behavior in Behaviors) ((Widget)c).Behaviors.Add((WidgetBehavior)behavior.Clone());
-            // should actions be cloned?
-            //foreach (WidgetAction action in Actions) ((Widget)c).Actions.Add((WidgetAction)action.Clone());
+            foreach (Type type in AcceptedDropTypes) c.AcceptedDropTypes.Add(type);
+            foreach (WidgetBehavior behavior in Behaviors) c.Behaviors.Add((WidgetBehavior)behavior.Clone());
 
             return c;
         }

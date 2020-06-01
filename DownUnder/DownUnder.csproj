@@ -177,7 +177,6 @@
     <Compile Include="Utilities\InterpolationSettings.cs" />
     <Compile Include="Utilities\OSInterface.cs" />
     <Compile Include="Utilities\PropertyHelper.cs" />
-    <Compile Include="Utilities\Serialization\CSCreator.cs" />
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />

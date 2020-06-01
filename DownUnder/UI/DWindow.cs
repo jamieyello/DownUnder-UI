@@ -104,7 +104,7 @@ namespace DownUnder.UI
             get => _widget_backing;
             set {
                 if (value != null) {
-                    value.ParentWindow = this;
+                    value.Parent = this;
                     value.Area = GraphicsDevice.Viewport.Bounds;
                 }
 
@@ -194,7 +194,7 @@ namespace DownUnder.UI
 
         public object DraggingObject { get; set; }
 
-        IParent IParent.Parent => ((IParent)Parent).Parent;
+        IParent IParent.Parent => Parent;
 
         #endregion Properties
 
