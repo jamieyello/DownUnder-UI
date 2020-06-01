@@ -16,7 +16,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             get => _add_widget_spacing_backing;
             set {
                 _add_widget_spacing_backing = value;
-                Parent.SignalAddWidgetSpacingChange();
+                //Parent.SignalAddWidgetSpacingChange();
             }
         }
 

@@ -39,7 +39,7 @@ namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract] public sealed class Widget : 
-        IParent, IDisposable, ICloneable, IAcceptsDrops, IList<Widget>, IScrollableWidget
+        IParent, IDisposable, ICloneable, IAcceptsDrops, IList<Widget>
     {
         public bool debug_output = false;
 
@@ -295,8 +295,7 @@ namespace DownUnder.UI.Widgets
         public Point2 PositionInWindow {
             get {
                 if (ParentWidget == null) { return Position; }
-                if (ParentWidget is IScrollableWidget iscroll_parent) return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(iscroll_parent.Scroll);
-                return Position.WithOffset(ParentWidget.PositionInWindow);
+                return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(ParentWidget.Scroll);
             }
         }
 
@@ -305,16 +304,16 @@ namespace DownUnder.UI.Widgets
         /// <summary> The position of this <see cref="Widget"/> relative to the <see cref="RenderTarget2D"/> being used. </summary>
         internal Point2 PositionInRender {
             get {
-                if (DrawingMode == DrawingModeType.use_render_target) return (this is IScrollableWidget s_this) ? s_this.Scroll : new Point2();
-                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) return (this is IScrollableWidget s_this) ? Position.WithOffset(s_this.Scroll) : Position;
-                return (this is IScrollableWidget s_this_) ? Position.WithOffset(ParentWidget.PositionInRender).WithOffset(s_this_.Scroll) : Position.WithOffset(ParentWidget.PositionInRender);
+                if (DrawingMode == DrawingModeType.use_render_target) return Scroll;
+                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) return Position.WithOffset(Scroll);
+                return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(Scroll);
             }
         }
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
         public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
         /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
-        public RectangleF DrawingAreaUnscrolled => (this is IScrollableWidget s_this) ? DrawingArea.WithOffset(s_this.Scroll.Inverted()) : DrawingArea;
+        public RectangleF DrawingAreaUnscrolled => DrawingArea.WithOffset(Scroll.Inverted());
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
         //public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
@@ -326,14 +325,8 @@ namespace DownUnder.UI.Widgets
 
                 // start at the parent, go up the tree
                 for (int i = 1; i < tree.Count; i++) {
-                    if (tree[i] is IScrollableWidget next_widget) {
-                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
-                        result = result.Intersection(tree[i].Area);
-                    }
-                    else {
-                        result.Position = result.Position.WithOffset(tree[i].Position);
-                        result = result.Intersection(tree[i].Area);
-                    }
+                    result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
+                    result = result.Intersection(tree[i].Area);
                 }
 
                 return result;
@@ -350,8 +343,7 @@ namespace DownUnder.UI.Widgets
                 for (int i = 1; i < tree.Count; i++) {
                     if (tree[i].DrawingMode != DrawingModeType.use_render_target)
                     {
-                        if (tree[i] is IScrollableWidget next_widget) result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(next_widget.Scroll);
-                        else result.Position = result.Position.WithOffset(tree[i].Position);
+                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
                         result = result.Intersection(tree[i].Area);
                     }
                     else
@@ -463,13 +455,13 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> The SpriteFont used by this <see cref="Widget"/>. If left null, the Parent of this Widget's SpriteFont will be used. </summary>
+        /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> used by this <see cref="Widget"/>. If left null, the Parent of this <see cref="Widget"/>'s <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> will be used. </summary>
         public SpriteFont SpriteFont {
             get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
             set => _sprite_font_backing = value;
         }
 
-        /// <summary> The GraphicsDevice used by this <see cref="Widget"/>. If left null, the <see cref="Parent"/>'s GraphicsDevice will be used. </summary>
+        /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> used by this <see cref="Widget"/>. If left null, the <see cref="Parent"/>'s <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> will be used. </summary>
         public GraphicsDevice GraphicsDevice {
             get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
             set => _graphics_backing = value;
@@ -479,8 +471,7 @@ namespace DownUnder.UI.Widgets
         public Point2 CursorPosition {
             get {
                 if (UpdateData.UIInputState == null) return new Point2();
-                if (this is IScrollableWidget) return UpdateData.UIInputState.CursorPosition - PositionInWindow - (this).Scroll.ToVector2();
-                return UpdateData.UIInputState.CursorPosition - PositionInWindow;
+                return UpdateData.UIInputState.CursorPosition - PositionInWindow - Scroll.ToVector2();
             }
         }
 
@@ -724,7 +715,7 @@ namespace DownUnder.UI.Widgets
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
             
             Theme.Update(game_time);
-            if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
+            ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in Children) widget.UpdateGroupEvents(game_time);
@@ -817,7 +808,7 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch.. </summary>
+        /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
         private void DrawOverlay() {
             Rectangle previous_scissor_area = new Rectangle();
             if (DrawingMode == DrawingModeType.direct) {
@@ -835,7 +826,7 @@ namespace DownUnder.UI.Widgets
                     );
             }
 
-            if (this is IScrollableWidget scroll_widget) scroll_widget.ScrollBars.Draw(SpriteBatch);
+            ScrollBars.Draw(SpriteBatch);
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
@@ -978,10 +969,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
 
-        internal event EventHandler OnAddWidgetSpacingChange;
-        
-        internal void SignalAddWidgetSpacingChange() => OnAddWidgetSpacingChange?.Invoke(this, EventArgs.Empty);
-
         #endregion
 
         #region Private/Protected Methods
@@ -1027,8 +1014,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes() {
             if (DrawingMode == DrawingModeType.use_render_target) {
-                if (this is IScrollableWidget s_this) UpdateRenderTargetSize(DrawingArea.Size);
-                else UpdateRenderTargetSize(Size);
+                UpdateRenderTargetSize(DrawingArea.Size);
             }
 
             foreach (Widget child in Children) child.UpdateRenderTargetSizes();
@@ -1139,10 +1125,8 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool FitToContentArea { get; set; } = false;
         [DataMember] public bool EmbedChildren { get; set; } = true;
 
-        public RectangleF ContentArea
-        {
-            get
-            {
+        public RectangleF ContentArea {
+            get {
                 RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
                 if (result == null) return Area.WithOffset(Scroll);
                 return result.Value.WithOffset(Scroll);

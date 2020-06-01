@@ -22,7 +22,6 @@ namespace DownUnder.UI.Widgets.WidgetElements
         private ChangingValue<float> SideBarWidth = new ChangingValue<float>();
         private ChangingValue<float> BottomBarHeight = new ChangingValue<float>();
 
-        private IScrollableWidget _iscrollable_parent;
         private Widget _parent;
         private Texture2D _white_dot;
         private RectangleF _outer_bar_bottom_area = new RectangleF();
@@ -69,9 +68,8 @@ namespace DownUnder.UI.Widgets.WidgetElements
             }
         }
 
-        public Scroll(IScrollableWidget parent, GraphicsDevice graphics_device) {
-            _iscrollable_parent = parent;
-            _parent = (Widget)parent;
+        public Scroll(Widget parent, GraphicsDevice graphics_device) {
+            _parent = parent;
             _white_dot = DrawingTools.Dot(graphics_device, Color.White);
 
             SideInnerBarPalette = (ElementColors)_parent.Theme.InnerScrollBar.Clone();
@@ -97,7 +95,7 @@ namespace DownUnder.UI.Widgets.WidgetElements
         public void Update(float step, UIInputState ui_input_state) {
             #region Position / Size
 
-            RectangleF widget_content_area = _iscrollable_parent.ContentArea;
+            RectangleF widget_content_area = _parent.ContentArea;
             RectangleF drawing_area = _parent.DrawingAreaUnscrolled;
             RectangleF widget_area = _parent.Area;
 

@@ -102,9 +102,9 @@ namespace DownUnder.Utility
         public static bool operator ==(Directions2D d1, Directions2D d2)
         {
             // Check for null on left side.
-            if (Object.ReferenceEquals(d1, null))
+            if (ReferenceEquals(d1, null))
             {
-                if (Object.ReferenceEquals(d2, null))
+                if (ReferenceEquals(d2, null))
                 {
                     // null == null = true.
                     return true;
@@ -145,8 +145,8 @@ namespace DownUnder.Utility
 
         public override bool Equals(Object obj)
         {
-            if (Object.ReferenceEquals(obj, null)) return false;
-            if (Object.ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(obj, null)) return false;
+            if (ReferenceEquals(this, obj)) return true;
 
             return (obj is Directions2D) &&
                 ((Directions2D)obj).Up == Up &&
