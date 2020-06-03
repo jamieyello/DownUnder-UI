@@ -16,6 +16,8 @@ namespace DownUnder.UIEditor.EditorTools
             GridFormat main_grid = new GridFormat(2, 1);
             Widget layout = new Widget(parent);
             layout.Behaviors.Add(main_grid);
+            main_grid[0, 0].EmbedChildren = false;
+            main_grid[0, 0].Add(Project());
 
             GridFormat side_grid = new GridFormat(1, 2);
             Widget side_grid_layout = new Widget();
@@ -42,6 +44,21 @@ namespace DownUnder.UIEditor.EditorTools
             property_grid.Behaviors.Add(addPropertyEditChildren);
             property_grid.Behaviors.Add(new GridFormat(2, addPropertyEditChildren.Properties.Length));
             return property_grid;
+        }
+
+        private static Widget Project()
+        {
+            Widget project = new Widget()
+            {
+                Area = new RectangleF(20, 20, 300, 200)
+            };
+
+            project.DesignerObjects.IsEditModeEnabled = true;
+            project.DesignerObjects.UserResizingPolicy = Widget.UserResizePolicyType.allow;
+            project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
+            project.DesignerObjects.UserRepositionPolicy = Widget.UserResizePolicyType.disallow;
+
+            return project;
         }
     }
 }

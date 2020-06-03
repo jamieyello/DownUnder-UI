@@ -118,6 +118,7 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\SpacedListFormat.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
@@ -147,7 +148,6 @@
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
-    <Compile Include="UI\Widgets\OldStufff\WidgetArray.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
     <Compile Include="UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />

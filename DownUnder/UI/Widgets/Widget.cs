@@ -21,19 +21,14 @@ using System.Threading;
 
 // tip: Always remember to update Clone.
 
-// Palettes should have ChangeColorOnHover, functionality should be removed from here.
 // By current logic, should DrawMode be an auto-property?
-// DrawingArea doesn't have consistent size between drawing modes.
-// SignalChildAreaChanged should be called in base area only, _disable_update_area should be in base.
+// DrawingArea doesn't have consistent size between drawing modes. (?)
 // SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
-// Grid dividers are broken
-// Serialization code is scary
 // Convert RectangleF.DistanceFrom to float
 // Add ICloneable and INeedsParent to BehaviorCollection
 // Wonder if Directions2D should be enum
 // Try removing all "parent" parameters from Widgets
-// Speed up Widget creation by not initializing unneeded graphics objects for DrawingMode.direct Widgets
 
 namespace DownUnder.UI.Widgets
 {
@@ -518,9 +513,10 @@ namespace DownUnder.UI.Widgets
             DesignerObjects.Parent = this;
             if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
             else OnGraphicsInitialized += InitializeScrollbars;
-            Children.OnAdd += InvokeOnAddChild;
-            Children.OnRemove += InvokeOnRemoveChild;
-            OnAddChild += (sender, args) => { LastAddedWidget.Parent = this; };
+            Children.OnAdd += (sender, args) => { OnAddChild?.Invoke(this, EventArgs.Empty); };
+            Children.OnRemove += (sender, args) => { OnRemoveChild?.Invoke(this, EventArgs.Empty); };
+            Children.OnListChange += (sender, args) => { OnListChange?.Invoke(this, EventArgs.Empty); };
+            OnAddChild += (sender, args) => { LastAddedWidget.Parent = this; }; // ??
             OnRemoveChild += (sender, args) => { };
         }
 
@@ -968,6 +964,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnAddChild;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
+        /// <summary> Invoked when a child is added or removed from this <see cref="Widget"/>. </summary>
+        public event EventHandler OnListChange;
 
         #endregion
 
@@ -1157,9 +1155,7 @@ namespace DownUnder.UI.Widgets
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;
-        internal void InvokeOnAddChild(object sender, EventArgs args) => OnAddChild?.Invoke(this, EventArgs.Empty);
-        internal void InvokeOnRemoveChild(object sender, EventArgs args) => OnRemoveChild?.Invoke(this, EventArgs.Empty);
-
+        
         #endregion
     }
 }

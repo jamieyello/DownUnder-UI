@@ -27,13 +27,11 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (_parent_backing != null) throw new Exception("DeveloperObjects cannot be reused.");
                 _parent_backing = value;
 
-                //if (_parent_backing is Layout parent) {
-                    AcceptsDrops = true;
-                    AcceptedDropTypes.Add(typeof(Widget));
+                AcceptsDrops = true;
+                AcceptedDropTypes.Add(typeof(Widget));
                 _parent_backing.OnAddChild += (sender, args) => {
-                        if (IsEditModeEnabled) _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
-                    };
-                //}
+                    if (IsEditModeEnabled) _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
+                };
             }
         }
 

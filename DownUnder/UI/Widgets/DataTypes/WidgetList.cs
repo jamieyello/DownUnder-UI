@@ -19,6 +19,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary> Invoked whenever a widget is added or removed. </summary>
         public event EventHandler OnAdd;
         public event EventHandler OnRemove;
+        public event EventHandler OnListChange;
 
         public WidgetList() { IsReadOnly = false; }
         public WidgetList(bool is_read_only = false) { IsReadOnly = is_read_only; }
@@ -187,6 +188,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 _widgets[index] = value;
                 OnRemove.Invoke(this, EventArgs.Empty);
                 OnAdd.Invoke(this, EventArgs.Empty);
+                OnListChange.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -202,6 +204,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets.Add(widget);
             LastAddedWidget = widget;
             OnAdd?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
             Count = _widgets.Count;
         }
 
@@ -221,6 +224,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             Count = _widgets.Count;
             LastAddedWidget = widget;
             OnAdd?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         public bool Remove(Widget widget) {
@@ -229,6 +233,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 Count = _widgets.Count;
                 LastRemovedWidget = widget;
                 OnRemove?.Invoke(this, EventArgs.Empty);
+                OnListChange?.Invoke(this, EventArgs.Empty);
                 return true;
             }
             return false;
@@ -240,6 +245,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets.RemoveAt(index);
             Count = _widgets.Count;
             OnRemove?.Invoke(this, EventArgs.Empty);
+            OnListChange?.Invoke(this, EventArgs.Empty);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => _widgets.GetEnumerator();
