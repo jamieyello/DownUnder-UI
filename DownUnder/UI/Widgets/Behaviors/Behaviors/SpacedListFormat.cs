@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DownUnder.Utilities;
+using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Behaviors
 {
-    class SpacedListFormat : WidgetBehavior
+    [DataContract] class SpacedListFormat : WidgetBehavior
     {
+        [DataMember] public float ListSpacing { get; set; } = 0f;
+
+        [DataMember] public InterpolationSettings? WidgetMovement { get; set; } = InterpolationSettings.Fast;
+
         public override object Clone()
         {
             throw new NotImplementedException();
@@ -18,6 +20,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
             Parent.OnListChange += Align;
             Parent.OnAreaChange += Align;
             Align(this, EventArgs.Empty);
+            Parent.EmbedChildren = false;
         }
 
         protected override void DisconnectFromParent()
@@ -28,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
 
         private void Align(object sender, EventArgs args)
         {
-
+            Parent.Children.AlignHorizontalWrap(Parent.Width, true, ListSpacing);
         }
     }
 }

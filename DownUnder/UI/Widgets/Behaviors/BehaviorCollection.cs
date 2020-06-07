@@ -12,7 +12,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public BehaviorCollection(Widget parent) => _parent = parent;
         private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
         public WidgetBehavior this[int index] { get => ((IList<WidgetBehavior>)_behaviors)[index]; set => ((IList<WidgetBehavior>)_behaviors)[index] = value; }
-        public T Get<T>() {
+        public T GetFirst<T>() {
             foreach (WidgetBehavior behavior in this) {
                 if (behavior.GetType() == typeof(T)) return (T)Convert.ChangeType(behavior, typeof(T));
             }

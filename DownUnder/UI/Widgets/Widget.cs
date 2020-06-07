@@ -408,6 +408,7 @@ namespace DownUnder.UI.Widgets
         public Widget ParentWidget {
             get => _parent_widget_backing;
             private set {
+                if (value != _parent_widget_backing) _parent_widget_backing?.Remove(this);
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
             }
@@ -719,7 +720,7 @@ namespace DownUnder.UI.Widgets
 
         private void UpdateGroupPost(out bool deleted) {
             if (_post_update_flags.Delete) {
-                ParentWidget.RemoveChild(this);
+                ParentWidget.DeleteChild(this);
                 deleted = true;
                 return;
             }
@@ -865,12 +866,12 @@ namespace DownUnder.UI.Widgets
         /// <summary> Disposes this <see cref="Widget"/> and removes it from its parent. </summary>
         /// <param name="now"> Set to true to delete this <see cref="Widget"/> on calling this, false to delete on next update. </param>
         public void Delete(bool now = false) {
-            if (now) ParentWidget.RemoveChild(this);
+            if (now) ParentWidget.DeleteChild(this);
             else _post_update_flags.Delete = true;
         }
 
-        private void RemoveChild(Widget widget) {
-            if (!Children.Contains(widget)) throw new Exception("Given widget is not owned by this widget.");
+        private void DeleteChild(Widget widget) {
+            if (!Children.Contains(widget)) throw new Exception($"Given {nameof(Widget)} is not owned by this {nameof(Widget)}.");
             HandleChildDelete(widget);
         }
 
@@ -971,6 +972,10 @@ namespace DownUnder.UI.Widgets
 
         #region Private/Protected Methods
 
+        /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
+        /// <returns> The containing <see cref="Widget"/>. </returns>
+        public Widget SendToContainer() => new Widget(Parent) { this };
+
         public void EmbedIn(IParent parent) {
             if (parent == null) return;
             EmbedIn(parent.Area);
@@ -1007,7 +1012,7 @@ namespace DownUnder.UI.Widgets
         private void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Called by a child <see cref="Widget"/> to signal that it's area has changed. </summary>
-        internal void SignalChildAreaChanged() => ParentWidget?.SignalChildAreaChanged();
+        //internal void SignalChildAreaChanged() => ParentWidget?.SignalChildAreaChanged();
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes() {
