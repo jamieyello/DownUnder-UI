@@ -122,7 +122,6 @@
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\OldStuff\Button.cs" />
     <Compile Include="UI\Widgets\OldStuff\BorderedContainer.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\BehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\ActiveBehaviorLibraryAccessor.cs" />

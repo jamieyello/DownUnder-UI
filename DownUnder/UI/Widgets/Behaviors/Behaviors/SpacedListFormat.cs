@@ -2,9 +2,9 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors
 {
-    [DataContract] class SpacedListFormat : WidgetBehavior
+    [DataContract] public class SpacedListFormat : WidgetBehavior
     {
         [DataMember] public float ListSpacing { get; set; } = 0f;
 

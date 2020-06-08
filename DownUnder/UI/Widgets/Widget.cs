@@ -21,14 +21,12 @@ using System.Threading;
 
 // tip: Always remember to update Clone.
 
-// By current logic, should DrawMode be an auto-property?
 // DrawingArea doesn't have consistent size between drawing modes. (?)
 // SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Convert RectangleF.DistanceFrom to float
 // Add ICloneable and INeedsParent to BehaviorCollection
 // Wonder if Directions2D should be enum
-// Try removing all "parent" parameters from Widgets
 
 namespace DownUnder.UI.Widgets
 {
@@ -976,6 +974,30 @@ namespace DownUnder.UI.Widgets
         /// <returns> The containing <see cref="Widget"/>. </returns>
         public Widget SendToContainer() => new Widget(Parent) { this };
 
+        public Widget WithAddedBehavior(WidgetBehavior behavior)
+        {
+            Behaviors.Add(behavior);
+            return this;
+        }
+
+        public Widget WithAddedBehavior(List<WidgetBehavior> behaviors)
+        {
+            Behaviors.AddRange(behaviors);
+            return this;
+        }
+
+        public Widget WithAddedAction(WidgetAction action)
+        {
+            Actions.Add(action);
+            return this;
+        }
+
+        public Widget WithAddedAction(List<WidgetAction> actions)
+        {
+            Actions.AddRange(actions);
+            return this;
+        }
+
         public void EmbedIn(IParent parent) {
             if (parent == null) return;
             EmbedIn(parent.Area);
@@ -1158,6 +1180,21 @@ namespace DownUnder.UI.Widgets
         public int Count => Children.Count;
         public bool IsReadOnly => Children.IsReadOnly;
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }
+        public Widget this[int x, int y] 
+        {
+            get
+            {
+                GridFormat grid = Behaviors.GetFirst<GridFormat>();
+                if (grid == null) throw new Exception($"This {nameof(Widget)} does not have a {nameof(GridFormat)} behavior.");
+                return grid[x, y];
+            }
+            set
+            {
+                GridFormat grid = Behaviors.GetFirst<GridFormat>();
+                if (grid == null) throw new Exception($"This {nameof(Widget)} does not have a {nameof(GridFormat)} behavior.");
+                grid[x, y] = value;
+            }
+        }
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;
         
