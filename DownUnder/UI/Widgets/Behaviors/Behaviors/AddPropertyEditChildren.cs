@@ -33,10 +33,10 @@ namespace DownUnder.UI.Widgets.Behaviors
             Widget[] widgets = new Widget[Properties.Length * 2];
 
             Parallel.ForEach(Properties, (property, state, index) => {
-                Widget definition = new Widget(Parent) { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 };
+                Widget definition = new Widget() { DrawOutline = true, OutlineSides = Directions2D.DR, MinimumHeight = 20 };
                 definition.Behaviors.Add(new DrawText() { Text = property.Name });
                 widgets[(int)index * 2] = definition;
-                Widget value = new Widget(Parent) { OutlineSides = Directions2D.DR };
+                Widget value = new Widget() { OutlineSides = Directions2D.DR };
                 value.Behaviors.Add(new DrawText() { Text = property.GetValue(EditObject).ToString() });
                 widgets[(int)index * 2 + 1] = value;
             });

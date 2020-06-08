@@ -8,9 +8,9 @@ namespace DownUnder.UIEditor
 {
     internal static class TestLayouts
     {
-        public static Widget NewLayout(IParent parent)
+        public static Widget NewLayout()
         {
-            Widget layout = new Widget(parent);
+            Widget layout = new Widget();
 
             Widget new_widget = new Widget()
             {

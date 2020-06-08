@@ -13,7 +13,7 @@ namespace DownUnder.UIEditor.EditorTools
     {
         public static Widget UIEditor(DWindow parent)
         {
-            Widget layout = new Widget(parent).WithAddedBehavior(new GridFormat(2, 1));
+            Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -21,7 +21,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             // Left grid
             Widget side_grid = new Widget().WithAddedBehavior(new GridFormat(1, 2));
-            layout[1, 0] = new Widget().WithAddedBehavior(new GridFormat(1, 2));
+            layout[1, 0] = side_grid;
 
             // Property grid
             side_grid[0, 1] = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();

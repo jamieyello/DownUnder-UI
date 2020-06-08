@@ -497,10 +497,6 @@ namespace DownUnder.UI.Widgets
         #region Constructors/Destructors
 
         public Widget() => SetDefaults();
-        public Widget(IParent parent = null) {
-            SetDefaults();
-            Parent = parent;
-        }
 
         private void SetDefaults() {
             Size = new Point2(10, 10);
@@ -972,7 +968,7 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer() => new Widget(Parent) { this };
+        public Widget SendToContainer() => new Widget() { this };
 
         public Widget WithAddedBehavior(WidgetBehavior behavior)
         {

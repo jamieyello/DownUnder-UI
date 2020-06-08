@@ -48,7 +48,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         private Widget DefaultCell() =>
-            new Widget(Parent) {
+            new Widget() {
                 OutlineSides = Directions2D.DR,
                 FitToContentArea = true,
                 SnappingPolicy = DiagonalDirections2D.None
