@@ -1,17 +1,13 @@
-﻿using DownUnder.UI;
-using DownUnder.UI.Widgets;
+﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
-using System;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace DownUnder.UIEditor.EditorTools
 {
     public static class EditorWidgets
     {
-        public static Widget UIEditor(DWindow parent)
+        public static Widget UIEditor()
         {
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
 
@@ -28,12 +24,16 @@ namespace DownUnder.UIEditor.EditorTools
 
             // Spacing grid
             side_grid[0, 0] = new Widget().WithAddedBehavior(new SpacedListFormat());
-            side_grid[0, 0].Add(new Widget());
-            side_grid[0, 0].Add(new Widget());
-            side_grid[0, 0].Add(new Widget());
-            side_grid[0, 0].Add(new Widget());
-            side_grid[0, 0].Add(new Widget());
-            side_grid[0, 0].Add(new Widget());
+
+            Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
+            button.Size = new Point2(100, 100);
+
+            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add((Widget)button.Clone());
 
             return layout;
         }

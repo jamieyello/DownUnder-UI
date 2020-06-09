@@ -9,14 +9,13 @@ namespace DownUnder.UI.Widgets.Actions {
         private readonly Widget _parent;
 
         public ActionCollection(Widget parent) => _parent = parent;
-        private List<WidgetAction> _actions = new List<WidgetAction>();
-        private List<WidgetAction> _qued_actions = new List<WidgetAction>();
+        private readonly List<WidgetAction> _actions = new List<WidgetAction>();
+        private readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
         public WidgetAction this[int index] { get => ((IList<WidgetAction>)_actions)[index]; set => ((IList<WidgetAction>)_actions)[index] = value; }
         public int Count => ((IList<WidgetAction>)_actions).Count;
         public bool IsReadOnly => ((IList<WidgetAction>)_actions).IsReadOnly;
 
         public void UpdateQuedActions() {
-            //Console.WriteLine($"qued actions count {_qued_actions.Count}");
             for (int q = _qued_actions.Count - 1; q >= 0; q--) {
                 bool add = true;
                 for (int a = 0; a < _actions.Count; a++) {
@@ -72,11 +71,9 @@ namespace DownUnder.UI.Widgets.Actions {
             ((IList<WidgetAction>)_actions).Insert(index, item);
         }
 
-        public void AddRange(List<WidgetAction> items) {
-            for (int i = 0; i < items.Count; i++) Add(items[i]);
+        public void AddRange(IEnumerable<WidgetAction> actions) {
+            foreach (WidgetAction action in actions) Add(action);
         }
-
-        //public void AddRange(ActionCollection items) => AddRange(items.ToList());
 
         public void Clear() {
             throw new Exception($"Cannot clear an {nameof(ActionCollection)}.");
@@ -103,7 +100,5 @@ namespace DownUnder.UI.Widgets.Actions {
             //((IList<WidgetAction>)_actions)[index].DisconnectFromParent();
             //((IList<WidgetAction>)_actions).RemoveAt(index);
         }
-
-        //IEnumerator GetEnumerator() => ((IList<WidgetAction>)_actions).GetEnumerator();
     }
 }

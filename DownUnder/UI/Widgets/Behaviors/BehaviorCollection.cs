@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         private readonly Widget _parent;
 
         public BehaviorCollection(Widget parent) => _parent = parent;
-        private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
+        private readonly List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
         public WidgetBehavior this[int index] { get => ((IList<WidgetBehavior>)_behaviors)[index]; set => ((IList<WidgetBehavior>)_behaviors)[index] = value; }
         public T GetFirst<T>() {
             foreach (WidgetBehavior behavior in this) {
@@ -27,8 +27,8 @@ namespace DownUnder.UI.Widgets.Behaviors
             ((IList<WidgetBehavior>)_behaviors).Add(item);
         }
 
-        public void AddRange(List<WidgetBehavior> items) {
-            for (int i = 0; i < items.Count; i++) Add(items[i]);
+        public void AddRange(IEnumerable<WidgetBehavior> behaviors) {
+            foreach (WidgetBehavior behavior in behaviors) Add(behavior);
         }
 
         public void AddRange(BehaviorCollection items) => AddRange(items.ToList());

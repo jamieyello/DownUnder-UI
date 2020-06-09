@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             Parent.ParentWindow.DraggingObject = DragObject?.Clone();
             OnSetWindowClone?.Invoke(this, EventArgs.Empty);
         }
-        private void DropObject(object sender, EventArgs args) => ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.HandleDrop(Parent.ParentWindow.DraggingObject);
+        private void DropObject(object sender, EventArgs args) => Parent.ParentWindow.HoveredWidgets.Primary?.HandleDrop(Parent.ParentWindow.DraggingObject);
 
         public event EventHandler OnSetWindowClone;
 

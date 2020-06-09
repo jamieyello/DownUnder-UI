@@ -19,10 +19,10 @@ namespace DownUnder.UI.Widgets.WidgetElements
     {
         private ChangingValue<float> X { get; } = new ChangingValue<float>(0f);
         private ChangingValue<float> Y { get; } = new ChangingValue<float>(0f);
-        private ChangingValue<float> SideBarWidth = new ChangingValue<float>();
-        private ChangingValue<float> BottomBarHeight = new ChangingValue<float>();
+        private readonly ChangingValue<float> SideBarWidth = new ChangingValue<float>();
+        private readonly ChangingValue<float> BottomBarHeight = new ChangingValue<float>();
 
-        private Widget _parent;
+        private readonly Widget _parent;
         private Texture2D _white_dot;
         private RectangleF _outer_bar_bottom_area = new RectangleF();
         private RectangleF _inner_bottom_bar_area = new RectangleF();

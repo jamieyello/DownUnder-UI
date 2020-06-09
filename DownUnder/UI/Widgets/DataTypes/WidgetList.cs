@@ -1,6 +1,4 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
+﻿using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -11,7 +9,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     public class WidgetList : IList<Widget>
     {
-        private List<Widget> _widgets { get; set; } = new List<Widget>();
+        private readonly List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
@@ -30,68 +28,37 @@ namespace DownUnder.UI.Widgets.DataTypes
             Count = _widgets.Count;
         }
 
-        public void AlignHorizontalWrap(float max_width, bool debug_output = false, float spacing = 0f, bool consistent_row_height = true, InterpolationSettings? interpolation = null) {
-            if (_widgets.Count == 0) return;
-            max_width = max_width - spacing;
-
+        public void AlignHorizontalWrap(float width, float spacing)
+        {
             // Read the areas of the widgets just once (areas)
             List<RectangleF> areas = new List<RectangleF>();
+            List<RectangleF> new_areas = new List<RectangleF>();
             foreach (Widget widget in _widgets) areas.Add(widget.Area);
-            
-            // Determine the number of widgets that should be in a row (row_x_count)
-            Point2 point;
-            int row_x_count = areas.Count;
-            point = new Point2(spacing, spacing);
-            int this_row_count = 0;
+            foreach (RectangleF area in areas) new_areas.Add(area);
+            float max_height = 0;
+            float max_width = 0;
 
-            for (int i = 0; i < areas.Count; i++) {
-                point.X += areas[i].Width + spacing;
-                this_row_count++;
-                if (point.X > max_width) {
-                    row_x_count = Math.Min(this_row_count, row_x_count);
-                    this_row_count = 0;
-                    point.X = spacing * 2;
-                }
-            }
+            foreach (RectangleF area in areas) max_height = Math.Max(max_height, area.Height);
+            foreach (RectangleF area in areas) max_width = Math.Max(max_width, area.Width);
 
-            // Given the
-            // row_x_count
-            // max_width
-            // row_height
-            // Set the positions of the Widgets.
-            float row_height = MaxSize.Y + spacing;
-            point = new Point2(spacing, spacing);
-            int x = 0;
-            for (int i = 0; i < _widgets.Count; i++) {
-                point.X = max_width * ((float)(x) / (row_x_count)) + spacing;
+            int widgets_per_line = (int)(width / (max_width + spacing));
+            if (widgets_per_line <= 0) widgets_per_line = 1;
 
-                if (interpolation == null)
-                {
-                    _widgets[i].Area = areas[i].WithPosition(point);
-                }
-                else
-                {
-                    _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i].WithPosition(point), interpolation));
-                }
+            float x_spacing = (width - max_width * widgets_per_line) / (widgets_per_line + 1);
 
-                if (++x == row_x_count)
-                {
-                    x = 0;
-                    point.Y += row_height;
-                }
-            }
+            //Console.WriteLine(widgets_per_line);
 
-            // Debug because this is still broken
-            if (false)
+            for (int i = 0; i < _widgets.Count; i++) 
             {
-                for (int i = 0; i < areas.Count; i++)
-                {
-                    Console.WriteLine($"areas[{i}] {areas[i]}");
-
-                }
-                Console.WriteLine($"row_x_count {row_x_count}");
-                Console.WriteLine($"max_width {max_width}");
+                int x = (i % widgets_per_line);
+                new_areas[i] = new RectangleF(
+                    x * x_spacing + x * max_width + spacing,
+                    i / widgets_per_line * (max_height + spacing) + spacing,
+                    areas[i].Width,
+                    areas[i].Height);
             }
+
+            for (int i = 0; i < new_areas.Count; i++) _widgets[i].Area = new_areas[i];
         }
 
         public Point2 MaxSize {

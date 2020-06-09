@@ -23,7 +23,7 @@ namespace DownUnder.Widgets
         /// <summary> Path to the editor's .cs file. </summary>
         //private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
 
-        public MainWindow(Widget layout = null, DWindow parent = null) : base(parent)
+        public MainWindow(DWindow parent = null) : base(parent)
         {
             Content.RootDirectory = "Content";
         }
@@ -60,7 +60,7 @@ namespace DownUnder.Widgets
 
             //MainWidget = TestLayouts.NewLayout(this);
 
-            MainWidget = EditorWidgets.UIEditor(this);
+            MainWidget = EditorWidgets.UIEditor();
 
             XmlHelper.ToXmlFile(new Widget(), "test.xml");
             Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");

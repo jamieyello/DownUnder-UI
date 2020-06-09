@@ -6,7 +6,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class SpacedListFormat : WidgetBehavior
     {
-        [DataMember] public float ListSpacing { get; set; } = 0f;
+        [DataMember] public float ListSpacing { get; set; } = 25f;
 
         [DataMember] public InterpolationSettings? WidgetMovement { get; set; } = InterpolationSettings.Fast;
 
@@ -31,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void Align(object sender, EventArgs args)
         {
-            Parent.Children.AlignHorizontalWrap(Parent.Width, true, ListSpacing);
+            Parent.Children.AlignHorizontalWrap(Parent.Width, ListSpacing);
         }
     }
 }

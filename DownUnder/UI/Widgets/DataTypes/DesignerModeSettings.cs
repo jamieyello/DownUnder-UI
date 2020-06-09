@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
-    public class DesignerModeSettings : INeedsWidgetParent, IAcceptsDrops {
+    public class DesignerModeSettings : INeedsWidgetParent {
         private bool _is_developer_mode_enabled_backing = false;
         private Widget _parent_backing;
         private float _add_widget_spacing_backing = 8f;

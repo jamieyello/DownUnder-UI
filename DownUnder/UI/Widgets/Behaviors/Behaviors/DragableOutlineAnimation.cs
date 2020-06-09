@@ -2,9 +2,9 @@
 using System;
 using MonoGame.Extended;
 using DownUnder.Utility;
-using DownUnder.UI.Widgets.Interfaces;
 
-namespace DownUnder.UI.Widgets.Behaviors {
+namespace DownUnder.UI.Widgets.Behaviors
+{
     public class DragableOutlineAnimation : WidgetBehavior {
         private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
         private ChangingValue<float> round_amount = new ChangingValue<float>(0f);
@@ -56,7 +56,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
 
         private void Update(object sender, EventArgs args) {
             if (drag_rect_to_mouse) {
-                bool? is_drop_acceptable = ((IAcceptsDrops)Parent.ParentWindow.HoveredWidgets.Primary)?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
+                bool? is_drop_acceptable = Parent.ParentWindow.HoveredWidgets.Primary?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
                 Widget victim = Parent.ParentWindow.HoveredWidgets.Primary;
                 if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
                     // Set to new Widget area
@@ -84,7 +84,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
         }
 
         public override object Clone() {
-            throw new NotImplementedException();
+            return new DragableOutlineAnimation();
         }
     }
 }

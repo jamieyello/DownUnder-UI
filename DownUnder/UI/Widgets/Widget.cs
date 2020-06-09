@@ -32,7 +32,7 @@ namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract] public sealed class Widget : 
-        IParent, IDisposable, ICloneable, IAcceptsDrops, IList<Widget>
+        IParent, IDisposable, ICloneable, IList<Widget>
     {
         public bool debug_output = false;
 
@@ -63,7 +63,7 @@ namespace DownUnder.UI.Widgets
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        private WidgetUpdateFlags _post_update_flags = new WidgetUpdateFlags();
+        private readonly WidgetUpdateFlags _post_update_flags = new WidgetUpdateFlags();
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
@@ -105,7 +105,9 @@ namespace DownUnder.UI.Widgets
         bool _allow_cut_backing;
         UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
-        
+        private bool _accepts_drops_backing;
+        private List<Type> _accepted_drop_types_backing = new List<Type>();
+
         public enum DrawingModeType {
             /// <summary> Draw nothing. </summary>
             disable,
@@ -157,10 +159,12 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool IsFixedHeight { get; set; } = false;
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
+
         /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
-        [DataMember] public bool AcceptsDrops { get; set; }
+        //[DataMember] public bool AcceptsDrops { get; set; }
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        [DataMember] public List<Type> AcceptedDropTypes { get; set; } = new List<Type>();
+        //[DataMember] public List<Type> AcceptedDropTypes { get; set; } = new List<Type>();
+        
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
@@ -278,7 +282,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Returns true if this <see cref="Widget"/> is being hovered over as well as on top of all the other <see cref="Widget"/>s being hovered over. </summary>
-        public bool IsPrimaryHovered => ParentWindow == null ? false : ParentWindow.HoveredWidgets.Primary == this;
+        public bool IsPrimaryHovered => ParentWindow != null && ParentWindow.HoveredWidgets.Primary == this;
         /// <summary> Returns true if this <see cref="Widget"/> has been initialized graphically. Setting this <see cref="Widget"/>'s <see cref="Parent"/> to an initialized <see cref="Widget"/> or <see cref="DWindow"/> will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
         /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
@@ -383,8 +387,8 @@ namespace DownUnder.UI.Widgets
         public IParent Parent {
             get => ParentWidget != null ? (IParent)ParentWidget : ParentWindow;
             set {
-                if (value is Widget) ParentWidget = (Widget)value;
-                else if (value is DWindow) ParentWindow = (DWindow)value;
+                if (value is Widget widget) ParentWidget = widget;
+                else if (value is DWindow window) ParentWindow = window;
             }
         }
 
@@ -419,9 +423,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Represents the window's input each frame. </summary>
         public UIInputState InputState => ParentWindow?.InputState;
         /// <summary> Returns true if this is the main selected <see cref="Widget"/>. </summary>
-        public bool IsPrimarySelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.Primary == this;
+        public bool IsPrimarySelected => ParentWindow != null && ParentWindow.SelectedWidgets.Primary == this;
         /// <summary>Returns true if this <see cref="Widget"/> is selected. </summary>
-        public bool IsSelected => ParentWindow == null ? false : ParentWindow.SelectedWidgets.IsWidgetFocused(this);
+        public bool IsSelected => ParentWindow != null && ParentWindow.SelectedWidgets.IsWidgetFocused(this);
 
         /// <summary> This <see cref="Widget"/> plus all <see cref="Widget"/>s contained in this <see cref="Widget"/>. </summary>
         public WidgetList AllContainedWidgets {
@@ -538,7 +542,7 @@ namespace DownUnder.UI.Widgets
             UpdateGroupResizeGrab();
             UpdateGroupHoverFocus();
             UpdateGroupEvents(game_time);
-            UpdateGroupPost(out bool deleted);
+            UpdateGroupPost(out _);
         }
         
         private void UpdateGroupHoverFocus() {
@@ -893,18 +897,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> Signals confirming this <see cref="Widget"/>. (Such as pressing enter with this <see cref="Widget"/> selected) </summary>
         public void SignalConfirm() => OnConfirm?.Invoke(this, EventArgs.Empty);
 
-        public bool IsDropAcceptable(object drop) {
-            IAcceptsDrops i_this = this;
-
-            if (!i_this.AcceptsDrops) return false;
-            foreach (Type type in i_this.AcceptedDropTypes) {
-                if (type.IsAssignableFrom(drop?.GetType())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         #endregion
 
         #region EventsHandlers
@@ -970,26 +962,22 @@ namespace DownUnder.UI.Widgets
         /// <returns> The containing <see cref="Widget"/>. </returns>
         public Widget SendToContainer() => new Widget() { this };
 
-        public Widget WithAddedBehavior(WidgetBehavior behavior)
-        {
+        public Widget WithAddedBehavior(WidgetBehavior behavior) {
             Behaviors.Add(behavior);
             return this;
         }
 
-        public Widget WithAddedBehavior(List<WidgetBehavior> behaviors)
-        {
+        public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors) {
             Behaviors.AddRange(behaviors);
             return this;
         }
 
-        public Widget WithAddedAction(WidgetAction action)
-        {
+        public Widget WithAddedAction(WidgetAction action) {
             Actions.Add(action);
             return this;
         }
 
-        public Widget WithAddedAction(List<WidgetAction> actions)
-        {
+        public Widget WithAddedAction(IEnumerable<WidgetAction> actions) {
             Actions.AddRange(actions);
             return this;
         }
@@ -1086,12 +1074,40 @@ namespace DownUnder.UI.Widgets
         #region IAcceptsDrops Implementation
 
         // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        bool IAcceptsDrops.AcceptsDrops => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).AcceptsDrops : AcceptsDrops;
-        List<Type> IAcceptsDrops.AcceptedDropTypes => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).AcceptedDropTypes : AcceptedDropTypes;
-        bool IAcceptsDrops.IsDropAcceptable(object drop) => DesignerObjects.IsEditModeEnabled ? ((IAcceptsDrops)DesignerObjects).IsDropAcceptable(drop) : IsDropAcceptable(drop);
-        void IAcceptsDrops.HandleDrop(object drop) { if (DesignerObjects.IsEditModeEnabled) { ((IAcceptsDrops)DesignerObjects).HandleDrop(drop); } else { HandleDrop(drop); } }
+        public bool AcceptsDrops {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptsDrops : _accepts_drops_backing;
+            set => _accepts_drops_backing = value;
+        }
+        
+        public List<Type> AcceptedDropTypes
+        {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
+            private set => _accepted_drop_types_backing = value;
+        }
 
-        void HandleDrop(object drop) {  }
+        public void HandleDrop(object drop) 
+        {
+            if (DesignerObjects.IsEditModeEnabled) 
+            { 
+                DesignerObjects.HandleDrop(drop);
+                return;
+            }
+        }
+
+        public bool IsDropAcceptable(object drop)
+        {
+            if (DesignerObjects.IsEditModeEnabled) return DesignerObjects.IsDropAcceptable(drop);
+
+            if (!AcceptsDrops) return false;
+            foreach (Type type in AcceptedDropTypes)
+            {
+                if (type.IsAssignableFrom(drop?.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         #endregion
 
@@ -1121,7 +1137,8 @@ namespace DownUnder.UI.Widgets
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
-            c.AcceptsDrops = AcceptsDrops;
+
+            c._accepts_drops_backing = _accepts_drops_backing;
 
             c._user_resize_policy_backing = _user_resize_policy_backing;
             c._user_reposition_policy_backing = _user_reposition_policy_backing;
@@ -1131,7 +1148,7 @@ namespace DownUnder.UI.Widgets
             c._allow_copy_backing = _allow_copy_backing;
             c._allow_cut_backing = _allow_cut_backing;
 
-            foreach (Type type in AcceptedDropTypes) c.AcceptedDropTypes.Add(type);
+            foreach (Type type in _accepted_drop_types_backing) c._accepted_drop_types_backing.Add(type);
             foreach (WidgetBehavior behavior in Behaviors) c.Behaviors.Add((WidgetBehavior)behavior.Clone());
 
             return c;
