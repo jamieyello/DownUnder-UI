@@ -25,6 +25,26 @@ namespace DownUnder.UIEditor
             return layout;
         }
 
+        public static Widget ContainerTest()
+        {
+            Widget layout = new Widget()
+            {
+                SnappingPolicy = DiagonalDirections2D.All
+            };
+
+            Widget inner = new Widget()
+            {
+                SnappingPolicy = DiagonalDirections2D.None,
+                Area = new RectangleF(40, 40, 400, 300)
+            };
+
+            inner.Behaviors.Add(new BorderFormat());
+
+            layout.Add(inner);
+
+            return layout;
+        }
+
         //public static Layout TestLayout(DWindow parent)
         //{
         //    Layout layout = new Layout(parent);

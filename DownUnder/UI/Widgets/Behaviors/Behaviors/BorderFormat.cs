@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    class BorderFormat : WidgetBehavior
+    public class BorderFormat : WidgetBehavior
     {
         private Widget _center_backing;
 

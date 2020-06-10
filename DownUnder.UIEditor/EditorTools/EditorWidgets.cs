@@ -28,7 +28,7 @@ namespace DownUnder.UIEditor.EditorTools
             Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
             button.Size = new Point2(100, 100);
 
-            side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].Add(((Widget)button.Clone()).WithAddedBehavior(new DragAndDropSource() { DragObject = new Widget() }));
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());

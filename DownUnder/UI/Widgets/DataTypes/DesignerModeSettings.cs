@@ -58,13 +58,12 @@ namespace DownUnder.UI.Widgets.DataTypes
         public bool AcceptsDrops { get; private set; } = false;
         public List<Type> AcceptedDropTypes { get; private set; } = new List<Type>();
 
-        public bool IsDropAcceptable(object drop) => Parent.IsDropAcceptable(drop);
-
         public void HandleDrop(object drop) {
-            //if (IsDropAcceptable(drop) && drop is Widget w_drop && Parent is Layout l_parent) {
-            //    w_drop.Area = GetAddWidgetArea(w_drop);
-            //    l_parent.Add(w_drop);
-            //}
+            if (Parent.IsDropAcceptable(drop) && drop is Widget w_drop)
+            {
+                w_drop.Area = GetAddWidgetArea(w_drop);
+                Parent.Add(w_drop);
+            }
         }
         
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>

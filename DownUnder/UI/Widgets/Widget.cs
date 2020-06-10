@@ -27,6 +27,7 @@ using System.Threading;
 // Convert RectangleF.DistanceFrom to float
 // Add ICloneable and INeedsParent to BehaviorCollection
 // Wonder if Directions2D should be enum
+// IsHoveredOver is antiquated
 
 namespace DownUnder.UI.Widgets
 {
@@ -160,11 +161,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
 
-        /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
-        //[DataMember] public bool AcceptsDrops { get; set; }
-        /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        //[DataMember] public List<Type> AcceptedDropTypes { get; set; } = new List<Type>();
-        
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
@@ -249,10 +245,23 @@ namespace DownUnder.UI.Widgets
             set => _allow_cut_backing = value;
         }
 
+        /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
+        // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
+        [DataMember] public bool AcceptsDrops {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptsDrops : _accepts_drops_backing;
+            set => _accepts_drops_backing = value;
+        }
+
+        /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
+        [DataMember] public List<Type> AcceptedDropTypes {
+            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
+            private set => _accepted_drop_types_backing = value;
+        }
+
         #endregion
 
         #region Non-serialized properties
-    
+
         /// <summary> The width of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Width { get => Area.Width; set => Area = Area.WithWidth(value); }
         /// <summary> The height of this <see cref="Widget"/> (in terms of pixels on a 1080p monitor) </summary>
@@ -1071,20 +1080,6 @@ namespace DownUnder.UI.Widgets
 
         #endregion
 
-        #region IAcceptsDrops Implementation
-
-        // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        public bool AcceptsDrops {
-            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptsDrops : _accepts_drops_backing;
-            set => _accepts_drops_backing = value;
-        }
-        
-        public List<Type> AcceptedDropTypes
-        {
-            get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
-            private set => _accepted_drop_types_backing = value;
-        }
-
         public void HandleDrop(object drop) 
         {
             if (DesignerObjects.IsEditModeEnabled) 
@@ -1096,8 +1091,6 @@ namespace DownUnder.UI.Widgets
 
         public bool IsDropAcceptable(object drop)
         {
-            if (DesignerObjects.IsEditModeEnabled) return DesignerObjects.IsDropAcceptable(drop);
-
             if (!AcceptsDrops) return false;
             foreach (Type type in AcceptedDropTypes)
             {
@@ -1108,8 +1101,6 @@ namespace DownUnder.UI.Widgets
             }
             return false;
         }
-
-        #endregion
 
         #region ICloneable Implementation
 

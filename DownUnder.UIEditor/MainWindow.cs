@@ -58,12 +58,12 @@ namespace DownUnder.Widgets
             //MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
             //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
 
-            //MainWidget = TestLayouts.NewLayout(this);
+            MainWidget = TestLayouts.ContainerTest();
 
-            MainWidget = EditorWidgets.UIEditor();
+            //MainWidget = EditorWidgets.UIEditor();
 
-            XmlHelper.ToXmlFile(new Widget(), "test.xml");
-            Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
+            //XmlHelper.ToXmlFile(new Widget(), "test.xml");
+            //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
 
             // TODO: use this.Content to load your game content here
         }
