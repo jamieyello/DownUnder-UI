@@ -38,6 +38,37 @@ namespace Downunder.Utility {
             }
         }
 
+        public GenericDirections2D() {
+            object[] instance_parameters = new object[0];
+            Up = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Down = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Left = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Right = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+        }
+
+        public GenericDirections2D(bool create_instances = true) {
+            if (!create_instances) return;
+            object[] instance_parameters = new object[0];
+            Up = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Down = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Left = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+            Right = (T)Activator.CreateInstance(typeof(T), instance_parameters);
+        }
+
+        public GenericDirections2D(ValueType value) {
+            Up = (T)Convert.ChangeType(value, typeof(T));
+            Down = (T)Convert.ChangeType(value, typeof(T));
+            Left = (T)Convert.ChangeType(value, typeof(T));
+            Right = (T)Convert.ChangeType(value, typeof(T));
+        }
+
+        public GenericDirections2D(ICloneable obj) {
+            Up = (T)Convert.ChangeType(obj.Clone(), typeof(T));
+            Down = (T)Convert.ChangeType(obj.Clone(), typeof(T));
+            Left = (T)Convert.ChangeType(obj.Clone(), typeof(T));
+            Right = (T)Convert.ChangeType(obj.Clone(), typeof(T));
+        }
+
         /// <param name="instance_parameters"> Parameters that should be used when creating all 4 directions. </param>
         public GenericDirections2D(object[] instance_parameters) {
             Up = (T)Activator.CreateInstance(typeof(T), instance_parameters);
@@ -68,5 +99,28 @@ namespace Downunder.Utility {
         public bool HasNull => Up == null || Down == null || Left == null || Right == null;
 
         public event EventHandler OnValueAssign;
+
+        public bool IsCloneable => typeof(T).IsValueType || typeof(ICloneable).IsAssignableFrom(typeof(T));
+
+        public object Clone() {
+            if (typeof(T).IsValueType) {
+                GenericDirections2D<T> result = new GenericDirections2D<T>(false);
+                result.Up = Up;
+                result.Down = Down;
+                result.Left = Left;
+                result.Right = Right;
+                return result;
+            }
+            else if (typeof(ICloneable).IsAssignableFrom(typeof(T))) {
+                GenericDirections2D<T> result = new GenericDirections2D<T>(false);
+                result.Up = (T)((ICloneable)Convert.ChangeType(Up, typeof(ICloneable))).Clone();
+                result.Down = (T)((ICloneable)Convert.ChangeType(Down, typeof(ICloneable))).Clone();
+                result.Left = (T)((ICloneable)Convert.ChangeType(Left, typeof(ICloneable))).Clone();
+                result.Right = (T)((ICloneable)Convert.ChangeType(Right, typeof(ICloneable))).Clone();
+                return result;
+            }
+
+            throw new Exception($"Cannot clone {typeof(T)} because it is not a {nameof(ValueType)} and does not implement {nameof(ICloneable)}.");
+        }
     }
 }
