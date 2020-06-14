@@ -160,6 +160,8 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool IsFixedHeight { get; set; } = false;
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
+        /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
+        [DataMember] public Dictionary<Type, string> BehaviorTags = new Dictionary<Type, string>();
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -533,6 +535,7 @@ namespace DownUnder.UI.Widgets
         public void Dispose() => Dispose(true);
 
         private void Dispose(bool disposing) {
+            OnDispose?.Invoke(this, EventArgs.Empty);
             _white_dot?.Dispose();
             _render_target?.Dispose();
             _local_sprite_batch?.Dispose();
@@ -962,6 +965,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnRemoveChild;
         /// <summary> Invoked when a child is added or removed from this <see cref="Widget"/>. </summary>
         public event EventHandler OnListChange;
+        /// <summary> Invoked when this <see cref="Widget"/> is disposed. </summary>
+        public event EventHandler OnDispose;
 
         #endregion
 
