@@ -8,11 +8,13 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class BorderFormat : WidgetBehavior
     {
-        public const string CENTER_TAG = "C";
-        public const string TOP_TAG = "T";
-        public const string BOTTOM_TAG = "B";
-        public const string LEFT_TAG = "L";
-        public const string RIGHT_TAG = "R";
+        private const string _POSITION_KEY = "P";
+
+        private const string _CENTER_TAG = "C";
+        private const string _TOP_TAG = "T";
+        private const string _BOTTOM_TAG = "B";
+        private const string _LEFT_TAG = "L";
+        private const string _RIGHT_TAG = "R";
 
         private Widget _center_backing;
         private Widget _top_backing;
@@ -28,12 +30,12 @@ namespace DownUnder.UI.Widgets.Behaviors
             set {
                 if (_center_backing == value) return;
                 if (_center_backing != null) {
-                    _center_backing?.BehaviorTags.Remove(typeof(BorderFormat));
+                    RemoveTag(_center_backing, _POSITION_KEY);
                     Parent.Remove(_center_backing);
                 }
                 _center_backing = value;
                 if (value == null) return;
-                value.BehaviorTags.Add(typeof(BorderFormat), CENTER_TAG);
+                SetTag(value, _POSITION_KEY, _CENTER_TAG);
                 Parent.Add(value);
             }
         }
@@ -72,7 +74,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             BorderSize center_border = new BorderSize();
 
-            center_border.Top = 
+            //center_border.Top = 
         }
     }
 }

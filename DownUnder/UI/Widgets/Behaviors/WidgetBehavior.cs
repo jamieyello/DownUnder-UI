@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace DownUnder.UI.Widgets.Behaviors {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
@@ -14,9 +15,10 @@ namespace DownUnder.UI.Widgets.Behaviors {
         public Widget Parent {
             get => _parent_backing;
             set {
+                if (value.Behaviors.HasBehaviorOfType(GetType())) throw new Exception($"{nameof(Widget)} {value.Name} already has a {GetType().Name} behavior.");
                 if (_parent_backing != null) {
                     if (_parent_backing == value) return;
-                    throw new Exception("WidgetBehaviors cannot be reused. Use Clone() to create a copy first.");
+                    throw new Exception($"{nameof(WidgetBehavior)}s cannot be reused. Use {nameof(Clone)} to create a copy first.");
                 }
                 _parent_backing = value;
                 ConnectToParent();
@@ -34,6 +36,32 @@ namespace DownUnder.UI.Widgets.Behaviors {
         protected abstract void DisconnectFromParent();
         public abstract object Clone();
 
-        
+        /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
+        protected void SetTag(string key, string value) => SetTag(Parent, key, value);
+        /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
+        protected void SetTag(Widget widget, string key, string value)
+        {
+            if (!widget.BehaviorTags.ContainsKey(GetType())) widget.BehaviorTags.Add(GetType(), new Dictionary<string, string>());
+            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) throw new Exception("Something went wrong here.");
+            if (tags.ContainsKey(key)) tags.Remove(key);
+            tags.Add(key, value);
+        }
+
+        protected string GetTag(string key) => GetTag(Parent, key);
+        protected string GetTag(Widget widget, string key)
+        {
+            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return "";
+            if (!tags.TryGetValue(key, out string result)) return "";
+            return result;
+        }
+
+        protected bool RemoveTag(string key) => RemoveTag(Parent, key);
+        protected bool RemoveTag(Widget widget, string key)
+        {
+            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return false;
+            bool result = tags.Remove(key);
+            if (tags.Count == 0) widget.BehaviorTags.Remove(GetType());
+            return result;
+        }
     }
 }

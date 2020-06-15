@@ -161,7 +161,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
-        [DataMember] public Dictionary<Type, string> BehaviorTags = new Dictionary<Type, string>();
+        [DataMember] internal Dictionary<Type, Dictionary<string, string>> BehaviorTags { get; set; } = new Dictionary<Type, Dictionary<string, string>>();
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
