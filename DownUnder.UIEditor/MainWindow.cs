@@ -52,15 +52,10 @@ namespace DownUnder.Widgets
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteFont = Content.Load<SpriteFont>("font");
 
-            //Layout = TestLayouts.TestLayout4(this);
-            //Layout = TestLayouts.TestLayout5(this);
-            //MainWidget = TestLayouts.TestLayout5(this);
-            //MainWidget = WidgetStuff.MenuBar(this, new UIEditorLayout(this, out editor_objects));
-            //Utility.Serialization.CSCreator.SerializeToCS(Layout, "UIEditor", "DownUnder.UI", " ForceUpdateOwnershipHierarchy");
+            //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
+            //MainWidget = TestLayouts.ContainerTest();
 
-            MainWidget = TestLayouts.ContainerTest();
-
-            //MainWidget = EditorWidgets.UIEditor();
+            MainWidget = EditorWidgets.UIEditor();
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");

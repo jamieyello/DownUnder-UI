@@ -115,16 +115,15 @@
     <Compile Include="UI\Widgets\Actions\Actions\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Behaviors\BehaviorObjects\BorderSettings.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\BorderFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\SpacedListFormat.cs" />
+    <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\OldStuff\BorderedContainer.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\BehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\ActiveBehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
@@ -135,7 +134,6 @@
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\DebugBehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\VisualBehaviorLibraryAccessor.cs" />
     <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />
-    <Compile Include="UI\Widgets\OldStuff\ContainerBorder.cs" />
     <Compile Include="UI\Widgets\DataTypes\DesignerModeSettings.cs" />
     <Compile Include="UI\Widgets\DataTypes\DownUnderEffects.cs" />
     <Compile Include="UI\Widgets\DataTypes\Focus.cs" />

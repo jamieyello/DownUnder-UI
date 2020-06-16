@@ -177,161 +177,22 @@ namespace DownUnder.Utility
             };
         }
 
-        /// <summary> Up, Down, Left, Right = true </summary>
-        public static Directions2D UDLR
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Down = true,
-                Left = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Up, Down, Left = true </summary>
-        public static Directions2D UDL
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Down = true,
-                Left = true
-            };
-        }
-
-        /// <summary> Up, Down, Right = true </summary>
-        public static Directions2D UDR
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Down = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Up, Left, Right = true </summary>
-        public static Directions2D ULR
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Left = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Down, Left, Right = true </summary>
-        public static Directions2D DLR
-        {
-            get => new Directions2D()
-            {
-                Down = true,
-                Left = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Up, Down = true </summary>
-        public static Directions2D UD
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Down = true
-            };
-        }
-
-        /// <summary> Up, Left = true </summary>
-        public static Directions2D UL
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Left = true
-            };
-        }
-
-        /// <summary> Up, Right = true </summary>
-        public static Directions2D UR
-        {
-            get => new Directions2D()
-            {
-                Up = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Down, Left = true </summary>
-        public static Directions2D DL
-        {
-            get => new Directions2D()
-            {
-                Down = true,
-                Left = true
-            };
-        }
-
-        /// <summary> Down, Right = true </summary>
-        public static Directions2D DR
-        {
-            get => new Directions2D()
-            {
-                Down = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Left, Right = true </summary>
-        public static Directions2D LR
-        {
-            get => new Directions2D()
-            {
-                Left = true,
-                Right = true
-            };
-        }
-
-        /// <summary> Up = true </summary>
-        public static Directions2D U
-        {
-            get => new Directions2D()
-            {
-                Up = true
-            };
-        }
-
-        /// <summary> Down = true </summary>
-        public static Directions2D D
-        {
-            get => new Directions2D()
-            {
-                Down = true
-            };
-        }
-
-        /// <summary> Left = true </summary>
-        public static Directions2D L
-        {
-            get => new Directions2D()
-            {
-                Left = true
-            };
-        }
-
-        /// <summary> Right = true </summary>
-        public static Directions2D R
-        {
-            get => new Directions2D()
-            {
-                Right = true
-            };
-        }
-
-        public static Directions2D None
-        {
-            get => new Directions2D();
-        }
+        public static Directions2D All => new Directions2D() { Up = true, Down = true, Left = true, Right = true };
+        public static Directions2D UDLR => new Directions2D() { Up = true, Down = true, Left = true, Right = true };
+        public static Directions2D UDL => new Directions2D() { Up = true, Down = true, Left = true };
+        public static Directions2D UDR => new Directions2D() { Up = true, Down = true, Right = true };
+        public static Directions2D ULR => new Directions2D() { Up = true, Left = true, Right = true };
+        public static Directions2D DLR => new Directions2D() { Down = true, Left = true, Right = true };
+        public static Directions2D UD => new Directions2D() { Up = true, Down = true };
+        public static Directions2D UL => new Directions2D() { Up = true, Left = true };
+        public static Directions2D UR => new Directions2D() { Up = true, Right = true };
+        public static Directions2D DL => new Directions2D() { Down = true, Left = true };
+        public static Directions2D DR => new Directions2D() { Down = true, Right = true };
+        public static Directions2D LR => new Directions2D() { Left = true, Right = true };
+        public static Directions2D U => new Directions2D() { Up = true };
+        public static Directions2D D => new Directions2D() { Down = true };
+        public static Directions2D L => new Directions2D() { Left = true };
+        public static Directions2D R => new Directions2D() { Right = true };
+        public static Directions2D None => new Directions2D();
     }
 }

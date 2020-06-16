@@ -37,9 +37,9 @@ namespace DownUnder.UI.Widgets.Behaviors {
         public abstract object Clone();
 
         /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
-        protected void SetTag(string key, string value) => SetTag(Parent, key, value);
+        public void SetTag(string key, string value) => SetTag(Parent, key, value);
         /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
-        protected void SetTag(Widget widget, string key, string value)
+        public void SetTag(Widget widget, string key, string value)
         {
             if (!widget.BehaviorTags.ContainsKey(GetType())) widget.BehaviorTags.Add(GetType(), new Dictionary<string, string>());
             if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) throw new Exception("Something went wrong here.");
@@ -47,16 +47,16 @@ namespace DownUnder.UI.Widgets.Behaviors {
             tags.Add(key, value);
         }
 
-        protected string GetTag(string key) => GetTag(Parent, key);
-        protected string GetTag(Widget widget, string key)
+        public string GetTag(string key) => GetTag(Parent, key);
+        public string GetTag(Widget widget, string key)
         {
             if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return "";
             if (!tags.TryGetValue(key, out string result)) return "";
             return result;
         }
 
-        protected bool RemoveTag(string key) => RemoveTag(Parent, key);
-        protected bool RemoveTag(Widget widget, string key)
+        public bool RemoveTag(string key) => RemoveTag(Parent, key);
+        public bool RemoveTag(Widget widget, string key)
         {
             if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return false;
             bool result = tags.Remove(key);
