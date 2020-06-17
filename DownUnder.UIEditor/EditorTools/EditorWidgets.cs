@@ -14,6 +14,7 @@ namespace DownUnder.UIEditor.EditorTools
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
             border_format.Center = layout;
             border_format.TopBorder = new Widget();
+            border_format.TopBorder.Height = 50;
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -22,6 +23,8 @@ namespace DownUnder.UIEditor.EditorTools
             // Left grid
             Widget side_grid = new Widget().WithAddedBehavior(new GridFormat(1, 2));
             layout[1, 0] = side_grid;
+            layout[1, 0].UserResizePolicy = Widget.UserResizePolicyType.allow;
+            layout[1, 0].AllowedResizingDirections = Directions2D.L;
 
             // Property grid
             side_grid[0, 1] = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
@@ -32,7 +35,7 @@ namespace DownUnder.UIEditor.EditorTools
             Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
             button.Size = new Point2(100, 100);
 
-            side_grid[0, 0].Add(((Widget)button.Clone()).WithAddedBehavior(new DragAndDropSource() { DragObject = new Widget() }));
+            side_grid[0, 0].Add(((Widget)button.Clone()).WithAddedBehavior(new DragAndDropSource() { DragObject = new Widget() { Size = new Point2(50, 50) } }));
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());

@@ -7,8 +7,7 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    [DataContract] public class BorderFormat : WidgetBehavior
-    {
+    [DataContract] public class BorderFormat : WidgetBehavior {
         private const string _POSITION_KEY = "P";
         private const string _CENTER_VALUE = "C";
         private const string _TOP_VALUE = "T";
@@ -21,6 +20,8 @@ namespace DownUnder.UI.Widgets.Behaviors
         private readonly WidgetTracker _bottom_border;
         private readonly WidgetTracker _left_border;
         private readonly WidgetTracker _right_border;
+
+        private bool _disable_align = false;
 
         public Widget Center { 
             get => _center.Widget;
@@ -66,13 +67,17 @@ namespace DownUnder.UI.Widgets.Behaviors
         [DataMember] public GenericDirections2D<ChangingValue<float>> BorderOccupy { get; private set; } = new GenericDirections2D<ChangingValue<float>>(new ChangingValue<float>(1f));
         [DataMember] public BorderSize Spacing { get; set; } = new BorderSize(5f);
 
-        public BorderFormat()
-        {
+        public BorderFormat() {
             _center = new WidgetTracker(this, _POSITION_KEY, _CENTER_VALUE);
             _top_border = new WidgetTracker(this, _POSITION_KEY, _TOP_VALUE);
             _bottom_border = new WidgetTracker(this, _POSITION_KEY, _BOTTOM_VALUE);
             _left_border = new WidgetTracker(this, _POSITION_KEY, _LEFT_VALUE);
             _right_border = new WidgetTracker(this, _POSITION_KEY, _RIGHT_VALUE);
+
+            _top_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _bottom_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _left_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _right_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
         }
 
         public override object Clone() {
@@ -110,39 +115,38 @@ namespace DownUnder.UI.Widgets.Behaviors
             BorderOccupy.Right.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
-        private void Align(object sender, EventArgs args)
-        {
+        private void Align(object sender, EventArgs args) {
+            if (_disable_align) return;
+            _disable_align = true;
+            
             BorderSize center_border = new BorderSize();
 
-            if (TopBorder != null)
-            {
+            if (TopBorder != null) {
                 center_border.Top = TopBorder.Height * BorderOccupy.Up.GetCurrent();
                 TopBorder.Position = new Point2();
                 TopBorder.Width = Parent.Width;
             }
 
-            if (BottomBorder != null)
-            {
+            if (BottomBorder != null) {
                 center_border.Bottom = BottomBorder.Height * BorderOccupy.Down.GetCurrent();
                 BottomBorder.Position = new Point2(0, Parent.Height - BottomBorder.Height);
                 BottomBorder.Width = Parent.Width;
             }
 
-            if (LeftBorder != null)
-            {
+            if (LeftBorder != null) {
                 center_border.Left = LeftBorder.Width * BorderOccupy.Left.GetCurrent();
                 LeftBorder.Position = new Point2(0, center_border.Top);
                 LeftBorder.Height = Parent.Height - center_border.Top - center_border.Bottom;
             }
 
-            if (RightBorder != null)
-            {
+            if (RightBorder != null) {
                 center_border.Right = RightBorder.Width * BorderOccupy.Right.GetCurrent();
                 RightBorder.Position = new Point2(Parent.Width - RightBorder.Width, center_border.Top);
                 RightBorder.Height = Parent.Height - center_border.Top - center_border.Bottom;
             }
 
             if (Center != null) Center.Area = Parent.Area.SizeOnly().ResizedBy(-center_border);
+            _disable_align = false;
         }
     }
 }
