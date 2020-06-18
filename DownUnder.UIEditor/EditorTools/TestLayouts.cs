@@ -35,12 +35,12 @@ namespace DownUnder.UIEditor
                 Area = new RectangleF(40, 40, 400, 300)
             };
 
-            //inner.Behaviors.Add(new BorderFormat(), out var border_format);
-            //border_format.TopBorder = new Widget();
-            //border_format.Center = new Widget();
-            //border_format.BottomBorder = new Widget();
-            //border_format.LeftBorder = new Widget();
-            //border_format.RightBorder = new Widget();
+            inner.Behaviors.Add(new BorderFormat(), out var border_format);
+            border_format.TopBorder = new Widget();
+            border_format.Center = new Widget();
+            border_format.BottomBorder = new Widget();
+            border_format.LeftBorder = new Widget();
+            border_format.RightBorder = new Widget();
             layout.Add(inner);
 
             inner.UserResizePolicy = Widget.UserResizePolicyType.allow;

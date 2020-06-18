@@ -86,10 +86,10 @@ namespace DownUnder.UI.Widgets.Behaviors
             _left_border = new WidgetTracker(this, _POSITION_KEY, _LEFT_VALUE);
             _right_border = new WidgetTracker(this, _POSITION_KEY, _RIGHT_VALUE);
 
-            //_top_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
-            //_bottom_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
-            //_left_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
-            //_right_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _top_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _bottom_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _left_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
+            _right_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
         }
 
         public override object Clone()

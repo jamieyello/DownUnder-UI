@@ -10,6 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         private readonly string _key;
         private readonly string _value;
         private readonly Dictionary<string, EventHandler> _persistent_events = new Dictionary<string, EventHandler>();
+        private readonly Dictionary<string, EventHandler<WidgetResizeEventArgs>> _persistent_resize_events = new Dictionary<string, EventHandler<WidgetResizeEventArgs>>();
         private readonly bool _use_tag;
         private Widget _widget;
 
@@ -67,12 +68,26 @@ namespace DownUnder.UI.Widgets.Behaviors
             _widget?.GetType().GetEvent(nameof_event).AddEventHandler(_widget, handler);
         }
 
+        public void AddPersistentEvent(string nameof_event, Action<object, WidgetResizeEventArgs> action)
+        {
+            if (_persistent_resize_events.TryGetValue(nameof_event, out EventHandler<WidgetResizeEventArgs> handler)) handler += new EventHandler<WidgetResizeEventArgs>(action);
+            else
+            {
+                handler = new EventHandler<WidgetResizeEventArgs>(action);
+                _persistent_resize_events.Add(nameof_event, handler);
+            }
+
+            _widget?.GetType().GetEvent(nameof_event).AddEventHandler(_widget, handler);
+        }
+
         private void AddAllPersistentEvents() {
             foreach (var handler in _persistent_events) _widget.GetType().GetEvent(handler.Key).AddEventHandler(_widget, handler.Value);
+            foreach (var handler in _persistent_resize_events) _widget.GetType().GetEvent(handler.Key).AddEventHandler(_widget, handler.Value);
         }
 
         private void RemoveAllPersistentEvents() {
             foreach (var handler in _persistent_events) _widget.GetType().GetEvent(handler.Key).RemoveEventHandler(_widget, handler.Value);
+            foreach (var handler in _persistent_resize_events) _widget.GetType().GetEvent(handler.Key).RemoveEventHandler(_widget, handler.Value);
         }
     }
 }
