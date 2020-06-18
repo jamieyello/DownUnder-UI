@@ -100,7 +100,7 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private bool _allow_highlight_backing = false;
-        Directions2D _allowed_resizing_directions_backing;
+        Directions2D _allowed_resizing_directions_backing = Directions2D.All;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
@@ -194,9 +194,17 @@ namespace DownUnder.UI.Widgets
                 RectangleF previous_area = area_backing;
                 area_backing = value.WithMinimumSize(MinimumSize);
                 if (area_backing == previous_area) return;
-                OnAreaChange?.Invoke(this, EventArgs.Empty);
-                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, EventArgs.Empty);
-                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, EventArgs.Empty);
+
+                var response = new ResizeEventArgsPriority(previous_area);
+                OnAreaChangePriority?.Invoke(this, response);
+                if (response.OverrideArea != null) {
+                    area_backing = response.OverrideArea.Value.WithMinimumSize(MinimumSize);
+                    if (area_backing == previous_area) return;
+                }
+
+                OnAreaChange?.Invoke(this, new WidgetResizeEventArgs(previous_area));
+                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new WidgetResizeEventArgs(previous_area));
+                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new WidgetResizeEventArgs(previous_area));
                 if (EmbedChildren && Children != null) {
                     foreach (var child in Children) child.EmbedIn(area_backing);
                 }
@@ -680,10 +688,10 @@ namespace DownUnder.UI.Widgets
                 Point2 amount = UpdateData.UIInputState.CursorPosition.WithOffset(_repositioning_origin.Inverted());
                 if (_resizing_direction == Directions2D.UDLR) new_area = new_area.WithOffset(amount);
                 else {
-                    if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R);
-                    if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D);
-                    if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U);
-                    if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L);
+                    if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R, MinimumSize);
+                    if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D, MinimumSize);
+                    if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U, MinimumSize);
+                    if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L, MinimumSize);
                 }
                 RectangleF new_area2 = new_area;
                 //if (ParentWidget != null) new_area2 = 
@@ -954,11 +962,13 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
         public event EventHandler OnDrop;
         /// <summary> Invoked when this <see cref="Widget"/>'s size changes. </summary>
-        public event EventHandler OnResize;
+        public event EventHandler<WidgetResizeEventArgs> OnResize;
         /// <summary> Invoked when this <see cref="Widget"/>'s position changes. </summary>
-        public event EventHandler OnResposition;
+        public event EventHandler<WidgetResizeEventArgs> OnResposition;
         /// <summary> Invoked when this <see cref="Widget"/>'s area changes. </summary>
-        public event EventHandler OnAreaChange;
+        public event EventHandler<WidgetResizeEventArgs> OnAreaChange;
+        /// <summary> Invoked when this <see cref="Widget"/>'s area changes. Invoked before <see cref="OnAreaChange"/>, allows overriding the set area. </summary>
+        public event EventHandler<ResizeEventArgsPriority> OnAreaChangePriority;
         /// <summary> Invoked when a <see cref="Widget"/> is added to this one. (See added <see cref="Widget"/> in <see cref="LastAddedWidget"/>.) </summary>
         public event EventHandler OnAddChild;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
@@ -981,6 +991,13 @@ namespace DownUnder.UI.Widgets
             return this;
         }
 
+        public Widget WithAddedBehavior<T>(T behavior, out T added_behavior) {
+            if (!(behavior is WidgetBehavior behavior_)) throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
+            Behaviors.Add(behavior_);
+            added_behavior = behavior;
+            return this;
+        }
+
         public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors) {
             Behaviors.AddRange(behaviors);
             return this;
@@ -988,6 +1005,13 @@ namespace DownUnder.UI.Widgets
 
         public Widget WithAddedAction(WidgetAction action) {
             Actions.Add(action);
+            return this;
+        }
+
+        public Widget WithAddedAction<T>(T action, out T added_action) {
+            if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a {nameof(WidgetAction)}.");
+            Actions.Add(action_);
+            added_action = action;
             return this;
         }
 

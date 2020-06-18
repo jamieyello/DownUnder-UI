@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
@@ -385,9 +386,10 @@ namespace DownUnder
             return !(NonIntegralTypes.Contains(type) || NonIntegralTypes.Contains(Nullable.GetUnderlyingType(type)));
         }
 
-        public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
-        {
-            return source ?? Enumerable.Empty<T>();
+        public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
+        
+        public static BorderSize Difference(this RectangleF r1, RectangleF r2) {
+            return new BorderSize(r1.Y - r2.Y, r1.Bottom - r2.Bottom, r1.X - r2.X, r1.Right - r2.Right);
         }
     }
 }

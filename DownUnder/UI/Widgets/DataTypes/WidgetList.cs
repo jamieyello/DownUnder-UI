@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -61,13 +62,64 @@ namespace DownUnder.UI.Widgets.DataTypes
             for (int i = 0; i < new_areas.Count; i++) _widgets[i].Area = new_areas[i];
         }
 
-        public Point2 MaxSize {
+        /// <summary> Returns the <see cref="Point2.Max"/> result of all <see cref="Widget"/>'s sizes. </summary>
+        public Point2 SizeMax {
             get {
                 Point2 max_size = new Point2();
                 foreach (Widget widget in _widgets) max_size = max_size.Max(widget.Size);
                 return max_size;
             }
         }
+
+        /// <summary> Returns the <see cref="Point2.Min"/> result of all <see cref="Widget"/>'s sizes. </summary>
+        public Point2 SizeMin {
+            get {
+                if (_widgets.Count == 0) return new Point2();
+                Point2 min_size = _widgets[0].Size;
+                for (int i = 1; i < _widgets.Count; i++) min_size = min_size.Min(_widgets[i].Size);
+                return min_size;
+            }
+        }
+
+        /// <summary> Get the maximum allowed <see cref="Widget.MinimumSize"/> for this group of <see cref="Widget"/>s. </summary>
+        public Point2 MinimumWidgetSize
+        {
+            get {
+                Point2 min_size = new Point2();
+                for (int i = 0; i < _widgets.Count; i++) min_size = min_size.Max(_widgets[i].MinimumSize);
+                return min_size;
+            }
+        }
+
+        /// <summary> Get the maximum allowed <see cref="Widget.MinimumWidth"/> for this group of <see cref="Widget"/>s. </summary>
+        public float MinimumWidgetWidth {
+            get {
+                float min_width = 0f;
+                for (int i = 0; i < _widgets.Count; i++) min_width = Math.Max(min_width, _widgets[i].MinimumWidth);
+                return min_width;
+            }
+        }
+
+        /// <summary> Get the maximum allowed <see cref="Widget.MinimumHeight"/> for this group of <see cref="Widget"/>s. </summary>
+        public float MinimumWidgetHeight {
+            get {
+                float min_height = 0f;
+                for (int i = 0; i < _widgets.Count; i++) min_height = Math.Max(min_height, _widgets[i].MinimumHeight);
+                return min_height;
+            }
+        }
+
+        // Widget doesn't implement max size yet
+        //public Point2 MaximumWidgetSize
+        //{
+        //    get
+        //    {
+        //        if (_widgets.Count == 0) return new Point2();
+        //        Point2 min_size = _widgets[0].M;
+        //        for (int i = 1; i < _widgets.Count; i++) min_size = min_size.Max(_widgets[i].MinimumSize);
+        //        return max_size;
+        //    }
+        //}
 
         public RectangleF? AreaCoverage {
             get {
@@ -99,16 +151,28 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public void ExpandAll(float modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.ResizedBy(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.SizeMultipliedBy(modifier);
         }
 
         public void ExpandAll(Point2 modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.ResizedBy(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.SizeMultipliedBy(modifier);
         }
+
+        public void ResizeBy(BorderSize border_size, bool uniform_minimum_size = false) {
+            if (uniform_minimum_size) {
+                for (int i = 0; i < _widgets.Count; i++) _widgets[i].Area = _widgets[i].Area.ResizedBy(border_size, MinimumWidgetSize);
+            }
+            else {
+                for (int i = 0; i < _widgets.Count; i++) _widgets[i].Area = _widgets[i].Area.ResizedBy(border_size);
+            }
+        }
+
+        public void ResizeBy(float amount, Directions2D directions, bool uniform_minimum_size = false) =>
+            ResizeBy(new BorderSize(amount, directions), uniform_minimum_size);
 
         /// <summary> Set all the widget's width values to match each other. </summary>
         public void AutoSizeWidth() {
-            float new_width = MaxSize.X;
+            float new_width = SizeMax.X;
             
             foreach (Widget widget in _widgets) {
                 if (widget.IsFixedWidth) {
@@ -122,7 +186,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         /// <summary> Set all the widget's height values to match each other. </summary>
         public void AutoSizeHeight() {
-            float new_height = MaxSize.Y;
+            float new_height = SizeMax.Y;
 
             foreach (Widget widget in _widgets) {
                 if (widget.IsFixedHeight) {

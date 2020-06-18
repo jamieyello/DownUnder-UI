@@ -121,6 +121,7 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\SpacedListFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
+    <Compile Include="UI\Widgets\CustomEventArgs\WidgetResizeEventArgsPriority.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DragableOutlineAnimation.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DragAndDropSource.cs" />
+    <Compile Include="UI\Widgets\CustomEventArgs\WidgetResizeEventArgs.cs" />
     <Compile Include="UI\Widgets\OldStuff\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\ShadingBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\Static Accessors\DebugBehaviorLibraryAccessor.cs" />

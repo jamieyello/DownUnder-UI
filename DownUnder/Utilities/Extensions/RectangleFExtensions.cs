@@ -62,45 +62,36 @@ namespace DownUnder {
             return Math.Sqrt(dx * dx + dy * dy);
         }
 
-        /// <summary> Returns a new <see cref="RectangleF"/> that's been resized by X pixels. (On all sides) </summary>
-        public static RectangleF ResizedBy(this RectangleF r, float x, float y) {
-            RectangleF result = r;
-            result.X -= x;
-            result.Y -= y;
-            result.Width += x * 2;
-            result.Height += y * 2;
-            return result;
-        }
+        public static RectangleF ResizedBy(this RectangleF r, BorderSize bs, Point2? minimum_size = null) {
+            if (minimum_size != null) {
+                if (bs.Top < minimum_size.Value.Y - r.Height) bs.Top = minimum_size.Value.Y - r.Height;
+                if (bs.Left < minimum_size.Value.X - r.Width) bs.Left = minimum_size.Value.X - r.Width;
 
-        public static RectangleF ResizedBy(this RectangleF r, BorderSize bs) =>
-            new RectangleF(
+                return new RectangleF(
+                    r.X - bs.Left,
+                    r.Y - bs.Top,
+                    r.Width + bs.Left + bs.Right,
+                    r.Height + bs.Top + bs.Bottom
+                    ).WithMinimumSize(minimum_size.Value);
+            }
+
+            return new RectangleF(
                 r.X - bs.Left,
                 r.Y - bs.Top,
                 r.Width + bs.Left + bs.Right,
                 r.Height + bs.Top + bs.Bottom
                 );
-        
-        public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions) {
-            RectangleF result = r;
-            if (directions & Directions2D.R) result.Width += amount;
-            if (directions & Directions2D.D) result.Height += amount;
-            if (directions & Directions2D.U) {
-                result.Y -= amount;
-                result.Height += amount;
-            }
-            if (directions & Directions2D.L) {
-                result.X -= amount;
-                result.Width += amount;
-            }
-
-            return result;
         }
 
-        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF ResizedBy(this RectangleF r, Point2 modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        
+        public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions, Point2? minimum_size = null) =>
+            r.ResizedBy(new BorderSize(amount, directions), minimum_size);
         
         /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF ResizedBy(this RectangleF r, float modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        public static RectangleF SizeMultipliedBy(this RectangleF r, Point2 modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        
+        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
+        public static RectangleF SizeMultipliedBy(this RectangleF r, float modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
         
         /// <summary> Returns a new RectangleF without the position values. </summary>
         public static RectangleF SizeOnly(this RectangleF r) => new RectangleF(new Point2(), r.Size);

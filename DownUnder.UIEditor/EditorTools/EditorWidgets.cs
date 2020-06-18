@@ -9,12 +9,12 @@ namespace DownUnder.UIEditor.EditorTools
     {
         public static Widget UIEditor()
         {
-            Widget bordered_container = new Widget();
-            bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
+            //Widget bordered_container = new Widget();
+            //bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
-            border_format.Center = layout;
-            border_format.TopBorder = new Widget();
-            border_format.TopBorder.Height = 50;
+            //border_format.Center = layout;
+            //border_format.TopBorder = new Widget();
+            //border_format.TopBorder.Height = 50;
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -41,8 +41,10 @@ namespace DownUnder.UIEditor.EditorTools
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());
             side_grid[0, 0].Add((Widget)button.Clone());
+            side_grid[0, 0].UserResizePolicy = Widget.UserResizePolicyType.allow;
+            side_grid[0, 0].AllowedResizingDirections = Directions2D.D;
 
-            return bordered_container;
+            return layout;
         }
 
         private static Widget Project()

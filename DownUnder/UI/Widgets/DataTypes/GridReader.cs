@@ -23,7 +23,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
         
         public static Point IndexOf(int width, int index) => 
-            new Point(index % width, (index / width) * width);
+            new Point(index % width, index / width);
 
         /// <summary> The total height/width of contained widgets that won't resize. </summary>
         public static Point2 FixedContentSizeTotal(WidgetList widgets, int width, int height) {
