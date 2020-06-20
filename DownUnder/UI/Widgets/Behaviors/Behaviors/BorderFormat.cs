@@ -131,7 +131,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             BorderOccupy.Right.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
-        private void Align(object sender, WidgetResizeEventArgs args)
+        private void Align(object sender, RectangleFSetArgs args)
         {
             _Align();
         }

@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -62,6 +63,18 @@ namespace DownUnder.UI.Widgets.Behaviors {
             bool result = tags.Remove(key);
             if (tags.Count == 0) widget.BehaviorTags.Remove(GetType());
             return result;
+        }
+
+        public virtual Widget EditorWidgetRepresentation()
+        {
+            return new Widget()
+            {
+                Size = new Point2(100, 100)
+            }.WithAddedBehavior(new DrawText() 
+            { 
+                Text = GetType().Name,
+                TextPositioning = DrawText.TextPositioningPolicy.center
+            });
         }
     }
 }

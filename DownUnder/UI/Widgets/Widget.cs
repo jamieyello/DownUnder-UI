@@ -91,7 +91,7 @@ namespace DownUnder.UI.Widgets
         // Various property backing fields.
         private RectangleF area_backing = new RectangleF();
         private float _double_click_timing_backing = 0.5f;
-        private Point2 _minimum_area_backing = new Point2(15f, 15f);
+        private Point2 _minimum_size_backing = new Point2(15f, 15f);
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
@@ -195,16 +195,16 @@ namespace DownUnder.UI.Widgets
                 area_backing = value.WithMinimumSize(MinimumSize);
                 if (area_backing == previous_area) return;
 
-                var response = new ResizeEventArgsPriority(previous_area);
+                var response = new RectangleFSetOverrideArgs(previous_area);
                 OnAreaChangePriority?.Invoke(this, response);
-                if (response.OverrideArea != null) {
-                    area_backing = response.OverrideArea.Value.WithMinimumSize(MinimumSize);
+                if (response.Override != null) {
+                    area_backing = response.Override.Value.WithMinimumSize(MinimumSize);
                     if (area_backing == previous_area) return;
                 }
 
-                OnAreaChange?.Invoke(this, new WidgetResizeEventArgs(previous_area));
-                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new WidgetResizeEventArgs(previous_area));
-                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new WidgetResizeEventArgs(previous_area));
+                OnAreaChange?.Invoke(this, new RectangleFSetArgs(previous_area));
+                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
+                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
                 if (EmbedChildren && Children != null) {
                     foreach (var child in Children) child.EmbedIn(area_backing);
                 }
@@ -213,12 +213,21 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         [DataMember] public Point2 MinimumSize {
-            get => _minimum_area_backing;
+            get => _minimum_size_backing;
             set {
                 if (value.X < 1) throw new Exception("Minimum area width must be at least 1.");
                 if (value.Y < 1) throw new Exception("Minimum area height must be at least 1.");
-                _minimum_area_backing = value;
+                if (value == _minimum_size_backing) return;
+                Point2 _previous_minimum_size = _minimum_size_backing;
+                _minimum_size_backing = value;
+
+                Point2SetOverrideArgs args = new Point2SetOverrideArgs(_previous_minimum_size);
+                OnMinimumSizeSetPriority?.Invoke(this, args);
+                if (args.Override != null) _minimum_size_backing = args.Override.Value;
+
+                if (_minimum_size_backing == _previous_minimum_size) return;
                 if (Area.WithMinimumSize(value) != Area) Area = Area.WithMinimumSize(value);
+                if (_minimum_size_backing != _previous_minimum_size) OnMinimumSizeSet?.Invoke(this, new Point2SetArgs(_previous_minimum_size));
             }
         }
 
@@ -962,13 +971,13 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when the user releases the primary cursor button while "dragging and dropping". </summary>
         public event EventHandler OnDrop;
         /// <summary> Invoked when this <see cref="Widget"/>'s size changes. </summary>
-        public event EventHandler<WidgetResizeEventArgs> OnResize;
+        public event EventHandler<RectangleFSetArgs> OnResize;
         /// <summary> Invoked when this <see cref="Widget"/>'s position changes. </summary>
-        public event EventHandler<WidgetResizeEventArgs> OnResposition;
+        public event EventHandler<RectangleFSetArgs> OnResposition;
         /// <summary> Invoked when this <see cref="Widget"/>'s area changes. </summary>
-        public event EventHandler<WidgetResizeEventArgs> OnAreaChange;
+        public event EventHandler<RectangleFSetArgs> OnAreaChange;
         /// <summary> Invoked when this <see cref="Widget"/>'s area changes. Invoked before <see cref="OnAreaChange"/>, allows overriding the set area. </summary>
-        public event EventHandler<ResizeEventArgsPriority> OnAreaChangePriority;
+        public event EventHandler<RectangleFSetOverrideArgs> OnAreaChangePriority;
         /// <summary> Invoked when a <see cref="Widget"/> is added to this one. (See added <see cref="Widget"/> in <see cref="LastAddedWidget"/>.) </summary>
         public event EventHandler OnAddChild;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
@@ -977,6 +986,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnListChange;
         /// <summary> Invoked when this <see cref="Widget"/> is disposed. </summary>
         public event EventHandler OnDispose;
+        public event EventHandler<Point2SetArgs> OnMinimumSizeSet;
+        public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
 
         #endregion
 
@@ -1054,9 +1065,6 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
         private void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
-
-        /// <summary> Called by a child <see cref="Widget"/> to signal that it's area has changed. </summary>
-        //internal void SignalChildAreaChanged() => ParentWidget?.SignalChildAreaChanged();
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         private void UpdateRenderTargetSizes() {

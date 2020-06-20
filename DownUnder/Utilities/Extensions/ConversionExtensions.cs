@@ -9,6 +9,9 @@ namespace DownUnder
         public static Point ToPoint(this Point2 p) =>
             new Point((int)p.X, (int)p.Y);
 
+        public static Point2 ToPoint2(this Vector2 v) =>
+            new Point2(v.X, v.Y);
+        
         public static Vector2 ToVector2(this Point2 p) => 
             new Vector2(p.X, p.Y);
         

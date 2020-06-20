@@ -2,9 +2,10 @@
 
 namespace DownUnder.UIEditor
 {
-    class EditorObjects
+    public class EditorObjects
     {
         public Widget project;
-        public Widget property_grid;
+        public Widget property_grid_container;
+        public Widget behaviors_list;
     }
 }

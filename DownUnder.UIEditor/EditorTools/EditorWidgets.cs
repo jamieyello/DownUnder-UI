@@ -7,7 +7,7 @@ namespace DownUnder.UIEditor.EditorTools
 {
     public static class EditorWidgets
     {
-        public static Widget UIEditor()
+        public static Widget UIEditor(out EditorObjects editor_objects)
         {
             Widget bordered_container = new Widget();
             bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
@@ -18,7 +18,8 @@ namespace DownUnder.UIEditor.EditorTools
 
             // Project
             layout[0, 0].EmbedChildren = false;
-            layout[0, 0].Add(Project());
+            Widget project = Project();
+            layout[0, 0].Add(project);
 
             // Left grid
             Widget side_grid = new Widget().WithAddedBehavior(new GridFormat(1, 2));
@@ -29,20 +30,33 @@ namespace DownUnder.UIEditor.EditorTools
             // Property grid
             side_grid[0, 1] = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
 
-            // Spacing grid
-            side_grid[0, 0] = new Widget().WithAddedBehavior(new SpacedListFormat());
+            //Spacing grid
+            Widget behaviors_container = new Widget();
+            side_grid[0, 0] = behaviors_container;
+            behaviors_container.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            behaviors_container.AllowedResizingDirections = Directions2D.D;
+            behaviors_container.Behaviors.Add(new BorderFormat(), out var behaviors_border);
+            behaviors_border.TopBorder = new Widget().WithAddedBehavior(new DrawText() { Text = "Behaviors" });
 
-            Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
-            button.Size = new Point2(100, 100);
+            Widget behaviors_list = new Widget().WithAddedBehavior(new SpacedListFormat());
+            behaviors_border.Center = behaviors_list;
 
-            side_grid[0, 0].Add(((Widget)button.Clone()).WithAddedBehavior(new DragAndDropSource() { DragObject = new Widget() { Size = new Point2(50, 50) } }));
-            side_grid[0, 0].Add((Widget)button.Clone());
-            side_grid[0, 0].Add((Widget)button.Clone());
-            side_grid[0, 0].Add((Widget)button.Clone());
-            side_grid[0, 0].Add((Widget)button.Clone());
-            side_grid[0, 0].Add((Widget)button.Clone());
-            side_grid[0, 0].UserResizePolicy = Widget.UserResizePolicyType.allow;
-            side_grid[0, 0].AllowedResizingDirections = Directions2D.D;
+            behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
+
+            //Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
+            //button.Size = new Point2(100, 100);
+
+            //behaviors_list.Add(((Widget)button.Clone()).WithAddedBehavior(new DragAndDropSource() { DragObject = new Widget() { Size = new Point2(50, 50) } }));
+            //behaviors_list.Add((Widget)button.Clone());
+            //behaviors_list.Add((Widget)button.Clone());
+            //behaviors_list.Add((Widget)button.Clone());
+            //behaviors_list.Add((Widget)button.Clone());
+            //behaviors_list.Add((Widget)button.Clone());
+
+            editor_objects = new EditorObjects();
+            editor_objects.project = project;
+            editor_objects.property_grid_container = side_grid[0, 1];
+            editor_objects.behaviors_list = behaviors_list;
 
             return bordered_container;
         }

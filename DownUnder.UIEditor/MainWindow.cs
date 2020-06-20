@@ -56,7 +56,7 @@ namespace DownUnder.Widgets
             //MainWidget = TestLayouts.ContainerTest();
             //MainWidget = TestLayouts.InnerGirdResizeTest();
 
-            MainWidget = EditorWidgets.UIEditor();
+            MainWidget = EditorWidgets.UIEditor(out var editor_objects);
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
