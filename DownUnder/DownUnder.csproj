@@ -52,7 +52,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -116,6 +116,7 @@
     <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\BorderFormat.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />

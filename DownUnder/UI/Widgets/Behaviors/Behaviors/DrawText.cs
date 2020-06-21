@@ -28,6 +28,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 //AlignText(this, EventArgs.Empty);
             }
         }
+
         public Point2 TextPosition { get => _text_position_backing; 
             set
             {
@@ -36,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 //SetMinimumSize(this, EventArgs.Empty);
             }
         }
+
         public TextPositioningPolicy TextPositioning
         {
             get => _text_positioning_backing;

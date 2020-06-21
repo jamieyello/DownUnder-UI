@@ -43,6 +43,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
 
+
             //Widget button = new Widget().WithAddedBehavior(new DragableOutlineAnimation());
             //button.Size = new Point2(100, 100);
 
