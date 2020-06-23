@@ -742,7 +742,7 @@ namespace DownUnder.UI.Widgets
             ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
-            foreach (Widget widget in Children) widget.UpdateGroupEvents(game_time);
+            foreach (Widget widget in new WidgetList(Children)) widget.UpdateGroupEvents(game_time);
         }
 
         private void UpdateGroupPost(out bool deleted) {

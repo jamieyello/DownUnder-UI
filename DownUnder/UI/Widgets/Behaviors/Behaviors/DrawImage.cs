@@ -41,7 +41,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
         private void Draw(object sender, EventArgs args)
         {
 
-            //Parent.SpriteBatch.Draw(Texture, Position, DestinationRectangle, SourceRectangle, Origin, Rotation, Scale, Color, SpriteEffects,);
+            //Parent.SpriteBatch.Draw(Texture,);
         }
     }
 }
