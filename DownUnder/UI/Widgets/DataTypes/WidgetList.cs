@@ -1,4 +1,6 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Actions;
+using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -29,7 +31,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             Count = _widgets.Count;
         }
 
-        public void AlignHorizontalWrap(float width, float spacing)
+        public List<RectangleF> GetHorizontalWrapAreas(float width, float spacing)
         {
             // Read the areas of the widgets just once (areas)
             List<RectangleF> areas = new List<RectangleF>();
@@ -47,9 +49,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
             float x_spacing = (width - max_width * widgets_per_line) / (widgets_per_line + 1);
 
-            //Console.WriteLine(widgets_per_line);
-
-            for (int i = 0; i < _widgets.Count; i++) 
+            for (int i = 0; i < _widgets.Count; i++)
             {
                 int x = (i % widgets_per_line);
                 new_areas[i] = new RectangleF(
@@ -59,7 +59,21 @@ namespace DownUnder.UI.Widgets.DataTypes
                     areas[i].Height);
             }
 
-            for (int i = 0; i < new_areas.Count; i++) _widgets[i].Area = new_areas[i];
+            return new_areas;
+        }
+
+        public void SetAreas(List<RectangleF> areas, InterpolationSettings? interpolation = null)
+        {
+            if (interpolation == null) {
+                for (int i = 0; i < areas.Count; i++) _widgets[i].Area = areas[i];
+            }
+            else {
+                for (int i = 0; i < areas.Count; i++) _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation) 
+                { 
+                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.override_ 
+                    , DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
+                });
+            }
         }
 
         /// <summary> Returns the <see cref="Point2.Max"/> result of all <see cref="Widget"/>'s sizes. </summary>

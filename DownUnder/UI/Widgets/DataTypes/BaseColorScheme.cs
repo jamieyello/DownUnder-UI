@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets.DataTypes {
         public BaseColorScheme()=> SetDefaults();
         
         private void SetDefaults() {
-            foreach (PaletteCategory category in Enum.GetValues(typeof(PaletteCategory))) {
+            foreach (PaletteCategory _ in Enum.GetValues(typeof(PaletteCategory))) {
                 BackGroundColors.Add(new ElementColors(Color.LimeGreen));
                 TextColors.Add(new ElementColors());
                 OutlineColors.Add(new ElementColors());
@@ -182,17 +182,17 @@ namespace DownUnder.UI.Widgets.DataTypes {
 
                 // header_widget theme
                 e = r.GetOutline(PaletteCategory.header_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.2f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
+                e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
                 e = r.GetBackground(PaletteCategory.header_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.07f);
+                e.DefaultColor = Color.Black.ShiftBrightness(1.3f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
                 e = r.GetText(PaletteCategory.header_widget);
-                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
+                e.DefaultColor = Color.Black;
                 e.SpecialColor = Color.White;
-                e.HoveredColor = Color.White;
+                e.HoveredColor = Color.White.ShiftBrightness(0.75f);
 
                 r.OuterScrollBar.DefaultColor = new Color(0, 0, 0, 0);
                 r.OuterScrollBar.SpecialColor = new Color(0, 0, 0, 0);

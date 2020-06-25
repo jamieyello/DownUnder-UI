@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         [DataMember] public float ListSpacing { get; set; } = 25f;
 
-        [DataMember] public InterpolationSettings? WidgetMovement { get; set; } = InterpolationSettings.Fast;
+        [DataMember] public InterpolationSettings? Interpolation { get; set; } = InterpolationSettings.Faster;
 
         public override object Clone()
         {
@@ -31,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void Align(object sender, EventArgs args)
         {
-            Parent.Children.AlignHorizontalWrap(Parent.Width, ListSpacing);
+            Parent.Children.SetAreas(Parent.Children.GetHorizontalWrapAreas(Parent.Width, ListSpacing), Interpolation);
         }
     }
 }

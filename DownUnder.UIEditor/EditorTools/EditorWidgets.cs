@@ -9,15 +9,19 @@ namespace DownUnder.UIEditor.EditorTools
     {
         public static Widget UIEditor(out EditorObjects editor_objects)
         {
-            Widget bordered_container = new Widget();
+            Widget bordered_container = new Widget() { Size = new Point2(60, 60) };
             bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
             border_format.Center = layout;
             border_format.TopBorder = new Widget();
             border_format.TopBorder.Height = 30;
+            border_format.TopBorder.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
+            border_format.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
 
             // Project
             layout[0, 0].EmbedChildren = false;
+            layout[0, 0].ChangeColorOnMouseOver = false;
+
             Widget project = Project();
             layout[0, 0].Add(project);
 
@@ -28,43 +32,67 @@ namespace DownUnder.UIEditor.EditorTools
             side_grid.AllowedResizingDirections = Directions2D.L;
 
             // Property grid
-            side_grid[0, 2] = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
+            Widget property_grid_container = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
+            property_grid_container.Behaviors.Add(ShadingBehavior.DeepBlue);
+            side_grid[0, 2] = property_grid_container;
 
-            //Spacing grid
+            // Behaviors dock
             Widget behaviors_container = new Widget();
             side_grid[0, 0] = behaviors_container;
             behaviors_container.UserResizePolicy = Widget.UserResizePolicyType.allow;
             behaviors_container.AllowedResizingDirections = Directions2D.D;
             behaviors_container.Behaviors.Add(new BorderFormat(), out var behaviors_border);
+
             behaviors_border.TopBorder = new Widget().WithAddedBehavior(new DrawText() { Text = "Behaviors" });
+            behaviors_border.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
+            behaviors_border.TopBorder.Behaviors.Add(new ShadingBehavior()
+            {
+                UseWidgetOutlineColor = true
+                , ShadeVisibility = 1f
+            }); ;
 
             Widget behaviors_list = new Widget().WithAddedBehavior(new SpacedListFormat());
             behaviors_border.Center = behaviors_list;
+            behaviors_list.ChangeColorOnMouseOver = false;
 
             behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
 
-            // Widgets
+            // Widgets dock
             Widget widgets_container = new Widget();
             widgets_container.UserResizePolicy = Widget.UserResizePolicyType.allow;
             widgets_container.AllowedResizingDirections = Directions2D.D;
             BorderFormat widgets_border = new BorderFormat();
             widgets_container.Behaviors.Add(widgets_border);
+            
             widgets_border.TopBorder = new Widget();
             widgets_border.TopBorder.Behaviors.Add(new DrawText() { Text = "Widgets" });
+            widgets_border.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
+            widgets_border.TopBorder.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
+
             Widget spaced_list = new Widget();
+            spaced_list.ChangeColorOnMouseOver = false;
             widgets_border.Center = spaced_list;
             SpacedListFormat widgets_list_format = new SpacedListFormat();
             spaced_list.Behaviors.Add(widgets_list_format);
 
             Widget add_widget_button = new Widget() {
                 Size = new Point2(100, 100)
+                , DrawOutline = false
             };
+            add_widget_button.Behaviors.Add(new ShadingBehavior() 
+            { 
+                UseWidgetOutlineColor = true 
+                , BorderWidth = 10f
+                , BorderVisibility = 0f
+            });
             add_widget_button.Behaviors.Add(new DrawText() {
-                Text = "New Widget", 
+                Text = "+ New Widget", 
                 TextPositioning = DrawText.TextPositioningPolicy.center
             });
             add_widget_button.OnClick += (obj, args) => {
-                spaced_list.Insert(0, new Widget() { Size = new Point2(100, 100) });
+                Widget dock_widget = DockWidget();
+                dock_widget.Position = spaced_list[spaced_list.Count - 1].Position;
+                spaced_list.Insert(spaced_list.Count - 1, dock_widget);
             };
 
             widgets_border.Center.Add(add_widget_button);
@@ -72,10 +100,24 @@ namespace DownUnder.UIEditor.EditorTools
 
             editor_objects = new EditorObjects();
             editor_objects.project = project;
-            editor_objects.property_grid_container = side_grid[0, 1];
+            editor_objects.property_grid_container = property_grid_container;
             editor_objects.behaviors_list = behaviors_list;
 
             return bordered_container;
+        }
+
+        private static Widget DockWidget()
+        {
+            Widget widget = new Widget() { Size = new Point2(100, 100) };
+
+            Widget represented_widget = new Widget();
+            widget.Behaviors.Add(new DragAndDropSource() { DragObject = represented_widget });
+            widget.Behaviors.Add(new DragableOutlineAnimation());
+
+            widget.Behaviors.Add(new DrawText() { Text = represented_widget.Name, TextPositioning = DrawText.TextPositioningPolicy.center }, out var draw_text);
+            represented_widget.OnRename += (sender, args) => { draw_text.Text = represented_widget.Name; };
+
+            return widget;
         }
 
         private static Widget Project()

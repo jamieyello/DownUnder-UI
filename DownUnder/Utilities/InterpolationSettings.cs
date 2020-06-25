@@ -16,5 +16,6 @@ namespace DownUnder.Utilities
 
         public static InterpolationSettings Default => new InterpolationSettings(InterpolationType.fake_sin, 1f);
         public static InterpolationSettings Fast => new InterpolationSettings(InterpolationType.fake_sin, 2.5f);
+        public static InterpolationSettings Faster => new InterpolationSettings(InterpolationType.fake_sin, 5f);
     }
 }

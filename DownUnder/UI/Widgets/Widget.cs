@@ -89,6 +89,7 @@ namespace DownUnder.UI.Widgets
         private bool _update_drop;
 
         // Various property backing fields.
+        private string _name_backing = "";
         private RectangleF area_backing = new RectangleF();
         private float _double_click_timing_backing = 0.5f;
         private Point2 _minimum_size_backing = new Point2(15f, 15f);
@@ -132,8 +133,6 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         [DataMember] public WidgetList Children { get; private set; } = new WidgetList();
-        /// <summary> The name of this <see cref="Widget"/>. </summary>
-        [DataMember] public string Name { get; set; }
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
         /// <summary> If set to false, the background color will not be drawn. </summary>
@@ -175,6 +174,18 @@ namespace DownUnder.UI.Widgets
         #endregion
 
         #region Non-auto properties
+
+        /// <summary> The name of this <see cref="Widget"/>. </summary>
+        [DataMember] public string Name 
+        { 
+            get => _name_backing;
+            set
+            {
+                if (_name_backing == value) return;
+                _name_backing = value;
+                OnRename?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary> Minimum time (in seconds) in-between two clicks needed for a double. </summary>
         [DataMember] public float DoubleClickTiming {
@@ -930,6 +941,8 @@ namespace DownUnder.UI.Widgets
 
         #region EventsHandlers
 
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Name"/> changes. </summary>
+        public event EventHandler OnRename;
         /// <summary> Invoked when this <see cref="Widget"/> is clicked on. </summary>
         public event EventHandler OnClick;
         /// <summary> Invoked when this <see cref="Widget"/> is double clicked. </summary>

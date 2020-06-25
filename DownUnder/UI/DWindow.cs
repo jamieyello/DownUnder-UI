@@ -44,6 +44,7 @@ namespace DownUnder.UI
 
         #region Properties
         #region Auto Properties
+
         /// <summary> A reference to each of this window's children. </summary>
         public List<DWindow> Children { get; } = new List<DWindow>();
         /// <summary> The window that owns this window. </summary>
@@ -79,7 +80,7 @@ namespace DownUnder.UI
         public SpriteFont SpriteFont { get; protected set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
-
+        
         #endregion
 
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
