@@ -341,13 +341,13 @@ namespace DownUnder.UI.Widgets
         internal Point2 PositionInRender {
             get {
                 if (DrawingMode == DrawingModeType.use_render_target) return Scroll;
-                if (ParentWidget == null || ParentWidget.DrawingMode == DrawingModeType.use_render_target) return Position.WithOffset(Scroll);
+                if (ParentWidget == null || DrawingMode == DrawingModeType.use_render_target) return Position.WithOffset(Scroll);
                 return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(Scroll);
             }
         }
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target ? Area.SizeOnly() : Area.WithPosition(PositionInRender);
+        public RectangleF DrawingArea => Area.WithPosition(PositionInRender);
         /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
         public RectangleF DrawingAreaUnscrolled => DrawingArea.WithOffset(Scroll.Inverted());
 
@@ -355,7 +355,7 @@ namespace DownUnder.UI.Widgets
         //public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
         public RectangleF VisibleArea {
             get {
-                List<Widget> tree = Parents;
+                WidgetList tree = Parents;
                 tree.Insert(0, this);
                 RectangleF result = Area;
 
@@ -371,34 +371,30 @@ namespace DownUnder.UI.Widgets
 
         public RectangleF VisibleDrawingArea {
             get {
+                //return PositionInRender.AsRectanglePosition(Size);
                 List<Widget> tree = RenderParents;
                 tree.Insert(0, this);
                 RectangleF result = tree[0].Area;
 
                 // start at the parent, go up the tree
                 for (int i = 1; i < tree.Count; i++) {
-                    if (tree[i].DrawingMode != DrawingModeType.use_render_target)
-                    {
+                    if (tree[i].DrawingMode != DrawingModeType.use_render_target) {
                         result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
                         result = result.Intersection(tree[i].Area);
                     }
-                    else
-                    {
-
+                    else {
+                        result.Position = result.Position.WithOffset(tree[i].Scroll);
                     }
-                    
                 }
 
-                // this fixes the inner stuff
-                //if (DrawingMode == DrawingModeType.use_render_target) return result.SizeOnly();
                 return result;
             }
         }
 
         /// <summary> Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
-        public List<Widget> Parents {
+        public WidgetList Parents {
             get {
-                List<Widget> parents = new List<Widget>();
+                WidgetList parents = new WidgetList();
                 Widget parent = ParentWidget;
                 while (parent != null) {
                     parents.Add(parent);
@@ -409,9 +405,9 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Returns a parent tree up to the first render target with this <see cref="Parent"/> being first. </summary>
-        private List<Widget> RenderParents {
+        private WidgetList RenderParents {
             get {
-                List<Widget> parents = new List<Widget>();
+                WidgetList parents = new WidgetList();
                 Widget parent = ParentWidget;
                 while (parent != null) {
                     parents.Add(parent);

@@ -2,6 +2,7 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
 
 namespace DownUnder.UIEditor
 {
@@ -68,6 +69,44 @@ namespace DownUnder.UIEditor
             grid[1, 1].UserResizePolicy = Widget.UserResizePolicyType.allow;
 
             layout.Add(second);
+
+            return layout;
+        }
+
+        public static Widget RenderScrollDebug()
+        {
+            Widget layout = new Widget();
+
+            Widget inner = new Widget()
+            {
+                Area = new RectangleF(10, 10, 400, 300)
+            };
+
+            inner.Add(new Widget() { Position = new Point2(50,50) });
+            Widget test = inner.LastAddedWidget;
+            test.Behaviors.Add(new DrawText() { Text = "t" });
+            inner.Add(new Widget() { Position = new Point2(150,50) });
+            inner.Add(new Widget() { Position = new Point2(250,50) });
+            inner.Add(new Widget() { Position = new Point2(350,50) });
+            inner.Add(new Widget() { Position = new Point2(450,50) });
+            inner.Add(new Widget() { Position = new Point2(50, 150) });
+            inner.Add(new Widget() { Position = new Point2(50, 250) });
+            inner.Add(new Widget() { Position = new Point2(50, 350) });
+            inner.Add(new Widget() { Position = new Point2(50, 450) });
+
+            Widget inner2 = new Widget()
+            {
+                Area = new RectangleF(420, 10, 400, 400)
+            };
+
+            inner.Behaviors.Add(ShadingBehavior.SubtleBlue);
+
+            test.debug_output = true;
+            test.OnDraw += (s, a) => { Console.WriteLine($"test.DrawingArea = {test.DrawingArea}"); };
+            inner.OnDraw += (s, a) => { Console.WriteLine($"inner.DrawingArea = {inner.DrawingArea}"); };
+
+            layout.Add(inner);
+            layout.Add(inner2);
 
             return layout;
         }

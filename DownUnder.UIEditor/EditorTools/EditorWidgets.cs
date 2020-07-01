@@ -33,7 +33,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             // Property grid
             Widget property_grid_container = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
-            property_grid_container.Behaviors.Add(ShadingBehavior.DeepBlue);
+            property_grid_container.Behaviors.Add(ShadingBehavior.SubtleBlue);
             side_grid[0, 2] = property_grid_container;
 
             // Behaviors dock

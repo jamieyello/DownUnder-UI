@@ -50,7 +50,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             shading_effect.Parameters["Size"]?.SetValue(Parent.Size);
             
             shading_effect.CurrentTechnique.Passes[0].Apply();
-            Parent.SpriteBatch.FillRectangle(Parent.DrawingArea, Color.Transparent);
+            Parent.SpriteBatch.FillRectangle(Parent.DrawingAreaUnscrolled, Color.Transparent);
         }
 
         public override object Clone() {
@@ -65,7 +65,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
             shading_effect?.Dispose();
         }
 
-        public static ShadingBehavior DeepBlue => new ShadingBehavior()
+        public static ShadingBehavior SubtleBlue => new ShadingBehavior()
         {
             ShadeColor = Color.DeepSkyBlue.ShiftBrightness(0.2f),
             BorderVisibility = 0.6f,
