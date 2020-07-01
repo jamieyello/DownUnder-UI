@@ -1,6 +1,7 @@
 ﻿using DownUnder.Content.Utilities.Serialization;
 using DownUnder.UI;
 using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.EditorTools;
 using Microsoft.Xna.Framework;
@@ -58,7 +59,7 @@ namespace DownUnder.Widgets
             //MainWidget = TestLayouts.RenderScrollDebug();
 
             MainWidget = EditorWidgets.UIEditor(out var editor_objects);
-
+            CommonBehaviors.Add(new ScrollBar());
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");

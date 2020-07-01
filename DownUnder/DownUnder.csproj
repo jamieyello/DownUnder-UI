@@ -120,6 +120,7 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\ScrollBar.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\SpacedListFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
@@ -147,6 +148,9 @@
     <Compile Include="UI\Widgets\DataTypes\GridWriter.cs" />
     <Compile Include="UI\Widgets\BasicWidgets.cs" />
     <Compile Include="UI\Widgets\OldStuff\UIEditor.cs" />
+    <Compile Include="Utilities\CustomEventArgs\AddItemArgs.cs" />
+    <Compile Include="Utilities\CustomEventArgs\RemoveItemArgs.cs" />
+    <Compile Include="Utilities\EventList.cs" />
     <Compile Include="Utilities\GenericDirections2D.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
@@ -162,7 +166,7 @@
     <Compile Include="UI\Widgets\OldStuff\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\OldStuff\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\WidgetElements\Scroll.cs" />
+    <Compile Include="UI\Widgets\OldStuff\Scroll.cs" />
     <Compile Include="UI\Widgets\OldStuff\TextCursor.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />
     <Compile Include="Utilities\Directions2D.cs" />

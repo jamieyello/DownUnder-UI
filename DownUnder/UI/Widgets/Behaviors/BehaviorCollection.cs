@@ -70,6 +70,16 @@ namespace DownUnder.UI.Widgets.Behaviors
             return false;
         }
 
+        public bool RemoveType(Type type) {
+            foreach (WidgetBehavior behavior in this) {
+                if (behavior.GetType() == type) {
+                    return Remove(behavior);
+                }
+            }
+
+            return false;
+        }
+
         public void RemoveAt(int index) {
             ((IList<WidgetBehavior>)_behaviors)[index].Disconnect();
             ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);

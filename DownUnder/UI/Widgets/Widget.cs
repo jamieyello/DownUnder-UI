@@ -2,7 +2,6 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.UI.Widgets.WidgetElements;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -170,6 +169,7 @@ namespace DownUnder.UI.Widgets
         public ActionCollection Actions { get; private set; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
+        public Point2 Scroll { get; set; } = new Point2();
 
         #endregion
 
@@ -431,9 +431,17 @@ namespace DownUnder.UI.Widgets
         public DWindow ParentWindow {
             get => _parent_window_backing;
             private set {
+                if (_parent_window_backing == value) return;
+                if (_parent_window_backing != null) {
+                    foreach (WidgetBehavior behavior in _parent_window_backing.CommonBehaviors) Behaviors.RemoveType(behavior.GetType());
+                }
+
                 _parent_window_backing = value;
                 if (value != null) {
                     InitializeGraphics();
+                    foreach (WidgetBehavior behavior in value.CommonBehaviors) {
+                        if (!Behaviors.HasBehaviorOfType(behavior.GetType())) Behaviors.Add((WidgetBehavior)behavior.Clone());
+                    }
                     //ConnectEvents(value);
                 }
                 
@@ -545,8 +553,6 @@ namespace DownUnder.UI.Widgets
             Actions = new ActionCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
-            if (IsGraphicsInitialized) InitializeScrollbars(this, EventArgs.Empty);
-            else OnGraphicsInitialized += InitializeScrollbars;
             Children.OnAdd += (sender, args) => { OnAddChild?.Invoke(this, EventArgs.Empty); };
             Children.OnRemove += (sender, args) => { OnRemoveChild?.Invoke(this, EventArgs.Empty); };
             Children.OnListChange += (sender, args) => { OnListChange?.Invoke(this, EventArgs.Empty); };
@@ -746,7 +752,6 @@ namespace DownUnder.UI.Widgets
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
             
             Theme.Update(game_time);
-            ScrollBars.Update(UpdateData.ElapsedSeconds, UpdateData.UIInputState);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in new WidgetList(Children)) widget.UpdateGroupEvents(game_time);
@@ -857,7 +862,6 @@ namespace DownUnder.UI.Widgets
                     );
             }
 
-            ScrollBars.Draw(SpriteBatch);
             OnDrawOverlay?.Invoke(this, EventArgs.Empty);
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
@@ -1195,7 +1199,6 @@ namespace DownUnder.UI.Widgets
 
         #region Ilist
 
-        public Scroll ScrollBars { get; private set; }
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
         [DataMember] public bool FitToContentArea { get; set; } = false;
         [DataMember] public bool EmbedChildren { get; set; } = true;
@@ -1207,8 +1210,6 @@ namespace DownUnder.UI.Widgets
                 return result.Value.WithOffset(Scroll);
             }
         }
-
-        private void InitializeScrollbars(object sender, EventArgs args) => ScrollBars = new Scroll(this, GraphicsDevice);
 
         private void HandleChildDelete(Widget widget)
         {
@@ -1226,7 +1227,6 @@ namespace DownUnder.UI.Widgets
         public bool Remove(Widget item) => Children.Remove(item);
         public IEnumerator<Widget> GetEnumerator() => Children.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => Children.GetEnumerator();
-        public Point2 Scroll => ScrollBars.ToPoint2().Inverted();
         public int Count => Children.Count;
         public bool IsReadOnly => Children.IsReadOnly;
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }

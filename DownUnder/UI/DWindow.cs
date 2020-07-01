@@ -13,6 +13,7 @@ using MonoGame.Extended;
 using DownUnder.UI.Widgets;
 using DownUnder.Utility;
 using DownUnder.UI.Widgets.Behaviors;
+using System.Runtime.Remoting.Channels;
 
 namespace DownUnder.UI
 {
@@ -80,7 +81,9 @@ namespace DownUnder.UI
         public SpriteFont SpriteFont { get; protected set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
-        
+        /// <summary> <see cref="WidgetBehavior"/>s that are added to all contained <see cref="Widget"/>s. </summary>
+        public EventList<WidgetBehavior> CommonBehaviors { get; private set; } = new EventList<WidgetBehavior>();
+
         #endregion
 
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
@@ -210,7 +213,7 @@ namespace DownUnder.UI
             }
             
             // unneeded possibly
-            FirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
+            OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
             Window.ClientSizeChanged += (sender, e) => {
                 if (MainWidget != null) MainWidget.Size = Area.Size;
             };
@@ -222,9 +225,18 @@ namespace DownUnder.UI
             IsMouseVisible = true;
             
             MinimumSize = new Point2(100, 100);
-            double temp = (1000d / 144) * 10000d;
-            TargetElapsedTime = new TimeSpan((long)temp);
+            double time = (1000d / 144) * 10000d;
+            TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
+
+            CommonBehaviors.OnAdd += (sender, args) => {
+                foreach (Widget widget in MainWidget.AllContainedWidgets) {
+                    if (!widget.Behaviors.HasBehaviorOfType(args.LastAddedItem.GetType())) widget.Behaviors.Add((WidgetBehavior)args.LastAddedItem.Clone());
+                }
+            };
+            CommonBehaviors.OnRemove += (sender, args) => {
+                foreach (Widget widget in MainWidget.AllContainedWidgets) widget.Behaviors.RemoveType(args.LastRemovedItem.GetType());
+            };
         }
 
         protected override void Dispose(bool disposing) {
@@ -237,8 +249,8 @@ namespace DownUnder.UI
 
         #region Event Handlers
 
-        public event EventHandler<EventArgs> FirstUpdate;
-        public event EventHandler<EventArgs> Updating;
+        public event EventHandler<EventArgs> OnFirstUpdate;
+        public event EventHandler<EventArgs> OnUpdate;
 
         #endregion
 
@@ -306,10 +318,10 @@ namespace DownUnder.UI
 
         protected void UpdateDWindow(GameTime game_time) {
             _area_cache = Area;
-            Updating?.Invoke(this, EventArgs.Empty);
+            OnUpdate?.Invoke(this, EventArgs.Empty);
             if (!_first_update)
             {
-                FirstUpdate?.Invoke(this, EventArgs.Empty);
+                OnFirstUpdate?.Invoke(this, EventArgs.Empty);
                 _first_update = true;
             }
             ProcessQueuedEvents();
