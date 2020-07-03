@@ -40,30 +40,10 @@ namespace DownUnder.UI.Widgets.Behaviors {
         /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
         public void SetTag(string key, string value) => SetTag(Parent, key, value);
         /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>
-        public void SetTag(Widget widget, string key, string value)
-        {
-            if (!widget.BehaviorTags.ContainsKey(GetType())) widget.BehaviorTags.Add(GetType(), new Dictionary<string, string>());
-            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) throw new Exception("Something went wrong here.");
-            if (tags.ContainsKey(key)) tags.Remove(key);
-            tags.Add(key, value);
-        }
+        public void SetTag(Widget widget, string key, string value) => widget.BehaviorTags[GetType()][key] = value;
 
         public string GetTag(string key) => GetTag(Parent, key);
-        public string GetTag(Widget widget, string key)
-        {
-            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return "";
-            if (!tags.TryGetValue(key, out string result)) return "";
-            return result;
-        }
-
-        public bool RemoveTag(string key) => RemoveTag(Parent, key);
-        public bool RemoveTag(Widget widget, string key)
-        {
-            if (!widget.BehaviorTags.TryGetValue(GetType(), out var tags)) return false;
-            bool result = tags.Remove(key);
-            if (tags.Count == 0) widget.BehaviorTags.Remove(GetType());
-            return result;
-        }
+        public string GetTag(Widget widget, string key) => widget.BehaviorTags[GetType()][key];
 
         public virtual Widget EditorWidgetRepresentation()
         {

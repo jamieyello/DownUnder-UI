@@ -33,7 +33,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 if (_widget == value) return;
                 if (_widget != null) {
                     RemoveAllPersistentEvents();
-                    if (_use_tag) _behavior.RemoveTag(_widget, _key);
+                    if (_use_tag) _widget.BehaviorTags[_behavior.GetType()][_key] = null;
                     _behavior.Parent.Remove(_widget);
                 }
                 _widget = value;
@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public bool FindIn(WidgetList widgets) {
             if (!_use_tag) throw new Exception("Cannot look for matching tags because tags were not given on construction.");
             for (int i = 0; i < widgets.Count; i++) {
-                if (widgets[i].BehaviorTags.TryGetValue(_behavior.GetType(), out var tags) && tags.TryGetValue(_key, out string value) && value == _value) {
+                if (widgets[i].BehaviorTags[_behavior.GetType()][_key] == _value) {
                     Widget = widgets[i];
                     return true;
                 }

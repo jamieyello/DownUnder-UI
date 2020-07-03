@@ -40,7 +40,7 @@ namespace DownUnder.UI.Widgets.Behaviors {
         }
 
         private void DrawEffect(object sender, EventArgs args) {
-            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.PaletteUsage).CurrentColor.ToVector4());
+            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.WidgetRole).CurrentColor.ToVector4());
             else shading_effect.Parameters["ShadeColor"].SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["BorderWidth"]?.SetValue(BorderWidth);
             shading_effect.Parameters["BorderExponential"]?.SetValue(BorderExponential);

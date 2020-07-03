@@ -116,7 +116,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         private void Draw(object sender, EventArgs args) {
-            Parent.SpriteBatch.DrawString(Parent.SpriteFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.PaletteUsage).CurrentColor);
+            Parent.SpriteBatch.DrawString(Parent.SpriteFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
         }
     }
 }

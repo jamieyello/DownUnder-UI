@@ -2,6 +2,7 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using static DownUnder.UI.Widgets.Widget;
 
 namespace DownUnder.UIEditor.EditorTools
 {
@@ -16,7 +17,7 @@ namespace DownUnder.UIEditor.EditorTools
             border_format.TopBorder = new Widget();
             border_format.TopBorder.Height = 30;
             border_format.TopBorder.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
-            border_format.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
+            border_format.TopBorder.WidgetRole = WidgetRoleType.header_widget;
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -44,7 +45,7 @@ namespace DownUnder.UIEditor.EditorTools
             behaviors_container.Behaviors.Add(new BorderFormat(), out var behaviors_border);
 
             behaviors_border.TopBorder = new Widget().WithAddedBehavior(new DrawText() { Text = "Behaviors" });
-            behaviors_border.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
+            behaviors_border.TopBorder.WidgetRole = WidgetRoleType.header_widget;
             behaviors_border.TopBorder.Behaviors.Add(new ShadingBehavior()
             {
                 UseWidgetOutlineColor = true
@@ -66,7 +67,7 @@ namespace DownUnder.UIEditor.EditorTools
             
             widgets_border.TopBorder = new Widget();
             widgets_border.TopBorder.Behaviors.Add(new DrawText() { Text = "Widgets" });
-            widgets_border.TopBorder.PaletteUsage = UI.Widgets.DataTypes.BaseColorScheme.PaletteCategory.header_widget;
+            widgets_border.TopBorder.WidgetRole = WidgetRoleType.header_widget;
             widgets_border.TopBorder.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
 
             Widget spaced_list = new Widget();

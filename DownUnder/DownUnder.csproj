@@ -115,6 +115,7 @@
     <Compile Include="UI\Widgets\Actions\Actions\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Actions\PropertyTransitionAction.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorModel.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\BorderFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
@@ -166,7 +167,6 @@
     <Compile Include="UI\Widgets\OldStuff\ObjectLabel.cs" />
     <Compile Include="UI\Widgets\OldStuff\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\OldStuff\Scroll.cs" />
     <Compile Include="UI\Widgets\OldStuff\TextCursor.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />
     <Compile Include="Utilities\Directions2D.cs" />
@@ -185,6 +185,7 @@
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
+    <Compile Include="Utilities\AutoDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Application Notes.txt" />

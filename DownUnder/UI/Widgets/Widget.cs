@@ -2,6 +2,7 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -124,6 +125,15 @@ namespace DownUnder.UI.Widgets
             require_highlight
         }
 
+        /// <summary> Defines the behavior of <see cref="Widget"/>s when being used by <see cref="WidgetBehavior"/>s. </summary>
+        public enum WidgetRoleType
+        {
+            default_widget = 0,
+            text_widget = 1,
+            text_edit_widget = 2,
+            header_widget = 3
+        }
+
         #endregion
 
         #region Public/Internal Properties
@@ -150,8 +160,8 @@ namespace DownUnder.UI.Widgets
         [DataMember] public Size2 Spacing { get; set; }
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
         [DataMember] public bool EnterConfirms { get; set; } = true;
-        /// <summary> What this <see cref="Widget"/> should be regarded as when accessing the <see cref="Theme"/>'s defined colors. </summary>
-        [DataMember] public BaseColorScheme.PaletteCategory PaletteUsage { get; set; } = BaseColorScheme.PaletteCategory.default_widget;
+        /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
+        [DataMember] public WidgetRoleType WidgetRole { get; set; } = WidgetRoleType.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
         [DataMember] public bool IsFixedWidth { get; set; } = false;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Height"/>. </summary>
@@ -159,7 +169,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
         [DataMember] public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
-        [DataMember] internal Dictionary<Type, Dictionary<string, string>> BehaviorTags { get; set; } = new Dictionary<Type, Dictionary<string, string>>();
+        [DataMember] internal AutoDictionary<Type, AutoDictionary<string, string>> BehaviorTags;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -550,6 +560,7 @@ namespace DownUnder.UI.Widgets
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorCollection(this);
+            BehaviorTags = new AutoDictionary<Type, AutoDictionary<string, string>>(() => new AutoDictionary<string, string>(() => ""));
             Actions = new ActionCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
@@ -1174,10 +1185,11 @@ namespace DownUnder.UI.Widgets
             c.Area = Area;
             c.IsFixedWidth = IsFixedWidth;
             c.IsFixedHeight = IsFixedHeight;
-            c.PaletteUsage = PaletteUsage;
+            c.WidgetRole = WidgetRole;
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
+            c.BehaviorTags = (AutoDictionary<Type, AutoDictionary<string, string>>)BehaviorTags.Clone();
 
             c._accepts_drops_backing = _accepts_drops_backing;
 
