@@ -9,6 +9,8 @@ namespace DownUnder.UI.Widgets.Behaviors
     /// <summary> A behavior that keeps children in a grid formation. </summary>
     public class GridFormat : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
         private bool _enable_internal_align = true;
         
         public int Width { get; private set; }
@@ -31,19 +33,23 @@ namespace DownUnder.UI.Widgets.Behaviors
             Filler = (Widget)filler?.Clone();
         }
 
-        protected override void ConnectToParent()
+        protected override void Initialize()
         {
+            Parent.EmbedChildren = false;
             if (Filler == null) Filler = DefaultCell();
             GridWriter.InsertFiller(Parent, Width, Height, Filler);
-            foreach (Widget child in Parent.Children) child.OnAreaChangePriority += InternalAlign;
             Align(this, EventArgs.Empty);
-            Parent.EmbedChildren = false;
+        }
+
+        protected override void ConnectEvents()
+        {
+            foreach (Widget child in Parent.Children) child.OnAreaChangePriority += InternalAlign;
             Parent.OnResize += Align;
             Parent.OnAddChild += AddInternalAlign;
             Parent.OnRemoveChild += RemoveInternalAlign;
         }
 
-        protected override void DisconnectFromParent()
+        protected override void DisconnectEvents()
         {
             foreach (Widget child in Parent.Children) child.OnAreaChangePriority -= InternalAlign;
             Parent.OnResize -= Align;

@@ -3,14 +3,21 @@ using System;
 
 namespace DownUnder.UI.Widgets.Behaviors {
     public class DragAndDropSource : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
         public ICloneable DragObject;
 
-        protected override void ConnectToParent() {
+        protected override void Initialize()
+        {
+            
+        }
+
+        protected override void ConnectEvents() {
             Parent.OnDrag += SetDragObject;
             Parent.OnDrop += DropObject;
         }
 
-        protected override void DisconnectFromParent() {
+        protected override void DisconnectEvents() {
             Parent.OnDrag -= SetDragObject;
             Parent.OnDrop -= DropObject;
         }

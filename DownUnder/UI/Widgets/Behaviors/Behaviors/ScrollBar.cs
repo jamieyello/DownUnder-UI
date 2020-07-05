@@ -10,6 +10,8 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class ScrollBar : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.SCROLL_FUNCTION };
+
         private Texture2D _white_dot;
 
         private ChangingValue<float> X { get; } = new ChangingValue<float>(0f);
@@ -73,13 +75,8 @@ namespace DownUnder.UI.Widgets.Behaviors
             return new ScrollBar();
         }
 
-        protected override void ConnectToParent()
+        protected override void Initialize()
         {
-            Parent.OnUpdate += Update;
-            Parent.OnDrawOverlay += Draw;
-            if (Parent.IsGraphicsInitialized) InitializeGraphics(this, EventArgs.Empty);
-            else Parent.OnGraphicsInitialized += InitializeGraphics;
-
             SideInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
             BottomInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
             SideOuterBarPalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
@@ -87,7 +84,15 @@ namespace DownUnder.UI.Widgets.Behaviors
             BottomRightSquarePalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
         }
 
-        protected override void DisconnectFromParent()
+        protected override void ConnectEvents()
+        {
+            Parent.OnUpdate += Update;
+            Parent.OnDrawOverlay += Draw;
+            if (Parent.IsGraphicsInitialized) InitializeGraphics(this, EventArgs.Empty);
+            else Parent.OnGraphicsInitialized += InitializeGraphics;
+        }
+
+        protected override void DisconnectEvents()
         {
             Parent.OnUpdate -= Update;
             Parent.OnDrawOverlay -= Draw;

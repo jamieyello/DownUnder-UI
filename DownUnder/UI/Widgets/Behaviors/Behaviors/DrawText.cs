@@ -6,6 +6,8 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     public class DrawText : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
+        
         private string _text_backing = "";
         private Point2 _text_position_backing = new Point2();
         private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
@@ -59,7 +61,12 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
         }
 
-        protected override void ConnectToParent() {
+        protected override void Initialize()
+        {
+            
+        }
+
+        protected override void ConnectEvents() {
             Parent.OnGraphicsInitialized += AlignText;
             Parent.OnGraphicsInitialized += SetMinimumSize;
             Parent.OnResize += AlignText;
@@ -67,7 +74,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent.OnMinimumSizeSetPriority += OverrideMinimumSize;
         }
 
-        protected override void DisconnectFromParent() {
+        protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= SetMinimumSize;
             Parent.OnGraphicsInitialized -= AlignText;
             Parent.OnResize -= AlignText;

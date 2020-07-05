@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Behaviors
 {
@@ -22,18 +17,25 @@ namespace DownUnder.UI.Widgets.Behaviors.Behaviors
         public SpriteEffects SpriteEffects = SpriteEffects.None;
         public float LayerDepth = 0f;
         public bool CloneImage { get; set; } = false;
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
+
 
         public override object Clone()
         {
             throw new NotImplementedException();
         }
 
-        protected override void ConnectToParent()
+        protected override void Initialize()
+        {
+            
+        }
+
+        protected override void ConnectEvents()
         {
             Parent.OnDraw += Draw;
         }
 
-        protected override void DisconnectFromParent()
+        protected override void DisconnectEvents()
         {
             Parent.OnDraw -= Draw;
         }

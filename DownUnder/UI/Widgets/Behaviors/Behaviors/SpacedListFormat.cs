@@ -6,6 +6,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class SpacedListFormat : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
         [DataMember] public float ListSpacing { get; set; } = 25f;
 
         [DataMember] public InterpolationSettings? Interpolation { get; set; } = InterpolationSettings.Faster;
@@ -15,15 +16,19 @@ namespace DownUnder.UI.Widgets.Behaviors
             throw new NotImplementedException();
         }
 
-        protected override void ConnectToParent()
+        protected override void Initialize()
         {
-            Parent.OnListChange += Align;
-            Parent.OnAreaChange += Align;
             Align(this, EventArgs.Empty);
             Parent.EmbedChildren = false;
         }
 
-        protected override void DisconnectFromParent()
+        protected override void ConnectEvents()
+        {
+            Parent.OnListChange += Align;
+            Parent.OnAreaChange += Align;
+        }
+
+        protected override void DisconnectEvents()
         {
             Parent.OnListChange -= Align;
             Parent.OnAreaChange -= Align;

@@ -81,8 +81,6 @@ namespace DownUnder.UI
         public SpriteFont SpriteFont { get; protected set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
-        /// <summary> <see cref="WidgetBehavior"/>s that are added to all contained <see cref="Widget"/>s. </summary>
-        public EventList<WidgetBehavior> CommonBehaviors { get; private set; } = new EventList<WidgetBehavior>();
 
         #endregion
 
@@ -228,15 +226,6 @@ namespace DownUnder.UI
             double time = (1000d / 144) * 10000d;
             TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
-
-            CommonBehaviors.OnAdd += (sender, args) => {
-                foreach (Widget widget in MainWidget.AllContainedWidgets) {
-                    if (!widget.Behaviors.HasBehaviorOfType(args.LastAddedItem.GetType())) widget.Behaviors.Add((WidgetBehavior)args.LastAddedItem.Clone());
-                }
-            };
-            CommonBehaviors.OnRemove += (sender, args) => {
-                foreach (Widget widget in MainWidget.AllContainedWidgets) widget.Behaviors.RemoveType(args.LastRemovedItem.GetType());
-            };
         }
 
         protected override void Dispose(bool disposing) {

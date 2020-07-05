@@ -10,6 +10,8 @@ namespace DownUnder.UI.Widgets.Behaviors
     [DataContract]
     public class BorderFormat : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
         private const string _POSITION_KEY = "P";
         private const string _CENTER_VALUE = "C";
         private const string _TOP_VALUE = "T";
@@ -92,6 +94,15 @@ namespace DownUnder.UI.Widgets.Behaviors
             _right_border.AddPersistentEvent(nameof(Widget.OnResize), Align);
         }
 
+        ~BorderFormat()
+        {
+            _center.Forget();
+            _top_border.Forget();
+            _bottom_border.Forget();
+            _left_border.Forget();
+            _right_border.Forget();
+        }
+
         public override object Clone()
         {
             BorderFormat c = new BorderFormat();
@@ -100,25 +111,24 @@ namespace DownUnder.UI.Widgets.Behaviors
             return c;
         }
 
-        protected override void ConnectToParent()
+        protected override void Initialize()
         {
             _center.FindIn(Parent.Children);
             _top_border.FindIn(Parent.Children);
             _bottom_border.FindIn(Parent.Children);
             _left_border.FindIn(Parent.Children);
             _right_border.FindIn(Parent.Children);
-            Parent.OnResize += Align;
-            Parent.OnUpdate += Update;
             _Align();
         }
 
-        protected override void DisconnectFromParent()
+        protected override void ConnectEvents()
         {
-            _center.Forget();
-            _top_border.Forget();
-            _bottom_border.Forget();
-            _left_border.Forget();
-            _right_border.Forget();
+            Parent.OnResize += Align;
+            Parent.OnUpdate += Update;
+        }
+
+        protected override void DisconnectEvents()
+        {
             Parent.OnResize -= Align;
             Parent.OnUpdate -= Update;
         }

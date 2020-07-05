@@ -2,12 +2,14 @@
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace DownUnder.UI.Widgets.Behaviors {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
     public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable {
         Widget _parent_backing;
 
+        public abstract string[] BehaviorIDs { get; protected set; }
         public event EventHandler OnConnect;
         public event EventHandler OnDisconnect;
 
@@ -22,19 +24,21 @@ namespace DownUnder.UI.Widgets.Behaviors {
                     throw new Exception($"{nameof(WidgetBehavior)}s cannot be reused. Use {nameof(Clone)} to create a copy first.");
                 }
                 _parent_backing = value;
-                ConnectToParent();
+                Initialize();
+                ConnectEvents();
                 OnConnect?.Invoke(this, EventArgs.Empty);
             }
         }
 
         internal void Disconnect()
         {
-            DisconnectFromParent();
+            DisconnectEvents();
             OnDisconnect?.Invoke(this, EventArgs.Empty);
         }
 
-        protected abstract void ConnectToParent();
-        protected abstract void DisconnectFromParent();
+        protected abstract void Initialize();
+        protected abstract void ConnectEvents();
+        protected abstract void DisconnectEvents();
         public abstract object Clone();
 
         /// <summary> Set a tag that can only be read by this <see cref="WidgetBehavior"/>. </summary>

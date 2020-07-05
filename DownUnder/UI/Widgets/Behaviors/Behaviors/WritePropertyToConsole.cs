@@ -6,6 +6,7 @@ namespace DownUnder.UI.Widgets.Behaviors
     /// <summary> Outputs the ToString() value of a given <see cref="Widget"/> property to the console. </summary>
     public class WritePropertyToConsole : WidgetBehavior
     {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.DEBUG };
         private readonly string _nameof_property;
         private string _pre_text;
         private string _post_text;
@@ -18,13 +19,12 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         public override object Clone() => new WritePropertyToConsole(_nameof_property, _pre_text, _post_text);
-        
-        protected override void ConnectToParent() {
-            _property_info = typeof(Widget).GetProperty(_nameof_property);
-            Parent.OnUpdate += WriteLine;
-        }
 
-        protected override void DisconnectFromParent() => Parent.OnUpdate -= WriteLine;
+        protected override void Initialize() => _property_info = typeof(Widget).GetProperty(_nameof_property);
+        
+        protected override void ConnectEvents() => Parent.OnUpdate += WriteLine;
+        
+        protected override void DisconnectEvents() => Parent.OnUpdate -= WriteLine;
 
         private void WriteLine(object sender, EventArgs args) => Console.WriteLine(_pre_text + _property_info.GetValue(Parent).ToString() + _post_text);
     }

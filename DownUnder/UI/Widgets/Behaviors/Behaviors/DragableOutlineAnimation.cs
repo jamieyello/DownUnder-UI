@@ -6,6 +6,8 @@ using DownUnder.Utility;
 namespace DownUnder.UI.Widgets.Behaviors
 {
     public class DragableOutlineAnimation : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
+
         private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
         private ChangingValue<float> round_amount = new ChangingValue<float>(0f);
         private ChangingValue<Color> rect_color = new ChangingValue<Color>();
@@ -22,14 +24,16 @@ namespace DownUnder.UI.Widgets.Behaviors
             rect_color.TransitionSpeed = 4f;
         }
 
-        protected override void ConnectToParent() {
+        protected override void Initialize() { }
+
+        protected override void ConnectEvents() {
             Parent.OnDrawNoClip += DrawRect;
             Parent.OnUpdate += Update;
             Parent.OnDrag += StartAnimation;
             Parent.OnDrop += EndAnimation;
         }
 
-        protected override void DisconnectFromParent() {
+        protected override void DisconnectEvents() {
             Parent.OnDrawNoClip -= DrawRect;
             Parent.OnUpdate -= Update;
             Parent.OnDrag -= StartAnimation;

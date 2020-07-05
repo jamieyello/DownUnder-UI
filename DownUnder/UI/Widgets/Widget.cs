@@ -180,6 +180,7 @@ namespace DownUnder.UI.Widgets
         public DesignerModeSettings DesignerObjects { get; set; }
         public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
         public Point2 Scroll { get; set; } = new Point2();
+        public CommonBehaviorCollection CommonBehaviors { get; private set; }
 
         #endregion
 
@@ -442,16 +443,10 @@ namespace DownUnder.UI.Widgets
             get => _parent_window_backing;
             private set {
                 if (_parent_window_backing == value) return;
-                if (_parent_window_backing != null) {
-                    foreach (WidgetBehavior behavior in _parent_window_backing.CommonBehaviors) Behaviors.RemoveType(behavior.GetType());
-                }
 
                 _parent_window_backing = value;
                 if (value != null) {
                     InitializeGraphics();
-                    foreach (WidgetBehavior behavior in value.CommonBehaviors) {
-                        if (!Behaviors.HasBehaviorOfType(behavior.GetType())) Behaviors.Add((WidgetBehavior)behavior.Clone());
-                    }
                     //ConnectEvents(value);
                 }
                 
@@ -562,6 +557,7 @@ namespace DownUnder.UI.Widgets
             Behaviors = new BehaviorCollection(this);
             BehaviorTags = new AutoDictionary<Type, AutoDictionary<string, string>>(() => new AutoDictionary<string, string>(() => ""));
             Actions = new ActionCollection(this);
+            CommonBehaviors = new CommonBehaviorCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
             Children.OnAdd += (sender, args) => { OnAddChild?.Invoke(this, EventArgs.Empty); };

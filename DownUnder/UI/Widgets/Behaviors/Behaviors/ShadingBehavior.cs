@@ -6,6 +6,8 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors {
     [DataContract] public class ShadingBehavior : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
+
         Effect shading_effect;
 
         [DataMember] public float ShadeVisibility = 0.5f;
@@ -20,15 +22,18 @@ namespace DownUnder.UI.Widgets.Behaviors {
 
         [DataMember] public bool UseWidgetOutlineColor = false;
 
-        protected override void ConnectToParent() {
+        protected override void Initialize() {
             Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
+        }
+
+        protected override void ConnectEvents() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);
             else Parent.OnGraphicsInitialized += InitializeEffect;
             Parent.OnDrawOverlayEffects += DrawEffect;
             Parent.OnDispose += Dispose;
         }
 
-        protected override void DisconnectFromParent() {
+        protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= InitializeEffect;
             Parent.OnDrawOverlayEffects -= DrawEffect;
             Parent.OnDispose -= Dispose;

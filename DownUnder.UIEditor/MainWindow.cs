@@ -59,7 +59,7 @@ namespace DownUnder.Widgets
             //MainWidget = TestLayouts.RenderScrollDebug();
 
             MainWidget = EditorWidgets.UIEditor(out var editor_objects);
-            CommonBehaviors.Add(new ScrollBar());
+            //CommonBehaviors.Add(new ScrollBar());
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
