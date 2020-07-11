@@ -113,6 +113,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         protected override void Initialize()
         {
+            Parent.CommonBehaviors.AcceptancePolicy |= BehaviorAcceptancePolicy.NonScrollable;
             _center.FindIn(Parent.Children);
             _top_border.FindIn(Parent.Children);
             _bottom_border.FindIn(Parent.Children);

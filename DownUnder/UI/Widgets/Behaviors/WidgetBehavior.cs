@@ -18,7 +18,6 @@ namespace DownUnder.UI.Widgets.Behaviors {
         public Widget Parent {
             get => _parent_backing;
             set {
-                if (value.Behaviors.HasBehaviorOfType(GetType())) throw new Exception($"{nameof(Widget)} {value.Name} already has a {GetType().Name} behavior.");
                 if (_parent_backing != null) {
                     if (_parent_backing == value) return;
                     throw new Exception($"{nameof(WidgetBehavior)}s cannot be reused. Use {nameof(Clone)} to create a copy first.");

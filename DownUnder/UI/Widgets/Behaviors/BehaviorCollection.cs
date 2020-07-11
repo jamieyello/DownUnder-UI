@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public BehaviorCollection(Widget parent) => _parent = parent;
         private readonly List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
 
-        public WidgetBehavior this[int index] { get => _behaviors[index]; set => ((IList<WidgetBehavior>)_behaviors)[index] = value; }
+        public WidgetBehavior this[int index] { get => _behaviors[index]; set => _behaviors[index] = value; }
         public bool HasBehaviorOfType(Type type) {
             foreach (WidgetBehavior behavior in this) {
                 if (behavior.GetType() == type) return true;
@@ -26,19 +26,37 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             return default;
         }
-        public int Count => ((IList<WidgetBehavior>)_behaviors).Count;
+        public int Count => _behaviors.Count;
         public bool IsReadOnly => ((IList<WidgetBehavior>)_behaviors).IsReadOnly;
 
         public void Add(WidgetBehavior behavior) {
-            behavior.Parent = _parent;
-            ((IList<WidgetBehavior>)_behaviors).Add(behavior);
+            if (!TryAdd(behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorCollection)} already contains a {behavior.GetType().Name}.");
         }        
         
         public void Add<T>(T behavior, out T added_behavior) {
+            if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorCollection)} already contains a {behavior.GetType().Name}.");
+        }
+
+        public bool TryAdd(WidgetBehavior behavior)
+        {
+            if (Contains(behavior.GetType())) return false;
+            _behaviors.Add(behavior);
+            behavior.Parent = _parent;
+            return true;
+        }
+
+        public bool TryAdd<T>(T behavior, out T added_behavior)
+        {
             if (!(behavior is WidgetBehavior behavior_)) throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
+            if (Contains(behavior.GetType()))
+            {
+                added_behavior = default;
+                return false;
+            }
+            _behaviors.Add(behavior_);
             behavior_.Parent = _parent;
-            ((IList<WidgetBehavior>)_behaviors).Add(behavior_);
             added_behavior = behavior;
+            return true;
         }
 
         public void AddRange(IEnumerable<WidgetBehavior> behaviors) {
@@ -49,13 +67,20 @@ namespace DownUnder.UI.Widgets.Behaviors
         
         public void Clear() {
             foreach (WidgetBehavior behavior in _behaviors) behavior.Disconnect();
-            ((IList<WidgetBehavior>)_behaviors).Clear();
+            _behaviors.Clear();
         }
 
-        public bool Contains(WidgetBehavior behavior) => ((IList<WidgetBehavior>)_behaviors).Contains(behavior);
-        public void CopyTo(WidgetBehavior[] array, int arrayIndex) => ((IList<WidgetBehavior>)_behaviors).CopyTo(array, arrayIndex);
-        public IEnumerator<WidgetBehavior> GetEnumerator() => ((IList<WidgetBehavior>)_behaviors).GetEnumerator();
-        public int IndexOf(WidgetBehavior behavior) => ((IList<WidgetBehavior>)_behaviors).IndexOf(behavior);
+        public bool Contains(Type type) {
+            for (int i = 0; i < _behaviors.Count; i++) {
+                if (_behaviors[i].GetType() == type) return true;
+            }
+
+            return false;
+        }
+        public bool Contains(WidgetBehavior behavior) => _behaviors.Contains(behavior);
+        public void CopyTo(WidgetBehavior[] array, int arrayIndex) => _behaviors.CopyTo(array, arrayIndex);
+        public IEnumerator<WidgetBehavior> GetEnumerator() => _behaviors.GetEnumerator();
+        public int IndexOf(WidgetBehavior behavior) => _behaviors.IndexOf(behavior);
         
         public void Insert(int index, WidgetBehavior behavior) {
             behavior.Parent = _parent;
@@ -81,10 +106,10 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         public void RemoveAt(int index) {
-            ((IList<WidgetBehavior>)_behaviors)[index].Disconnect();
-            ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);
+            _behaviors[index].Disconnect();
+            _behaviors.RemoveAt(index);
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IList<WidgetBehavior>)_behaviors).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _behaviors.GetEnumerator();
     }
 }

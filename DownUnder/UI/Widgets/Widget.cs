@@ -461,6 +461,11 @@ namespace DownUnder.UI.Widgets
                 if (value != _parent_widget_backing) _parent_widget_backing?.Remove(this);
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
+                if (value == null) return;
+                foreach (CommonBehaviorPolicy policy in _parent_widget_backing.CommonBehaviors.InheritedPolicies)
+                {
+                    if (CommonBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                }
             }
         }
 

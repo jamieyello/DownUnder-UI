@@ -104,6 +104,8 @@ namespace DownUnder.UIEditor.EditorTools
             editor_objects.property_grid_container = property_grid_container;
             editor_objects.behaviors_list = behaviors_list;
 
+            bordered_container.CommonBehaviors.AddPolicy(new CommonBehaviorPolicy() { Behavior = new ScrollBar() });
+
             return bordered_container;
         }
 

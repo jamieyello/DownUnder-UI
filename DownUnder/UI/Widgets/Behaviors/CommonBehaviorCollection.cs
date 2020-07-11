@@ -2,21 +2,25 @@
 using DownUnder.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class CommonBehaviorCollection : IList<WidgetBehavior>, INeedsWidgetParent
+    [DataContract] public class CommonBehaviorCollection
     {
+        private BehaviorAcceptancePolicy _common_behavior_rules_backing = new BehaviorAcceptancePolicy();
+        private List<CommonBehaviorPolicy> _behavior_policies = new List<CommonBehaviorPolicy>();
+
         public Widget Parent { get; set; }
-        public EventList<string> DisallowedIDs { get; set; } = new EventList<string>();
         
-        List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
-
-        public WidgetBehavior this[int index] { get => ((IList<WidgetBehavior>)_behaviors)[index]; set => ((IList<WidgetBehavior>)_behaviors)[index] = value; }
-
-        public int Count => ((ICollection<WidgetBehavior>)_behaviors).Count;
-
-        public bool IsReadOnly => ((ICollection<WidgetBehavior>)_behaviors).IsReadOnly;
+        public BehaviorAcceptancePolicy AcceptancePolicy
+        {
+            get => _common_behavior_rules_backing;
+            set
+            {
+                _common_behavior_rules_backing = value;
+            }
+        }
 
         public CommonBehaviorCollection() { }
         public CommonBehaviorCollection(Widget parent)
@@ -24,54 +28,38 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent = parent;
         }
 
-        public void Add(WidgetBehavior item)
+        public void AddPolicy(CommonBehaviorPolicy policy)
         {
-            ((ICollection<WidgetBehavior>)_behaviors).Add(item);
+            foreach (var policy_ in _behavior_policies)
+            {
+                if (policy_.Behavior.GetType() == policy.Behavior.GetType()) throw new System.Exception($"This {nameof(CommonBehaviorCollection)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
+            }
+            _behavior_policies.Add(policy);
+            ImplementPolicy(policy);
         }
 
-        public void Clear()
+        private void ImplementPolicy(CommonBehaviorPolicy policy)
         {
-            ((ICollection<WidgetBehavior>)_behaviors).Clear();
+            if (policy.InheritancePolicy == CommonBehaviorPolicy.BehaviorInheritancePolicy.apply_to_compatible_children)
+            {
+                foreach (Widget widget in Parent.AllContainedWidgets)
+                {
+                    if (widget.CommonBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
+                    {
+                        widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                    }
+                }
+            }
         }
 
-        public bool Contains(WidgetBehavior item)
+        internal List<CommonBehaviorPolicy> InheritedPolicies
         {
-            return ((ICollection<WidgetBehavior>)_behaviors).Contains(item);
-        }
-
-        public void CopyTo(WidgetBehavior[] array, int arrayIndex)
-        {
-            ((ICollection<WidgetBehavior>)_behaviors).CopyTo(array, arrayIndex);
-        }
-
-        public IEnumerator<WidgetBehavior> GetEnumerator()
-        {
-            return ((IEnumerable<WidgetBehavior>)_behaviors).GetEnumerator();
-        }
-
-        public int IndexOf(WidgetBehavior item)
-        {
-            return ((IList<WidgetBehavior>)_behaviors).IndexOf(item);
-        }
-
-        public void Insert(int index, WidgetBehavior item)
-        {
-            ((IList<WidgetBehavior>)_behaviors).Insert(index, item);
-        }
-
-        public bool Remove(WidgetBehavior item)
-        {
-            return ((ICollection<WidgetBehavior>)_behaviors).Remove(item);
-        }
-
-        public void RemoveAt(int index)
-        {
-            ((IList<WidgetBehavior>)_behaviors).RemoveAt(index);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_behaviors).GetEnumerator();
+            get
+            {
+                var result = new List<CommonBehaviorPolicy>(_behavior_policies);
+                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.CommonBehaviors.InheritedPolicies);
+                return result;
+            }
         }
     }
 }

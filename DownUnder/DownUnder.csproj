@@ -119,7 +119,9 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\CommonBehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GlobalBehaviorSlots.cs" />
+    <Compile Include="UI\Widgets\Behaviors\CommonBehaviorPolicy.cs" />
+    <Compile Include="UI\Widgets\Behaviors\CommonBehaviorRules.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\AddPropertyEditChildren.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\ScrollBar.cs" />
