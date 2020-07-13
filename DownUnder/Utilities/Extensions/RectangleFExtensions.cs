@@ -87,6 +87,17 @@ namespace DownUnder {
         public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions, Point2? minimum_size = null) =>
             r.ResizedBy(new BorderSize(amount, directions), minimum_size);
         
+        public static RectangleF ResizedByPercent(this RectangleF r, float percent, Directions2D directions)
+        {
+            BorderSize resize = new BorderSize();
+            if (directions.Up) resize.Top = r.Height * percent;
+            if (directions.Down) resize.Bottom = r.Height * percent;
+            if (directions.Left) resize.Left = r.Width * percent;
+            if (directions.Right) resize.Right = r.Width * percent;
+            return r.ResizedBy(resize);
+
+        }
+
         /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
         public static RectangleF SizeMultipliedBy(this RectangleF r, Point2 modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
         

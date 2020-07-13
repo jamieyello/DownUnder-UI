@@ -119,7 +119,7 @@
     <Compile Include="UI\Widgets\Behaviors\Behaviors\BorderFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Behaviors\DrawText.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Behaviors\DropDownFormat.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Behaviors\PopInOut.cs" />
     <Compile Include="UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
     <Compile Include="UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />

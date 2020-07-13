@@ -3,6 +3,7 @@ using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using DownUnder.Utility;
+using MonoGame.Extended;
 
 namespace DownUnder.UI.Widgets
 {
@@ -19,7 +20,9 @@ namespace DownUnder.UI.Widgets
 
         public static Widget DropDown(WidgetList widgets)
         {
-            Widget dropdown = new Widget().WithAddedBehavior(new DropDownFormat());
+            Widget dropdown = new Widget() { 
+                Size = new Point2(100,100) 
+            }.WithAddedBehavior(new PopInOut());
 
             //if (widgets == null) throw new System.Exception($"Parameter '{nameof(widgets)}' cannot be null.");
             //if (widgets.Count == 0) throw new System.Exception($"Parameter '{nameof(widgets)}' cannot be empty.");

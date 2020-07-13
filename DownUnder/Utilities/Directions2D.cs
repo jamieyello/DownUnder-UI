@@ -99,6 +99,41 @@ namespace DownUnder.Utility
             return result;
         }
 
+        public Directions2D FlippedXY()
+        {
+            Directions2D result = new Directions2D();
+            result.Up = Down;
+            result.Down = Up;
+            result.Left = Right;
+            result.Right = Left;
+            result.DisallowOpposites = DisallowOpposites;
+            return result;
+        }
+
+        public Directions2D FlippedX()
+        {
+            Directions2D result = new Directions2D();
+            result.Up = Up;
+            result.Down = Down;
+            result.Left = Right;
+            result.Right = Left;
+            result.DisallowOpposites = DisallowOpposites;
+            return result;
+        }
+        
+        public Directions2D FlippedY()
+        {
+            Directions2D result = new Directions2D();
+            result.Up = Down;
+            result.Down = Up;
+            result.Left = Left;
+            result.Right = Right;
+            result.DisallowOpposites = DisallowOpposites;
+            return result;
+        }
+
+
+
         public static bool operator ==(Directions2D d1, Directions2D d2)
         {
             // Check for null on left side.
