@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using static DownUnder.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.Widgets.Actions {
@@ -32,6 +30,13 @@ namespace DownUnder.UI.Widgets.Actions {
             }
         }
 
+        public void Add<T>(T action, out T added_action)
+        {
+            if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a { nameof(WidgetAction) }.");
+            Add(action_);
+            added_action = action;
+        }
+
         public void Add(WidgetAction action) {
             if (action.DuplicatePolicy == DuplicatePolicyType.parallel) { }
             else if (action.DuplicatePolicy == DuplicatePolicyType.wait) {
@@ -43,7 +48,7 @@ namespace DownUnder.UI.Widgets.Actions {
             else if (action.DuplicatePolicy == DuplicatePolicyType.cancel) {
                 if (SeesDuplicate(action)) return;
             }
-            else if (action.DuplicatePolicy == DuplicatePolicyType.override_) {
+            else if (action.DuplicatePolicy == DuplicatePolicyType.@override) {
                 for (int i = _actions.Count - 1; i >= 0; i--) {
                     if (_actions[i].IsDuplicate(action))_actions.RemoveAt(i);
                 }

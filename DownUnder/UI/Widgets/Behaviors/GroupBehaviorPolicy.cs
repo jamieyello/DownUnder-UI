@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DownUnder.UI.Widgets.Behaviors
+﻿namespace DownUnder.UI.Widgets.Behaviors
 {
-    public class CommonBehaviorPolicy
+    public class GroupBehaviorPolicy
     {
         public enum BehaviorInheritancePolicy
         {

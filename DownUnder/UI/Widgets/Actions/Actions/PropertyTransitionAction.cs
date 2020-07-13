@@ -36,13 +36,17 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         public override object InitialClone() => new PropertyTransitionAction<T>(PropertyName, _target_value);
-        
-        protected override void ConnectToParent() {
+
+        protected override void Initialize()
+        {
             _property_info = typeof(Widget).GetProperty(PropertyName);
             _changing_value = new ChangingValue<T>((T)_property_info.GetValue(Parent));
             _changing_value.InterpolationSettings = _interpolation;
 
             _changing_value.SetTargetValue(_target_value);
+        }
+
+        protected override void ConnectToParent() {
             Parent.OnUpdate += Update;
         }
 

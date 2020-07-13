@@ -7,8 +7,7 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    [DataContract]
-    public class BorderFormat : WidgetBehavior
+    [DataContract] public class BorderFormat : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
@@ -113,7 +112,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         protected override void Initialize()
         {
-            Parent.CommonBehaviors.AcceptancePolicy |= BehaviorAcceptancePolicy.NonScrollable;
+            Parent.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
             _center.FindIn(Parent.Children);
             _top_border.FindIn(Parent.Children);
             _bottom_border.FindIn(Parent.Children);

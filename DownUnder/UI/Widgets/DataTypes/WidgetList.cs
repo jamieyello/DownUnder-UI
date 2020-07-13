@@ -70,7 +70,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             else {
                 for (int i = 0; i < areas.Count; i++) _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation) 
                 { 
-                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.override_ 
+                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override 
                     , DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
                 });
             }

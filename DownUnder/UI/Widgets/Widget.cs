@@ -80,6 +80,7 @@ namespace DownUnder.UI.Widgets
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
         private bool _update_clicked_on;
+        private bool _update_clicked_off;
         private bool _update_double_clicked;
         private bool _update_triple_clicked;
         private bool _update_added_to_focused;
@@ -170,6 +171,8 @@ namespace DownUnder.UI.Widgets
         [DataMember] public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
         [DataMember] internal AutoDictionary<Type, AutoDictionary<string, string>> BehaviorTags;
+        /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
+        [DataMember] public bool IsCloningSupported { get; set; } = true;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -180,7 +183,9 @@ namespace DownUnder.UI.Widgets
         public DesignerModeSettings DesignerObjects { get; set; }
         public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
         public Point2 Scroll { get; set; } = new Point2();
-        public CommonBehaviorCollection CommonBehaviors { get; private set; }
+        public GroupBehaviorCollection GroupBehaviors { get; private set; }
+        /// <summary> Set to true after this <see cref="Widget"/> has been deleted (as well as disposed) and is no longer in use. </summary>
+        public bool IsDeleted { get; private set; } = false;
 
         #endregion
 
@@ -462,9 +467,9 @@ namespace DownUnder.UI.Widgets
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
                 if (value == null) return;
-                foreach (CommonBehaviorPolicy policy in _parent_widget_backing.CommonBehaviors.InheritedPolicies)
+                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.GroupBehaviors.InheritedPolicies)
                 {
-                    if (CommonBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                    if (GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
             }
         }
@@ -562,7 +567,7 @@ namespace DownUnder.UI.Widgets
             Behaviors = new BehaviorCollection(this);
             BehaviorTags = new AutoDictionary<Type, AutoDictionary<string, string>>(() => new AutoDictionary<string, string>(() => ""));
             Actions = new ActionCollection(this);
-            CommonBehaviors = new CommonBehaviorCollection(this);
+            GroupBehaviors = new GroupBehaviorCollection(this);
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
             Children.OnAdd += (sender, args) => { OnAddChild?.Invoke(this, EventArgs.Empty); };
@@ -622,6 +627,7 @@ namespace DownUnder.UI.Widgets
             _update_hovered_over = false;
             _update_drag = false;
             _update_drop = false;
+            _update_clicked_off = false;
 
             if (!UpdateData.UIInputState.PrimaryClick) {
                 _dragging_in = false;
@@ -638,21 +644,25 @@ namespace DownUnder.UI.Widgets
             
             if (_double_click_countdown > 0f) _double_click_countdown -= UpdateData.ElapsedSeconds;
 
-            if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse) {
+            if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
+            {
                 _update_hovered_over = true;
                 if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
-                if (_update_clicked_on) {
+                if (_update_clicked_on)
+                {
                     _dragging_in = true;
                     if (UpdateData.UIInputState.Control) _update_added_to_focused = true;
                     else _update_set_as_focused = true;
-                    if (_triple_click_countdown > 0) {
+                    if (_triple_click_countdown > 0)
+                    {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
                         _update_triple_clicked = true;
                     }
-                    if (_double_click_countdown > 0) {
+                    if (_double_click_countdown > 0)
+                    {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
                         _update_double_clicked = true;
                         _triple_click_countdown = _double_click_timing_backing;
@@ -660,9 +670,14 @@ namespace DownUnder.UI.Widgets
                     _double_click_countdown = _double_click_timing_backing;
                 }
             }
-            else if (_dragging_in && !_dragging_off) {
-                _dragging_off = true;
-                _update_drag = true;
+            else
+            {
+                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_off = true;
+                if (_dragging_in && !_dragging_off)
+                {
+                    _dragging_off = true;
+                    _update_drag = true;
+                }
             }
             
             if (UserResizePolicy == UserResizePolicyType.allow || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted)) {
@@ -756,6 +771,7 @@ namespace DownUnder.UI.Widgets
             }
 
             if (_update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+            if (_update_clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
             if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
             if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
@@ -773,6 +789,8 @@ namespace DownUnder.UI.Widgets
             if (_post_update_flags.Delete) {
                 ParentWidget.DeleteChild(this);
                 deleted = true;
+                IsDeleted = true;
+                OnDelete?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
@@ -916,7 +934,11 @@ namespace DownUnder.UI.Widgets
         /// <summary> Disposes this <see cref="Widget"/> and removes it from its parent. </summary>
         /// <param name="now"> Set to true to delete this <see cref="Widget"/> on calling this, false to delete on next update. </param>
         public void Delete(bool now = false) {
-            if (now) ParentWidget.DeleteChild(this);
+            if (now)
+            {
+                ParentWidget.DeleteChild(this);
+                OnDelete?.Invoke(this, EventArgs.Empty);
+            }
             else _post_update_flags.Delete = true;
         }
 
@@ -967,6 +989,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnPassthroughDoubleClick;
         /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
         public event EventHandler OnPassthroughTripleClick;
+        /// <summary> Invoked when the user clicks on something other than this <see cref="Widget"/>. </summary>
+        public event EventHandler OnClickOff;
         /// <summary> Invoked when the mouse hovers over this <see cref="Widget"/>. </summary>
         public event EventHandler OnHover;
         /// <summary> Invoked when the mouse hovers off this <see cref="Widget"/>. </summary>
@@ -1011,8 +1035,14 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnListChange;
         /// <summary> Invoked when this <see cref="Widget"/> is disposed. </summary>
         public event EventHandler OnDispose;
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MinimumSize"/> is set to something new. </summary>
         public event EventHandler<Point2SetArgs> OnMinimumSizeSet;
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MinimumSize"/> is set to something new. Use this with <see cref="Point2SetOverrideArgs"/> to override the set size. </summary>
         public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
+        /// <summary> Invoked after this <see cref="Widget"/> is deleted by <see cref="Delete"/>. </summary>
+        public event EventHandler OnDelete;
+
+
 
         #endregion
 
@@ -1167,6 +1197,7 @@ namespace DownUnder.UI.Widgets
         #region ICloneable Implementation
 
         public object Clone() {
+            if (!IsCloningSupported) throw new Exception($"Cloning was flagged as unsupported with this {nameof(Widget)}. ({nameof(IsCloningSupported)} == false)");
             Widget c = new Widget();
             for (int i = 0; i < Children.Count; i++) c.Children.Add((Widget)Children[i].Clone());
             c.FitToContentArea = FitToContentArea;

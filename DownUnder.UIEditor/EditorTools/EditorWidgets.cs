@@ -2,6 +2,7 @@
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
 using static DownUnder.UI.Widgets.Widget;
 
 namespace DownUnder.UIEditor.EditorTools
@@ -104,7 +105,17 @@ namespace DownUnder.UIEditor.EditorTools
             editor_objects.property_grid_container = property_grid_container;
             editor_objects.behaviors_list = behaviors_list;
 
-            bordered_container.CommonBehaviors.AddPolicy(new CommonBehaviorPolicy() { Behavior = new ScrollBar() });
+            bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
+
+            widgets_border.TopBorder.OnClick += (sender, args) =>
+            {
+                Widget dropdown = BasicWidgets.DropDown(new UI.Widgets.DataTypes.WidgetList() {
+                    new Widget().WithAddedBehavior(new DrawText() { Text = "Item 1" })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 2" })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 3" })
+                });
+                bordered_container.Add(dropdown);
+            };
 
             return bordered_container;
         }

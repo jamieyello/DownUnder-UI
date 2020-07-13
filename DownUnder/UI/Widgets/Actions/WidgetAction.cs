@@ -8,10 +8,10 @@ namespace DownUnder.UI.Widgets.Actions {
         Widget _parent_backing;
         public enum DuplicatePolicyType {
             /// <summary> Override any existing duplicate <see cref="WidgetAction"/>. </summary>
-            override_,
+            @override,
             /// <summary> Execute alongside any duplicate <see cref="WidgetAction"/>. </summary>
             parallel,
-            /// <summary> Execute after any duplicate <see cref="WidgetAction"/> are done. </summary>
+            /// <summary> Execute after any duplicate <see cref="WidgetAction"/> is done. </summary>
             wait,
             /// <summary> Do not execute if a duplicate <see cref="WidgetAction"/> is being executed. </summary>
             cancel
@@ -24,6 +24,9 @@ namespace DownUnder.UI.Widgets.Actions {
             /// <summary> Defines a duplicate where the existing <see cref="WidgetAction"/> is attempting to reach the same end result. </summary>
             matches_result
         }
+
+        /// <summary> Invoked once this <see cref="WidgetAction"/> has been completed and removed from the <see cref="Widget"/>. </summary>
+        public event EventHandler OnCompletion;
 
         /// <summary> How this <see cref="WidgetAction"/> will execute if a duplicate action is already being executed. </summary>
         public DuplicatePolicyType DuplicatePolicy { get; set; } = DuplicatePolicyType.wait;
@@ -39,6 +42,7 @@ namespace DownUnder.UI.Widgets.Actions {
                     throw new Exception($"{nameof(WidgetAction)}s cannot be reused. Call {nameof(InitialClone)} to create a copy.");
                 }
                 _parent_backing = value;
+                Initialize();
                 ConnectToParent();
             }
         }
@@ -53,6 +57,7 @@ namespace DownUnder.UI.Widgets.Actions {
             throw new Exception();
         }
 
+        protected abstract void Initialize();
         protected abstract void ConnectToParent();
         protected abstract void DisconnectFromParent();
         protected abstract bool InterferesWith(WidgetAction action);
@@ -64,6 +69,7 @@ namespace DownUnder.UI.Widgets.Actions {
             DisconnectFromParent();
             _parent_backing.Actions.Remove(this);
             IsCompleted = true;
+            OnCompletion?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Windows.Media;
 
 namespace DownUnder.UI.Widgets.Behaviors {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>

@@ -88,7 +88,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         public bool Remove(WidgetBehavior behavior) {
-            if (((IList<WidgetBehavior>)_behaviors).Remove(behavior)) {
+            if (_behaviors.Remove(behavior)) {
                 behavior.Disconnect();
                 return true;
             }
@@ -103,6 +103,29 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
 
             return false;
+        }
+
+        /// <summary> Remove all <see cref="WidgetBehavior"/>s with the given <see cref="WidgetBehavior.BehaviorIDs"/>. </summary>
+        /// <param name="behavior_id"> The ID <see cref="string"/> to look for. </param>
+        /// <returns> A <see cref="List{WidgetBehavior}"/> of removed <see cref="WidgetBehavior"/>s. (if any) </returns>
+        public List<WidgetBehavior> RemoveIDed(string behavior_id) {
+            var removed = new List<WidgetBehavior>();
+            for (int i = 0; i < _behaviors.Count; i++) {
+                if (_behaviors[i].BehaviorIDs.Contains(behavior_id)) {
+                    removed.Add(_behaviors[i]);
+                    _behaviors.RemoveAt(i--);
+                }
+            }
+            return removed;
+        }
+
+        /// <summary> Remove all <see cref="WidgetBehavior"/>s with the given <see cref="WidgetBehavior.BehaviorIDs"/>. </summary>
+        /// <param name="behavior_ids"> The <see cref="string"/> <see cref="IEnumerable"/> IDs to look for. </param>
+        /// <returns> A <see cref="List{WidgetBehavior}"/> of removed <see cref="WidgetBehavior"/>s. (if any) </returns>
+        public List<WidgetBehavior> RemoveIDed(IEnumerable<string> behavior_ids) {
+            var removed = new List<WidgetBehavior>();
+            foreach (string behavior_id in behavior_ids) removed.AddRange(RemoveIDed(behavior_id));
+            return removed;
         }
 
         public void RemoveAt(int index) {
