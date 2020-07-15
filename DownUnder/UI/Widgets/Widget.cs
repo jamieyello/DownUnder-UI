@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utilities;
@@ -181,7 +182,6 @@ namespace DownUnder.UI.Widgets
         public BehaviorCollection Behaviors { get; private set; }
         public ActionCollection Actions { get; private set; }
         public DesignerModeSettings DesignerObjects { get; set; }
-        public BehaviorLibraryAccessor BehaviorLibrary { get; private set; } = new BehaviorLibraryAccessor();
         public Point2 Scroll { get; set; } = new Point2();
         public GroupBehaviorCollection GroupBehaviors { get; private set; }
         /// <summary> Set to true after this <see cref="Widget"/> has been deleted (as well as disposed) and is no longer in use. </summary>
@@ -450,12 +450,15 @@ namespace DownUnder.UI.Widgets
                 if (_parent_window_backing == value) return;
 
                 _parent_window_backing = value;
+                bool initialized = false;
                 if (value != null) {
-                    InitializeGraphics();
+                    initialized = InitializeGraphics();
                     //ConnectEvents(value);
                 }
                 
                 foreach (Widget child in Children) child.ParentWindow = value;
+
+                if (initialized) OnPostGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -915,14 +918,15 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Initializes all graphics related content. </summary>
-        private void InitializeGraphics() {
-            if (IsGraphicsInitialized) return;
+        private bool InitializeGraphics() {
+            if (IsGraphicsInitialized) return false;
             if (GraphicsDevice == null) throw new Exception($"GraphicsDevice cannot be null.");
             
             _local_sprite_batch = new SpriteBatch(GraphicsDevice);
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
             IsGraphicsInitialized = true;
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
+            return true;
         }
 
         /// <summary>  Used by internal <see cref="Focus"/> object. </summary>
@@ -997,6 +1001,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnHoverOff;
         /// <summary> Invoked after graphics have been initialized and are ready to use. </summary>
         public event EventHandler OnGraphicsInitialized;
+        /// <summary> Invoked after the this <see cref="Widget"/> and its children have been initialized. </summary>
+        public event EventHandler OnPostGraphicsInitialized;
         /// <summary> Invoked when this <see cref="Widget"/> is drawn. </summary>
         public event EventHandler OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
@@ -1265,6 +1271,7 @@ namespace DownUnder.UI.Widgets
         public void Insert(int index, Widget item) => Children.Insert(index, item);
         public void RemoveAt(int index) => Children.RemoveAt(index);
         public void Add(Widget item) => Children.Add(item);
+        public void AddRange(IEnumerable<Widget> widgets) => Children.AddRange(widgets);
         public void Clear() => Children.Clear();
         public bool Contains(Widget item) => Children.Contains(item);
         public void CopyTo(Widget[] array, int arrayIndex) => Children.CopyTo(array, arrayIndex);

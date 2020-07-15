@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;

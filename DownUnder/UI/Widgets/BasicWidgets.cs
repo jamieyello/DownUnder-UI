@@ -1,9 +1,14 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DownUnder.UI.Widgets
 {
@@ -18,33 +23,15 @@ namespace DownUnder.UI.Widgets
             return property_edit_widget;
         }
 
-        public static Widget DropDown(WidgetList widgets)
+        public static Widget DropDown(IEnumerable<Widget> widgets, PopInOut pop_in_out_behavior = null)
         {
-            Widget dropdown = new Widget() { 
-                Size = new Point2(100,100) 
-            }.WithAddedBehavior(new PopInOut());
-
-            //if (widgets == null) throw new System.Exception($"Parameter '{nameof(widgets)}' cannot be null.");
-            //if (widgets.Count == 0) throw new System.Exception($"Parameter '{nameof(widgets)}' cannot be empty.");
-
-            //Widget dropdown = new Widget();
-            //dropdown.MinimumHeight = 1f;
-            //dropdown.IsCloningSupported = false;
-            //dropdown.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
-            //dropdown.Behaviors.Add(new GridFormat(1, widgets.Count), out var grid);
-            //for (int i = 0; i < widgets.Count; i++) grid[0, i] = widgets[i];
-
-            //widgets[widgets.Count - 1].OnGraphicsInitialized += (sender, args) =>
-            //{
-            //    dropdown.Width = dropdown[0].Width;
-            //    dropdown.Actions.Add(new PropertyTransitionAction<float>(nameof(Widget.Height), widgets.CombinedHeight, InterpolationSettings.Faster));
-            //};
-
-            //dropdown.OnClickOff += (s, a) =>
-            //{
-            //    dropdown.Actions.Add(new PropertyTransitionAction<float>(nameof(Widget.Height), 0f, InterpolationSettings.Fast), out var close);
-            //    close.OnCompletion += (s, a) => dropdown.Delete();
-            //};
+            Widget dropdown = new Widget();
+            dropdown.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
+            dropdown.MinimumSize = new Point2(1f, 1f);
+            dropdown.AddRange(widgets);
+            dropdown.Behaviors.Add(new GridFormat(1, widgets.Count()));
+            if (pop_in_out_behavior == null) dropdown.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.95f, Directions2D.DLR), RectanglePart.Uniform(0f, Directions2D.D, 1f)) { ClosingMotion = InterpolationSettings.Faster });
+            else dropdown.Behaviors.Add(pop_in_out_behavior);
 
             return dropdown;
         }

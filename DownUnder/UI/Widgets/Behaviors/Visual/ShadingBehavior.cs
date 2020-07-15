@@ -4,7 +4,8 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors {
+namespace DownUnder.UI.Widgets.Behaviors.Visual
+{
     [DataContract] public class ShadingBehavior : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
 

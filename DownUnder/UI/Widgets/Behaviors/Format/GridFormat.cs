@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Format
 {
     /// <summary> A behavior that keeps children in a grid formation. </summary>
     public class GridFormat : WidgetBehavior
@@ -19,6 +19,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public Widget Filler { get; set; }
         public bool DisposeOldOnSet { get; set; } = true;
+        public bool SizeToContent { get; set; } = true;
 
         public GridFormat(Point dimensions, Widget filler = null)
         {
@@ -69,6 +70,10 @@ namespace DownUnder.UI.Widgets.Behaviors
                 SnappingPolicy = DiagonalDirections2D.None
             };
 
+        private void SetSizeToContent() {
+            if (SizeToContent) Parent.Size = Parent.Children.AreaCoverage.Value.Size;
+        }
+
         public WidgetList GetRow(int y_row) => GridReader.GetRow(Parent.Children, Width, y_row);
         public WidgetList GetColumn(int x_column) => GridReader.GetColumn(Parent.Children, Width, Height, x_column);
         public Widget this[int x, int y] {
@@ -97,7 +102,6 @@ namespace DownUnder.UI.Widgets.Behaviors
             ((Widget)sender).LastRemovedWidget.OnAreaChangePriority -= InternalAlign;
         }
 
-        // As usual this will be moved to GridWriter
         /// <summary> Respond to an inner <see cref="Widget"/>'s resizing by resizing the surrounding rows and columns. </summary>
         private void InternalAlign(object sender, RectangleFSetOverrideArgs args)
         {
@@ -175,6 +179,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 }
             }
 
+            SetSizeToContent();
             _enable_internal_align = true;
         }
     }

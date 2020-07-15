@@ -3,7 +3,7 @@ using System;
 using MonoGame.Extended;
 using DownUnder.Utility;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
     public class DragableOutlineAnimation : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };

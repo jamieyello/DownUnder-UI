@@ -1,9 +1,10 @@
-﻿using DownUnder.Utility;
+﻿using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.Utility;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Format
 {
     /// <summary> Adds <see cref="Widget"/>s that represent the properties and values of a given <see cref="object"/>. </summary>
     public class AddPropertyEditChildren : WidgetBehavior

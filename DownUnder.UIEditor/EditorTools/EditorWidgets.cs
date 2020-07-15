@@ -1,5 +1,8 @@
 ﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -30,7 +33,7 @@ namespace DownUnder.UIEditor.EditorTools
             // Left grid
             Widget side_grid = new Widget().WithAddedBehavior(new GridFormat(1, 3));
             layout[1, 0] = side_grid;
-            side_grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            side_grid.UserResizePolicy = UserResizePolicyType.allow;
             side_grid.AllowedResizingDirections = Directions2D.L;
 
             // Property grid
@@ -110,13 +113,20 @@ namespace DownUnder.UIEditor.EditorTools
             widgets_border.TopBorder.OnClick += (sender, args) =>
             {
                 Widget dropdown = BasicWidgets.DropDown(new UI.Widgets.DataTypes.WidgetList() {
-                    new Widget().WithAddedBehavior(new DrawText() { Text = "Item 1" })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 2" })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 3" })
+                    new Widget().WithAddedBehavior(new DrawText() { Text = "Item 1", ConstrainAreaToText = true })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 2", ConstrainAreaToText = true })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 3", ConstrainAreaToText = true })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 4", ConstrainAreaToText = true })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 5", ConstrainAreaToText = true })
+                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 6", ConstrainAreaToText = true })
                 });
                 bordered_container.Add(dropdown);
+                Console.WriteLine("item 1 area = " + dropdown[0].Area);
+                //dropdown[0].Width = 100f;
+                Console.WriteLine("item 1 area = " + dropdown[0].Area);
             };
 
+            bordered_container.IsCloningSupported = false;
             return bordered_container;
         }
 

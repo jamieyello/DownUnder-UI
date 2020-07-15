@@ -1,11 +1,10 @@
-﻿using Downunder.Utility;
-using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Format
 {
     [DataContract] public class BorderFormat : WidgetBehavior
     {

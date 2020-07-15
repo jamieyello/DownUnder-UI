@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Format
 {
     [DataContract] public class SpacedListFormat : WidgetBehavior
     {

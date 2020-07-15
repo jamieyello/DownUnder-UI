@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -86,14 +87,14 @@ namespace DownUnder {
         
         public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions, Point2? minimum_size = null) =>
             r.ResizedBy(new BorderSize(amount, directions), minimum_size);
-        
-        public static RectangleF ResizedByPercent(this RectangleF r, float percent, Directions2D directions)
+
+        public static RectangleF ResizedBy(this RectangleF r, RectanglePart part)
         {
             BorderSize resize = new BorderSize();
-            if (directions.Up) resize.Top = r.Height * percent;
-            if (directions.Down) resize.Bottom = r.Height * percent;
-            if (directions.Left) resize.Left = r.Width * percent;
-            if (directions.Right) resize.Right = r.Width * percent;
+            resize.Top = r.Height * -(1f - part.Indents.Up);
+            resize.Bottom = r.Height * -(1f - part.Indents.Down);
+            resize.Left = r.Width * -(1f -part.Indents.Left);
+            resize.Right = r.Width * -(1f - part.Indents.Right);
             return r.ResizedBy(resize);
 
         }

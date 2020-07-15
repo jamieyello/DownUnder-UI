@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
 

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
     public class DrawImage : WidgetBehavior
     {

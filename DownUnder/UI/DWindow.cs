@@ -65,8 +65,6 @@ namespace DownUnder.UI
         /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
         internal Widget ResizeCursorGrabber { get; set; }
         internal Directions2D ResizingDirections { get; set; }
-        /// <summary> A collection of basic general use <see cref="WidgetBehavior"/>s. </summary>
-        public BehaviorLibraryAccessor BehaviorLibrary { get; } = new BehaviorLibraryAccessor();
         /// <summary> <see cref="Widget"/> (if any) that is currently being resized. </summary>
         internal Widget ResizingWidget { get; private set; }
         /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>

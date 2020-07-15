@@ -14,8 +14,11 @@ namespace DownUnder.Utilities
             TransitionSpeed = transition_speed;
         }
 
+        /// <summary> Completed in 1 second. </summary>
         public static InterpolationSettings Default => new InterpolationSettings(InterpolationType.fake_sin, 1f);
         public static InterpolationSettings Fast => new InterpolationSettings(InterpolationType.fake_sin, 2.5f);
         public static InterpolationSettings Faster => new InterpolationSettings(InterpolationType.fake_sin, 5f);
+        public static InterpolationSettings Fastest => new InterpolationSettings(InterpolationType.fake_sin, 10f);
+        public static InterpolationSettings ExtremeSpeed => new InterpolationSettings(InterpolationType.fake_sin, 20f);
     }
 }

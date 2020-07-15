@@ -1,7 +1,7 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors {
+namespace DownUnder.UI.Widgets.Behaviors.Functional {
     public class DragAndDropSource : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 

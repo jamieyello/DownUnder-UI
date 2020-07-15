@@ -6,7 +6,7 @@ using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
     [DataContract] public class ScrollBar : WidgetBehavior
     {

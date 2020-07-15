@@ -2,7 +2,7 @@
 using MonoGame.Extended;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
     public class DrawText : WidgetBehavior
     {
@@ -63,7 +63,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         protected override void Initialize()
         {
-            
+            if (Parent.IsGraphicsInitialized) SetMinimumSize(this, EventArgs.Empty);
         }
 
         protected override void ConnectEvents() {
@@ -75,8 +75,8 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         protected override void DisconnectEvents() {
-            Parent.OnGraphicsInitialized -= SetMinimumSize;
             Parent.OnGraphicsInitialized -= AlignText;
+            Parent.OnGraphicsInitialized -= SetMinimumSize;
             Parent.OnResize -= AlignText;
             Parent.OnDraw -= Draw;
             Parent.OnMinimumSizeSetPriority -= OverrideMinimumSize;
@@ -106,7 +106,6 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void SetMinimumSize(object sender, EventArgs args)
         {
-            if (!Parent.IsGraphicsInitialized) return;
             if (ConstrainAreaToText) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 

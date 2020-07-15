@@ -295,10 +295,11 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         IEnumerator IEnumerable.GetEnumerator() => _widgets.GetEnumerator();
 
-        public void AddRange(WidgetList widgets) {
+        public void AddRange(IEnumerable<Widget> widgets) {
             if (IsReadOnly) ThrowReadOnlyException();
-            for (int i = 0; i < widgets.Count; i++) {
-                Add(widgets[i]);
+            foreach (Widget widget in widgets)
+            {
+                Add(widget);
             }
         }
 
