@@ -453,6 +453,7 @@ namespace DownUnder.UI.Widgets
                 bool initialized = false;
                 if (value != null) {
                     initialized = InitializeGraphics();
+                    OnParentWindowSet?.Invoke(this, EventArgs.Empty);
                     //ConnectEvents(value);
                 }
                 
@@ -1047,8 +1048,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
         /// <summary> Invoked after this <see cref="Widget"/> is deleted by <see cref="Delete"/>. </summary>
         public event EventHandler OnDelete;
-
-
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWindow"/> value is set. </summary>
+        public event EventHandler OnParentWindowSet;
 
         #endregion
 

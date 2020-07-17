@@ -60,7 +60,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            GridFormat c = new GridFormat(Dimensions);
+            c.Filler = (Widget)Filler.Clone();
+            c.DisposeOldOnSet = DisposeOldOnSet;
+            c.SizeToContent = SizeToContent;
+
+            return c;
         }
 
         private Widget DefaultCell() =>

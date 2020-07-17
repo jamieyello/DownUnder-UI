@@ -3,7 +3,7 @@
 //using System;
 //using System.Threading.Tasks;
 
-//namespace DownUnder.UI.Widgets.Actions
+//namespace DownUnder.UI.Widgets.Actions.Functional
 //{
 //    /// <summary> Creates a <see cref="Widget"/> asyncronously and slides it into the given <see cref="Layout"/>. </summary>
 //    public class AsyncLayoutSlide : WidgetAction

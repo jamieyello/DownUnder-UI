@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Actions;
+using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.Utilities;
 using MonoGame.Extended;
 using System;
@@ -15,6 +16,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             use_set_area,
             use_indent
         }
+
+        private WidgetAction closing_action;
 
         [DataMember] public PopInOutModeType Mode { get; set; } = PopInOutModeType.use_set_area;
         [DataMember] public bool CloseOnClickOff { get; set; } = true;
@@ -45,22 +48,28 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         {
             Parent.OnClickOff += ClickOff;
             Parent.OnPostGraphicsInitialized += Open;
+            Parent.OnUpdate += CheckForClose;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnClickOff -= ClickOff;
             Parent.OnPostGraphicsInitialized -= Open;
+            Parent.OnUpdate -= CheckForClose;
         }
 
         public override object Clone()
         {
             PopInOut c = new PopInOut();
+            c.Mode = Mode;
             c.CloseOnClickOff = CloseOnClickOff;
+            c.DeleteOnClose = DeleteOnClose;
             c.OpeningArea = OpeningArea;
             c.ClosingArea = ClosingArea;
             c.OpeningMotion = OpeningMotion;
             c.ClosingMotion = ClosingMotion;
+            c.OpeningIndent = (RectanglePart)OpeningIndent.Clone();
+            c.ClosingIndent = (RectanglePart)ClosingIndent.Clone();
             return c;
         }
 
@@ -76,11 +85,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             if (CloseOnClickOff) Close();
         }
 
+        private void CheckForClose(object sender, EventArgs args)
+        {
+            if (!DeleteOnClose) return;
+            if (closing_action != null && closing_action.IsCompleted) Parent.Delete();
+        }
+
         public void Close()
         {
             RectangleF closing_area = Mode == PopInOutModeType.use_set_area ? ClosingArea : Parent.Area.ResizedBy(ClosingIndent);
-            Parent.Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), closing_area, ClosingMotion) { DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override }, out var close);
-            if (DeleteOnClose) close.OnCompletion += (s, a) => Parent.Delete();
+            Parent.Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), closing_area, ClosingMotion) { DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override }, out closing_action);
         }
     }
 }

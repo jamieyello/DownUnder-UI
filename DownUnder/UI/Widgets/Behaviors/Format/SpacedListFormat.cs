@@ -7,13 +7,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
     [DataContract] public class SpacedListFormat : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
-        [DataMember] public float ListSpacing { get; set; } = 25f;
 
+        [DataMember] public float ListSpacing { get; set; } = 25f;
         [DataMember] public InterpolationSettings? Interpolation { get; set; } = InterpolationSettings.Faster;
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            SpacedListFormat c = new SpacedListFormat();
+            c.ListSpacing = ListSpacing;
+            if (Interpolation != null) c.Interpolation = Interpolation.Value;
+            return c;
         }
 
         protected override void Initialize()

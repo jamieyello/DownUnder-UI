@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder.Utility {
-    [DataContract] public class GenericDirections2D <T> {
+    [DataContract] public class GenericDirections2D <T> : ICloneable
+    {
         T up_backing;
         T down_backing;
         T left_backing;
@@ -113,14 +114,100 @@ namespace DownUnder.Utility {
             }
             else if (typeof(ICloneable).IsAssignableFrom(typeof(T))) {
                 GenericDirections2D<T> result = new GenericDirections2D<T>(false);
-                result.Up = (T)((ICloneable)Convert.ChangeType(Up, typeof(ICloneable))).Clone();
-                result.Down = (T)((ICloneable)Convert.ChangeType(Down, typeof(ICloneable))).Clone();
-                result.Left = (T)((ICloneable)Convert.ChangeType(Left, typeof(ICloneable))).Clone();
-                result.Right = (T)((ICloneable)Convert.ChangeType(Right, typeof(ICloneable))).Clone();
+                if (Up is ICloneable up) result.Up = (T)up.Clone();
+                if (Down is ICloneable down) result.Down = (T)down.Clone();
+                if (Left is ICloneable left) result.Left = (T)left.Clone();
+                if (Right is ICloneable right) result.Right = (T)right.Clone();
                 return result;
             }
 
             throw new Exception($"Cannot clone {typeof(T)} because it is not a {nameof(ValueType)} and does not implement {nameof(ICloneable)}.");
+        }
+
+        public TypeCode GetTypeCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ToBoolean(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public char ToChar(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public sbyte ToSByte(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte ToByte(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short ToInt16(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort ToUInt16(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ToInt32(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint ToUInt32(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long ToInt64(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong ToUInt64(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float ToSingle(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double ToDouble(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal ToDecimal(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime ToDateTime(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ToString(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ToType(Type conversionType, IFormatProvider provider)
+        {
+            if (conversionType == typeof(GenericDirections2D<T>)) return this;
+            throw new NotImplementedException();
         }
     }
 }

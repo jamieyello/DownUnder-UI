@@ -9,8 +9,6 @@ namespace DownUnder.UI.Widgets.Behaviors {
         Widget _parent_backing;
 
         public abstract string[] BehaviorIDs { get; protected set; }
-        public event EventHandler OnConnect;
-        public event EventHandler OnDisconnect;
 
         public bool HasParent => Parent != null;
 
@@ -24,14 +22,12 @@ namespace DownUnder.UI.Widgets.Behaviors {
                 _parent_backing = value;
                 Initialize();
                 ConnectEvents();
-                OnConnect?.Invoke(this, EventArgs.Empty);
             }
         }
 
         internal void Disconnect()
         {
             DisconnectEvents();
-            OnDisconnect?.Invoke(this, EventArgs.Empty);
         }
 
         protected abstract void Initialize();

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets.Actions
+namespace DownUnder.UI.Widgets.Actions.Functional
 {
     class ActionSequence : WidgetAction
     {

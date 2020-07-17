@@ -121,9 +121,6 @@ namespace DownUnder.UIEditor.EditorTools
                     ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 6", ConstrainAreaToText = true })
                 });
                 bordered_container.Add(dropdown);
-                Console.WriteLine("item 1 area = " + dropdown[0].Area);
-                //dropdown[0].Width = 100f;
-                Console.WriteLine("item 1 area = " + dropdown[0].Area);
             };
 
             bordered_container.IsCloningSupported = false;

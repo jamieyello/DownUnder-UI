@@ -3,7 +3,7 @@
 //using MonoGame.Extended;
 //using System;
 
-//namespace DownUnder.UI.Widgets.Actions
+//namespace DownUnder.UI.Widgets.Actions.Functional
 //{
 //    public class AutoLayoutSlide : WidgetAction
 //    {
@@ -40,7 +40,7 @@
 //            _new_widget_start = _direction.ValueInDirection(Parent.Size).AsRectanglePosition(_new_widget.Size);
 //            _new_widget_end = _new_widget.Area;
 //            _new_widget_area = new ChangingValue<RectangleF>(_new_widget_start, _new_widget_end, _interpolation);
-            
+
 //        }
 
 //        protected override void DisconnectFromParent()

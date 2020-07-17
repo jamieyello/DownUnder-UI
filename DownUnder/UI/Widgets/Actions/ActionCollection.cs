@@ -54,8 +54,9 @@ namespace DownUnder.UI.Widgets.Actions {
                 }
             } else throw new System.Exception($"DuplicatePolicy {action.DuplicatePolicy} not supported.");
 
+            _actions.Add(action);
             action.Parent = _parent;
-            ((IList<WidgetAction>)_actions).Add(action);
+            
             return;
         }
 
@@ -92,12 +93,7 @@ namespace DownUnder.UI.Widgets.Actions {
         public int IndexOf(WidgetAction item) => ((IList<WidgetAction>)_actions).IndexOf(item);
 
         public bool Remove(WidgetAction item) {
-            if (((IList<WidgetAction>)_actions).Remove(item))
-            {
-                //item.DisconnectFromParent();
-                return true;
-            }
-            return false;
+            return _actions.Remove(item);
         }
 
         public void RemoveAt(int index) {

@@ -25,9 +25,6 @@ namespace DownUnder.UI.Widgets.Actions {
             matches_result
         }
 
-        /// <summary> Invoked once this <see cref="WidgetAction"/> has been completed and removed from the <see cref="Widget"/>. </summary>
-        public event EventHandler OnCompletion;
-
         /// <summary> How this <see cref="WidgetAction"/> will execute if a duplicate action is already being executed. </summary>
         public DuplicatePolicyType DuplicatePolicy { get; set; } = DuplicatePolicyType.wait;
 
@@ -63,13 +60,19 @@ namespace DownUnder.UI.Widgets.Actions {
         protected abstract bool InterferesWith(WidgetAction action);
         protected abstract bool Matches(WidgetAction action);
 
-        public abstract object InitialClone();
+        public virtual object InitialClone() 
+        {
+            WidgetAction c = (WidgetAction)Activator.CreateInstance(GetType());
+            c.DuplicatePolicy = DuplicatePolicy;
+            c.DuplicateDefinition = DuplicateDefinition;
+
+            return c;
+        }
 
         protected void EndAction() {
             DisconnectFromParent();
             _parent_backing.Actions.Remove(this);
             IsCompleted = true;
-            OnCompletion?.Invoke(this, EventArgs.Empty);
         }
     }
 }
