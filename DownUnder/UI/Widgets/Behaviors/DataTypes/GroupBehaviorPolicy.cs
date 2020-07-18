@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.Widgets.Behaviors
+﻿namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
     public class GroupBehaviorPolicy
     {

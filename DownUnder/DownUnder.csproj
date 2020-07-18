@@ -112,6 +112,7 @@
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionCollection.cs" />
+    <Compile Include="UI\Widgets\Actions\DataTypes\AddNewWidgetLocation.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AddMainWidget.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
@@ -122,22 +123,22 @@
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\PopInOut.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorCollection.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorPolicy.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\AddPropertyEditChildren.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\SpacedListFormat.cs" />
-    <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\WidgetTracker.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\Point2SetOverrideArgs.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetOverrideArgs.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Debug\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\BehaviorCollection.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\BehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DragableOutlineAnimation.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
@@ -154,7 +155,10 @@
     <Compile Include="UI\Widgets\OldStuff\UIEditor.cs" />
     <Compile Include="Utilities\CustomEventArgs\AddItemArgs.cs" />
     <Compile Include="Utilities\CustomEventArgs\RemoveItemArgs.cs" />
+    <Compile Include="Utilities\DiagonalDirection2D.cs" />
+    <Compile Include="Utilities\Direction2D.cs" />
     <Compile Include="Utilities\EventList.cs" />
+    <Compile Include="Utilities\GenericDiagonalDirections2D.cs" />
     <Compile Include="Utilities\GenericDirections2D.cs" />
     <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
@@ -206,7 +210,7 @@
     <Content Include="UI\Images\opened folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
+    <Content Include="UI\Widgets\Behaviors\DataTypes\WidgetBehaviorTemplate.txt" />
     <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>
   <ItemGroup>

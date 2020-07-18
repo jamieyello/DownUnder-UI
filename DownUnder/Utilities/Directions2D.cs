@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended;
+﻿using DownUnder.Utilities;
+using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
 
@@ -211,6 +212,16 @@ namespace DownUnder.Utility
                 down = d1.down && d2.down
             };
         }
+
+        public static Directions2D FromDirection2D(Direction2D direction) =>
+            new Directions2D() 
+            {
+                Up = direction == Direction2D.up,
+                Down = direction == Direction2D.down,
+                Left = direction == Direction2D.left,
+                Right = direction == Direction2D.right
+            };
+        
 
         public static Directions2D All => new Directions2D() { Up = true, Down = true, Left = true, Right = true };
         public static Directions2D UDLR => new Directions2D() { Up = true, Down = true, Left = true, Right = true };

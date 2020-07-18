@@ -17,6 +17,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public WidgetAction Action { get; set; }
         public string NameofEventHandler { get; set; }
+        public bool CloneAction { get; set; } = true;
 
         public TriggerAction() { }
         public TriggerAction(string nameof_eventhandler, WidgetAction action)
@@ -48,7 +49,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public void AddAction(object sender, EventArgs args)
         {
-            Parent.Actions.Add(Action);
+            if (CloneAction) Parent.Actions.Add((WidgetAction)Action.InitialClone());
+            else Parent.Actions.Add(Action);
         }
     }
 }

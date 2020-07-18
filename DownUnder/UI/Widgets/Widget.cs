@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.DataTypes;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;

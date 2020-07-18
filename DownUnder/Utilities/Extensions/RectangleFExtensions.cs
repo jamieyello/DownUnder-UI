@@ -114,7 +114,11 @@ namespace DownUnder {
         public static RectangleF WithPosition(this RectangleF r, Point2 p) => new RectangleF(p, r.Size);
         public static RectangleF WithSize(this RectangleF r, Size2 s) => new RectangleF(r.Position, s);
         public static RectangleF WithSize(this RectangleF r, float width, float height) => new RectangleF(r.X, r.Y, width, height);
-        
+        public static RectangleF WithTop(this RectangleF r, float top) => new RectangleF(r.X, top, r.Width, r.Height);
+        public static RectangleF WithBottom(this RectangleF r, float bottom) => new RectangleF(r.X, bottom - r.Height, r.Width, r.Height);
+        public static RectangleF WithLeft(this RectangleF r, float left) => new RectangleF(left, r.Y, r.Width, r.Height);
+        public static RectangleF WithRight(this RectangleF r, float right) => new RectangleF(right - r.Width, r.Y, r.Width, r.Height);
+
         public static RectangleF WithMinimumSize(this RectangleF r, Point2 s) {
             RectangleF result = r;
             if (r.Width < s.X) result.Width = s.X;
@@ -178,5 +182,32 @@ namespace DownUnder {
                 ((int)((r.Height + accuracy / 2) / accuracy) * accuracy)
                 );
         
+        public static float GetSide(this RectangleF r, Direction2D direction)
+        {
+            if (direction == Direction2D.up) return r.Top;
+            if (direction == Direction2D.down) return r.Bottom;
+            if (direction == Direction2D.left) return r.Left;
+            if (direction == Direction2D.right) return r.Right; 
+            throw new Exception($"Invalid {nameof(Direction2D)} given.");
+        }
+
+        public static Point2 GetCorner(this RectangleF r, DiagonalDirection2D direction)
+        {
+            if (direction == DiagonalDirection2D.top_left) return r.TopLeft;
+            if (direction == DiagonalDirection2D.top_right) return r.TopRight();
+            if (direction == DiagonalDirection2D.bottom_left) return r.BottomLeft();
+            if (direction == DiagonalDirection2D.bottom_right) return r.BottomRight;
+            throw new Exception($"Invalid {nameof(DiagonalDirection2D)} given.");
+        }
+
+        public static RectangleF Bordering(this RectangleF r, RectangleF border, Direction2D side)
+        {
+            RectangleF result = r;
+            if (side == Direction2D.up) return r.WithBottom(border.Top);
+            if (side == Direction2D.down) return r.WithTop(border.Bottom);
+            if (side == Direction2D.left) return r.WithRight(border.Left);
+            if (side == Direction2D.right) return r.WithLeft(border.Right);
+            throw new Exception($"Invalid {nameof(Direction2D)} given.");
+        }
     }
 }

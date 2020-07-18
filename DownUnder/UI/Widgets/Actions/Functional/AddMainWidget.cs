@@ -1,13 +1,15 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.Actions.DataTypes;
+using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Actions.Functional
 {
-    [DataContract] class AddMainWidget : WidgetAction
+    [DataContract] public class AddMainWidget : WidgetAction
     {
         [DataMember] public Widget Widget { get; set; }
         [DataMember] public bool CloneWidgetOnAdd { get; set; } = true;
         [DataMember] public bool CloneWidgetInClone { get; set; } = true;
+        [DataMember] public AddNewWidgetLocation LocationOptions { get; set; }
 
         public AddMainWidget() { }
         public AddMainWidget(Widget widget)
@@ -34,8 +36,11 @@ namespace DownUnder.UI.Widgets.Actions.Functional
 
         public void AddWidget(object sender, EventArgs args)
         {
-            if (CloneWidgetOnAdd) Parent.ParentWindow.MainWidget.Add((Widget)Widget.Clone());
-            else Parent.Add(Widget);
+            Widget widget;
+            if (CloneWidgetOnAdd) widget = (Widget)Widget.Clone();
+            else widget = Widget;
+            LocationOptions?.ApplyLocation(Parent, widget);
+            Parent.ParentWindow.MainWidget.Add(widget);
             EndAction();
         }
 
@@ -46,6 +51,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             else c.Widget = Widget;
             c.CloneWidgetOnAdd = CloneWidgetOnAdd;
             c.CloneWidgetInClone = CloneWidgetInClone;
+            c.LocationOptions = (AddNewWidgetLocation)LocationOptions.Clone();
             return c;
         }
 

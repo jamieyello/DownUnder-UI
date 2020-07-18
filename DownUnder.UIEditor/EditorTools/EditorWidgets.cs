@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Actions.Functional;
+using DownUnder.UI.Widgets.Behaviors.DataTypes;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
@@ -18,10 +19,22 @@ namespace DownUnder.UIEditor.EditorTools
             bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
             border_format.Center = layout;
-            border_format.TopBorder = new Widget();
-            border_format.TopBorder.Height = 30;
-            border_format.TopBorder.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
-            border_format.TopBorder.WidgetRole = WidgetRoleType.header_widget;
+            Widget top_bar = new Widget();
+            border_format.TopBorder = top_bar;
+            top_bar.ChangeColorOnMouseOver = false;
+            top_bar.Height = 30;
+            top_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
+            top_bar.WidgetRole = WidgetRoleType.header_widget;
+            top_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });
+            top_bar.Add(new Widget().WithAddedBehavior(new DrawText() { Text = "File" }));
+            top_bar[0].Behaviors.Add(
+                new TriggerAction(
+                    nameof(Widget.OnClick), 
+                    new AddMainWidget(BasicWidgets.DropDown(
+                        new string[] 
+                        { "New", "Open", "Save", "Exit" })) {
+                        LocationOptions = new UI.Widgets.Actions.DataTypes.AddNewWidgetLocation() {
+                            ParentSide = Utilities.Direction2D.down, ParentUp = 1 } }));
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -109,20 +122,6 @@ namespace DownUnder.UIEditor.EditorTools
             editor_objects.behaviors_list = behaviors_list;
 
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
-
-            widgets_border.TopBorder.OnClick += (sender, args) =>
-            {
-                Widget dropdown = BasicWidgets.DropDown(new UI.Widgets.DataTypes.WidgetList() {
-                    new Widget().WithAddedBehavior(new DrawText() { Text = "Item 1", ConstrainAreaToText = true })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 2", ConstrainAreaToText = true })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 3", ConstrainAreaToText = true })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 4", ConstrainAreaToText = true })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 5", ConstrainAreaToText = true })
-                    ,new Widget().WithAddedBehavior(new DrawText() { Text = "Item 6", ConstrainAreaToText = true })
-                });
-                bordered_container.Add(dropdown);
-            };
-
             bordered_container.IsCloningSupported = false;
             return bordered_container;
         }
