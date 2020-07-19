@@ -21,12 +21,12 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             throw new NotImplementedException();
         }
 
-        protected override void ConnectToParent()
+        protected override void ConnectEvents()
         {
             throw new NotImplementedException();
         }
 
-        protected override void DisconnectFromParent()
+        protected override void DisconnectEvents()
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Actions.DataTypes;
+using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.UI.Widgets.Behaviors.DataTypes;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
@@ -10,6 +11,7 @@ using DownUnder.Utility;
 using MonoGame.Extended;
 using System.Collections.Generic;
 using System.Linq;
+using static DownUnder.UI.Widgets.Widget;
 
 namespace DownUnder.UI.Widgets
 {
@@ -22,6 +24,42 @@ namespace DownUnder.UI.Widgets
             //property_edit_widget.Behaviors.Add(property_children);
             //property_edit_widget.Behaviors.Add(new GridFormat(2, property_children.Properties.Length));
             return property_edit_widget;
+        }
+
+        public static Widget FileBar(AutoDictionary<string, AutoDictionary<string, DropDownEntry>> entries)
+        {
+            Widget file_bar = new Widget
+            {
+                ChangeColorOnMouseOver = false,
+                Height = 30,
+                WidgetRole = WidgetRoleType.header_widget
+            };
+
+            file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
+            file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });
+
+            foreach (var entry in entries)
+            {
+                Widget w_entry = new Widget().WithAddedBehavior(new DrawText() { Text = entry.Key });
+                w_entry.DrawOutline = false;
+                w_entry.DrawBackground = false;
+
+                WidgetList items = new WidgetList();
+                foreach (var item in entry.Value)
+                {
+                    Widget new_entry = new Widget()
+                        .WithAddedBehavior(new DrawText() { Text = item.Key });
+                    if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
+                    items.Add(new_entry);
+                }
+
+                Widget dropdown = DropDown(items);
+
+                w_entry.Behaviors.Add(new TriggerAction(nameof(Widget.OnClick), new AddMainWidget(dropdown) { LocationOptions = new AddNewWidgetLocation() { ParentSide = Direction2D.down, ParentUp = 1 } }));
+                file_bar.Add(w_entry);
+            }
+
+            return file_bar;
         }
 
         public static Widget DropDown(IEnumerable<string> items, PopInOut pop_in_out_behavior = null)

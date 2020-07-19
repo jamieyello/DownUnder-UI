@@ -5,8 +5,8 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
     [DataContract] public class GroupBehaviorCollection
     {
-        private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
-        private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
+        [DataMember] private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
+        [DataMember] private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
 
         public Widget Parent { get; set; }
         

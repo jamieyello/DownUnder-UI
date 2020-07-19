@@ -67,6 +67,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EditorTools\Actions\SaveProjectDialog.cs" />
     <Compile Include="EditorTools\EditorObjects.cs" />
     <Compile Include="EditorTools\TestLayouts.cs" />
     <Compile Include="EditorTools\EditorWidgets.cs" />
@@ -86,6 +87,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

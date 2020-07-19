@@ -1,12 +1,13 @@
 ﻿using DownUnder.Utilities;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Actions.DataTypes
 {
-    public class AddNewWidgetLocation : ICloneable
+    [DataContract] public class AddNewWidgetLocation : ICloneable
     {
-        public int ParentUp;
-        public Direction2D ParentSide;
+        [DataMember] public int ParentUp { get; set; } = 0;
+        [DataMember] public Direction2D ParentSide = Direction2D.down;
 
         public void ApplyLocation(Widget spawner, Widget widget)
         {

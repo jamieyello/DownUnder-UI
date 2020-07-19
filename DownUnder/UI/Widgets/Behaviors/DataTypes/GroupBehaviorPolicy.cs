@@ -1,13 +1,15 @@
-﻿namespace DownUnder.UI.Widgets.Behaviors.DataTypes
+﻿using System.Runtime.Serialization;
+
+namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    public class GroupBehaviorPolicy
+    [DataContract] public class GroupBehaviorPolicy
     {
         public enum BehaviorInheritancePolicy
         {
             apply_to_compatible_children
         }
 
-        public WidgetBehavior Behavior;
-        public BehaviorInheritancePolicy InheritancePolicy = BehaviorInheritancePolicy.apply_to_compatible_children;
+        [DataMember] public WidgetBehavior Behavior;
+        [DataMember] public BehaviorInheritancePolicy InheritancePolicy = BehaviorInheritancePolicy.apply_to_compatible_children;
     }
 }

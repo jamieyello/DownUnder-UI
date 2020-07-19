@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.Widgets.Actions {
-    public class ActionCollection {
+    [DataContract] public class ActionCollection {
         private readonly Widget _parent;
+        [DataMember] private readonly List<WidgetAction> _actions = new List<WidgetAction>();
 
         public ActionCollection(Widget parent) => _parent = parent;
-        private readonly List<WidgetAction> _actions = new List<WidgetAction>();
         private readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
         public WidgetAction this[int index] { get => ((IList<WidgetAction>)_actions)[index]; set => ((IList<WidgetAction>)_actions)[index] = value; }
         public int Count => ((IList<WidgetAction>)_actions).Count;

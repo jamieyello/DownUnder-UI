@@ -1,10 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
@@ -44,7 +40,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            TriggerAction c = new TriggerAction();
+            if (Action != null) c.Action = (WidgetAction)Action.InitialClone();
+            c.NameofEventHandler = NameofEventHandler;
+            c.CloneAction = CloneAction;
+            return c;
         }
 
         public void AddAction(object sender, EventArgs args)

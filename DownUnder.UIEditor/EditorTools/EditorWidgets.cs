@@ -1,13 +1,14 @@
 ﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.UI.Widgets.Behaviors.DataTypes;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UIEditor.EditorTools.Actions;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
-using System;
 using static DownUnder.UI.Widgets.Widget;
+using ScrollBar = DownUnder.UI.Widgets.Behaviors.Functional.ScrollBar;
 
 namespace DownUnder.UIEditor.EditorTools
 {
@@ -19,22 +20,17 @@ namespace DownUnder.UIEditor.EditorTools
             bordered_container.Behaviors.Add(new BorderFormat(), out var border_format);
             Widget layout = new Widget().WithAddedBehavior(new GridFormat(2, 1));
             border_format.Center = layout;
-            Widget top_bar = new Widget();
-            border_format.TopBorder = top_bar;
-            top_bar.ChangeColorOnMouseOver = false;
-            top_bar.Height = 30;
-            top_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
-            top_bar.WidgetRole = WidgetRoleType.header_widget;
-            top_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });
-            top_bar.Add(new Widget().WithAddedBehavior(new DrawText() { Text = "File" }));
-            top_bar[0].Behaviors.Add(
-                new TriggerAction(
-                    nameof(Widget.OnClick), 
-                    new AddMainWidget(BasicWidgets.DropDown(
-                        new string[] 
-                        { "New", "Open", "Save", "Exit" })) {
-                        LocationOptions = new UI.Widgets.Actions.DataTypes.AddNewWidgetLocation() {
-                            ParentSide = Utilities.Direction2D.down, ParentUp = 1 } }));
+
+            AutoDictionary<string, AutoDictionary<string, DropDownEntry>> file_bar_entries = new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>();
+
+            file_bar_entries["File"]["New"].ClickAction = null;
+            file_bar_entries["File"]["Save"].ClickAction = new SaveProjectDialog();
+            file_bar_entries["Edit"]["Undo"].ClickAction = null;
+            file_bar_entries["Edit"]["Redo"].ClickAction = null;
+            file_bar_entries["View"]["Behavior Browser"].ClickAction = null;
+            file_bar_entries["View"]["Action Browser"].ClickAction = null;
+
+            border_format.TopBorder = BasicWidgets.FileBar(file_bar_entries);
 
             // Project
             layout[0, 0].EmbedChildren = false;
@@ -77,7 +73,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             // Widgets dock
             Widget widgets_container = new Widget();
-            widgets_container.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            widgets_container.UserResizePolicy = UserResizePolicyType.allow;
             widgets_container.AllowedResizingDirections = Directions2D.D;
             BorderFormat widgets_border = new BorderFormat();
             widgets_container.Behaviors.Add(widgets_border);

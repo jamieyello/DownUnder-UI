@@ -1,10 +1,11 @@
 ﻿using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.UI.Widgets.Behaviors;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Actions {
     /// <summary> A <see cref="WidgetAction"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this deletes itself on finishing execution. </summary>
-    public abstract class WidgetAction : INeedsWidgetParent {
+    [DataContract] public abstract class WidgetAction : INeedsWidgetParent {
         Widget _parent_backing;
         public enum DuplicatePolicyType {
             /// <summary> Override any existing duplicate <see cref="WidgetAction"/>. </summary>
@@ -26,10 +27,10 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         /// <summary> How this <see cref="WidgetAction"/> will execute if a duplicate action is already being executed. </summary>
-        public DuplicatePolicyType DuplicatePolicy { get; set; } = DuplicatePolicyType.wait;
+        [DataMember] public DuplicatePolicyType DuplicatePolicy { get; set; } = DuplicatePolicyType.wait;
 
         /// <summary> How this <see cref="WidgetAction"/> will determine if an existing <see cref="WidgetAction"/> is a duplicate. </summary>
-        public DuplicateDefinitionType DuplicateDefinition { get; set; } = DuplicateDefinitionType.interferes_with;
+        [DataMember] public DuplicateDefinitionType DuplicateDefinition { get; set; } = DuplicateDefinitionType.interferes_with;
 
         public Widget Parent {
             get => _parent_backing;
@@ -40,7 +41,7 @@ namespace DownUnder.UI.Widgets.Actions {
                 }
                 _parent_backing = value;
                 Initialize();
-                ConnectToParent();
+                ConnectEvents();
             }
         }
 
@@ -55,8 +56,8 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         protected abstract void Initialize();
-        protected abstract void ConnectToParent();
-        protected abstract void DisconnectFromParent();
+        protected abstract void ConnectEvents();
+        protected abstract void DisconnectEvents();
         protected abstract bool InterferesWith(WidgetAction action);
         protected abstract bool Matches(WidgetAction action);
 
@@ -70,7 +71,7 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         protected void EndAction() {
-            DisconnectFromParent();
+            DisconnectEvents();
             _parent_backing.Actions.Remove(this);
             IsCompleted = true;
         }

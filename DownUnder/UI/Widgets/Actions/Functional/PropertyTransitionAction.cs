@@ -56,11 +56,11 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             _changing_value.SetTargetValue(TargetValue);
         }
 
-        protected override void ConnectToParent() {
+        protected override void ConnectEvents() {
             Parent.OnUpdate += Update;
         }
 
-        protected override void DisconnectFromParent() {
+        protected override void DisconnectEvents() {
             Parent.OnUpdate -= Update;
         }
 

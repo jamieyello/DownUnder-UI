@@ -2,16 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    public class BehaviorCollection : IList<WidgetBehavior>
+    [DataContract] public class BehaviorCollection : IList<WidgetBehavior>
     {
         private readonly Widget _parent;
+        [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
+
         public BehaviorCollection(Widget parent) => _parent = parent;
-        private readonly List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
 
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => _behaviors[index] = value; }
+
         public bool HasBehaviorOfType(Type type) {
             foreach (WidgetBehavior behavior in this) {
                 if (behavior.GetType() == type) return true;
@@ -19,6 +22,7 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 
             return false;
         }
+
         public T GetFirst<T>() {
             foreach (WidgetBehavior behavior in this) {
                 if (behavior.GetType() == typeof(T)) return (T)Convert.ChangeType(behavior, typeof(T));
@@ -26,7 +30,9 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 
             return default;
         }
+
         public int Count => _behaviors.Count;
+
         public bool IsReadOnly => ((IList<WidgetBehavior>)_behaviors).IsReadOnly;
 
         public void Add(WidgetBehavior behavior) {

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    public class GroupBehaviorAcceptancePolicy// : ICloneable
+    [DataContract] public class GroupBehaviorAcceptancePolicy// : ICloneable
     {
-        public List<string> DisallowedIDs { get; set; } = new List<string>();
+        [DataMember] public List<string> DisallowedIDs { get; set; } = new List<string>();
 
         internal bool IsBehaviorAllowed(WidgetBehavior behavior)
         {

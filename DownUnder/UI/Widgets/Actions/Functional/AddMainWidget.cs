@@ -23,8 +23,8 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             else Parent.OnParentWindowSet += AddWidget;
         }
 
-        protected override void ConnectToParent() { }
-        protected override void DisconnectFromParent() 
+        protected override void ConnectEvents() { }
+        protected override void DisconnectEvents() 
         {
             Parent.OnParentWindowSet -= AddWidget;
         }
