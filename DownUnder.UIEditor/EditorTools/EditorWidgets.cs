@@ -25,6 +25,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             file_bar_entries["File"]["New"].ClickAction = null;
             file_bar_entries["File"]["Save"].ClickAction = new SaveProjectDialog();
+            file_bar_entries["File"]["Load"].ClickAction = null;
             file_bar_entries["Edit"]["Undo"].ClickAction = null;
             file_bar_entries["Edit"]["Redo"].ClickAction = null;
             file_bar_entries["View"]["Behavior Browser"].ClickAction = null;
