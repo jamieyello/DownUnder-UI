@@ -11,8 +11,6 @@ Still an early WIP. Testing and feedback needed!
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/UI.Widget) that can add any functionality.
 
 ## Planned Features
- - 3D Elements
- - Skins and themes, procedually generated 3D themes that can be easily applied to any Widget.
  - Community marketplace to share Widgets and Widget behaviors.
 
 ## Community
