@@ -20,7 +20,7 @@ Still an early WIP. Testing and feedback needed!
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
 ## Preview Build
-The preview build showcases Widget transitions and animations in an unfinished Widget editor. The entirety of the window is made of Widgets and can be serialized to XML and back with the same functionality.
+The preview build showcases Widget transitions and animations in an unfinished Widget editor. The entirety of the window is made of Widgets, all functionality added through WidgetBehaviors, and can be serialized to XML and back with the same functionality.
 
 [Download preview build.](/DownUnder/Preview.zip)
 
