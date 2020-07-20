@@ -24,8 +24,8 @@ namespace DownUnder.UIEditor.EditorTools
             AutoDictionary<string, AutoDictionary<string, DropDownEntry>> file_bar_entries = new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>();
 
             file_bar_entries["File"]["New"].ClickAction = null;
-            file_bar_entries["File"]["Save"].ClickAction = new SaveProjectDialog();
-            file_bar_entries["File"]["Load"].ClickAction = null;
+            file_bar_entries["File"]["Save"].ClickAction = new SaveProject();
+            file_bar_entries["File"]["Load"].ClickAction = new LoadProject();
             file_bar_entries["Edit"]["Undo"].ClickAction = null;
             file_bar_entries["Edit"]["Redo"].ClickAction = null;
             file_bar_entries["View"]["Behavior Browser"].ClickAction = null;

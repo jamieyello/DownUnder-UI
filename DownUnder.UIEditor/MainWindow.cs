@@ -58,7 +58,7 @@ namespace DownUnder.Widgets
             //MainWidget = TestLayouts.InnerGirdResizeTest();
             //MainWidget = TestLayouts.RenderScrollDebug();
 
-            MainWidget = EditorWidgets.UIEditor(out var editor_objects);
+            MainWidget = EditorWidgets.UIEditor(out editor_objects);
             //CommonBehaviors.Add(new ScrollBar());
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");

@@ -33,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -193,6 +193,7 @@
     <Compile Include="Utilities\PropertyHelper.cs" />
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\RectanglePart.cs" />
+    <Compile Include="Utilities\Serialization\DataContractResolvers\TypeResolver.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
     <Compile Include="Utilities\AutoDictionary.cs" />

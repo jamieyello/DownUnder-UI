@@ -1,4 +1,6 @@
-﻿using DownUnder.UI.Widgets.Actions;
+﻿using DownUnder.Content.Utilities.Serialization;
+using DownUnder.UI.Widgets.Actions;
+using DownUnder.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +11,7 @@ using System.Windows.Forms;
 
 namespace DownUnder.UIEditor.EditorTools.Actions
 {
-    class SaveProjectDialog : WidgetAction
+    public class SaveProject : WidgetAction
     {
         protected override void ConnectEvents() { }
 
@@ -17,7 +19,6 @@ namespace DownUnder.UIEditor.EditorTools.Actions
 
         protected override void Initialize()
         {
-            Stream myStream;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
             saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
@@ -26,11 +27,7 @@ namespace DownUnder.UIEditor.EditorTools.Actions
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
-                {
-                    // Code to write the stream goes here.
-                    myStream.Close();
-                }
+                XmlHelper.ToXmlFile(((MainWindow)Parent.ParentWindow).editor_objects.project, saveFileDialog1.FileName);
             }
             EndAction();
         }
@@ -42,7 +39,7 @@ namespace DownUnder.UIEditor.EditorTools.Actions
 
         protected override bool Matches(WidgetAction action)
         {
-            return action is SaveProjectDialog;
+            return action is SaveProject;
         }
     }
 }

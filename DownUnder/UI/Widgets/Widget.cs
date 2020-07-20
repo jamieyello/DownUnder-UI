@@ -143,38 +143,54 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
+        [DataMember] public Type test_type = "".GetType();
+
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        [DataMember] public WidgetList Children { get; private set; } = new WidgetList();
+        [DataMember] 
+        public WidgetList Children { get; private set; } = new WidgetList();
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
         /// <summary> If set to false, the background color will not be drawn. </summary>
         [DataMember] public bool DrawBackground { get; set; } = true;
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
-        [DataMember] public bool DrawOutline { get; set; } = true;
+        [DataMember]
+        public bool DrawOutline { get; set; } = true;
         /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
-        [DataMember] public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
+        [DataMember] 
+        public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
         /// <summary> How thick the outline should be. 1 by default. </summary>
-        [DataMember] public float OutlineThickness { get; set; } = 1f;
+        [DataMember] 
+        public float OutlineThickness { get; set; } = 1f;
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
-        [DataMember] public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
+        [DataMember]
+        public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
         /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
-        [DataMember] public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.None;
+        [DataMember] 
+        public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.None;
         /// <summary> The distance from the edges of the widget this is snapped to. </summary>
-        [DataMember] public Size2 Spacing { get; set; }
+        [DataMember] 
+        public Size2 Spacing { get; set; }
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
-        [DataMember] public bool EnterConfirms { get; set; } = true;
+        [DataMember] 
+        public bool EnterConfirms { get; set; } = true;
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
-        [DataMember] public WidgetRoleType WidgetRole { get; set; } = WidgetRoleType.default_widget;
+        [DataMember] 
+        public WidgetRoleType WidgetRole { get; set; } = WidgetRoleType.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
-        [DataMember] public bool IsFixedWidth { get; set; } = false;
+        [DataMember] 
+        public bool IsFixedWidth { get; set; } = false;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Height"/>. </summary>
-        [DataMember] public bool IsFixedHeight { get; set; } = false;
+        [DataMember] 
+        public bool IsFixedHeight { get; set; } = false;
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
-        [DataMember] public bool PassthroughMouse { get; set; } = false;
+        [DataMember] 
+        public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
-        [DataMember] internal AutoDictionary<Type, AutoDictionary<string, string>> BehaviorTags;
+        //[DataMember] 
+        internal AutoDictionary<Type, AutoDictionary<string, string>> BehaviorTags;
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
-        [DataMember] public bool IsCloningSupported { get; set; } = true;
+        [DataMember] 
+        public bool IsCloningSupported { get; set; } = true;
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; } = new UpdateData();
@@ -193,7 +209,8 @@ namespace DownUnder.UI.Widgets
         #region Non-auto properties
 
         /// <summary> The name of this <see cref="Widget"/>. </summary>
-        [DataMember] public string Name 
+        [DataMember]
+        public string Name 
         { 
             get => _name_backing;
             set
@@ -205,7 +222,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Minimum time (in seconds) in-between two clicks needed for a double. </summary>
-        [DataMember] public float DoubleClickTiming {
+        [DataMember] 
+        public float DoubleClickTiming {
             get => _double_click_timing_backing;
             set {
                 if (value > 0) { _double_click_timing_backing = value; }
@@ -214,7 +232,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
-        [DataMember] public RectangleF Area {
+        [DataMember] 
+        public RectangleF Area {
             get => area_backing;
             set {
                 if (IsFixedWidth) value.Width = area_backing.Width;
@@ -240,7 +259,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
-        [DataMember] public Point2 MinimumSize {
+        [DataMember] 
+        public Point2 MinimumSize {
             get => _minimum_size_backing;
             set {
                 if (value.X < 1) throw new Exception("Minimum area width must be at least 1.");
@@ -260,7 +280,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
-        [DataMember] public BaseColorScheme Theme {
+        [DataMember] 
+        public BaseColorScheme Theme {
             get => _theme_backing;
             set {
                 _theme_backing = value;
@@ -269,19 +290,22 @@ namespace DownUnder.UI.Widgets
         }
         
         /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
-        [DataMember] public Directions2D AllowedResizingDirections {
+        [DataMember] 
+        public Directions2D AllowedResizingDirections {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowedResizingDirections : _allowed_resizing_directions_backing;
             set => _allowed_resizing_directions_backing = value;
         }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can delete this <see cref="Widget"/> with the defined <see cref="UIInputState.Delete"/> or <see cref="UIInputState.BackSpace"/> (when highlighted). </summary>
-        [DataMember] public bool AllowDelete {
+        [DataMember] 
+        public bool AllowDelete {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowDelete : _allow_delete_backing;
             set => _allow_delete_backing = value;
         }        
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can copy this <see cref="Widget"/> with the defined <see cref="UIInputState.Copy"/> (when highlighted). </summary>
-        [DataMember] public bool AllowCopy {
+        [DataMember] 
+        public bool AllowCopy {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCopy : _allow_copy_backing;
             set => _allow_copy_backing = value;
         }      
@@ -300,7 +324,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        [DataMember] public List<Type> AcceptedDropTypes {
+        //[DataMember] 
+        public List<Type> AcceptedDropTypes {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
             private set => _accepted_drop_types_backing = value;
         }

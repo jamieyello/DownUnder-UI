@@ -67,7 +67,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="EditorTools\Actions\SaveProjectDialog.cs" />
+    <Compile Include="EditorTools\Actions\LoadProject.cs" />
+    <Compile Include="EditorTools\Actions\SaveProject.cs" />
     <Compile Include="EditorTools\EditorObjects.cs" />
     <Compile Include="EditorTools\TestLayouts.cs" />
     <Compile Include="EditorTools\EditorWidgets.cs" />
