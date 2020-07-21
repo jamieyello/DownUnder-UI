@@ -56,7 +56,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         #region IAcceptsDrops Implementation
 
         public bool AcceptsDrops { get; private set; } = false;
-        public List<Type> AcceptedDropTypes { get; private set; } = new List<Type>();
+        public List<SerializableType> AcceptedDropTypes { get; private set; } = new List<SerializableType>();
 
         public void HandleDrop(object drop) {
             if (Parent.IsDropAcceptable(drop) && drop is Widget w_drop)

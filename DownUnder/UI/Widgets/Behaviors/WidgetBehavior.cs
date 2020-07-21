@@ -1,11 +1,14 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Visual;
+﻿using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
+using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors {
+namespace DownUnder.UI.Widgets.Behaviors
+{
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
-    public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable {
+    [KnownType(typeof(ScrollBar)), DataContract] public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable {
         Widget _parent_backing;
 
         public abstract string[] BehaviorIDs { get; protected set; }

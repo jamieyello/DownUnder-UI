@@ -100,5 +100,13 @@ namespace DownUnder.Widgets
         {
             Debug.WriteLine($"Successful click event");
         }
+
+        public void SetProject(Widget widget)
+        {
+            Widget container = editor_objects.project.ParentWidget;
+            editor_objects.project.Delete();
+            container.Add(widget);
+            widget.DesignerObjects.IsEditModeEnabled = true;
+        }
     }
 }

@@ -48,25 +48,28 @@ namespace DownUnder.UI.Widgets
         private SpriteBatch _local_sprite_batch;
         private SpriteBatch _passed_sprite_batch;
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
-        private float _double_click_countdown = 0f;
+        private float _double_click_countdown;
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
-        private float _triple_click_countdown = 0f;
+        private float _triple_click_countdown;
         /// <summary> Used to tell whether the cursor moved or not when checking for double/triple clicks. </summary>
-        private Point2 _previous_cursor_position = new Point2();
+        private Point2 _previous_cursor_position;
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
-        private bool _graphics_updating = false;
+        private bool _graphics_updating;
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
-        private bool _graphics_in_use = false;
+        private bool _graphics_in_use;
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/>. </summary>
-        private bool _dragging_in = false;
+        private bool _dragging_in;
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/> that has traveled outside this <see cref="Widget"/>'s area at some point. </summary>
-        private bool _dragging_off = false;
+        private bool _dragging_off;
         /// <summary> The area of this <see cref="Widget"/> before the user started resizing it. (If the user is resizing) </summary>
         private RectangleF _resizing_initial_area;
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        private readonly WidgetUpdateFlags _post_update_flags = new WidgetUpdateFlags();
+        private WidgetUpdateFlags _post_update_flags;
+        /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
+        private bool _has_updated;
+
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         private const int _MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
@@ -75,8 +78,6 @@ namespace DownUnder.UI.Widgets
         private const int _MAX_WAIT_TIME = 100;
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
         private const float _USER_RESIZE_BOUNDS_SIZE = 20f;
-        /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
-        private bool _has_updated = false;
 
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
@@ -92,10 +93,10 @@ namespace DownUnder.UI.Widgets
         private bool _update_drop;
 
         // Various property backing fields.
-        private string _name_backing = "";
-        private RectangleF area_backing = new RectangleF();
-        private float _double_click_timing_backing = 0.5f;
-        private Point2 _minimum_size_backing = new Point2(15f, 15f);
+        private string _name_backing;
+        private RectangleF _area_backing;
+        private float _double_click_timing_backing;
+        private Point2 _minimum_size_backing;
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
@@ -104,14 +105,14 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private bool _allow_highlight_backing = false;
-        Directions2D _allowed_resizing_directions_backing = Directions2D.All;
+        Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
         UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         private bool _accepts_drops_backing;
-        private List<Type> _accepted_drop_types_backing = new List<Type>();
+        private List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
 
         public enum DrawingModeType {
             /// <summary> Draw nothing. </summary>
@@ -143,11 +144,9 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
-        [DataMember] public Type test_type = "".GetType();
-
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
         [DataMember] 
-        public WidgetList Children { get; private set; } = new WidgetList();
+        public WidgetList Children { get; private set; }
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
         /// <summary> If set to false, the background color will not be drawn. </summary>
@@ -191,13 +190,15 @@ namespace DownUnder.UI.Widgets
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
         [DataMember] 
         public bool IsCloningSupported { get; set; } = true;
+        [DataMember]
+        public BehaviorCollection Behaviors { get; private set; }
+
+        public ActionCollection Actions { get; private set; }
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
-        public UpdateData UpdateData { get; set; } = new UpdateData();
+        [DataMember] public UpdateData UpdateData { get; set; }
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
-        public BehaviorCollection Behaviors { get; private set; }
-        public ActionCollection Actions { get; private set; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll { get; set; } = new Point2();
         public GroupBehaviorCollection GroupBehaviors { get; private set; }
@@ -234,26 +235,26 @@ namespace DownUnder.UI.Widgets
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
         [DataMember] 
         public RectangleF Area {
-            get => area_backing;
+            get => _area_backing;
             set {
-                if (IsFixedWidth) value.Width = area_backing.Width;
-                if (IsFixedHeight) value.Height = area_backing.Height;
-                RectangleF previous_area = area_backing;
-                area_backing = value.WithMinimumSize(MinimumSize);
-                if (area_backing == previous_area) return;
+                if (IsFixedWidth) value.Width = _area_backing.Width;
+                if (IsFixedHeight) value.Height = _area_backing.Height;
+                RectangleF previous_area = _area_backing;
+                _area_backing = value.WithMinimumSize(MinimumSize);
+                if (_area_backing == previous_area) return;
 
                 var response = new RectangleFSetOverrideArgs(previous_area);
                 OnAreaChangePriority?.Invoke(this, response);
                 if (response.Override != null) {
-                    area_backing = response.Override.Value.WithMinimumSize(MinimumSize);
-                    if (area_backing == previous_area) return;
+                    _area_backing = response.Override.Value.WithMinimumSize(MinimumSize);
+                    if (_area_backing == previous_area) return;
                 }
 
                 OnAreaChange?.Invoke(this, new RectangleFSetArgs(previous_area));
-                if (area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
-                if (area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
+                if (_area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
+                if (_area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
                 if (EmbedChildren && Children != null) {
-                    foreach (var child in Children) child.EmbedIn(area_backing);
+                    foreach (var child in Children) child.EmbedIn(_area_backing);
                 }
             }
         }
@@ -324,8 +325,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        //[DataMember] 
-        public List<Type> AcceptedDropTypes {
+        [DataMember] 
+        public List<SerializableType> AcceptedDropTypes {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
             private set => _accepted_drop_types_backing = value;
         }
@@ -588,9 +589,30 @@ namespace DownUnder.UI.Widgets
 
         #region Constructors/Destructors
 
-        public Widget() => SetDefaults();
+        public Widget() => SetDefaults(new StreamingContext());
 
-        private void SetDefaults() {
+        [OnDeserializing]
+        private void SetDefaults(StreamingContext context) {
+            _double_click_countdown = 0f;
+            _triple_click_countdown = 0f;
+            _previous_cursor_position = new Point2();
+            _graphics_updating = false;
+            _graphics_in_use = false;
+            _dragging_in = false;
+            _dragging_off = false;
+            _post_update_flags = new WidgetUpdateFlags();
+            _has_updated = false;
+            _name_backing = "";
+            _area_backing = new RectangleF();
+            _double_click_timing_backing = 0.5f;
+            _minimum_size_backing = new Point2(15f, 15f);
+            _allowed_resizing_directions_backing = Directions2D.All;
+
+            UpdateData = new UpdateData();
+            Children = new WidgetList();
+
+            Console.WriteLine("oo");
+
             Size = new Point2(10, 10);
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;

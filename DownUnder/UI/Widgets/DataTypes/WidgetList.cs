@@ -7,13 +7,14 @@ using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
-    public class WidgetList : IList<Widget>
+    [DataContract] public class WidgetList : IList<Widget>
     {
-        private readonly List<Widget> _widgets = new List<Widget>();
+        [DataMember] private readonly List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;

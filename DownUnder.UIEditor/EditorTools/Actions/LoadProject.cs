@@ -1,4 +1,7 @@
-﻿using DownUnder.UI.Widgets.Actions;
+﻿using DownUnder.Content.Utilities.Serialization;
+using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Actions;
+using DownUnder.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +32,7 @@ namespace DownUnder.UIEditor.EditorTools.Actions
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 //openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
 
@@ -38,13 +41,12 @@ namespace DownUnder.UIEditor.EditorTools.Actions
                     //Get the path of specified file
                     filePath = openFileDialog.FileName;
 
-                    //Read the contents of the file into a stream
-                    var fileStream = openFileDialog.OpenFile();
+                    Console.WriteLine("start");
+                    Widget widget = XmlHelper.FromXmlFile<Widget>(filePath);
 
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
-                        fileContent = reader.ReadToEnd();
-                    }
+                    Console.WriteLine($"s {widget.UpdateData.GameTime}");
+
+                    ((MainWindow)Parent.ParentWindow).SetProject(widget);
                 }
             }
 
