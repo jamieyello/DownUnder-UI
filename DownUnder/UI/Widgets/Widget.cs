@@ -93,10 +93,11 @@ namespace DownUnder.UI.Widgets
         private bool _update_drop;
 
         // Various property backing fields.
-        private string _name_backing;
-        private RectangleF _area_backing;
-        private float _double_click_timing_backing;
-        private Point2 _minimum_size_backing;
+        [DataMember] private string _name_backing;
+        [DataMember] private RectangleF _area_backing;
+        [DataMember] private float _double_click_timing_backing;
+        [DataMember] private Point2 _minimum_size_backing;
+        private WidgetList _children_backing;
         private SpriteFont _sprite_font_backing;
         private GraphicsDevice _graphics_backing;
         private bool _is_hovered_over_backing;
@@ -105,7 +106,7 @@ namespace DownUnder.UI.Widgets
         private Widget _parent_widget_backing;
         private DWindow _parent_window_backing;
         private bool _allow_highlight_backing = false;
-        Directions2D _allowed_resizing_directions_backing;
+        [DataMember] Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
@@ -113,6 +114,9 @@ namespace DownUnder.UI.Widgets
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         private bool _accepts_drops_backing;
         private List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
+        private BehaviorCollection _behaviors_backing;
+        private ActionCollection _actions_backing;
+
 
         public enum DrawingModeType {
             /// <summary> Draw nothing. </summary>
@@ -144,22 +148,25 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
-        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        [DataMember] 
-        public WidgetList Children { get; private set; }
+
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
+
         /// <summary> If set to false, the background color will not be drawn. </summary>
         [DataMember] public bool DrawBackground { get; set; } = true;
+
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember]
         public bool DrawOutline { get; set; } = true;
+
         /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
         [DataMember] 
         public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
+
         /// <summary> How thick the outline should be. 1 by default. </summary>
         [DataMember] 
         public float OutlineThickness { get; set; } = 1f;
+
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
         [DataMember]
         public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
@@ -185,32 +192,60 @@ namespace DownUnder.UI.Widgets
         [DataMember] 
         public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
-        //[DataMember] 
-        internal AutoDictionary<Type, AutoDictionary<string, string>> BehaviorTags;
+        [DataMember] 
+        internal AutoDictionary<SerializableType, AutoDictionary<string, string>> BehaviorTags;
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
         [DataMember] 
         public bool IsCloningSupported { get; set; } = true;
-        [DataMember]
-        public BehaviorCollection Behaviors { get; private set; }
 
-        public ActionCollection Actions { get; private set; }
+        [DataMember]
+        public BehaviorCollection Behaviors { 
+            get => _behaviors_backing; 
+            private set {
+                _behaviors_backing = value;
+                if (value != null) value.Parent = this;
+            }
+        }
+
+        [DataMember]
+        public GroupBehaviorCollection GroupBehaviors { get; private set; }
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
-        [DataMember] public UpdateData UpdateData { get; set; }
+        public UpdateData UpdateData { get; set; }
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll { get; set; } = new Point2();
-        public GroupBehaviorCollection GroupBehaviors { get; private set; }
+
+        public ActionCollection Actions 
+        { 
+            get => _actions_backing;
+            private set
+            {
+                _actions_backing = value;
+                if (value != null) value.Parent = this;
+            }
+        }
+
         /// <summary> Set to true after this <see cref="Widget"/> has been deleted (as well as disposed) and is no longer in use. </summary>
         public bool IsDeleted { get; private set; } = false;
-
+        
+        /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
+        [DataMember] public WidgetList Children 
+        { 
+            get => _children_backing;
+            private set
+            {
+                if (_children_backing != null) throw new Exception();
+                _children_backing = value;
+                if (value != null) value.Parent = this;
+            }
+        }
         #endregion
 
         #region Non-auto properties
 
         /// <summary> The name of this <see cref="Widget"/>. </summary>
-        [DataMember]
         public string Name 
         { 
             get => _name_backing;
@@ -223,7 +258,6 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Minimum time (in seconds) in-between two clicks needed for a double. </summary>
-        [DataMember] 
         public float DoubleClickTiming {
             get => _double_click_timing_backing;
             set {
@@ -233,7 +267,6 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
-        [DataMember] 
         public RectangleF Area {
             get => _area_backing;
             set {
@@ -260,7 +293,6 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
-        [DataMember] 
         public Point2 MinimumSize {
             get => _minimum_size_backing;
             set {
@@ -281,7 +313,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
-        [DataMember] 
+        [DataMember]
         public BaseColorScheme Theme {
             get => _theme_backing;
             set {
@@ -291,7 +323,6 @@ namespace DownUnder.UI.Widgets
         }
         
         /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
-        [DataMember] 
         public Directions2D AllowedResizingDirections {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowedResizingDirections : _allowed_resizing_directions_backing;
             set => _allowed_resizing_directions_backing = value;
@@ -589,10 +620,36 @@ namespace DownUnder.UI.Widgets
 
         #region Constructors/Destructors
 
-        public Widget() => SetDefaults(new StreamingContext());
+        public Widget() => SetDefaults();
 
         [OnDeserializing]
-        private void SetDefaults(StreamingContext context) {
+        private void OnDeserialize(StreamingContext context)
+        {
+            SetNonSerialized();
+        }
+
+        public void SetDefaults()
+        {
+            SetNonSerialized();
+
+            _name_backing = "";
+            _area_backing = new RectangleF();
+            _double_click_timing_backing = 0.5f;
+            _minimum_size_backing = new Point2(15f, 15f);
+            _allowed_resizing_directions_backing = Directions2D.All;
+
+            Size = new Point2(10, 10);
+            Theme = BaseColorScheme.Dark;
+            Name = GetType().Name;
+            Behaviors = new BehaviorCollection(this);
+            BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
+            Actions = new ActionCollection(this);
+            GroupBehaviors = new GroupBehaviorCollection(this);
+            Children = new WidgetList(this);
+        }
+
+        private void SetNonSerialized()
+        {
             _double_click_countdown = 0f;
             _triple_click_countdown = 0f;
             _previous_cursor_position = new Point2();
@@ -602,31 +659,12 @@ namespace DownUnder.UI.Widgets
             _dragging_off = false;
             _post_update_flags = new WidgetUpdateFlags();
             _has_updated = false;
-            _name_backing = "";
-            _area_backing = new RectangleF();
-            _double_click_timing_backing = 0.5f;
-            _minimum_size_backing = new Point2(15f, 15f);
-            _allowed_resizing_directions_backing = Directions2D.All;
 
-            UpdateData = new UpdateData();
-            Children = new WidgetList();
-
-            Console.WriteLine("oo");
-
-            Size = new Point2(10, 10);
-            Theme = BaseColorScheme.Dark;
-            Name = GetType().Name;
-            Behaviors = new BehaviorCollection(this);
-            BehaviorTags = new AutoDictionary<Type, AutoDictionary<string, string>>(() => new AutoDictionary<string, string>(() => ""));
             Actions = new ActionCollection(this);
-            GroupBehaviors = new GroupBehaviorCollection(this);
+            UpdateData = new UpdateData();
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
-            Children.OnAdd += (sender, args) => { OnAddChild?.Invoke(this, EventArgs.Empty); };
-            Children.OnRemove += (sender, args) => { OnRemoveChild?.Invoke(this, EventArgs.Empty); };
-            Children.OnListChange += (sender, args) => { OnListChange?.Invoke(this, EventArgs.Empty); };
-            OnAddChild += (sender, args) => { LastAddedWidget.Parent = this; }; // ??
-            OnRemoveChild += (sender, args) => { };
+            GroupBehaviors = new GroupBehaviorCollection(this);
         }
 
         ~Widget() => Dispose(true);
@@ -1099,6 +1137,23 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWindow"/> value is set. </summary>
         public event EventHandler OnParentWindowSet;
 
+        internal void InvokeOnAdd()
+        {
+            LastAddedWidget.Parent = this;
+            OnAddChild?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void InvokeOnRemove()
+        {
+            LastRemovedWidget.Parent = null;
+            OnRemoveChild?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void InvokeOnListChange()
+        {
+            OnListChange?.Invoke(this, EventArgs.Empty);
+        }
+
         #endregion
 
         #region Private/Protected Methods
@@ -1276,7 +1331,7 @@ namespace DownUnder.UI.Widgets
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
-            c.BehaviorTags = (AutoDictionary<Type, AutoDictionary<string, string>>)BehaviorTags.Clone();
+            c.BehaviorTags = (AutoDictionary<SerializableType, AutoDictionary<string, string>>)BehaviorTags.Clone();
 
             c._accepts_drops_backing = _accepts_drops_backing;
 

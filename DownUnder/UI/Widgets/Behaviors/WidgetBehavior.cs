@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
-    [KnownType(typeof(ScrollBar)), DataContract] public abstract class WidgetBehavior : INeedsWidgetParent, ICloneable {
+    [KnownType(typeof(ScrollBar)), DataContract] public abstract class WidgetBehavior : IIsWidgetChild, ICloneable {
         Widget _parent_backing;
 
         public abstract string[] BehaviorIDs { get; protected set; }

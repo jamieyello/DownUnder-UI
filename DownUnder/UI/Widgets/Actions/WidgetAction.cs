@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Actions {
     /// <summary> A <see cref="WidgetAction"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this deletes itself on finishing execution. </summary>
-    [DataContract] public abstract class WidgetAction : INeedsWidgetParent {
+    [DataContract] public abstract class WidgetAction : IIsWidgetChild {
         Widget _parent_backing;
         public enum DuplicatePolicyType {
             /// <summary> Override any existing duplicate <see cref="WidgetAction"/>. </summary>

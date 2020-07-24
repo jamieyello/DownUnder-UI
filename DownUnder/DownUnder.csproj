@@ -194,6 +194,7 @@
     <Compile Include="Utilities\PropertyHelper.cs" />
     <Compile Include="Utilities\Extensions\Extensions.cs" />
     <Compile Include="Utilities\RectanglePart.cs" />
+    <Compile Include="Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />
     <Compile Include="Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="Utilities\StringManipulation.cs" />
     <Compile Include="Utilities\AutoDictionary.cs" />

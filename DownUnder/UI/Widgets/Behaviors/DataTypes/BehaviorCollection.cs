@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,12 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    [DataContract] public class BehaviorCollection : IList<WidgetBehavior>
+    [DataContract] public class BehaviorCollection : IList<WidgetBehavior>, IIsWidgetChild
     {
-        private readonly Widget _parent;
+        public Widget Parent { get; set; }
         [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
 
-        public BehaviorCollection(Widget parent) => _parent = parent;
+        public BehaviorCollection(Widget parent) => Parent = parent;
 
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => _behaviors[index] = value; }
 
@@ -47,7 +48,7 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
         {
             if (Contains(behavior.GetType())) return false;
             _behaviors.Add(behavior);
-            behavior.Parent = _parent;
+            behavior.Parent = Parent;
             return true;
         }
 
@@ -60,7 +61,7 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
                 return false;
             }
             _behaviors.Add(behavior_);
-            behavior_.Parent = _parent;
+            behavior_.Parent = Parent;
             added_behavior = behavior;
             return true;
         }
@@ -89,7 +90,7 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
         public int IndexOf(WidgetBehavior behavior) => _behaviors.IndexOf(behavior);
         
         public void Insert(int index, WidgetBehavior behavior) {
-            behavior.Parent = _parent;
+            behavior.Parent = Parent;
             ((IList<WidgetBehavior>)_behaviors).Insert(index, behavior);
         }
 

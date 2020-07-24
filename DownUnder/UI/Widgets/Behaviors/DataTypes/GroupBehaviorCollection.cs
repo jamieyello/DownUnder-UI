@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    [DataContract] public class GroupBehaviorCollection
+    [DataContract] public class GroupBehaviorCollection : IIsWidgetChild
     {
         [DataMember] private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
         [DataMember] private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();

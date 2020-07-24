@@ -1,4 +1,5 @@
 ﻿using DownUnder.Content.Utilities.Serialization;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Actions;
 using DownUnder.Widgets;
 using System;
@@ -19,15 +20,19 @@ namespace DownUnder.UIEditor.EditorTools.Actions
 
         protected override void Initialize()
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-            saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            SaveFileDialog save_dialog = new SaveFileDialog
             {
-                XmlHelper.ToXmlFile(((MainWindow)Parent.ParentWindow).editor_objects.project, saveFileDialog1.FileName);
+                Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            if (save_dialog.ShowDialog() == DialogResult.OK)
+            {
+                Widget project = ((MainWindow)Parent.ParentWindow).editor_objects.project;
+                project.DesignerObjects.IsEditModeEnabled = false;
+                XmlHelper.ToXmlFile(project, save_dialog.FileName);
+                project.DesignerObjects.IsEditModeEnabled = true;
             }
             EndAction();
         }

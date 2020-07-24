@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Widgets.Interfaces;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.Widget;
 
 namespace DownUnder.UI.Widgets.DataTypes {
-    [DataContract] public class BaseColorScheme : ICloneable {
+    [DataContract] public class BaseColorScheme : ICloneable, IIsWidgetChild {
         /// <summary> A reference to the widget that owns this palette. </summary>
         public Widget Parent { get; set; }
 

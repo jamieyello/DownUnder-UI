@@ -12,19 +12,27 @@ using System.Runtime.Serialization;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
-    [DataContract] public class WidgetList : IList<Widget>
+    [DataContract] public class WidgetList : IList<Widget>, IIsWidgetChild
     {
+        Widget _parent;
+
         [DataMember] private readonly List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
 
-        /// <summary> Invoked whenever a widget is added or removed. </summary>
-        public event EventHandler OnAdd;
-        public event EventHandler OnRemove;
-        public event EventHandler OnListChange;
+        public Widget Parent 
+        { 
+            get => _parent;
+            set
+            {
+                _parent = value;
+                foreach (Widget widget in _widgets) widget.Parent = _parent;
+            } 
+        }
 
         public WidgetList() { IsReadOnly = false; }
+        public WidgetList(Widget parent) { Parent = parent; }
         public WidgetList(bool is_read_only = false) { IsReadOnly = is_read_only; }
         public WidgetList(List<Widget> widget_list, bool is_read_only = false) {
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
@@ -32,6 +40,10 @@ namespace DownUnder.UI.Widgets.DataTypes
 
             Count = _widgets.Count;
         }
+
+        private void OnRemove() { Parent?.InvokeOnRemove(); }
+        private void OnAdd() { Parent?.InvokeOnAdd(); }
+        private void OnListChange() { Parent?.InvokeOnListChange(); }
 
         public List<RectangleF> GetHorizontalWrapAreas(float width, float spacing)
         {
@@ -233,9 +245,9 @@ namespace DownUnder.UI.Widgets.DataTypes
                 LastRemovedWidget = _widgets[index];
                 LastAddedWidget = value;
                 _widgets[index] = value;
-                OnRemove.Invoke(this, EventArgs.Empty);
-                OnAdd.Invoke(this, EventArgs.Empty);
-                OnListChange.Invoke(this, EventArgs.Empty);
+                OnRemove();
+                OnAdd();
+                OnListChange();
             }
         }
 
@@ -250,8 +262,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (IsReadOnly) ThrowReadOnlyException();
             _widgets.Add(widget);
             LastAddedWidget = widget;
-            OnAdd?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
+            OnAdd();
+            OnListChange();
             Count = _widgets.Count;
         }
 
@@ -270,8 +282,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets.Insert(index, widget);
             Count = _widgets.Count;
             LastAddedWidget = widget;
-            OnAdd?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
+            OnAdd();
+            OnListChange();
         }
 
         public bool Remove(Widget widget) {
@@ -279,8 +291,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (_widgets.Remove(widget)) {
                 Count = _widgets.Count;
                 LastRemovedWidget = widget;
-                OnRemove?.Invoke(this, EventArgs.Empty);
-                OnListChange?.Invoke(this, EventArgs.Empty);
+                OnRemove();
+                OnListChange();
                 return true;
             }
             return false;
@@ -291,8 +303,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             LastRemovedWidget = _widgets[index];
             _widgets.RemoveAt(index);
             Count = _widgets.Count;
-            OnRemove?.Invoke(this, EventArgs.Empty);
-            OnListChange?.Invoke(this, EventArgs.Empty);
+            OnRemove();
+            OnListChange();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => _widgets.GetEnumerator();

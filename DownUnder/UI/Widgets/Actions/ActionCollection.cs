@@ -4,11 +4,12 @@ using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.Widgets.Actions {
-    [DataContract] public class ActionCollection {
-        private readonly Widget _parent;
+    [DataContract] public class ActionCollection 
+    {
+        public Widget Parent { get; set; }
         [DataMember] private readonly List<WidgetAction> _actions = new List<WidgetAction>();
 
-        public ActionCollection(Widget parent) => _parent = parent;
+        public ActionCollection(Widget parent) => Parent = parent;
         private readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
         public WidgetAction this[int index] { get => ((IList<WidgetAction>)_actions)[index]; set => ((IList<WidgetAction>)_actions)[index] = value; }
         public int Count => ((IList<WidgetAction>)_actions).Count;
@@ -24,7 +25,7 @@ namespace DownUnder.UI.Widgets.Actions {
                     }
                 }
                 if (add) {
-                    _qued_actions[q].Parent = _parent;
+                    _qued_actions[q].Parent = Parent;
                     ((IList<WidgetAction>)_actions).Add(_qued_actions[q]);
                     _qued_actions.RemoveAt(q);
                 }
@@ -56,7 +57,7 @@ namespace DownUnder.UI.Widgets.Actions {
             } else throw new System.Exception($"DuplicatePolicy {action.DuplicatePolicy} not supported.");
 
             _actions.Add(action);
-            action.Parent = _parent;
+            action.Parent = Parent;
             
             return;
         }
@@ -74,7 +75,7 @@ namespace DownUnder.UI.Widgets.Actions {
         public void Insert(int index, WidgetAction item)
         {
             throw new System.Exception($"Inserting {nameof(WidgetAction)}s is not supported.");
-            item.Parent = _parent;
+            item.Parent = Parent;
             ((IList<WidgetAction>)_actions).Insert(index, item);
         }
 
