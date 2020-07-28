@@ -20,9 +20,10 @@ namespace DownUnder.Content.Utilities.Serialization
         public static T FromXmlFile<T>(string fileName)
         {
             DataContractSerializerSettings s = new DataContractSerializerSettings() { DataContractResolver = new DownUnderResolver() };
+            s.SerializeReadOnlyTypes = true;
             using FileStream fs = new FileStream(fileName, FileMode.Open);
             using XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-            DataContractSerializer ser = new DataContractSerializer(typeof(T)/*, s*/);
+            DataContractSerializer ser = new DataContractSerializer(typeof(T), s);
 
             T result = (T)ser.ReadObject(reader, true);
 

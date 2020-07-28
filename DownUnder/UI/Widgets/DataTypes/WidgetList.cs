@@ -12,11 +12,12 @@ using System.Runtime.Serialization;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
-    [DataContract] public class WidgetList : IList<Widget>, IIsWidgetChild
+    [DataContract] 
+    public class WidgetList : IList<Widget>, IIsWidgetChild
     {
         Widget _parent;
 
-        [DataMember] private readonly List<Widget> _widgets = new List<Widget>();
+        [DataMember] private List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;

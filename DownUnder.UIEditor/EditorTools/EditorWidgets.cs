@@ -120,6 +120,9 @@ namespace DownUnder.UIEditor.EditorTools
 
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
+
+            project.Behaviors.Add(new GlimmerBase());
+
             return bordered_container;
         }
 

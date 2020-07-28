@@ -234,13 +234,14 @@ namespace DownUnder.UI.Widgets
         [DataMember] public WidgetList Children 
         { 
             get => _children_backing;
-            private set
+            set
             {
                 if (_children_backing != null) throw new Exception();
                 _children_backing = value;
                 if (value != null) value.Parent = this;
             }
         }
+
         #endregion
 
         #region Non-auto properties

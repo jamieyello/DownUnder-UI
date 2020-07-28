@@ -301,6 +301,7 @@ namespace DownUnder.UI
             UIImages = new UIImages(GraphicsDevice);
             EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
             EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
+            EffectCollection.CrystalEffect = Content.Load<Effect>("crystal");
         }
 
         protected void UpdateDWindow(GameTime game_time) {

@@ -41,10 +41,8 @@ namespace DownUnder.UIEditor.EditorTools.Actions
                     //Get the path of specified file
                     filePath = openFileDialog.FileName;
 
-                    Console.WriteLine("start");
                     Widget widget = XmlHelper.FromXmlFile<Widget>(filePath);
-
-                    Console.WriteLine($"s {widget.UpdateData.GameTime}");
+                    Console.WriteLine("LoadProject children count " + widget.Children.Count);
 
                     ((MainWindow)Parent.ParentWindow).SetProject(widget);
                 }

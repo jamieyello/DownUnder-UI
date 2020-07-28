@@ -13,14 +13,15 @@ namespace DownUnder.Utilities.Serialization.DataContractResolvers
         // On loading
         public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver knownTypeResolver)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"DownUnderResolver " + typeName);
+            return knownTypeResolver.ResolveName(typeName, typeNamespace, declaredType, knownTypeResolver);
         }
 
-        public override bool TryResolveType(Type type, Type declaredType, DataContractResolver knownTypeResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        public override bool TryResolveType(Type dataContractType, Type declaredType, DataContractResolver knownTypeResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
         {
             Console.WriteLine($"bup");
-            throw new Exception();
-
+            
+            return knownTypeResolver.TryResolveType(dataContractType, declaredType, null, out typeName, out typeNamespace);
         }
     }
 }
