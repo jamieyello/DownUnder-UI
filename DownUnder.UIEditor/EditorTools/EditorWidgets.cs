@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.DataTypes;
+using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
@@ -121,7 +122,7 @@ namespace DownUnder.UIEditor.EditorTools
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
 
-            project.Behaviors.Add(new GlimmerBase());
+            property_grid_container.Behaviors.Add(new RotatingCubeExample());
 
             return bordered_container;
         }

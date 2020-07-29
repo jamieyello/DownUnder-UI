@@ -119,6 +119,7 @@
     <Compile Include="UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Examples\RotatingCubeGraphic.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\BorderFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />

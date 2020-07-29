@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.Utility;
@@ -108,6 +109,23 @@ namespace DownUnder.UIEditor
 
             layout.Add(inner);
             layout.Add(inner2);
+
+            return layout;
+        }
+
+        public static Widget CubeTest()
+        {
+            Widget layout = new Widget();
+
+            Widget inner = new Widget()
+            {
+                Area = new RectangleF(10, 10, 400, 300)
+                , UserResizePolicy = Widget.UserResizePolicyType.allow
+            };
+
+            inner.Behaviors.Add(new RotatingCubeExample());
+
+            layout.Add(inner);
 
             return layout;
         }

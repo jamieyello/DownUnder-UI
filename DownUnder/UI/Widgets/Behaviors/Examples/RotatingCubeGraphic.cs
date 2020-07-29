@@ -10,12 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.Widgets.Behaviors.Examples
 {
-    public class GlimmerBase : WidgetBehavior, IBaseWidgetBehavior
+    public class RotatingCubeExample : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
-        private static GroupBehaviorPolicy DefaultChild => new GroupBehaviorPolicy() { Behavior = new GlimmerChild(), InheritancePolicy = GroupBehaviorPolicy.BehaviorInheritancePolicy.apply_to_compatible_children };
 
         private Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
         private Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), Vector3.UnitY);
@@ -25,32 +24,28 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         BasicEffect basicEffect;
         VertexPositionNormalTexture[] cube;
 
-        public GroupBehaviorPolicy SubWidgetBehavior { get; set; } = DefaultChild;
-
         protected override void Initialize()
         {
             Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
-            Parent.GroupBehaviors.AddPolicy(SubWidgetBehavior);
         }
 
         protected override void ConnectEvents()
         {
-            Parent.OnGraphicsInitialized += Initialize;
+            Parent.OnGraphicsInitialized += InitializeCube;
             Parent.OnDrawOverlayEffects += Draw;
             Parent.OnUpdate += Update;
         }
 
         protected override void DisconnectEvents()
         {
-            Parent.OnGraphicsInitialized -= Initialize;
+            Parent.OnGraphicsInitialized -= InitializeCube;
             Parent.OnDrawOverlayEffects -= Draw;
             Parent.OnUpdate -= Update;
         }
 
         public override object Clone()
         {
-            GlimmerBase c = new GlimmerBase();
-            c.SubWidgetBehavior = (GroupBehaviorPolicy)SubWidgetBehavior.Clone();
+            RotatingCubeExample c = new RotatingCubeExample();
             return c;
         }
 
@@ -63,14 +58,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
             angle += 0.005f;
             if (angle > 2 * Math.PI) angle = 0;
-            Matrix R = Matrix.CreateRotationY(angle) *
-                           Matrix.CreateRotationX(.4f);
-            Matrix T =
-              Matrix.CreateTranslation(0.0f, 0f, 5f);
+            Matrix R = Matrix.CreateRotationY(angle) * Matrix.CreateRotationX(.4f);
+            Matrix T = Matrix.CreateTranslation(0.0f, 0f, 5f);
             basicEffect.World = R * T;
         }
 
-        private void Initialize(object sender, EventArgs args)
+        private void InitializeCube(object sender, EventArgs args)
         {
             basicEffect = new BasicEffect(Parent.GraphicsDevice);
 
@@ -80,6 +73,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             basicEffect.DirectionalLight0.Direction = Vector3.Normalize(Vector3.One);
 
             basicEffect.LightingEnabled = true;
+            basicEffect.AmbientLightColor = new Vector3(0.0f, 1.0f, 0.0f);
 
             Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, Parent.Width / Parent.Height, 1f, 10f);
             basicEffect.Projection = projection;
@@ -213,21 +207,5 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             }
             return vertexes;
         }
-    
-
-            //private void DrawModel(Model model, Matrix world, Matrix view, Matrix projection)
-            //{
-            //    foreach (ModelMesh mesh in model.Meshes)
-            //    {
-            //        foreach (BasicEffect effect in mesh.Effects)
-            //        {
-            //            effect.World = world;
-            //            effect.View = view;
-            //            effect.Projection = projection;
-            //        }
-
-            //        mesh.Draw();
-            //    }
-            //}
-        }
+    }
 }
