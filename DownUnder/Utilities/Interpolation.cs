@@ -14,7 +14,10 @@ namespace DownUnder.Utility
         /// <summary> y = x * x * x </summary>
         cubed,
         /// <summary> y = sin(x * π / 2) (A stretched sin wave where the bottom x/y is at 0 and the top x/y is at 1, recommended) </summary>
-        fake_sin
+        fake_sin,
+        /// <summary> y = x / y  </summary>
+        inverse
+
     }
 
     public static class Interpolation
@@ -60,6 +63,20 @@ namespace DownUnder.Utility
                             ), typeof(T)
                         );
 
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)):
+                    return (T)Convert.ChangeType
+                        (
+                            ((Vector3)Convert.ChangeType(initial_object, typeof(Vector3))) 
+                            * Plot(progress, interpolation_type), typeof(T)
+                        );
+
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)):
+                    return (T)Convert.ChangeType
+                        (
+                            ((Vector2)Convert.ChangeType(initial_object, typeof(Vector2)))
+                            * Plot(progress, interpolation_type), typeof(T)
+                        );
+
                 // Add new cases here.
 
                 default: // A float will be returned.
@@ -97,6 +114,10 @@ namespace DownUnder.Utility
 
                 case InterpolationType.fake_sin:
                     y = (float)Math.Sin(x * Math.PI / 2);
+                    break;
+
+                case InterpolationType.inverse:
+                    y = 1 - x;
                     break;
 
                 default:

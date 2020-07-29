@@ -123,7 +123,7 @@ namespace DownUnder.UIEditor
                 , UserResizePolicy = Widget.UserResizePolicyType.allow
             };
 
-            inner.Behaviors.Add(new RotatingCubeExample());
+            inner.Behaviors.Add(new RotatableCube());
 
             layout.Add(inner);
 

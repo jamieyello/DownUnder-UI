@@ -73,10 +73,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         public static ShadingBehavior SubtleBlue => new ShadingBehavior()
         {
-            ShadeColor = Color.DeepSkyBlue.ShiftBrightness(0.2f),
+            ShadeColor = Color.DeepSkyBlue.ShiftBrightness(0.3f),
             BorderVisibility = 0.6f,
             BorderWidth = 10f,
-            GradientVisibility = new Point2(0.2f, 0.2f)
+            GradientVisibility = new Point2(0.25f, 0.25f)
         };
     }
 }

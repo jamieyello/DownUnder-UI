@@ -1,6 +1,7 @@
 ﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.DataTypes;
 using DownUnder.UI.Widgets.Behaviors.Examples;
+using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
@@ -122,7 +123,9 @@ namespace DownUnder.UIEditor.EditorTools
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
 
-            property_grid_container.Behaviors.Add(new RotatingCubeExample());
+            property_grid_container.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.001f, 0.001f, 0.001f) });
+            property_grid_container.Behaviors.Add(new SpinOnHoverOnOff());
+            property_grid_container.Behaviors.Add(new RotatableCube());
 
             return bordered_container;
         }

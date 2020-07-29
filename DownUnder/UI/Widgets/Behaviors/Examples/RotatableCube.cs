@@ -1,26 +1,16 @@
-﻿using DownUnder.UI.Widgets.Behaviors.DataTypes;
-using DownUnder.UI.Widgets.Interfaces;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Examples
 {
-    public class RotatingCubeExample : WidgetBehavior
+    public class RotatableCube : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
 
-        private Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
-        private Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), Vector3.UnitY);
-        private Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 800f / 480f, 0.1f, 100f);
+        public Vector3 Angle = new Vector3();
 
-        private float angle = 0;
         BasicEffect basicEffect;
         VertexPositionNormalTexture[] cube;
 
@@ -45,7 +35,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
 
         public override object Clone()
         {
-            RotatingCubeExample c = new RotatingCubeExample();
+            RotatableCube c = new RotatableCube();
             return c;
         }
 
@@ -56,9 +46,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
             Matrix V = Matrix.CreateTranslation(0f, 0f, -10f);
             basicEffect.View = V;
 
-            angle += 0.005f;
-            if (angle > 2 * Math.PI) angle = 0;
-            Matrix R = Matrix.CreateRotationY(angle) * Matrix.CreateRotationX(.4f);
+            if (Angle.X > 2 * Math.PI) Angle.X = 0;
+            if (Angle.X < 0) Angle.X = 2f * (float)Math.PI;
+
+            if (Angle.Y > 2 * Math.PI) Angle.Y = 0;
+            if (Angle.Y < 0) Angle.Y = 2f * (float)Math.PI;
+
+            if (Angle.Z > 2 * Math.PI) Angle.Z = 0;
+            if (Angle.Z < 0) Angle.Z = 2f * (float)Math.PI;
+
+            Matrix R = Matrix.CreateRotationY(Angle.Y) * Matrix.CreateRotationX(Angle.X) * Matrix.CreateRotationZ(Angle.Z);
             Matrix T = Matrix.CreateTranslation(0.0f, 0f, 5f);
             basicEffect.World = R * T;
         }
