@@ -1,4 +1,5 @@
-﻿using DownUnder.Utility;
+﻿using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 
@@ -90,6 +91,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             c.SideSpacing = SideSpacing;
             c.ConstrainAreaToText = ConstrainAreaToText;
             return c;
+        }
+
+        public override Widget EditorWidgetRepresentation()
+        {
+            Widget result = base.EditorWidgetRepresentation();
+            ((DrawText)result.Behaviors.GetFirst<DragAndDropSource>().DragObject).Text = "New DrawText";
+            return result;
         }
 
         private void AlignText(object sender, EventArgs args)

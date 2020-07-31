@@ -5,7 +5,7 @@ using DownUnder.Utility;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    public class DragableOutlineAnimation : WidgetBehavior {
+    public class DragOffOutline : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
 
         private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
@@ -16,7 +16,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private float circumference = 20f;
         private float _expand_rect_on_release = 1f;
 
-        public DragableOutlineAnimation() {
+        public DragOffOutline() {
             round_amount.Interpolation = InterpolationType.fake_sin;
             round_amount.TransitionSpeed = 1f;
             rect.Interpolation = InterpolationType.linear;
@@ -88,7 +88,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         }
 
         public override object Clone() {
-            return new DragableOutlineAnimation();
+            return new DragOffOutline();
         }
     }
 }

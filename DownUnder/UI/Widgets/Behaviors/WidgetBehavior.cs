@@ -48,14 +48,23 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public virtual Widget EditorWidgetRepresentation()
         {
-            return new Widget()
+            Widget result = new Widget()
             {
                 Size = new Point2(100, 100)
-            }.WithAddedBehavior(new DrawText() 
-            { 
-                Text = GetType().Name,
+            };
+
+            DrawText text = new DrawText()
+            {
                 TextPositioning = DrawText.TextPositioningPolicy.center
-            });
+            };
+
+            text.Text = GetType().Name;
+
+            result.Behaviors.Add(text);
+            result.Behaviors.Add(new DragAndDropSource() { DragObject = this });
+            result.Behaviors.Add(new DragOffOutline());
+
+            return result;
         }
     }
 }

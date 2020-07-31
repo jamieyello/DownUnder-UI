@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -12,11 +13,17 @@ namespace DownUnder.UI.Widgets.DataTypes
         private Widget _parent_backing;
         private float _add_widget_spacing_backing = 8f;
 
+        public DesignerModeSettings()
+        {
+            AcceptsDrops = true;
+            AcceptedDropTypes.Add(typeof(Widget));
+            AcceptedDropTypes.Add(typeof(WidgetBehavior));
+        }
+
         public float AddWidgetSpacing {
             get => _add_widget_spacing_backing;
             set {
                 _add_widget_spacing_backing = value;
-                //Parent.SignalAddWidgetSpacingChange();
             }
         }
 
@@ -27,8 +34,6 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (_parent_backing != null) throw new Exception("DeveloperObjects cannot be reused.");
                 _parent_backing = value;
 
-                AcceptsDrops = true;
-                AcceptedDropTypes.Add(typeof(Widget));
                 _parent_backing.OnAddChild += (sender, args) => {
                     if (IsEditModeEnabled) _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
                 };
@@ -39,9 +44,10 @@ namespace DownUnder.UI.Widgets.DataTypes
             get => _is_developer_mode_enabled_backing;
             set {
                 _is_developer_mode_enabled_backing = value;
-                //foreach (Widget child in Parent.Children) {
-                //    if (!(child.Parent is Button)) child.DesignerObjects.IsEditModeEnabled = value;
-                //}
+                foreach (Widget child in Parent.Children)
+                {
+                    child.DesignerObjects.IsEditModeEnabled = value;
+                }
             }
         }
         
@@ -59,10 +65,14 @@ namespace DownUnder.UI.Widgets.DataTypes
         public List<SerializableType> AcceptedDropTypes { get; private set; } = new List<SerializableType>();
 
         public void HandleDrop(object drop) {
-            if (Parent.IsDropAcceptable(drop) && drop is Widget w_drop)
+            if (drop is Widget w_drop)
             {
                 w_drop.Area = GetAddWidgetArea(w_drop);
                 Parent.Add(w_drop);
+            }
+            if (drop is WidgetBehavior b_drop)
+            {
+                Parent.Behaviors.Add(b_drop);
             }
         }
         

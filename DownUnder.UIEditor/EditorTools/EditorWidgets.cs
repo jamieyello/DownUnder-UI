@@ -73,6 +73,10 @@ namespace DownUnder.UIEditor.EditorTools
             behaviors_list.ChangeColorOnMouseOver = false;
 
             behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
+            behaviors_list.Add(new ShadingBehavior().EditorWidgetRepresentation());
+
+            //behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
+
 
             // Widgets dock
             Widget widgets_container = new Widget();
@@ -123,7 +127,7 @@ namespace DownUnder.UIEditor.EditorTools
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
 
-            property_grid_container.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.001f, 0.001f, 0.001f) });
+            property_grid_container.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.002f, 0.002f, 0.002f) });
             property_grid_container.Behaviors.Add(new SpinOnHoverOnOff());
             property_grid_container.Behaviors.Add(new RotatableCube());
 
@@ -136,7 +140,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             Widget represented_widget = new Widget();
             widget.Behaviors.Add(new DragAndDropSource() { DragObject = represented_widget });
-            widget.Behaviors.Add(new DragableOutlineAnimation());
+            widget.Behaviors.Add(new DragOffOutline());
 
             widget.Behaviors.Add(new DrawText() { Text = represented_widget.Name, TextPositioning = DrawText.TextPositioningPolicy.center }, out var draw_text);
             represented_widget.OnRename += (sender, args) => { draw_text.Text = represented_widget.Name; };

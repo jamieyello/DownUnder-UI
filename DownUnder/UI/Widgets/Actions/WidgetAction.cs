@@ -4,8 +4,8 @@ using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Actions {
-    /// <summary> A <see cref="WidgetAction"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this deletes itself on finishing execution. </summary>
-    [DataContract] public abstract class WidgetAction : IIsWidgetChild {
+    /// <summary> Acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this removes itself on finishing execution. </summary>
+    [DataContract] public abstract class WidgetAction : IIsWidgetChild, ICloneable {
         Widget _parent_backing;
         public enum DuplicatePolicyType {
             /// <summary> Override any existing duplicate <see cref="WidgetAction"/>. </summary>
@@ -45,6 +45,9 @@ namespace DownUnder.UI.Widgets.Actions {
             }
         }
 
+        /// <summary> The action that this <see cref="WidgetAction"/> overrode. (if any) </summary>
+        public WidgetAction OverrodeAction { get; internal set; }
+
         public bool HasParent => Parent != null;
         public bool IsCompleted { get; protected set; } = false;
 
@@ -61,12 +64,12 @@ namespace DownUnder.UI.Widgets.Actions {
         protected abstract bool InterferesWith(WidgetAction action);
         protected abstract bool Matches(WidgetAction action);
 
+        object ICloneable.Clone() => InitialClone();
         public virtual object InitialClone() 
         {
             WidgetAction c = (WidgetAction)Activator.CreateInstance(GetType());
             c.DuplicatePolicy = DuplicatePolicy;
             c.DuplicateDefinition = DuplicateDefinition;
-
             return c;
         }
 

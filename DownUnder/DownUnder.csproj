@@ -146,7 +146,7 @@
     <Compile Include="UI\Widgets\Behaviors\Debug\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
     <Compile Include="UI\Widgets\Behaviors\DataTypes\BehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DragableOutlineAnimation.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
     <Compile Include="UI\Widgets\DataTypes\SerializableType.cs" />

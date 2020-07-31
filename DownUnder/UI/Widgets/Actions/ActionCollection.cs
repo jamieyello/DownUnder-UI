@@ -52,7 +52,11 @@ namespace DownUnder.UI.Widgets.Actions {
             }
             else if (action.DuplicatePolicy == DuplicatePolicyType.@override) {
                 for (int i = _actions.Count - 1; i >= 0; i--) {
-                    if (_actions[i].IsDuplicate(action))_actions.RemoveAt(i);
+                    if (_actions[i].IsDuplicate(action))
+                    {
+                        action.OverrodeAction = _actions[i];
+                        _actions.RemoveAt(i);
+                    }
                 }
             } else throw new System.Exception($"DuplicatePolicy {action.DuplicatePolicy} not supported.");
 
