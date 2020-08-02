@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    public class GlimmerBase : WidgetBehavior, IBaseWidgetBehavior
+    public class GlimmerBase : WidgetBehavior, IHostWidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
         private static GroupBehaviorPolicy DefaultChild => new GroupBehaviorPolicy() { Behavior = new GlimmerChild(), InheritancePolicy = GroupBehaviorPolicy.BehaviorInheritancePolicy.apply_to_compatible_children };

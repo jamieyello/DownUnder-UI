@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeActions;
+using DownUnder.UI.Widgets.DataTypes;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors
 {
-    public class SpinOnHoverOnOff : WidgetBehavior
+    public class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
+        public Type BaseWidgetBehavior { get; private set; } = typeof(RotatableCube);
 
         public SpinCube Spin = new SpinCube() 
         { 

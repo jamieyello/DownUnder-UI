@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.Widgets.Actions {
-    [DataContract] public class ActionCollection 
+    [DataContract] public class ActionManager 
     {
         public Widget Parent { get; set; }
         [DataMember] private readonly List<WidgetAction> _actions = new List<WidgetAction>();
 
-        public ActionCollection(Widget parent) => Parent = parent;
+        public ActionManager(Widget parent) => Parent = parent;
         private readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
         public WidgetAction this[int index] { get => ((IList<WidgetAction>)_actions)[index]; set => ((IList<WidgetAction>)_actions)[index] = value; }
         public int Count => ((IList<WidgetAction>)_actions).Count;
@@ -88,7 +88,7 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         public void Clear() {
-            throw new Exception($"Cannot clear an {nameof(ActionCollection)}.");
+            throw new Exception($"Cannot clear an {nameof(ActionManager)}.");
             //foreach (WidgetAction action in _actions) action.DisconnectFromParent();
             //((IList<WidgetAction>)_actions).Clear();
         }
@@ -103,7 +103,7 @@ namespace DownUnder.UI.Widgets.Actions {
         }
 
         public void RemoveAt(int index) {
-            throw new Exception($"Cannot remove an item from an {nameof(ActionCollection)}.");
+            throw new Exception($"Cannot remove an item from an {nameof(ActionManager)}.");
             //((IList<WidgetAction>)_actions)[index].DisconnectFromParent();
             //((IList<WidgetAction>)_actions).RemoveAt(index);
         }

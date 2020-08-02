@@ -1,13 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors
 {
-    public class CubeRotation : WidgetBehavior
+    public class CubeRotation : WidgetBehavior, ISubWidgetBehavior
     {
         public Vector3 Rotation = new Vector3();
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
+        public Type BaseWidgetBehavior { get; private set; } = typeof(RotatableCube);
 
         public override object Clone()
         {

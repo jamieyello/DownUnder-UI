@@ -7,12 +7,12 @@ using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.DataTypes
 {
-    [DataContract] public class BehaviorCollection : IList<WidgetBehavior>, IIsWidgetChild
+    [DataContract] public class BehaviorManager : IList<WidgetBehavior>, IIsWidgetChild
     {
         public Widget Parent { get; set; }
         [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
 
-        public BehaviorCollection(Widget parent) => Parent = parent;
+        public BehaviorManager(Widget parent) => Parent = parent;
 
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => _behaviors[index] = value; }
 
@@ -37,11 +37,11 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
         public bool IsReadOnly => ((IList<WidgetBehavior>)_behaviors).IsReadOnly;
 
         public void Add(WidgetBehavior behavior) {
-            if (!TryAdd(behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorCollection)} already contains a {behavior.GetType().Name}.");
+            if (!TryAdd(behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
         }        
         
         public void Add<T>(T behavior, out T added_behavior) {
-            if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorCollection)} already contains a {behavior.GetType().Name}.");
+            if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
         }
 
         public bool TryAdd(WidgetBehavior behavior)
@@ -70,7 +70,7 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
             foreach (WidgetBehavior behavior in behaviors) Add(behavior);
         }
 
-        public void AddRange(BehaviorCollection behaviors) => AddRange(behaviors.ToList());
+        public void AddRange(BehaviorManager behaviors) => AddRange(behaviors.ToList());
         
         public void Clear() {
             foreach (WidgetBehavior behavior in _behaviors) behavior.Disconnect();

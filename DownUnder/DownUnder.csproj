@@ -112,7 +112,7 @@
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
-    <Compile Include="UI\Widgets\Actions\ActionCollection.cs" />
+    <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="UI\Widgets\Actions\DataTypes\AddNewWidgetLocation.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AddMainWidget.cs" />
@@ -125,6 +125,7 @@
     <Compile Include="UI\Widgets\Behaviors\Examples\RotatableCubeBehaviors\SpinOnHoverOnOff.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\BorderFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
+    <Compile Include="UI\Widgets\Behaviors\IBaseWidgetBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\PopInOut.cs" />
@@ -145,13 +146,14 @@
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Debug\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\BehaviorCollection.cs" />
+    <Compile Include="UI\Widgets\Behaviors\DataTypes\BehaviorManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
     <Compile Include="UI\Widgets\DataTypes\SerializableType.cs" />
     <Compile Include="UI\Widgets\DropDownEntry.cs" />
-    <Compile Include="UI\Widgets\Interfaces\IBaseWidgetBehavior.cs" />
+    <Compile Include="UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
+    <Compile Include="UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
     <Compile Include="UI\Widgets\OldStuff\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />

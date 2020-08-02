@@ -75,9 +75,6 @@ namespace DownUnder.UIEditor.EditorTools
             behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
             behaviors_list.Add(new ShadingBehavior().EditorWidgetRepresentation());
 
-            //behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
-
-
             // Widgets dock
             Widget widgets_container = new Widget();
             widgets_container.UserResizePolicy = UserResizePolicyType.allow;
@@ -158,7 +155,7 @@ namespace DownUnder.UIEditor.EditorTools
             project.DesignerObjects.IsEditModeEnabled = true;
             project.DesignerObjects.UserResizingPolicy = Widget.UserResizePolicyType.allow;
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
-            project.DesignerObjects.UserRepositionPolicy = Widget.UserResizePolicyType.disallow;
+            project.DesignerObjects.UserRepositionPolicy = UserResizePolicyType.disallow;
 
             return project;
         }

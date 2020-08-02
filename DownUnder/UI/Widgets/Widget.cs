@@ -114,8 +114,8 @@ namespace DownUnder.UI.Widgets
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         private bool _accepts_drops_backing;
         private List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
-        private BehaviorCollection _behaviors_backing;
-        private ActionCollection _actions_backing;
+        private BehaviorManager _behaviors_backing;
+        private ActionManager _actions_backing;
 
 
         public enum DrawingModeType {
@@ -199,7 +199,7 @@ namespace DownUnder.UI.Widgets
         public bool IsCloningSupported { get; set; } = true;
 
         [DataMember]
-        public BehaviorCollection Behaviors { 
+        public BehaviorManager Behaviors { 
             get => _behaviors_backing; 
             private set {
                 _behaviors_backing = value;
@@ -217,7 +217,7 @@ namespace DownUnder.UI.Widgets
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll { get; set; } = new Point2();
 
-        public ActionCollection Actions 
+        public ActionManager Actions 
         { 
             get => _actions_backing;
             private set
@@ -642,9 +642,9 @@ namespace DownUnder.UI.Widgets
             Size = new Point2(10, 10);
             Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
-            Behaviors = new BehaviorCollection(this);
+            Behaviors = new BehaviorManager(this);
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
-            Actions = new ActionCollection(this);
+            Actions = new ActionManager(this);
             GroupBehaviors = new GroupBehaviorCollection(this);
             Children = new WidgetList(this);
         }
@@ -661,7 +661,7 @@ namespace DownUnder.UI.Widgets
             _post_update_flags = new WidgetUpdateFlags();
             _has_updated = false;
 
-            Actions = new ActionCollection(this);
+            Actions = new ActionManager(this);
             UpdateData = new UpdateData();
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
