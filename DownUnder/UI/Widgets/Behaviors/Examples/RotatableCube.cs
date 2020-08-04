@@ -1,13 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors;
+using DownUnder.UI.Widgets.Behaviors.Visual;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Examples
 {
-    public class RotatableCube : WidgetBehavior
+    public class RotatableCube : WidgetBehavior, IBaseWidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
+
+        public Type[] BaseBehaviorPreviews { get; private set; } = new Type[] { typeof(CubeRotation), typeof(SpinOnHoverOnOff) };
 
         public Vector3 Angle = new Vector3();
 
@@ -17,6 +22,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
         protected override void Initialize()
         {
             Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
+            if (Parent.IsGraphicsInitialized) InitializeCube(this, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()
@@ -31,6 +37,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
             Parent.OnGraphicsInitialized -= InitializeCube;
             Parent.OnDrawOverlayEffects -= Draw;
             Parent.OnUpdate -= Update;
+        }
+
+        public override Widget EditorWidgetRepresentation()
+        {
+            Widget result = base.EditorWidgetRepresentation();
+            result.Behaviors.GetFirst<DrawText>().Text = "Rotatable\nCube";
+            return result;
         }
 
         public override object Clone()

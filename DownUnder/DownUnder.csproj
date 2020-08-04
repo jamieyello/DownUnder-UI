@@ -113,12 +113,15 @@
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
-    <Compile Include="UI\Widgets\Actions\DataTypes\AddNewWidgetLocation.cs" />
+    <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
+    <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
+    <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\SideOfParent.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AddMainWidget.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\AutoLayoutSlide.cs" />
     <Compile Include="UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorSet.cs" />
     <Compile Include="UI\Widgets\Behaviors\Examples\RotatableCube.cs" />
     <Compile Include="UI\Widgets\Behaviors\Examples\RotatableCubeActions\SpinCube.cs" />
     <Compile Include="UI\Widgets\Behaviors\Examples\RotatableCubeBehaviors\CubeRotation.cs" />
@@ -129,15 +132,15 @@
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\PopInOut.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorPolicy.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\GroupBehaviorAcceptancePolicy.cs" />
+    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
+    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
+    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\GridFormat.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\AddPropertyEditChildren.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\SpacedListFormat.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\WidgetTracker.cs" />
+    <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\GlimmerBase.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\GlimmerChild.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
@@ -146,7 +149,7 @@
     <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
     <Compile Include="UI\Widgets\Behaviors\Debug\WritePropertyToConsole.cs" />
     <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DataTypes\BehaviorManager.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
     <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
@@ -223,7 +226,7 @@
     <Content Include="UI\Images\opened folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="UI\Widgets\Behaviors\DataTypes\WidgetBehaviorTemplate.txt" />
+    <Content Include="UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
     <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +234,8 @@
     <None Include="Content\Content.mgcb" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UI\Widgets\Actions\DataTypes\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors.DataTypes;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
@@ -9,6 +9,8 @@ using DownUnder.UIEditor.EditorTools.Actions;
 using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
+using System;
+using System.Collections.Generic;
 using static DownUnder.UI.Widgets.Widget;
 using ScrollBar = DownUnder.UI.Widgets.Behaviors.Functional.ScrollBar;
 
@@ -56,7 +58,7 @@ namespace DownUnder.UIEditor.EditorTools
             // Behaviors dock
             Widget behaviors_container = new Widget();
             side_grid[0, 0] = behaviors_container;
-            behaviors_container.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            behaviors_container.UserResizePolicy = UserResizePolicyType.allow;
             behaviors_container.AllowedResizingDirections = Directions2D.D;
             behaviors_container.Behaviors.Add(new BorderFormat(), out var behaviors_border);
 
@@ -68,12 +70,11 @@ namespace DownUnder.UIEditor.EditorTools
                 , ShadeVisibility = 1f
             }); ;
 
-            Widget behaviors_list = new Widget().WithAddedBehavior(new SpacedListFormat());
-            behaviors_border.Center = behaviors_list;
-            behaviors_list.ChangeColorOnMouseOver = false;
-
-            behaviors_list.Add(new DrawText().EditorWidgetRepresentation());
-            behaviors_list.Add(new ShadingBehavior().EditorWidgetRepresentation());
+            behaviors_border.Center = WidgetBehavior.BehaviorDisplay(new Type[] 
+            {
+                typeof(RotatableCube),
+                typeof(ShadingBehavior),
+            });
 
             // Widgets dock
             Widget widgets_container = new Widget();
@@ -119,7 +120,7 @@ namespace DownUnder.UIEditor.EditorTools
             editor_objects = new EditorObjects();
             editor_objects.project = project;
             editor_objects.property_grid_container = property_grid_container;
-            editor_objects.behaviors_list = behaviors_list;
+            editor_objects.behaviors_list = behaviors_border.Center;
 
             bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
@@ -153,7 +154,7 @@ namespace DownUnder.UIEditor.EditorTools
             };
 
             project.DesignerObjects.IsEditModeEnabled = true;
-            project.DesignerObjects.UserResizingPolicy = Widget.UserResizePolicyType.allow;
+            project.DesignerObjects.UserResizingPolicy = UserResizePolicyType.allow;
             project.DesignerObjects.AllowedResizingDirections = Directions2D.DR;
             project.DesignerObjects.UserRepositionPolicy = UserResizePolicyType.disallow;
 

@@ -1,11 +1,11 @@
 ﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Actions.DataTypes;
 using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Behaviors.DataTypes;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations;
 using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
@@ -55,7 +55,14 @@ namespace DownUnder.UI.Widgets
 
                 Widget dropdown = DropDown(items);
 
-                w_entry.Behaviors.Add(new TriggerAction(nameof(Widget.OnClick), new AddMainWidget(dropdown) { LocationOptions = new AddNewWidgetLocation() { ParentSide = Direction2D.down, ParentUp = 1 } }));
+                w_entry.Behaviors.Add(
+                    new TriggerAction(
+                        nameof(Widget.OnClick), 
+                        new AddMainWidget(dropdown) 
+                        { 
+                            LocationOptions = new SideOfParent() { ParentSide = Direction2D.down, ParentUp = 1 } 
+                        }));
+
                 file_bar.Add(w_entry);
             }
 

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DownUnder.UI.Widgets.Behaviors.DataTypes
+namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> Used by <see cref="WidgetBehavior"/>s to keep track of <see cref="Widgets.Widget"/>s. Call <see cref="Forget"/> on discarding to avoid cluttering used <see cref="Widget"/>s with tag information. </summary>
     public class WidgetTracker {

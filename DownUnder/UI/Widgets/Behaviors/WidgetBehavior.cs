@@ -1,8 +1,11 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Functional;
+﻿using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations;
 using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
@@ -64,7 +67,37 @@ namespace DownUnder.UI.Widgets.Behaviors
             result.Behaviors.Add(new DragAndDropSource() { DragObject = this });
             result.Behaviors.Add(new DragOffOutline());
 
+            if (this is IBaseWidgetBehavior b_this)
+            {
+                result.Behaviors.Add(new Behaviors.Functional.TriggerAction(
+                    nameof(Widget.OnDoubleClick),
+                    new Actions.Functional.AddMainWidget()
+                    {
+                        LocationOptions = new CoverParent(1),
+                        Widget = new Widget().WithAddedBehavior(
+                            new PopInOut() 
+                            { 
+                                CloseOnClickOff = true,
+                            })
+                    }
+                    ));
+            }
+
             return result;
+        }
+
+        public static Widget BehaviorDisplay(IEnumerable<Type> behaviors)
+        {
+            Widget behaviors_list = new Widget().WithAddedBehavior(new SpacedListFormat());
+            behaviors_list.ChangeColorOnMouseOver = false;
+
+            foreach (Type type in behaviors)
+            {
+                if (Activator.CreateInstance(type) is WidgetBehavior behavior) behaviors_list.Add(behavior.EditorWidgetRepresentation());
+                else throw new Exception($"A given {nameof(Type)} was not a {nameof(WidgetBehavior)}.");
+            }
+
+            return behaviors_list;
         }
     }
 }

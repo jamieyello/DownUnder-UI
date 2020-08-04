@@ -1,4 +1,4 @@
-﻿using DownUnder.UI.Widgets.Actions.DataTypes;
+﻿using DownUnder.UI.Widgets.DataTypes;
 using System;
 using System.Runtime.Serialization;
 
@@ -9,7 +9,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
         [DataMember] public Widget Widget { get; set; }
         [DataMember] public bool CloneWidgetOnAdd { get; set; } = true;
         [DataMember] public bool CloneWidgetInClone { get; set; } = true;
-        [DataMember] public AddNewWidgetLocation LocationOptions { get; set; }
+        [DataMember] public RelativeWidgetLocation LocationOptions { get; set; }
 
         public AddMainWidget() { }
         public AddMainWidget(Widget widget)
@@ -51,7 +51,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             else c.Widget = Widget;
             c.CloneWidgetOnAdd = CloneWidgetOnAdd;
             c.CloneWidgetInClone = CloneWidgetInClone;
-            c.LocationOptions = (AddNewWidgetLocation)LocationOptions.Clone();
+            c.LocationOptions = (RelativeWidgetLocation)LocationOptions.Clone();
             return c;
         }
 

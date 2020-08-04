@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors.DataTypes
+namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class BehaviorManager : IList<WidgetBehavior>, IIsWidgetChild
     {
@@ -69,8 +69,6 @@ namespace DownUnder.UI.Widgets.Behaviors.DataTypes
         public void AddRange(IEnumerable<WidgetBehavior> behaviors) {
             foreach (WidgetBehavior behavior in behaviors) Add(behavior);
         }
-
-        public void AddRange(BehaviorManager behaviors) => AddRange(behaviors.ToList());
         
         public void Clear() {
             foreach (WidgetBehavior behavior in _behaviors) behavior.Disconnect();

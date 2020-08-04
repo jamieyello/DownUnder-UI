@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors.DataTypes
+namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> Contains a <see cref="WidgetBehavior"/> and a <see cref="BehaviorInheritancePolicy"/> describing how the <see cref="WidgetBehavior"/> should be implemented. </summary>
     [DataContract] public class GroupBehaviorPolicy : ICloneable

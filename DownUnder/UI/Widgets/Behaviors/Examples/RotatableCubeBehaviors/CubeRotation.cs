@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 
 namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors

@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
-using System;
+﻿using System;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional {
     public class DragAndDropSource : WidgetBehavior {

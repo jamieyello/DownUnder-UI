@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
+    /// <summary> A <see cref="WidgetBehavior"/> that has <see cref="ISubWidgetBehavior"/>s that are modify this <see cref="WidgetBehavior"/>. </summary>
     public interface IBaseWidgetBehavior
     {
+        Type[] BaseBehaviorPreviews { get; }
     }
 }

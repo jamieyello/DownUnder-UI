@@ -1,13 +1,6 @@
-﻿using DownUnder.UI.Widgets.Behaviors.DataTypes;
-using DownUnder.UI.Widgets.Interfaces;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Visual

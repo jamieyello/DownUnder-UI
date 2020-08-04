@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors.DataTypes
+namespace DownUnder.UI.Widgets.Behaviors
 {
     [DataContract] public class GroupBehaviorCollection : IIsWidgetChild
     {
