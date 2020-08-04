@@ -3,7 +3,6 @@ using DownUnder.UI.Widgets.Behaviors.Visual;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Examples
@@ -37,13 +36,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
             Parent.OnGraphicsInitialized -= InitializeCube;
             Parent.OnDrawOverlayEffects -= Draw;
             Parent.OnUpdate -= Update;
-        }
-
-        public override Widget EditorWidgetRepresentation()
-        {
-            Widget result = base.EditorWidgetRepresentation();
-            result.Behaviors.GetFirst<DrawText>().Text = "Rotatable\nCube";
-            return result;
         }
 
         public override object Clone()

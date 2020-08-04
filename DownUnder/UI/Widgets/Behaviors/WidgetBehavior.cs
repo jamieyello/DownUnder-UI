@@ -7,6 +7,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
@@ -61,7 +62,17 @@ namespace DownUnder.UI.Widgets.Behaviors
                 TextPositioning = DrawText.TextPositioningPolicy.center
             };
 
-            text.Text = GetType().Name;
+            string type_name = GetType().Name;
+
+            StringBuilder name = new StringBuilder();
+            name.Append(type_name[0]);
+            for (int i = 1; i < type_name.Length; i++)
+            {
+                if (char.IsUpper(type_name[i])) name.Append('\n');
+                name.Append(type_name[i]);
+            }
+
+            text.Text = name.ToString();
 
             result.Behaviors.Add(text);
             result.Behaviors.Add(new DragAndDropSource() { DragObject = this });

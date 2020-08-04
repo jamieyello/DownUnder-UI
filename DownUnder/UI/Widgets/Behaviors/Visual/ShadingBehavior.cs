@@ -59,13 +59,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             Parent.SpriteBatch.FillRectangle(Parent.DrawingAreaUnscrolled, Color.Transparent);
         }
 
-        public override Widget EditorWidgetRepresentation()
-        {
-            Widget result = base.EditorWidgetRepresentation();
-            result.Behaviors.GetFirst<DrawText>().Text = "Shading\nBehavior";
-            return result;
-        }
-
         public override object Clone() {
             ShadingBehavior c = new ShadingBehavior();
             if (shading_effect != null) c.shading_effect = shading_effect.Clone();

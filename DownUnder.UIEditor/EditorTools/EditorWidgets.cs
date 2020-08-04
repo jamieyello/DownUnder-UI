@@ -74,6 +74,9 @@ namespace DownUnder.UIEditor.EditorTools
             {
                 typeof(RotatableCube),
                 typeof(ShadingBehavior),
+                typeof(DrawText),
+                typeof(SpacedListFormat),
+                typeof(DragOffOutline)
             });
 
             // Widgets dock
