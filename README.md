@@ -25,7 +25,7 @@ The preview build showcases Widget transitions and animations in an unfinished W
 [Download preview build.](/DownUnder/Preview.zip)
 
 ## The Art Gallery
-![A dark themed UI](/Images/good_ui8.gif)
+![Modern stuff](/Images/goodui3000.gif)
 
 Construction is ongoing
 
