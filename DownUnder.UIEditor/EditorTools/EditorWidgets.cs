@@ -73,10 +73,12 @@ namespace DownUnder.UIEditor.EditorTools
             behaviors_border.Center = WidgetBehavior.BehaviorDisplay(new Type[] 
             {
                 typeof(RotatableCube),
+                typeof(CubeRotation),
                 typeof(ShadingBehavior),
                 typeof(DrawText),
                 typeof(SpacedListFormat),
-                typeof(DragOffOutline)
+                typeof(DragOffOutline),
+
             });
 
             // Widgets dock
@@ -130,8 +132,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             property_grid_container.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.002f, 0.002f, 0.002f) });
             property_grid_container.Behaviors.Add(new SpinOnHoverOnOff());
-            property_grid_container.Behaviors.Add(new RotatableCube());
-
+            
             return bordered_container;
         }
 

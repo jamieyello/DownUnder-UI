@@ -94,7 +94,6 @@
   <ItemGroup>
     <Content Include="Content\crystal.fx" />
     <Content Include="Content\gaussian_blur.fx" />
-    <Content Include="Content\gradient.fx" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

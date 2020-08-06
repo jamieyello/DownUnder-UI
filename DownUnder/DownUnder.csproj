@@ -113,6 +113,8 @@
     <Compile Include="UI\DataTypes\UIImages.cs" />
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
+    <Compile Include="UI\Widgets\Behaviors\BehaviorSets.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentObject.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\SideOfParent.cs" />
@@ -231,10 +233,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Content\Content.mgcb" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\" />
     <Folder Include="UI\Widgets\Actions\DataTypes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

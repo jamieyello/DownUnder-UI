@@ -52,31 +52,31 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public virtual Widget EditorWidgetRepresentation()
         {
-            Widget result = new Widget()
+            Widget result;
+            if (this is ISubWidgetBehavior s_this)
             {
-                Size = new Point2(100, 100)
-            };
-
-            DrawText text = new DrawText()
-            {
-                TextPositioning = DrawText.TextPositioningPolicy.center
-            };
-
-            string type_name = GetType().Name;
-
-            StringBuilder name = new StringBuilder();
-            name.Append(type_name[0]);
-            for (int i = 1; i < type_name.Length; i++)
-            {
-                if (char.IsUpper(type_name[i])) name.Append('\n');
-                name.Append(type_name[i]);
+                result = ((WidgetBehavior)Activator.CreateInstance(s_this.BaseWidgetBehavior)).EditorWidgetRepresentation();
+                result.Behaviors.GetFirst<DrawText>().Text = EditorDisplayText();
+                result.Behaviors.RemoveType(typeof(TriggerAction));
+                result.Behaviors.GetFirst<DragAndDropSource>().DragObject = this;
             }
+            else
+            {
+                result = new Widget()
+                {
+                    Size = new Point2(100, 100)
+                };
 
-            text.Text = name.ToString();
+                DrawText text = new DrawText()
+                {
+                    TextPositioning = DrawText.TextPositioningPolicy.center
+                };
+                text.Text = EditorDisplayText();
 
-            result.Behaviors.Add(text);
-            result.Behaviors.Add(new DragAndDropSource() { DragObject = this });
-            result.Behaviors.Add(new DragOffOutline());
+                result.Behaviors.Add(text);
+                result.Behaviors.Add(new DragAndDropSource() { DragObject = this });
+                result.Behaviors.Add(new DragOffOutline());
+            }
 
             if (this is IBaseWidgetBehavior b_this)
             {
@@ -85,16 +85,30 @@ namespace DownUnder.UI.Widgets.Behaviors
                     new Actions.Functional.AddMainWidget()
                     {
                         LocationOptions = new CoverParent(1),
-                        Widget = new Widget().WithAddedBehavior(
-                            new PopInOut() 
-                            { 
-                                CloseOnClickOff = true,
-                            })
+                        Widget = new Widget()
+                        //Widget = BehaviorDisplay(b_this.BaseBehaviorPreviews).WithAddedBehavior(
+                        //    new PopInOut() 
+                        //    { 
+                        //        CloseOnClickOff = true,
+                        //    })
                     }
                     ));
             }
 
             return result;
+        }
+
+        private string EditorDisplayText()
+        {
+            string type_name = GetType().Name;
+            StringBuilder name = new StringBuilder();
+            name.Append(type_name[0]);
+            for (int i = 1; i < type_name.Length; i++)
+            {
+                if (char.IsUpper(type_name[i])) name.Append('\n');
+                name.Append(type_name[i]);
+            }
+            return name.ToString();
         }
 
         public static Widget BehaviorDisplay(IEnumerable<Type> behaviors)

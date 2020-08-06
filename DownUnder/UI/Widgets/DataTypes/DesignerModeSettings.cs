@@ -72,7 +72,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
             if (drop is WidgetBehavior b_drop)
             {
-                Parent.Behaviors.Add(b_drop);
+                Parent.Behaviors.TryAdd(b_drop);
             }
         }
         

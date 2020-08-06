@@ -46,10 +46,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public bool TryAdd(WidgetBehavior behavior)
         {
-            if (Contains(behavior.GetType())) return false;
-            _behaviors.Add(behavior);
-            behavior.Parent = Parent;
-            return true;
+            return TryAdd(behavior, out var _);
         }
 
         public bool TryAdd<T>(T behavior, out T added_behavior)
@@ -59,6 +56,10 @@ namespace DownUnder.UI.Widgets.Behaviors
             {
                 added_behavior = default;
                 return false;
+            }
+            if (behavior_ is ISubWidgetBehavior s_widget
+                && !Contains(s_widget.BaseWidgetBehavior)) {
+                TryAdd((WidgetBehavior)Activator.CreateInstance(s_widget.BaseWidgetBehavior));
             }
             _behaviors.Add(behavior_);
             behavior_.Parent = Parent;
