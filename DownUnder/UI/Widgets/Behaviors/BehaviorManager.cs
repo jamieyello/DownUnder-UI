@@ -24,9 +24,9 @@ namespace DownUnder.UI.Widgets.Behaviors
             return false;
         }
 
-        public T GetFirst<T>() {
+        public T GetFirst<T>() where T : WidgetBehavior {
             foreach (WidgetBehavior behavior in this) {
-                if (behavior.GetType() == typeof(T)) return (T)Convert.ChangeType(behavior, typeof(T));
+                if (behavior.GetType() == typeof(T)) return (T)behavior;
             }
 
             return default;
@@ -40,7 +40,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             if (!TryAdd(behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
         }        
         
-        public void Add<T>(T behavior, out T added_behavior) {
+        public void Add<T>(T behavior, out T added_behavior) where T : WidgetBehavior {
             if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
         }
 
@@ -49,20 +49,19 @@ namespace DownUnder.UI.Widgets.Behaviors
             return TryAdd(behavior, out var _);
         }
 
-        public bool TryAdd<T>(T behavior, out T added_behavior)
+        public bool TryAdd<T>(T behavior, out T added_behavior) where T : WidgetBehavior
         {
-            if (!(behavior is WidgetBehavior behavior_)) throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
             if (Contains(behavior.GetType()))
             {
                 added_behavior = default;
                 return false;
             }
-            if (behavior_ is ISubWidgetBehavior s_widget
-                && !Contains(s_widget.BaseWidgetBehavior)) {
-                TryAdd((WidgetBehavior)Activator.CreateInstance(s_widget.BaseWidgetBehavior));
+            if (behavior.IsSubBehavior
+                && !Contains(behavior.BaseBehaviorType)) {
+                TryAdd((WidgetBehavior)Activator.CreateInstance(behavior.BaseBehaviorType));
             }
-            _behaviors.Add(behavior_);
-            behavior_.Parent = Parent;
+            _behaviors.Add(behavior);
+            behavior.Parent = Parent;
             added_behavior = behavior;
             return true;
         }

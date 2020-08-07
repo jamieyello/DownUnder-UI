@@ -1,7 +1,7 @@
 ﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Examples;
-using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors;
+using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
@@ -10,7 +10,6 @@ using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
 using static DownUnder.UI.Widgets.Widget;
 using ScrollBar = DownUnder.UI.Widgets.Behaviors.Functional.ScrollBar;
 
@@ -72,7 +71,7 @@ namespace DownUnder.UIEditor.EditorTools
 
             behaviors_border.Center = WidgetBehavior.BehaviorDisplay(new Type[] 
             {
-                typeof(RotatableCube),
+                typeof(Draw3DCube),
                 typeof(CubeRotation),
                 typeof(ShadingBehavior),
                 typeof(DrawText),

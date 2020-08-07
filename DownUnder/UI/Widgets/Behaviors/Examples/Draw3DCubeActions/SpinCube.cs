@@ -3,12 +3,8 @@ using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeActions
+namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
 {
     public class SpinCube : WidgetAction
     {
@@ -52,7 +48,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeActions
 
         private void Update(object sender, EventArgs args)
         {
-            var cube = Parent.Behaviors.GetFirst<RotatableCube>();
+            var cube = Parent.Behaviors.GetFirst<Draw3DCube>();
             if (cube == null) return;
             cube.Angle += _inirtia.GetCurrent();
             _inirtia.Update(Parent.UpdateData.ElapsedSeconds);

@@ -39,7 +39,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void ImplementPolicy(GroupBehaviorPolicy policy)
         {
-            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.apply_to_compatible_children)
+            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children)
             {
                 foreach (Widget widget in Parent.AllContainedWidgets)
                 {

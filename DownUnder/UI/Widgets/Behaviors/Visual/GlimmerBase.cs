@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
     public class GlimmerBase : WidgetBehavior, IHostWidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
-        private static GroupBehaviorPolicy DefaultChild => new GroupBehaviorPolicy() { Behavior = new GlimmerChild(), InheritancePolicy = GroupBehaviorPolicy.BehaviorInheritancePolicy.apply_to_compatible_children };
+        private static GroupBehaviorPolicy DefaultChild => new GroupBehaviorPolicy() { Behavior = new GlimmerChild(), InheritancePolicy = GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children };
 
         private Matrix world = Matrix.CreateTranslation(new Vector3(0, 0, 0));
         private Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 10), new Vector3(0, 0, 0), Vector3.UnitY);

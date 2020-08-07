@@ -19,10 +19,16 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public bool HasParent => Parent != null;
 
+        public bool IsSubBehavior => GetType().GetInterface("ISubWidgetBehavior`1") != null;
+
+        public ISubWidgetBehavior<WidgetBehavior> AsSubBehavior => (ISubWidgetBehavior<WidgetBehavior>)this;
+
+        public Type BaseBehaviorType => GetType().GetInterface("ISubWidgetBehavior`1").GetGenericArguments()[0];
+
         public Widget Parent {
             get => _parent_backing;
             set {
-                if (_parent_backing != null) {
+                    if (_parent_backing != null) {
                     if (_parent_backing == value) return;
                     throw new Exception($"{nameof(WidgetBehavior)}s cannot be reused. Use {nameof(Clone)} to create a copy first.");
                 }
@@ -53,9 +59,9 @@ namespace DownUnder.UI.Widgets.Behaviors
         public virtual Widget EditorWidgetRepresentation()
         {
             Widget result;
-            if (this is ISubWidgetBehavior s_this)
+            if (IsSubBehavior)
             {
-                result = ((WidgetBehavior)Activator.CreateInstance(s_this.BaseWidgetBehavior)).EditorWidgetRepresentation();
+                result = ((WidgetBehavior)Activator.CreateInstance(BaseBehaviorType)).EditorWidgetRepresentation();
                 result.Behaviors.GetFirst<DrawText>().Text = EditorDisplayText();
                 result.Behaviors.RemoveType(typeof(TriggerAction));
                 result.Behaviors.GetFirst<DragAndDropSource>().DragObject = this;
@@ -78,7 +84,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 result.Behaviors.Add(new DragOffOutline());
             }
 
-            if (this is IBaseWidgetBehavior b_this)
+            if (this is IEditorDisplaySubBehaviors b_this)
             {
                 result.Behaviors.Add(new Behaviors.Functional.TriggerAction(
                     nameof(Widget.OnDoubleClick),

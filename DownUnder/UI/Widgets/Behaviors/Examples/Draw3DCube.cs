@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors;
-using DownUnder.UI.Widgets.Behaviors.Visual;
+﻿using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,7 +6,7 @@ using System;
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
 namespace DownUnder.UI.Widgets.Behaviors.Examples
 {
-    public class RotatableCube : WidgetBehavior, IBaseWidgetBehavior
+    public class Draw3DCube : WidgetBehavior, IEditorDisplaySubBehaviors
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
 
@@ -40,7 +39,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
 
         public override object Clone()
         {
-            RotatableCube c = new RotatableCube();
+            Draw3DCube c = new Draw3DCube();
             return c;
         }
 

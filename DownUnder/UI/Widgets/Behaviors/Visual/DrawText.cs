@@ -12,8 +12,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private string _text_backing = "";
         private Point2 _text_position_backing = new Point2();
         private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
-        private float _side_spacing_backing = 3f;
-        private bool _constrain_area_to_text_backing = true;
 
         public enum TextPositioningPolicy {
             none,
@@ -50,17 +48,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
                 //SetMinimumSize(this, EventArgs.Empty);
             }
         }
-        public float SideSpacing { get => _side_spacing_backing; set 
-            {
-                _side_spacing_backing = value;
-            } 
-        }
-        public bool ConstrainAreaToText { get => _constrain_area_to_text_backing;
-            set
-            {
-                _constrain_area_to_text_backing = value;
-            }
-        }
+
+        public float SideSpacing { get; set; } = 3f;
+        public bool ConstrainAreaToText { get; set; } = true;
+        public bool Visible { get; set; } = true;
 
         protected override void Initialize()
         {
@@ -130,6 +121,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         }
 
         private void Draw(object sender, EventArgs args) {
+            if (!Visible) return;
             Parent.SpriteBatch.DrawString(Parent.SpriteFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
         }
     }

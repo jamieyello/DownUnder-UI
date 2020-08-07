@@ -2,6 +2,7 @@
 using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
+using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.EditorTools;
 using Microsoft.Xna.Framework;

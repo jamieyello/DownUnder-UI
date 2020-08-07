@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors
+namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 {
-    public class CubeRotation : WidgetBehavior, ISubWidgetBehavior
+    public class CubeRotation : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
     {
         public Vector3 Rotation = new Vector3();
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
-        public Type BaseWidgetBehavior { get; private set; } = typeof(RotatableCube);
+        public Draw3DCube BaseBehavior => Parent.Behaviors.GetFirst<Draw3DCube>();
 
         public override object Clone()
         {
@@ -35,9 +35,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors
 
         private void Update(object sender, EventArgs args)
         {
-            RotatableCube cube = Parent.Behaviors.GetFirst<RotatableCube>();
-            if (cube == null) return;
-            cube.Angle += Rotation;
+            BaseBehavior.Angle += Rotation;
         }
     }
 }

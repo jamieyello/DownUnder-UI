@@ -1,15 +1,16 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeActions;
-using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.RotatableCubeBehaviors
+namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 {
-    public class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior
+    public class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
-        public Type BaseWidgetBehavior { get; private set; } = typeof(RotatableCube);
+        public Type BaseWidgetBehavior { get; private set; } = typeof(Draw3DCube);
+
+        public Draw3DCube BaseBehavior => Parent.Behaviors.GetFirst<Draw3DCube>();
 
         public SpinCube Spin = new SpinCube() 
         { 

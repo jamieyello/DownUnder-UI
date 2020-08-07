@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 {
-    public class RepresentObject : WidgetBehavior, ISubWidgetBehavior
+    public class RepresentObject : WidgetBehavior, ISubWidgetBehavior<DrawText>
     {
-        public Type BaseWidgetBehavior => typeof(DrawText);
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+
+        public DrawText BaseBehavior => Parent.Behaviors.GetFirst<DrawText>();
 
         private PropertyInfo _property;
 
@@ -40,7 +41,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 
         private void UpdateText(object sender, EventArgs args)
         {
-            Parent.Behaviors.GetFirst<DrawText>().Text = _property.GetValue(RepresentedObject).ToString();
+            BaseBehavior.Text = _property.GetValue(RepresentedObject).ToString();
         }
 
         public void UpdateText()

@@ -2,8 +2,8 @@
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    public interface ISubWidgetBehavior
+    public interface ISubWidgetBehavior<out TBase> where TBase : WidgetBehavior
     {
-        Type BaseWidgetBehavior { get; }
+        TBase BaseBehavior { get; }
     }
 }
