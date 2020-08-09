@@ -115,7 +115,7 @@ namespace DownUnder.UI.Widgets
         private List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
         private BehaviorManager _behaviors_backing;
         private ActionManager _actions_backing;
-
+        private bool _fit_to_content_area_backing = false;
 
         public enum DrawingModeType {
             /// <summary> Draw nothing. </summary>
@@ -360,6 +360,29 @@ namespace DownUnder.UI.Widgets
         public List<SerializableType> AcceptedDropTypes {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
             private set => _accepted_drop_types_backing = value;
+        }
+
+        /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
+        [DataMember] public bool FitToContentArea 
+        { 
+            get => _fit_to_content_area_backing;
+            set
+            {
+                if (value && !_fit_to_content_area_backing && Children != null && Children.Count != 0) Size = ContentArea.Size;
+                _fit_to_content_area_backing = value;
+            }
+        }
+
+        [DataMember] public bool EmbedChildren { get; set; } = true;
+
+        public RectangleF ContentArea
+        {
+            get
+            {
+                RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
+                if (result == null) return Area.WithOffset(Scroll);
+                return result.Value.WithOffset(Scroll);
+            }
         }
 
         #endregion
@@ -1038,6 +1061,12 @@ namespace DownUnder.UI.Widgets
             HandleChildDelete(widget);
         }
 
+        private void HandleChildDelete(Widget widget)
+        {
+            widget.Dispose();
+            Children.Remove(widget);
+        }
+
         /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
         //public void ConnectEvents()
         //{
@@ -1352,24 +1381,6 @@ namespace DownUnder.UI.Widgets
         #endregion
 
         #region Ilist
-
-        /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
-        [DataMember] public bool FitToContentArea { get; set; } = false;
-        [DataMember] public bool EmbedChildren { get; set; } = true;
-
-        public RectangleF ContentArea {
-            get {
-                RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
-                if (result == null) return Area.WithOffset(Scroll);
-                return result.Value.WithOffset(Scroll);
-            }
-        }
-
-        private void HandleChildDelete(Widget widget)
-        {
-            widget.Dispose();
-            Children.Remove(widget);
-        }
 
         public int IndexOf(Widget item) => Children.IndexOf(item);
         public void Insert(int index, Widget item) => Children.Insert(index, item);

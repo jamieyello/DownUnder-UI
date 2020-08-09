@@ -55,15 +55,10 @@ namespace DownUnder.Widgets
             SpriteFont = Content.Load<SpriteFont>("font");
 
             //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
-            //MainWidget = TestLayouts.ContainerTest();
-            //MainWidget = TestLayouts.InnerGirdResizeTest();
-            //MainWidget = TestLayouts.RenderScrollDebug();
-            //MainWidget = TestLayouts.CubeTest();
-
-            MainWidget = EditorWidgets.UIEditor(out editor_objects);
-            //CommonBehaviors.Add(new ScrollBar());
-
-
+            //MainWidget = TestLayouts.PropertyTest();
+            MainWidget = TestLayouts.GridEdit();
+            
+            //MainWidget = EditorWidgets.UIEditor(out editor_objects);
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");

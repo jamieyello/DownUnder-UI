@@ -5,6 +5,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 // Todo: Duplicate RectanglF extensions for Rectangle
 // Todo: Turn some extensions to properties when C# 8 arrives
@@ -390,6 +391,29 @@ namespace DownUnder
         
         public static BorderSize Difference(this RectangleF r1, RectangleF r2) {
             return new BorderSize(r1.Y - r2.Y, r1.Bottom - r2.Bottom, r1.X - r2.X, r1.Right - r2.Right);
+        }
+
+        // https://stackoverflow.com/questions/12680341/how-to-get-both-fields-and-properties-in-single-call-via-reflection
+        public static MemberInfo[] GetEditableMembers(this Type type)
+        {
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+            MemberInfo[] members = type.GetFields(bindingFlags).Cast<MemberInfo>()
+                .Concat(type.GetProperties(bindingFlags)).ToArray();
+            return members;
+        }
+
+        //https://stackoverflow.com/questions/238555/how-do-i-get-the-value-of-memberinfo
+        public static object GetValue(this MemberInfo memberInfo, object forObject)
+        {
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    return ((FieldInfo)memberInfo).GetValue(forObject);
+                case MemberTypes.Property:
+                    return ((PropertyInfo)memberInfo).GetValue(forObject);
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

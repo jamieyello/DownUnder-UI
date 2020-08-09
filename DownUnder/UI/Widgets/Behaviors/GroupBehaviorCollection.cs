@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.Interfaces;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -39,14 +40,16 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         private void ImplementPolicy(GroupBehaviorPolicy policy)
         {
-            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children)
+            WidgetList widgets;
+
+            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widgets = Parent.AllContainedWidgets;
+            else widgets = Parent.Children;
+            
+            foreach (Widget widget in widgets)
             {
-                foreach (Widget widget in Parent.AllContainedWidgets)
+                if (widget.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
                 {
-                    if (widget.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
-                    {
-                        widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
-                    }
+                    widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
             }
         }
@@ -56,7 +59,20 @@ namespace DownUnder.UI.Widgets.Behaviors
             get
             {
                 var result = new List<GroupBehaviorPolicy>(_behavior_policies);
-                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.GroupBehaviors.InheritedPolicies);
+                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.GroupBehaviors._InheritedPolicies);
+                return result;
+            }
+        }
+
+        private List<GroupBehaviorPolicy> _InheritedPolicies
+        {
+            get
+            {
+                var result = new List<GroupBehaviorPolicy>(_behavior_policies);
+                for (int i = result.Count - 1; i >= 0; i--) {
+                    if (result[0].InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.direct_children) result.RemoveAt(i);
+                }
+                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.GroupBehaviors._InheritedPolicies);
                 return result;
             }
         }

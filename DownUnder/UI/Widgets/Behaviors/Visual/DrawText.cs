@@ -13,6 +13,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private Point2 _text_position_backing = new Point2();
         private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
 
+        public DrawText() { }
+        public DrawText(string text)
+        {
+            Text = text;
+        }
+
         public enum TextPositioningPolicy {
             none,
             top_left,

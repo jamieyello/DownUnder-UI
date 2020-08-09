@@ -10,9 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             /// <summary> Apply to all <see cref="Widget"/>s contained in this <see cref="Widget"/>. (<see cref="Widget.AllContainedWidgets"/>) </summary>
             all_children,
-            /// <summary>
-            /// Apply just to this <see cref="Widget"/>'s <see cref="Widget.Children"/>.
-            /// </summary>
+            /// <summary> Apply just to this <see cref="Widget"/>'s <see cref="Widget.Children"/>. </summary>
             direct_children
         }
 

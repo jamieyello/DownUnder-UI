@@ -2,9 +2,11 @@
 using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DownUnder.UIEditor
 {
@@ -124,6 +126,47 @@ namespace DownUnder.UIEditor
             };
 
             inner.Behaviors.Add(new Draw3DCube());
+
+            layout.Add(inner);
+
+            return layout;
+        }
+
+        public static Widget GridEdit()
+        {
+            Widget layout = new Widget();
+
+            Widget grid = new Widget() { Position = new Point2(30, 60) }.WithAddedBehavior(new GridFormat(2, 2));
+            grid.Size = new Point2(300, 300);
+            grid.FitToContentArea = true;
+            grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            layout.Add(grid);
+
+            Widget add_row_button = new Widget() { Position = new Point2(30, 30) }.WithAddedBehavior(new DrawText("Add Row"));
+            add_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().AddRow(1); };
+            layout.Add(add_row_button);
+            
+            Widget add_column_button = new Widget() { Position = new Point2(120, 30) }.WithAddedBehavior(new DrawText("Add Column"));
+            add_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().AddColumn(1); };
+            layout.Add(add_column_button);
+
+            return layout;
+        }
+
+        public static Widget PropertyTest()
+        {
+            Widget layout = new Widget();
+
+            RectangleF r = new RectangleF();
+
+            Widget inner = new Widget()
+            {
+                Position = new Point2(30, 30)
+            };
+
+            DisplayObjectMember display = new DisplayObjectMember(r, nameof(r.Width));
+
+            inner.Behaviors.Add(display);
 
             layout.Add(inner);
 

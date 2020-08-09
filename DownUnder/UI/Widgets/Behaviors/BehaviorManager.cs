@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public BehaviorManager(Widget parent) => Parent = parent;
 
-        public WidgetBehavior this[int index] { get => _behaviors[index]; set => _behaviors[index] = value; }
+        public WidgetBehavior this[int index] { get => _behaviors[index]; set => throw new NotImplementedException(); }
 
         public bool HasBehaviorOfType(Type type) {
             foreach (WidgetBehavior behavior in this) {

@@ -114,7 +114,7 @@
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorSets.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentObject.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DisplayObjectMember.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\SideOfParent.cs" />

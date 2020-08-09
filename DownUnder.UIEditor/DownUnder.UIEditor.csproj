@@ -111,7 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Images\Widget Icons\" />
-    <Folder Include="Content\ModelTest\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

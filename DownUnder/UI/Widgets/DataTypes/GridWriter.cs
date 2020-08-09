@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 
 namespace DownUnder.UI.Widgets.DataTypes
@@ -17,6 +18,31 @@ namespace DownUnder.UI.Widgets.DataTypes
             SetSize(widgets, width, height, new_area.Size, debug);
             AutoSizeAllWidgets(widgets, width, height);
             AutoSpaceAllWidgets(widgets, width, height, new_area.Position);
+        }
+
+        public static void AddRow(WidgetList widgets, int width, int height, int row, WidgetList new_row)
+        {
+            int start = row * width;
+            int i = 0;
+            foreach (Widget widget in new_row)
+            {
+                widgets.Insert(start + i++, widget);
+            }
+        }
+
+        public static void AddColumn(WidgetList widgets, int width, int height, int column, WidgetList new_column)
+        {
+            
+        }
+
+        public static void RemoveRow(WidgetList widgets, int width, int height, int row)
+        {
+
+        }
+
+        public static void RemoveColumn(WidgetList widgets, int width, int height, int column)
+        {
+
         }
 
         /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>

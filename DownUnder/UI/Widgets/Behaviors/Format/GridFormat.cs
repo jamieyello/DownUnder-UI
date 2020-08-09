@@ -92,11 +92,62 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         }
         public Point IndexOf(Widget widget) => GridReader.IndexOf(Width, Parent.Children.IndexOf(widget));
 
+        public void AddRow(int row, WidgetList widgets = null)
+        {
+            if (widgets == null)
+            {
+                widgets = new WidgetList();
+                for (int i = 0; i < Width; i++) widgets.Add((Widget)Filler.Clone());
+            }
+            else if (widgets.Count != Width) throw new Exception("Row count width mismatch.");
+
+            bool p = _enable_internal_align;
+            _enable_internal_align = false;
+            GridWriter.AddRow(Parent.Children, Width, Height++, row, widgets);
+            _enable_internal_align = p;
+            Align(this, EventArgs.Empty);
+        }
+
+        public void AddColumn(int column, WidgetList widgets = null)
+        {
+            if (widgets == null)
+            {
+                widgets = new WidgetList();
+                for (int i = 0; i < Height; i++) widgets.Add((Widget)Filler.Clone());
+            }
+            else if (widgets.Count != Height) throw new Exception("Row count height mismatch.");
+
+            bool p = _enable_internal_align;
+            _enable_internal_align = false;
+            GridWriter.AddColumn(Parent.Children, Width++, Height, column, widgets);
+            _enable_internal_align = p;
+            Align(this, EventArgs.Empty);
+        }
+
+        public void RemoveRow(int row)
+        {
+            bool p = _enable_internal_align;
+            _enable_internal_align = false;
+            GridWriter.RemoveRow(Parent.Children, Width, Height--, row);
+            _enable_internal_align = p;
+            Align(this, EventArgs.Empty);
+        }
+
+        public void RemoveColumn(int column)
+        {
+            bool p = _enable_internal_align;
+            _enable_internal_align = false;
+            GridWriter.RemoveColumn(Parent.Children, Width--, Height, column);
+            _enable_internal_align = p;
+            Align(this, EventArgs.Empty);
+        }
+
         private void Align(object sender, EventArgs args)
         {
+            bool p = _enable_internal_align;
             _enable_internal_align = false;
             GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly());
-            _enable_internal_align = true;
+            _enable_internal_align = p;
         }
 
         // Adds and removes InternalAlign to/from child widgets
@@ -111,6 +162,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         private void InternalAlign(object sender, RectangleFSetOverrideArgs args)
         {
             if (!_enable_internal_align) return;
+            bool p = _enable_internal_align;
             _enable_internal_align = false;
             Widget widget = (Widget)sender;
             Point index = IndexOf(widget);
@@ -185,7 +237,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             }
 
             SetSizeToContent();
-            _enable_internal_align = true;
+            _enable_internal_align = p;
         }
     }
 }
