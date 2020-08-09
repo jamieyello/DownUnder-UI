@@ -114,6 +114,7 @@
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorSets.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Format\GridFormatBehaviors\MemberViewer.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DisplayObjectMember.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
@@ -159,7 +160,7 @@
     <Compile Include="UI\Widgets\DropDownEntry.cs" />
     <Compile Include="UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
-    <Compile Include="UI\Widgets\OldStuff\DrawPixelGrid.cs" />
+    <Compile Include="UI\Widgets\Re-Implement\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />
     <Compile Include="UI\Widgets\DataTypes\DesignerModeSettings.cs" />
@@ -169,7 +170,6 @@
     <Compile Include="UI\Widgets\DataTypes\GridSettings.cs" />
     <Compile Include="UI\Widgets\DataTypes\GridWriter.cs" />
     <Compile Include="UI\Widgets\BasicWidgets.cs" />
-    <Compile Include="UI\Widgets\OldStuff\UIEditor.cs" />
     <Compile Include="Utilities\CustomEventArgs\AddItemArgs.cs" />
     <Compile Include="Utilities\CustomEventArgs\RemoveItemArgs.cs" />
     <Compile Include="Utilities\DiagonalDirection2D.cs" />
@@ -186,12 +186,10 @@
     <Compile Include="UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
     <Compile Include="UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
     <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
-    <Compile Include="UI\Widgets\OldStuff\Label.cs" />
+    <Compile Include="UI\Widgets\Re-Implement\Label.cs" />
     <Compile Include="UI\Widgets\Interfaces\IWidgetChild.cs" />
-    <Compile Include="UI\Widgets\OldStuff\ObjectLabel.cs" />
-    <Compile Include="UI\Widgets\OldStuff\PropertyGrid.cs" />
     <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\OldStuff\TextCursor.cs" />
+    <Compile Include="UI\Widgets\Re-Implement\TextCursor.cs" />
     <Compile Include="Utilities\ChangingValue.cs" />
     <Compile Include="Utilities\Directions2D.cs" />
     <Compile Include="Utilities\DrawingEffects\GridPixel.cs" />
@@ -228,6 +226,7 @@
     <Content Include="UI\Images\opened folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="UI\Widgets\Behaviors\WidgetBehavior Rules.txt" />
     <Content Include="UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
     <Content Include="Utilities\blurred_circle.png" />
   </ItemGroup>

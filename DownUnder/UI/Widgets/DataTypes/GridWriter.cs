@@ -32,17 +32,27 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public static void AddColumn(WidgetList widgets, int width, int height, int column, WidgetList new_column)
         {
-            
+            int i = 0;
+            foreach (Widget widget in new_column)
+            {
+                widgets.Insert(column + i++ * width, widget);
+            }
         }
 
         public static void RemoveRow(WidgetList widgets, int width, int height, int row)
         {
-
+            for (int i = 0; i < width; i++)
+            {
+                widgets.RemoveAt(row * width);
+            }
         }
 
         public static void RemoveColumn(WidgetList widgets, int width, int height, int column)
         {
-
+            for (int i = height -1; i >= 0; i--)
+            {
+                widgets.RemoveAt(column + i * width);
+            }
         }
 
         /// <summary> This will find the longest/tallest widget in each row/collumn and make every other element match. </summary>

@@ -150,6 +150,15 @@ namespace DownUnder.UIEditor
             add_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().AddColumn(1); };
             layout.Add(add_column_button);
 
+            Widget remove_row_button = new Widget() { Position = new Point2(200, 30) }.WithAddedBehavior(new DrawText("Remove Row"));
+            remove_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().RemoveRow(1); };
+            layout.Add(remove_row_button);
+
+            Widget remove_column_button = new Widget() { Position = new Point2(300, 30) }.WithAddedBehavior(new DrawText("Remove Column"));
+            remove_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().RemoveColumn(1); };
+            layout.Add(remove_column_button);
+           
+
             return layout;
         }
 

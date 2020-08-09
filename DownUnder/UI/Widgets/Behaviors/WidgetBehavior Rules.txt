@@ -1,0 +1,9 @@
+﻿WidgetBehavior formatting rules: (Temporary file)
+
+Rule #1: Without properly setting native members a WidgetBehavior is allowed and expected to crash.
+Rule #2: A WidgetBehavior must have a parameterless constructor (or no constructor).
+Rule #3: A WidgetBehavior must be serializable.
+Rule #4: A WidgetBehavior must be able to repeatedly disconnect and connect all events (if any) in the given ConnectEvents()/DisconnectEvents() methods.
+Rule #5: The Clone() method is only used to recreate the initial state of the behavior (to be used by another Widget), not the exact same state of the Behavior.
+Rule #6: A WidgetBehavior must not directly add additional WidgetBehaviors. Use IHostWidgetBehavior to accomplish this.
+Rule #7: A WidgetBehavior must be fancy. :)
