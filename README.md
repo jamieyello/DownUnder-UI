@@ -11,6 +11,7 @@ Still an early WIP. Testing and feedback needed!
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/UI.Widget) that can add any functionality.
 
 ## Planned Features
+ - Multi-window support.
  - Community marketplace to share Widgets and Widget behaviors.
 
 ## Community
