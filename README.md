@@ -29,7 +29,7 @@ The preview build showcases Widget transitions and animations in an unfinished W
 [Download preview build.](/DownUnder/Preview.zip)
 
 ## The Art Gallery
-![Modern stuff](/Images/goodui3000.gif)
+![Modern stuff](/Images/goodui3001.gif)
 
 Construction is ongoing
 
