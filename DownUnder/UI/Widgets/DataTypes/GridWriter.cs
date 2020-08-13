@@ -1,6 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using System;
+﻿using MonoGame.Extended;
+using System.Collections.Generic;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -20,7 +19,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             AutoSpaceAllWidgets(widgets, width, height, new_area.Position);
         }
 
-        public static void AddRow(WidgetList widgets, int width, int height, int row, WidgetList new_row)
+        public static void AddRow(WidgetList widgets, int width, int height, int row, IEnumerable<Widget> new_row)
         {
             int start = row * width;
             int i = 0;
@@ -30,7 +29,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public static void AddColumn(WidgetList widgets, int width, int height, int column, WidgetList new_column)
+        public static void AddColumn(WidgetList widgets, int width, int height, int column, IEnumerable<Widget> new_column)
         {
             int i = 0;
             foreach (Widget widget in new_column)

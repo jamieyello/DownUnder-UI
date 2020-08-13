@@ -114,8 +114,9 @@
     <Compile Include="UI\DWindow.cs" />
     <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\BehaviorSets.cs" />
+    <Compile Include="UI\Widgets\Behaviors\TemplateBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\GridFormatBehaviors\MemberViewer.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DisplayObjectMember.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\SideOfParent.cs" />

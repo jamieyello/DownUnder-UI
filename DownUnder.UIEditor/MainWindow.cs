@@ -3,6 +3,7 @@ using DownUnder.UI;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
+using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UIEditor;
 using DownUnder.UIEditor.EditorTools;
 using Microsoft.Xna.Framework;
@@ -56,9 +57,11 @@ namespace DownUnder.Widgets
 
             //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
             //MainWidget = TestLayouts.PropertyTest();
-            MainWidget = TestLayouts.GridEdit();
+            //MainWidget = TestLayouts.PropertyTest();
             
-            //MainWidget = EditorWidgets.UIEditor(out editor_objects);
+            MainWidget = EditorWidgets.UIEditor(out editor_objects);
+
+            MainWidget.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");
@@ -106,6 +109,11 @@ namespace DownUnder.Widgets
             editor_objects.project.Delete();
             container.Add(widget);
             widget.DesignerObjects.IsEditModeEnabled = true;
+        }
+
+        public void SetObjectViewer(object obj)
+        {
+            //editor_objects.property_grid_container
         }
     }
 }

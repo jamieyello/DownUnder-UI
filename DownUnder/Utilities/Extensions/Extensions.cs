@@ -415,5 +415,18 @@ namespace DownUnder
                     throw new NotImplementedException();
             }
         }
+
+        public static ParameterInfo[] GetParameters(this MemberInfo memberInfo)
+        {
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    return new ParameterInfo[0];
+                case MemberTypes.Property:
+                    return ((PropertyInfo)memberInfo).GetIndexParameters();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }

@@ -130,5 +130,11 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             return behaviors_list;
         }
+
+        /// <summary> Creates a <see cref="Widget"/> and adds this <see cref="WidgetBehavior"/>. </summary>
+        public Widget CreateWidget()
+        {
+            return new Widget().WithAddedBehavior(this);
+        }
     }
 }

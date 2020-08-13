@@ -1,6 +1,7 @@
 ﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.Utility;
@@ -143,11 +144,11 @@ namespace DownUnder.UIEditor
             layout.Add(grid);
 
             Widget add_row_button = new Widget() { Position = new Point2(30, 30) }.WithAddedBehavior(new DrawText("Add Row"));
-            add_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().AddRow(1); };
+            add_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().InsertRow(1); };
             layout.Add(add_row_button);
             
             Widget add_column_button = new Widget() { Position = new Point2(120, 30) }.WithAddedBehavior(new DrawText("Add Column"));
-            add_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().AddColumn(1); };
+            add_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().InsertColumn(1); };
             layout.Add(add_column_button);
 
             Widget remove_row_button = new Widget() { Position = new Point2(200, 30) }.WithAddedBehavior(new DrawText("Remove Row"));
@@ -158,6 +159,23 @@ namespace DownUnder.UIEditor
             remove_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().RemoveColumn(1); };
             layout.Add(remove_column_button);
            
+            return layout;
+        }
+
+        public static Widget GridEdit2()
+        {
+            Widget layout = new Widget();
+
+            Widget grid = new Widget() { Position = new Point2(30, 60) }.WithAddedBehavior(new GridFormat(0, 0), out var grid_format);
+            grid.Size = new Point2(300, 300);
+            grid.FitToContentArea = true;
+            grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            layout.Add(grid);
+
+            grid_format.AddRow(new Widget[] { new Widget(), new Widget() });
+            grid_format.AddRow();
+            grid_format.AddRow();
+            grid_format.AddRow(new Widget[] { new Widget(), new Widget() });
 
             return layout;
         }
@@ -166,18 +184,8 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
-            RectangleF r = new RectangleF();
-
-            Widget inner = new Widget()
-            {
-                Position = new Point2(30, 30)
-            };
-
-            DisplayObjectMember display = new DisplayObjectMember(r, nameof(r.Width));
-
-            inner.Behaviors.Add(display);
-
-            layout.Add(inner);
+            layout.Add(new MemberViewer(new Widget()).CreateWidget(), out var property_grid);
+            property_grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
 
             return layout;
         }

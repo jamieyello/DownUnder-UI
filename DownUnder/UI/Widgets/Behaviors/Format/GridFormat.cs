@@ -3,6 +3,8 @@ using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DownUnder.UI.Widgets.Behaviors.Format
 {
@@ -21,14 +23,28 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         public bool DisposeOldOnSet { get; set; } = true;
         public bool SizeToContent { get; set; } = true;
 
+        public GridFormat()
+        {
+            Width = 0;
+            Height = 0;
+        }
         public GridFormat(Point dimensions, Widget filler = null)
         {
+            if (dimensions.X < 0 || dimensions.Y < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({dimensions})");
+            if (dimensions.X == 0 || dimensions.Y == 0) dimensions = new Point();
+            
             Width = dimensions.X;
             Height = dimensions.Y;
             Filler = (Widget)filler?.Clone();
         }
         public GridFormat(int width, int height, Widget filler = null)
         {
+            if (width < 0 || height < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({width}, {height})");
+            if (width == 0 || height == 0) {
+                width = 0;
+                height = 0;
+            }
+
             Width = width;
             Height = height;
             Filler = (Widget)filler?.Clone();
@@ -92,15 +108,29 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         }
         public Point IndexOf(Widget widget) => GridReader.IndexOf(Width, Parent.Children.IndexOf(widget));
 
-        public void AddRow(int row, WidgetList widgets = null)
+        public void AddRow(IEnumerable<Widget> widgets = null)
         {
+            InsertRow(Height, widgets);
+        }
+
+        public void AddColumn(IEnumerable<Widget> widgets = null)
+        {
+            InsertRow(Width, widgets);
+        }
+
+        public void InsertRow(int row, IEnumerable<Widget> widgets = null)
+        {
+            if (widgets == null && Width == 0) throw new Exception($"Cannot create new row in a grid with no width if no widgets are given.");
+            if (widgets != null && widgets.Count() == 0) throw new Exception("Cannot add empty widget collection.");
+            if (Width == 0) Width = widgets.Count();
             if (widgets == null)
             {
-                widgets = new WidgetList();
-                for (int i = 0; i < Width; i++) widgets.Add((Widget)Filler.Clone());
+                WidgetList new_widget_list = new WidgetList();
+                for (int i = 0; i < Width; i++) new_widget_list.Add((Widget)Filler.Clone());
+                widgets = new_widget_list;
             }
-            else if (widgets.Count != Width) throw new Exception("Row count width mismatch.");
-
+            if (widgets.Count() != Width) throw new Exception("Row count width mismatch.");
+            
             bool p = _enable_internal_align;
             _enable_internal_align = false;
             GridWriter.AddRow(Parent.Children, Width, Height++, row, widgets);
@@ -108,14 +138,18 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             Align(this, EventArgs.Empty);
         }
 
-        public void AddColumn(int column, WidgetList widgets = null)
+        public void InsertColumn(int column, IEnumerable<Widget> widgets = null)
         {
+            if (widgets == null && Height == 0) throw new Exception($"Cannot create new column in a grid with no height if no widgets are given.");
+            if (widgets != null && widgets.Count() == 0) throw new Exception("Cannot add empty widget collection.");
+            if (Height == 0) Height = widgets.Count();
             if (widgets == null)
             {
-                widgets = new WidgetList();
-                for (int i = 0; i < Height; i++) widgets.Add((Widget)Filler.Clone());
+                WidgetList new_widget_list = new WidgetList();
+                for (int i = 0; i < Height; i++) new_widget_list.Add((Widget)Filler.Clone());
+                widgets = new_widget_list;
             }
-            else if (widgets.Count != Height) throw new Exception("Row count height mismatch.");
+            else if (widgets.Count() != Height) throw new Exception("Row count height mismatch.");
 
             bool p = _enable_internal_align;
             _enable_internal_align = false;
@@ -131,6 +165,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             GridWriter.RemoveRow(Parent.Children, Width, Height--, row);
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
+
+            if (Height == 0) Width = 0;
         }
 
         public void RemoveColumn(int column)
@@ -140,6 +176,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             GridWriter.RemoveColumn(Parent.Children, Width--, Height, column);
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
+
+            if (Width == 0) Height = 0;
         }
 
         private void Align(object sender, EventArgs args)

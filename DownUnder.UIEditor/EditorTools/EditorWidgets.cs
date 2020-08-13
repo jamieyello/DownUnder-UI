@@ -36,6 +36,13 @@ namespace DownUnder.UIEditor.EditorTools
 
             border_format.TopBorder = BasicWidgets.FileBar(file_bar_entries);
 
+            Widget cube = new Widget() { Size = new Point2(32, 22) };
+            cube.DrawOutline = false;
+            cube.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.001f, 0.001f, 0.001f) });
+            cube.Behaviors.Add(new SpinOnHoverOnOff());
+
+            border_format.TopBorder.Insert(0, cube);
+
             // Project
             layout[0, 0].EmbedChildren = false;
             layout[0, 0].ChangeColorOnMouseOver = false;
@@ -50,8 +57,8 @@ namespace DownUnder.UIEditor.EditorTools
             side_grid.AllowedResizingDirections = Directions2D.L;
 
             // Property grid
-            Widget property_grid_container = BasicWidgets.PropertyGrid(new RectangleF()).SendToContainer();
-            property_grid_container.Behaviors.Add(ShadingBehavior.SubtleBlue);
+            Widget property_grid_container = BasicWidgets.PropertyGrid(new Widget()).SendToContainer();
+            //property_grid_container.Behaviors.Add(ShadingBehavior.SubtleBlue);
             side_grid[0, 2] = property_grid_container;
 
             // Behaviors dock
@@ -77,7 +84,6 @@ namespace DownUnder.UIEditor.EditorTools
                 typeof(DrawText),
                 typeof(SpacedListFormat),
                 typeof(DragOffOutline),
-
             });
 
             // Widgets dock
@@ -126,11 +132,9 @@ namespace DownUnder.UIEditor.EditorTools
             editor_objects.property_grid_container = property_grid_container;
             editor_objects.behaviors_list = behaviors_border.Center;
 
-            bordered_container.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
             bordered_container.IsCloningSupported = false;
 
-            property_grid_container.Behaviors.Add(new CubeRotation() { Rotation = new Microsoft.Xna.Framework.Vector3(0.002f, 0.002f, 0.002f) });
-            property_grid_container.Behaviors.Add(new SpinOnHoverOnOff());
+            
             
             return bordered_container;
         }

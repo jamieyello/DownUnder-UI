@@ -1382,6 +1382,18 @@ namespace DownUnder.UI.Widgets
 
         #region Ilist
 
+        public void Add(Widget widget, out Widget added_widget)
+        {
+            Add(widget);
+            added_widget = widget;
+        }
+
+        public void Insert(int index, Widget item, out Widget inserted_widget)
+        {
+            Insert(index, item);
+            inserted_widget = item;
+        }
+
         public int IndexOf(Widget item) => Children.IndexOf(item);
         public void Insert(int index, Widget item) => Children.Insert(index, item);
         public void RemoveAt(int index) => Children.RemoveAt(index);

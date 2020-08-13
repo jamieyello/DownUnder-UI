@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 {
-    public class DisplayObjectMember : WidgetBehavior, ISubWidgetBehavior<DrawText>
+    public class RepresentMember : WidgetBehavior, ISubWidgetBehavior<DrawText>
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
@@ -18,8 +18,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
         public string NameOfMember;
         public object RepresentedObject;
 
-        public DisplayObjectMember() { }
-        public DisplayObjectMember(object obj, string nameof_member)
+        public RepresentMember() { }
+        public RepresentMember(object obj, string nameof_member)
         {
             RepresentedObject = obj;
             NameOfMember = nameof_member;
@@ -37,12 +37,18 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 
         public override object Clone()
         {
-            return new DisplayObjectMember(RepresentedObject, NameOfMember);
+            return new RepresentMember(RepresentedObject, NameOfMember);
         }
 
         private void UpdateText(object sender, EventArgs args)
         {
-            BaseBehavior.Text = _member.GetValue(RepresentedObject).ToString();
+            if (_member.GetParameters().Length != 0)
+            {
+                BaseBehavior.Text = "Collection...";
+                return;
+            }
+
+            BaseBehavior.Text = _member.GetValue(RepresentedObject)?.ToString() ?? "null";
         }
 
         public void UpdateText()
