@@ -14,6 +14,7 @@ using DownUnder.UI.Widgets;
 using DownUnder.Utility;
 using DownUnder.UI.Widgets.Behaviors;
 using System.Runtime.Remoting.Channels;
+using DownUnder.RuntimeContent;
 
 namespace DownUnder.UI
 {
@@ -187,7 +188,7 @@ namespace DownUnder.UI
         }
 
         /// <summary> A collection of icons used by this <see cref="DWindow"/> and its <see cref="Widget"/>s. </summary>
-        public UIImages UIImages { get; protected set; }
+        //public UIImages UIImages { get; protected set; }
 
         /// <summary> <see cref="Microsoft.Xna.Framework.Graphics.RasterizerState"/> used when drawing the UI. (Necessary for clipping) </summary>
         public RasterizerState RasterizerState = new RasterizerState() { ScissorTestEnable = true, MultiSampleAntiAlias = true };
@@ -228,7 +229,6 @@ namespace DownUnder.UI
 
         protected override void Dispose(bool disposing) {
             GraphicsManager.Dispose();
-            UIImages.Dispose();
             base.Dispose(disposing);
         }
 
@@ -298,10 +298,11 @@ namespace DownUnder.UI
         }
 
         protected void LoadDWindow() {
-            UIImages = new UIImages(GraphicsDevice);
-            EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
-            EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
-            EffectCollection.CrystalEffect = Content.Load<Effect>("crystal");
+            //UIImages = new UIImages(GraphicsDevice);
+            EffectCollection.ShadingEffect = RuntimeLoader.CompileFX(GraphicsDevice, @"RuntimeContent\Effects\gradient.fx");
+            //EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
+            //EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
+            //EffectCollection.CrystalEffect = Content.Load<Effect>("crystal");
         }
 
         protected void UpdateDWindow(GameTime game_time) {
