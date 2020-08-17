@@ -14,8 +14,8 @@ Still an early WIP. Testing and feedback needed!
  - Multi-window support.
  - Community marketplace to share Widgets and Widget behaviors.
 
-## Documentation
-See the [work in progress Github Wiki page](https://github.com/jamieyello/DownUnder-UI/wiki).
+## Documentation/How to Use
+See the [work in progress Github Wiki page](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library).
 
 ## Community
 
