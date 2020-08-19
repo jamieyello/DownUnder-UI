@@ -12,9 +12,8 @@ using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets;
 using DownUnder.Utility;
-using DownUnder.UI.Widgets.Behaviors;
-using System.Runtime.Remoting.Channels;
 using DownUnder.RuntimeContent;
+using DownUnder.RuntimeContent.Effects;
 
 namespace DownUnder.UI
 {
@@ -76,8 +75,8 @@ namespace DownUnder.UI
         internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
         /// <summary> Set to false to disable UI mouse cursor changes. </summary>
         public bool UICursorsEnabled { get; set; } = true;
-        /// <summary> The default <see cref="SpriteFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="SpriteFont"/>. </summary>
-        public SpriteFont SpriteFont { get; protected set; }
+        /// <summary> The default <see cref="WindowFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="WindowFont"/>. </summary>
+        public SpriteFont WindowFont { get; protected set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
 
@@ -299,7 +298,7 @@ namespace DownUnder.UI
 
         protected void LoadDWindow() {
             //UIImages = new UIImages(GraphicsDevice);
-            EffectCollection.ShadingEffect = RuntimeLoader.CompileFX(GraphicsDevice, @"RuntimeContent\Effects\gradient.fx");
+            EffectCollection.ShadingEffect = RuntimeLoader.CompileFX(GraphicsDevice, new Gradient());
             //EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
             //EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
             //EffectCollection.CrystalEffect = Content.Load<Effect>("crystal");

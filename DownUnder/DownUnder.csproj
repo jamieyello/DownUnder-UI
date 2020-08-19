@@ -112,6 +112,8 @@
     <Compile Include="Input\PseudoButton.cs" />
     <Compile Include="Input\User Defined Actions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuntimeContent\Effects\Gradient.cs" />
+    <Compile Include="RuntimeContent\Effects\IEffectSource.cs" />
     <Compile Include="RuntimeContent\RuntimeLoader.cs" />
     <Compile Include="UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="UI\DataTypes\UIImages.cs" />
@@ -218,9 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Application Notes.txt" />
-    <Content Include="RuntimeContent\Effects\gradient.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="RuntimeContent\Effects\gradient.fx" />
     <Content Include="Input\Reader Guide.txt" />
     <Content Include="UI\Images\add folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

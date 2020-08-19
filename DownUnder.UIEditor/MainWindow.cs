@@ -26,10 +26,10 @@ namespace DownUnder.Widgets
         /// <summary> Path to the editor's .cs file. </summary>
         //private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
 
-        public MainWindow(DWindow parent = null) : base(parent)
-        {
-            Content.RootDirectory = "Content";
-        }
+public MainWindow(DWindow parent = null) : base(parent)
+{
+    Content.RootDirectory = "Content";
+}
         
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -52,8 +52,7 @@ namespace DownUnder.Widgets
         {
             LoadDWindow();
 
-            // Create a new SpriteBatch, which can be used to draw textures.
-            SpriteFont = Content.Load<SpriteFont>("font");
+            WindowFont = Content.Load<SpriteFont>("font");
 
             //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
             //MainWidget = TestLayouts.PropertyTest();
@@ -95,7 +94,6 @@ namespace DownUnder.Widgets
             // TODO: Add your drawing code here
             
             DrawDWindow(gameTime);
-            
         }
 
         public void Slot_Layout_OnClick(object sender, EventArgs e)

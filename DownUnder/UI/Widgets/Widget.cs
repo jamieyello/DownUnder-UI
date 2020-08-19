@@ -597,8 +597,8 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> used by this <see cref="Widget"/>. If left null, the Parent of this <see cref="Widget"/>'s <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> will be used. </summary>
-        public SpriteFont SpriteFont {
-            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.SpriteFont;
+        public SpriteFont WindowFont {
+            get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.WindowFont;
             set => _sprite_font_backing = value;
         }
 

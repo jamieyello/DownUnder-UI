@@ -104,7 +104,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             if (TextPositioning == TextPositioningPolicy.top_left) TextPosition = new Point2(SideSpacing, SideSpacing);
             if (TextPositioning == TextPositioningPolicy.center)
             {
-                Point2 size = Parent.SpriteFont.MeasureString(Text);
+                Point2 size = Parent.WindowFont.MeasureString(Text);
                 TextPosition = Parent.Size.DividedBy(2f).WithOffset(size.DividedBy(2f).Inverted());
             }
         }
@@ -122,13 +122,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private Point2 GetTextMinimumArea()
         {
-            RectangleF area = Parent.SpriteFont.MeasureString(Text).ToPoint2().AsRectangleSize(TextPosition).ResizedBy(SideSpacing, Directions2D.All);
+            RectangleF area = Parent.WindowFont.MeasureString(Text).ToPoint2().AsRectangleSize(TextPosition).ResizedBy(SideSpacing, Directions2D.All);
             return new Point2(area.Right, area.Bottom);
         }
 
         private void Draw(object sender, EventArgs args) {
             if (!Visible) return;
-            Parent.SpriteBatch.DrawString(Parent.SpriteFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
+            Parent.SpriteBatch.DrawString(Parent.WindowFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
         }
     }
 }
