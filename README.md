@@ -15,7 +15,8 @@ Still an early WIP. Testing and feedback needed!
  - Community marketplace to share Widgets and Widget behaviors.
 
 ## Documentation/How to Use
-[See the work in progress Github Wiki.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
+[See the work in progress Github Wiki.](https://github.com/jamieyello/DownUnder-UI/wiki)  
+[Read the setup guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
 ## Community
 
