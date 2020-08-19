@@ -14,11 +14,12 @@ Still an early WIP. Testing and feedback needed!
  - Multi-window support.
  - Community marketplace to share Widgets and Widget behaviors.
 
-## Documentation
-See the [work in progress Github Wiki page](https://github.com/jamieyello/DownUnder-UI/wiki).
+## Documentation/How to Use
+[See the work in progress Github Wiki.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
 ## Community
 
+[Post in the MonoGame community thread.](https://community.monogame.net/t/downunder-ui-a-monogame-based-ui-framework/13353)  
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
 ## Preview Build
