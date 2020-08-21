@@ -15,9 +15,8 @@ Still an early WIP. Testing and feedback needed!
  - Community marketplace to share Widgets and Widget behaviors.
 
 ## Documentation/How to Use
-[Download binaries.](https://github.com/jamieyello/DownUnder-UI/blob/master/DownUnder/bin.zip)  
-[See the work in progress Github Wiki.](https://github.com/jamieyello/DownUnder-UI/wiki)  
-[Read the setup guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
+[Download binaries.](/Downloads/Release.zip)  
+[Read the getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
 ## Community
 
@@ -29,7 +28,7 @@ The preview build showcases Widget transitions and animations in an unfinished W
 
 > The bar on the right contains the working behaviors and Widgets of the editor. Click the "+ New Widget" button to add a new Widget in the editor, drag the new Widget onto the project on the left to add a Widget to the project. Click the "+ New Widget" button multiple times to showcase spacing and animation properties.
 
-[Download preview build.](/DownUnder/Preview.zip)
+[Download preview build.](/Downloads/Preview.zip)
 
 ## The Art Gallery
 ![Modern stuff](/Images/goodui3001.gif)
