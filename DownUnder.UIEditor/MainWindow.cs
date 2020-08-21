@@ -60,7 +60,7 @@ public MainWindow(DWindow parent = null) : base(parent)
             
             MainWidget = EditorWidgets.UIEditor(out editor_objects);
 
-            MainWidget.GroupBehaviors.AddPolicy(new GroupBehaviorPolicy() { Behavior = new ScrollBar() });
+            MainWidget.GroupBehaviors.AddPolicy(GroupBehaviorCollection.StandardPC);
 
             //XmlHelper.ToXmlFile(new Widget(), "test.xml");
             //Widget read = XmlHelper.FromXmlFile<Widget>("test.xml");

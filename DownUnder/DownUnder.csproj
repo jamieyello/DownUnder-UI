@@ -142,7 +142,7 @@
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawText.cs" />
     <Compile Include="UI\Widgets\Behaviors\Functional\PopInOut.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
+    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
     <Compile Include="UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
     <Compile Include="UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
@@ -167,6 +167,7 @@
     <Compile Include="UI\Widgets\DropDownEntry.cs" />
     <Compile Include="UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
+    <Compile Include="UI\Widgets\GroupBehaviorCollection.cs" />
     <Compile Include="UI\Widgets\Re-Implement\DrawPixelGrid.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />

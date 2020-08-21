@@ -207,7 +207,7 @@ namespace DownUnder.UI.Widgets
         }
 
         [DataMember]
-        public GroupBehaviorCollection GroupBehaviors { get; private set; }
+        public GroupBehaviorManager GroupBehaviors { get; private set; }
 
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; }
@@ -667,7 +667,7 @@ namespace DownUnder.UI.Widgets
             Behaviors = new BehaviorManager(this);
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
             Actions = new ActionManager(this);
-            GroupBehaviors = new GroupBehaviorCollection(this);
+            GroupBehaviors = new GroupBehaviorManager(this);
             Children = new WidgetList(this);
         }
 
@@ -687,7 +687,7 @@ namespace DownUnder.UI.Widgets
             UpdateData = new UpdateData();
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
-            GroupBehaviors = new GroupBehaviorCollection(this);
+            GroupBehaviors = new GroupBehaviorManager(this);
         }
 
         ~Widget() => Dispose(true);
