@@ -8,7 +8,7 @@ Still an early WIP. Testing and feedback needed!
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
  - Built from the ground up with modern transitions, animations, and shaders in mind.
- - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/UI.Widget) that can add any functionality.
+ - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
 
 ## Planned Features
  - Multi-window support.
