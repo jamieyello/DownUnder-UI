@@ -3,7 +3,7 @@ An ambitious UI library built with .NET and MonoGame. Currently builds for Windo
 
 To compile you'll need a recent version of MonoGame and the latest .NET SDKs installed.
 
-Open Alpha. Testing and feedback needed!
+Open alpha. Testing and feedback needed!
 
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
