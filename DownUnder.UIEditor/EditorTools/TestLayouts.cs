@@ -17,7 +17,7 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
-            Widget new_widget = new Widget()
+            Widget new_widget = new Widget
             {
                 SnappingPolicy = DiagonalDirections2D.None,
                 Area = new RectangleF(100, 100, 200, 150)
@@ -35,7 +35,7 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
-            Widget inner = new Widget()
+            Widget inner = new Widget
             {
                 SnappingPolicy = DiagonalDirections2D.None,
                 Area = new RectangleF(40, 40, 400, 300)
@@ -67,7 +67,7 @@ namespace DownUnder.UIEditor
 
             layout.Add(inner);
 
-            Widget second = new Widget() {
+            Widget second = new Widget {
                 Area = new RectangleF(400, 50, 250, 250)
             }.WithAddedBehavior(new GridFormat(3, 3), out var grid);
 
@@ -82,7 +82,7 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
-            Widget inner = new Widget()
+            Widget inner = new Widget
             {
                 Area = new RectangleF(10, 10, 400, 300)
             };
@@ -90,14 +90,14 @@ namespace DownUnder.UIEditor
             inner.Add(new Widget() { Position = new Point2(50,50) });
             Widget test = inner.LastAddedWidget;
             test.Behaviors.Add(new DrawText() { Text = "t" });
-            inner.Add(new Widget() { Position = new Point2(150,50) });
-            inner.Add(new Widget() { Position = new Point2(250,50) });
-            inner.Add(new Widget() { Position = new Point2(350,50) });
-            inner.Add(new Widget() { Position = new Point2(450,50) });
-            inner.Add(new Widget() { Position = new Point2(50, 150) });
-            inner.Add(new Widget() { Position = new Point2(50, 250) });
-            inner.Add(new Widget() { Position = new Point2(50, 350) });
-            inner.Add(new Widget() { Position = new Point2(50, 450) });
+            inner.Add(new Widget { Position = new Point2(150,50) });
+            inner.Add(new Widget { Position = new Point2(250,50) });
+            inner.Add(new Widget { Position = new Point2(350,50) });
+            inner.Add(new Widget { Position = new Point2(450,50) });
+            inner.Add(new Widget { Position = new Point2(50, 150) });
+            inner.Add(new Widget { Position = new Point2(50, 250) });
+            inner.Add(new Widget { Position = new Point2(50, 350) });
+            inner.Add(new Widget { Position = new Point2(50, 450) });
 
             Widget inner2 = new Widget()
             {
@@ -120,7 +120,7 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
-            Widget inner = new Widget()
+            Widget inner = new Widget
             {
                 Area = new RectangleF(10, 10, 400, 300)
                 , UserResizePolicy = Widget.UserResizePolicyType.allow
@@ -143,19 +143,19 @@ namespace DownUnder.UIEditor
             grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
             layout.Add(grid);
 
-            Widget add_row_button = new Widget() { Position = new Point2(30, 30) }.WithAddedBehavior(new DrawText("Add Row"));
+            Widget add_row_button = new Widget { Position = new Point2(30, 30) }.WithAddedBehavior(new DrawText("Add Row"));
             add_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().InsertRow(1); };
             layout.Add(add_row_button);
             
-            Widget add_column_button = new Widget() { Position = new Point2(120, 30) }.WithAddedBehavior(new DrawText("Add Column"));
+            Widget add_column_button = new Widget { Position = new Point2(120, 30) }.WithAddedBehavior(new DrawText("Add Column"));
             add_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().InsertColumn(1); };
             layout.Add(add_column_button);
 
-            Widget remove_row_button = new Widget() { Position = new Point2(200, 30) }.WithAddedBehavior(new DrawText("Remove Row"));
+            Widget remove_row_button = new Widget { Position = new Point2(200, 30) }.WithAddedBehavior(new DrawText("Remove Row"));
             remove_row_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().RemoveRow(1); };
             layout.Add(remove_row_button);
 
-            Widget remove_column_button = new Widget() { Position = new Point2(300, 30) }.WithAddedBehavior(new DrawText("Remove Column"));
+            Widget remove_column_button = new Widget { Position = new Point2(300, 30) }.WithAddedBehavior(new DrawText("Remove Column"));
             remove_column_button.OnClick += (s, a) => { grid.Behaviors.GetFirst<GridFormat>().RemoveColumn(1); };
             layout.Add(remove_column_button);
            
@@ -187,6 +187,15 @@ namespace DownUnder.UIEditor
             layout.Add(new MemberViewer(new Widget()).CreateWidget(), out var property_grid);
             property_grid.UserResizePolicy = Widget.UserResizePolicyType.allow;
 
+            return layout;
+        }
+
+        public static Widget EditTextTest()
+        {
+            Widget layout = new Widget();
+
+            layout.Add(new DrawText { Text = "whoop" }.CreateWidget());
+            layout[0].Behaviors.Add(new DrawEditableText { });
             return layout;
         }
     }

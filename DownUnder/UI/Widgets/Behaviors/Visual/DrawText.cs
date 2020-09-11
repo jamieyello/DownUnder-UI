@@ -1,14 +1,22 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
     public class DrawText : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
-        
+
+        /// <summary> Used by inheriting Behaviors to enable/disable normal text drawing. </summary>
+        public bool EnableDefaultDraw = true;
+
+        /// <summary> What kind of text is allowed to be entered in this <see cref = "DrawText"/>. </ summary >
+        [DataMember] public TextEntryRuleSet TextEntryRules { get; set; } = TextEntryRuleSet.String;
+
         private string _text_backing = "";
         private Point2 _text_position_backing = new Point2();
         private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
@@ -120,15 +128,20 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             if (ConstrainAreaToText) args.Override = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 
-        private Point2 GetTextMinimumArea()
+        public Point2 GetTextMinimumArea()
         {
             RectangleF area = Parent.WindowFont.MeasureString(Text).ToPoint2().AsRectangleSize(TextPosition).ResizedBy(SideSpacing, Directions2D.All);
             return new Point2(area.Right, area.Bottom);
         }
 
         private void Draw(object sender, EventArgs args) {
-            if (!Visible) return;
-            Parent.SpriteBatch.DrawString(Parent.WindowFont, Text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
+            if (!Visible || !EnableDefaultDraw) return;
+            ForceDrawText(Text);
+        }
+
+        public void ForceDrawText(string text)
+        {
+            Parent.SpriteBatch.DrawString(Parent.WindowFont, text, Parent.DrawingArea.Position.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
         }
     }
 }

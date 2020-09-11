@@ -53,12 +53,12 @@ public MainWindow(DWindow parent = null) : base(parent)
             LoadDWindow();
 
             WindowFont = Content.Load<SpriteFont>("font");
-
             //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
             //MainWidget = TestLayouts.PropertyTest();
             //MainWidget = TestLayouts.PropertyTest();
-            
-            MainWidget = EditorWidgets.UIEditor(out editor_objects);
+            MainWidget = TestLayouts.EditTextTest();
+
+            //MainWidget = EditorWidgets.UIEditor(out editor_objects);
 
             MainWidget.GroupBehaviors.AddPolicy(GroupBehaviorCollection.StandardPC);
 

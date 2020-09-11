@@ -725,6 +725,7 @@ namespace DownUnder.UI.Widgets
         private void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input) {
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
+            UpdateData.SpeedModifier = UpdateData.ElapsedSeconds * 60f;
             UpdateData.UIInputState = ui_input;
             _has_updated = true;
             foreach (Widget widget in Children) widget.UpdateGroupUpdateData(game_time, ui_input);
