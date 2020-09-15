@@ -14,9 +14,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         /// <summary> Used by inheriting Behaviors to enable/disable normal text drawing. </summary>
         public bool EnableDefaultDraw = true;
 
-        /// <summary> What kind of text is allowed to be entered in this <see cref = "DrawText"/>. </ summary >
-        [DataMember] public TextEntryRuleSet TextEntryRules { get; set; } = TextEntryRuleSet.String;
-
         private string _text_backing = "";
         private Point2 _text_position_backing = new Point2();
         private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
@@ -38,8 +35,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             {
                 if (value == _text_backing) return;
                 _text_backing = value;
-                //SetMinimumSize(this, EventArgs.Empty);
-                //AlignText(this, EventArgs.Empty);
+                SetMinimumSize(this, EventArgs.Empty);
+                AlignText(this, EventArgs.Empty);
             }
         }
 
@@ -107,7 +104,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void AlignText(object sender, EventArgs args)
         {
-            if (!Parent.IsGraphicsInitialized) return;
+            if (Parent == null || !Parent.IsGraphicsInitialized) return;
 
             if (TextPositioning == TextPositioningPolicy.top_left) TextPosition = new Point2(SideSpacing, SideSpacing);
             if (TextPositioning == TextPositioningPolicy.center)
@@ -119,7 +116,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void SetMinimumSize(object sender, EventArgs args)
         {
-            if (ConstrainAreaToText) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
+            if (ConstrainAreaToText && Parent != null) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 
         private void OverrideMinimumSize(object sender, Point2SetOverrideArgs args)

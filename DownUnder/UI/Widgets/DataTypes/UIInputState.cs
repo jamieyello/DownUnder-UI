@@ -68,6 +68,8 @@ namespace DownUnder.UI.Widgets.DataTypes {
         public bool Undo { get; set; } = false;
         /// <summary> Used to redo changes to items/text. </summary>
         public bool Redo { get; set; } = false;
+        /// <summary> Used to jump between controls. </summary>
+        public bool Tab { get; set; }
 
         /// <summary> Set this UIUnputState's values to the typical input from a mouse + keyboard. </summary>
         public void UpdateAll(DWindow dwindow, GameTime game_time) {
@@ -104,6 +106,7 @@ namespace DownUnder.UI.Widgets.DataTypes {
             Delete = buffered_keyboard.IsKeyTriggered(Keys.Delete);
             Home = buffered_keyboard.IsKeyTriggered(Keys.Home);
             End = buffered_keyboard.IsKeyTriggered(Keys.End);
+            Tab = buffered_keyboard.IsKeyTriggered(Keys.Tab);
             CapsLock = _keyboard_state.CapsLock;
             NumLock = _keyboard_state.NumLock;
             

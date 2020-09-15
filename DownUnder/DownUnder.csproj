@@ -123,6 +123,8 @@
     <Compile Include="UI\Widgets\Behaviors\TemplateBehavior.cs" />
     <Compile Include="UI\Widgets\Behaviors\Format\GridFormatBehaviors\MemberViewer.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableText.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableTextSettings.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\ITextEntryRuleset.cs" />
     <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocation.cs" />
     <Compile Include="UI\Widgets\DataTypes\RelativeWidgetLocations\CoverParent.cs" />
@@ -186,7 +188,7 @@
     <Compile Include="Utilities\EventList.cs" />
     <Compile Include="Utilities\GenericDiagonalDirections2D.cs" />
     <Compile Include="Utilities\GenericDirections2D.cs" />
-    <Compile Include="UI\Widgets\DataTypes\TextEntryRuleSet.cs" />
+    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\TextEntryRuleSet.cs" />
     <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />

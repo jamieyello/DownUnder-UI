@@ -196,6 +196,7 @@ namespace DownUnder.UIEditor
 
             layout.Add(new DrawText { Text = "whoop" }.CreateWidget());
             layout[0].Behaviors.Add(new DrawEditableText { });
+            layout[0].UserResizePolicy = Widget.UserResizePolicyType.allow;
             return layout;
         }
     }
