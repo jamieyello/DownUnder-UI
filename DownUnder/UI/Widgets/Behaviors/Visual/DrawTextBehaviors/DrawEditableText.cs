@@ -187,7 +187,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             if (!Parent.UpdateData.UIInputState.PrimaryClick) clicking = false;
             if (!Settings.RequireDoubleClick && Parent.IsPrimaryHovered) Parent.ParentWindow.UICursor = MouseCursor.IBeam;
             if (!Active) return;
-            Console.WriteLine(clicking);
             Vector2 offset = Parent.PositionInWindow.ToVector2().Floored();
             UIInputState inp = Parent.UpdateData.UIInputState;
 

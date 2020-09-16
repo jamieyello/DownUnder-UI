@@ -2,8 +2,10 @@
 using DownUnder.UI.Widgets.Behaviors.Examples;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors;
+using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
+using DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
@@ -194,9 +196,30 @@ namespace DownUnder.UIEditor
         {
             Widget layout = new Widget();
 
+            // How a lazy dev uses their own library vvv
             layout.Add(new DrawText { Text = "whoop" }.CreateWidget());
             layout[0].Behaviors.Add(new DrawEditableText { });
             layout[0].UserResizePolicy = Widget.UserResizePolicyType.allow;
+
+            Widget second_text_field = new Widget().WithAddedBehavior(new DrawEditableText());
+            second_text_field.Y = 40;
+            second_text_field.Behaviors.GetFirst<DrawEditableText>().BaseBehavior.Text = "Smoop";
+            second_text_field.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            layout.Add(second_text_field);
+
+            return layout;
+        }
+
+        public static Widget PinningTest()
+        {
+            Widget layout = new Widget { ChangeColorOnMouseOver = false };
+
+            Widget inner = new Widget { Area = new RectangleF(30, 30, 70, 50), UserResizePolicy = Widget.UserResizePolicyType.allow };
+
+            Widget pinned_widget = new Widget().WithAddedBehavior(new PinPosition { Pin = new CenteredLocation() });
+            inner.Add(pinned_widget);
+            layout.Add(inner);
+
             return layout;
         }
     }

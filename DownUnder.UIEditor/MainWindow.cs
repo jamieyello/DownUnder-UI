@@ -26,10 +26,10 @@ namespace DownUnder.Widgets
         /// <summary> Path to the editor's .cs file. </summary>
         //private readonly string main_window_cs_file = "C:\\Users\\jamie\\Documents\\Visual Studio 2017\\Projects\\DownUnder\\DownUnder.UIEditor\\MainWindow.cs";
 
-public MainWindow(DWindow parent = null) : base(parent)
-{
-    Content.RootDirectory = "Content";
-}
+        public MainWindow(DWindow parent = null) : base(parent)
+        {
+            Content.RootDirectory = "Content";
+        }
         
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -56,7 +56,8 @@ public MainWindow(DWindow parent = null) : base(parent)
             //XmlHelper.ToXmlFile(TestLayouts.ContainerTest(), "test.xml");
             //MainWidget = TestLayouts.PropertyTest();
             //MainWidget = TestLayouts.PropertyTest();
-            MainWidget = TestLayouts.EditTextTest();
+            //MainWidget = TestLayouts.EditTextTest();
+            MainWidget = TestLayouts.PinningTest();
 
             //MainWidget = EditorWidgets.UIEditor(out editor_objects);
 

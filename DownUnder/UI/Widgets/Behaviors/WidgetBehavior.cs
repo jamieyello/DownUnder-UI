@@ -1,7 +1,7 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations;
+using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
 using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
@@ -90,7 +90,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                     nameof(Widget.OnDoubleClick),
                     new Actions.Functional.AddMainWidget()
                     {
-                        LocationOptions = new CoverParent(1),
+                        LocationOptions = new CoverParentOverlay(1),
                         Widget = new Widget()
                         //Widget = BehaviorDisplay(b_this.BaseBehaviorPreviews).WithAddedBehavior(
                         //    new PopInOut() 

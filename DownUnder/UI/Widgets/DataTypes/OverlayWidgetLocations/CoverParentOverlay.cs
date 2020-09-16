@@ -1,13 +1,13 @@
 ﻿using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations
+namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
 {
-    class CoverParent : RelativeWidgetLocation
+    class CoverParentOverlay : OverlayWidgetLocation
     {
         int ParentUp { get; set; } = 0;
 
-        public CoverParent() { }
-        public CoverParent(int parent_up)
+        public CoverParentOverlay() { }
+        public CoverParentOverlay(int parent_up)
         {
             ParentUp = parent_up;
         }
@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations
 
         public override object Clone()
         {
-            CoverParent c = new CoverParent();
+            CoverParentOverlay c = new CoverParentOverlay();
             c.ParentUp = ParentUp;
             return c;
         }

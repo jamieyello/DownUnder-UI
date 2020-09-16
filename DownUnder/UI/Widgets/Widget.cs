@@ -285,7 +285,11 @@ namespace DownUnder.UI.Widgets
 
                 OnAreaChange?.Invoke(this, new RectangleFSetArgs(previous_area));
                 if (_area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
-                if (_area_backing.Size != previous_area.Size) OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
+                if (_area_backing.Size != previous_area.Size)
+                {
+                    OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
+                    foreach (Widget child in Children.OrEmptyIfNull()) child.InvokeOnParentResize(new RectangleFSetArgs(previous_area));
+                }
                 if (EmbedChildren && Children != null) {
                     foreach (var child in Children) child.EmbedIn(_area_backing);
                 }
@@ -552,10 +556,10 @@ namespace DownUnder.UI.Widgets
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
                 if (value == null) return;
-                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.GroupBehaviors.InheritedPolicies)
-                {
+                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.GroupBehaviors.InheritedPolicies) {
                     if (GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
+                OnParentWidgetSet?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -1164,8 +1168,12 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
         /// <summary> Invoked after this <see cref="Widget"/> is deleted by <see cref="Delete"/>. </summary>
         public event EventHandler OnDelete;
-        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWindow"/> value is set. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWindow"/> value is set. (to a non-null value) </summary>
         public event EventHandler OnParentWindowSet;
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWidget"/> value is set. (to a non-null value) </summary>
+        public event EventHandler OnParentWidgetSet;
+        /// <summary> Invoked when the Parent <see cref="Widget"/> is resized. </summary>
+        public event EventHandler<RectangleFSetArgs> OnParentResize;
 
         internal void InvokeOnAdd()
         {
@@ -1182,6 +1190,11 @@ namespace DownUnder.UI.Widgets
         internal void InvokeOnListChange()
         {
             OnListChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void InvokeOnParentResize(RectangleFSetArgs args)
+        {
+            OnParentResize?.Invoke(this, args);
         }
 
         #endregion

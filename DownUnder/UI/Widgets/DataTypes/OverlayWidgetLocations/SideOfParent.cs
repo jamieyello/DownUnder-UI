@@ -2,9 +2,9 @@
 using MonoGame.Extended;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes.RelativeWidgetLocations
+namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
 {
-    [DataContract] public class SideOfParent : RelativeWidgetLocation
+    [DataContract] public class SideOfParent : OverlayWidgetLocation
     {
         [DataMember] public int ParentUp { get; set; } = 0;
         [DataMember] public Direction2D ParentSide = Direction2D.down;

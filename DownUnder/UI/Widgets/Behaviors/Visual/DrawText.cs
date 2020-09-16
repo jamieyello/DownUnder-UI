@@ -127,6 +127,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         public Point2 GetTextMinimumArea()
         {
+            if (!Parent.IsGraphicsInitialized) return new Point2(10, 10);
             RectangleF area = Parent.WindowFont.MeasureString(Text).ToPoint2().AsRectangleSize(TextPosition).ResizedBy(SideSpacing, Directions2D.All);
             return new Point2(area.Right, area.Bottom);
         }
