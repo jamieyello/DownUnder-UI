@@ -10,10 +10,6 @@ Open alpha. Testing and feedback needed!
  - Built from the ground up with modern transitions, animations, and shaders in mind.
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
 
-## Planned Features
- - Multi-window support.
- - Community marketplace to share Widgets and Widget behaviors.
-
 ## Documentation/How to Use
 Install with nuget
 > `Install-Package DownUnder.UI`
