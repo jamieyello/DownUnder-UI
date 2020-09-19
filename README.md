@@ -22,13 +22,6 @@ Open alpha. Testing and feedback needed!
 [Post in the MonoGame community thread.](https://community.monogame.net/t/downunder-ui-a-monogame-based-ui-framework/13353)  
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
-## Preview Build
-The preview build showcases Widget transitions and animations in an unfinished Widget editor. The entirety of the window is made of Widgets, all functionality added through WidgetBehaviors, and can be serialized to XML and back with the same functionality.
-
-> The bar on the right contains the working behaviors and Widgets of the editor. Click the "+ New Widget" button to add a new Widget in the editor, drag the new Widget onto the project on the left to add a Widget to the project. Click the "+ New Widget" button multiple times to showcase spacing and animation properties.
-
-[Download preview build.](/Downloads/Preview.zip)
-
 ## The Art Gallery
 ![Modern stuff](/Images/goodui3001.gif)
 
