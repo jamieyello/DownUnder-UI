@@ -1,256 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0889D068-4558-4FBC-85FC-68390817AA5C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DownUnder</RootNamespace>
-    <AssemblyName>DownUnder</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Matthew Cappel</Authors>
+    <Description>A UI library written with MonoGame.</Description>
+    <Copyright>Matthew Cappel</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>license.md</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Extended, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Extended.3.7.0\lib\netstandard2.0\MonoGame.Extended.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Framework.Content.Pipeline">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MSBuild\MonoGame\v3.0\Tools\MonoGame.Framework.Content.Pipeline.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Framework.Net, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline.Portable" Version="3.7.1.189" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="TextCopy" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Input\Binding.cs" />
-    <Compile Include="Input\Bindings.cs" />
-    <Compile Include="Input\BindingsSet.cs" />
-    <Compile Include="Input\BufferedBool.cs" />
-    <Compile Include="Input\BufferedKeyboard.cs" />
-    <Compile Include="Input\Controller.cs" />
-    <Compile Include="Input\Cursor.cs" />
-    <Compile Include="Input\DirectInput.cs" />
-    <Compile Include="Input\Enum.cs" />
-    <Compile Include="Input\InputMode.cs" />
-    <Compile Include="Input\InputState.cs" />
-    <Compile Include="Input\InputSystem.cs" />
-    <Compile Include="Input\PlayerProfile.cs" />
-    <Compile Include="Input\PS4\Axis.cs" />
-    <Compile Include="Input\PS4\NativeEnums.cs" />
-    <Compile Include="Input\PS4\NativeMethods.cs" />
-    <Compile Include="Input\PS4\NativeStructs.cs" />
-    <Compile Include="Input\PS4\Ps4Controller.cs" />
-    <Compile Include="Input\PS4\Ps4Input.cs" />
-    <Compile Include="Input\PS4\RawInputDeviceManager.cs" />
-    <Compile Include="Input\PseudoButton.cs" />
-    <Compile Include="Input\User Defined Actions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuntimeContent\Effects\Gradient.cs" />
-    <Compile Include="RuntimeContent\Effects\IEffectSource.cs" />
-    <Compile Include="RuntimeContent\RuntimeLoader.cs" />
-    <Compile Include="UI\DataTypes\SetGetEvent.cs" />
-    <Compile Include="UI\DataTypes\UIImages.cs" />
-    <Compile Include="UI\DWindow.cs" />
-    <Compile Include="UI\Widgets\Actions\ActionManager.cs" />
-    <Compile Include="UI\Widgets\Behaviors\BehaviorSets.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Functional\PinPosition.cs" />
-    <Compile Include="UI\Widgets\Behaviors\TemplateBehavior.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Format\GridFormatBehaviors\MemberViewer.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableText.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\DrawEditableTextSettings.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\ITextEntryRuleset.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
-    <Compile Include="UI\Widgets\DataTypes\InnerWidgetLocation.cs" />
-    <Compile Include="UI\Widgets\DataTypes\InnerWidgetLocations\CenteredLocation.cs" />
-    <Compile Include="UI\Widgets\DataTypes\OverlayWidgetLocation.cs" />
-    <Compile Include="UI\Widgets\DataTypes\OverlayWidgetLocations\CoverParentOverlay.cs" />
-    <Compile Include="UI\Widgets\DataTypes\OverlayWidgetLocations\SideOfParent.cs" />
-    <Compile Include="UI\Widgets\Actions\Functional\ActionSequence.cs" />
-    <Compile Include="UI\Widgets\Actions\Functional\AddMainWidget.cs" />
-    <Compile Include="UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
-    <Compile Include="UI\Widgets\Actions\Functional\AutoLayoutSlide.cs" />
-    <Compile Include="UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\BehaviorSet.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Examples\Draw3DCube.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Examples\Draw3DCubeActions\SpinCube.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Examples\Draw3DCubeBehaviors\CubeRotation.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Examples\Draw3DCubeBehaviors\SpinOnHoverOnOff.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Format\BorderFormat.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\IEditorDisplaySubBehaviors.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawImage.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawText.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Functional\PopInOut.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
-    <Compile Include="UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
-    <Compile Include="UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Format\GridFormat.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Format\AddPropertyEditChildren.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Format\SpacedListFormat.cs" />
-    <Compile Include="UI\Widgets\Behaviors\WidgetTracker.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\GlimmerBase.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\GlimmerChild.cs" />
-    <Compile Include="UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
-    <Compile Include="UI\Widgets\CustomEventArgs\Point2SetOverrideArgs.cs" />
-    <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetOverrideArgs.cs" />
-    <Compile Include="UI\Widgets\DataTypes\GridReader.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Debug\WritePropertyToConsole.cs" />
-    <Compile Include="UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="UI\Widgets\Behaviors\BehaviorManager.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
-    <Compile Include="UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
-    <Compile Include="UI\Widgets\DataTypes\SerializableType.cs" />
-    <Compile Include="UI\Widgets\DropDownEntry.cs" />
-    <Compile Include="UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
-    <Compile Include="UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
-    <Compile Include="UI\Widgets\GroupBehaviorCollection.cs" />
-    <Compile Include="UI\Widgets\Re-Implement\DrawPixelGrid.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
-    <Compile Include="UI\Widgets\DataTypes\BorderSize.cs" />
-    <Compile Include="UI\Widgets\DataTypes\DesignerModeSettings.cs" />
-    <Compile Include="UI\Widgets\DataTypes\DownUnderEffects.cs" />
-    <Compile Include="UI\Widgets\DataTypes\Focus.cs" />
-    <Compile Include="UI\Widgets\DataTypes\ElementColors.cs" />
-    <Compile Include="UI\Widgets\DataTypes\GridSettings.cs" />
-    <Compile Include="UI\Widgets\DataTypes\GridWriter.cs" />
-    <Compile Include="UI\Widgets\BasicWidgets.cs" />
-    <Compile Include="Utilities\CustomEventArgs\AddItemArgs.cs" />
-    <Compile Include="Utilities\CustomEventArgs\RemoveItemArgs.cs" />
-    <Compile Include="Utilities\DiagonalDirection2D.cs" />
-    <Compile Include="Utilities\Direction2D.cs" />
-    <Compile Include="Utilities\EventList.cs" />
-    <Compile Include="Utilities\GenericDiagonalDirections2D.cs" />
-    <Compile Include="Utilities\GenericDirections2D.cs" />
-    <Compile Include="UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\TextEntryRuleSet.cs" />
-    <Compile Include="UI\Widgets\DataTypes\UIInputState.cs" />
-    <Compile Include="UI\Widgets\DataTypes\BaseColorScheme.cs" />
-    <Compile Include="UI\Widgets\DataTypes\UpdateData.cs" />
-    <Compile Include="UI\Widgets\Behaviors\WidgetBehavior.cs" />
-    <Compile Include="UI\Widgets\DataTypes\WidgetList.cs" />
-    <Compile Include="UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
-    <Compile Include="UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
-    <Compile Include="UI\Widgets\Interfaces\IParent.cs" />
-    <Compile Include="UI\Widgets\Re-Implement\Label.cs" />
-    <Compile Include="UI\Widgets\Interfaces\IWidgetChild.cs" />
-    <Compile Include="UI\Widgets\Widget.cs" />
-    <Compile Include="UI\Widgets\Re-Implement\TextCursor.cs" />
-    <Compile Include="Utilities\ChangingValue.cs" />
-    <Compile Include="Utilities\Directions2D.cs" />
-    <Compile Include="Utilities\DrawingEffects\GridPixel.cs" />
-    <Compile Include="Utilities\DrawingEffects\PixelGrid.cs" />
-    <Compile Include="Utilities\DrawingTools.cs" />
-    <Compile Include="Utilities\DiagonalDirections2D.cs" />
-    <Compile Include="Utilities\Extensions\ConversionExtensions.cs" />
-    <Compile Include="Utilities\Extensions\DrawingExtensions.cs" />
-    <Compile Include="Utilities\Extensions\RectangleFExtensions.cs" />
-    <Compile Include="Utilities\Extensions\WidgetExtensions.cs" />
-    <Compile Include="Utilities\Interpolation.cs" />
-    <Compile Include="Utilities\InterpolationSettings.cs" />
-    <Compile Include="Utilities\OSInterface.cs" />
-    <Compile Include="Utilities\PropertyHelper.cs" />
-    <Compile Include="Utilities\Extensions\Extensions.cs" />
-    <Compile Include="Utilities\RectanglePart.cs" />
-    <Compile Include="Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />
-    <Compile Include="Utilities\Serialization\XmlHelper.cs" />
-    <Compile Include="Utilities\StringManipulation.cs" />
-    <Compile Include="Utilities\AutoDictionary.cs" />
+    <Folder Include="Utilities\OSInterfacing\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Application Notes.txt" />
-    <Content Include="RuntimeContent\Effects\gradient.fx" />
-    <Content Include="Input\Reader Guide.txt" />
-    <Content Include="UI\Images\add folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UI\Images\browse folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UI\Images\folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UI\Images\opened folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UI\Widgets\Behaviors\WidgetBehavior Rules.txt" />
-    <Content Include="UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
-    <Content Include="Utilities\blurred_circle.png" />
+    <None Include="license.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Widgets\Actions\DataTypes\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

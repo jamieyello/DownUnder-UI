@@ -30,6 +30,7 @@ namespace DownUnder.RuntimeContent
         // https://community.monogame.net/t/solved-is-it-possible-to-directly-load-a-effect-from-a-class-files-string/10486/8
         public static Effect CompileFX(GraphicsDevice gd, string sourceFile)
         {
+            return new BasicEffect(gd);
             EffectImporter importer = new EffectImporter();
             EffectContent content = importer.Import(sourceFile, null);
             EffectProcessor processor = new EffectProcessor();

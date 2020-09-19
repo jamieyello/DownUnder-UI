@@ -265,22 +265,22 @@ namespace DownUnder
         /// </summary>
         /// <param name="texture">Texture2D to convert.</param>
         /// <returns>Converted Image.</returns>
-        public static System.Drawing.Image ToImage(this Texture2D texture)
-        {
-            if (texture == null) { return null; }
+        //public static System.Drawing.Image ToImage(this Texture2D texture)
+        //{
+        //    if (texture == null) { return null; }
 
-            byte[] textureData = new byte[4 * texture.Width * texture.Height];
-            texture.GetData<byte>(textureData);
+        //    byte[] textureData = new byte[4 * texture.Width * texture.Height];
+        //    texture.GetData<byte>(textureData);
 
-            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, texture.Width, texture.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            IntPtr safePtr = bmpData.Scan0;
+        //    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        //    System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, texture.Width, texture.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        //    IntPtr safePtr = bmpData.Scan0;
 
-            System.Runtime.InteropServices.Marshal.Copy(textureData, 0, safePtr, textureData.Length);
-            bmp.UnlockBits(bmpData);
+        //    System.Runtime.InteropServices.Marshal.Copy(textureData, 0, safePtr, textureData.Length);
+        //    bmp.UnlockBits(bmpData);
 
-            return bmp;
-        }
+        //    return bmp;
+        //}
 
         /// <summary> Returns new Point2 with the sum of each. </summary>
         public static Point2 WithOffset(this Point2 p1, Point2 p2)

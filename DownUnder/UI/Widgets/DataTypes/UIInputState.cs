@@ -74,7 +74,7 @@ namespace DownUnder.UI.Widgets.DataTypes {
         /// <summary> Set this UIUnputState's values to the typical input from a mouse + keyboard. </summary>
         public void UpdateAll(DWindow dwindow, GameTime game_time) {
             _previous_mouse_state = _mouse_state;
-            _mouse_state = Mouse.GetState(dwindow.Window);
+            _mouse_state = Mouse.GetState(dwindow.ParentGame.Window);
             _previous_keyboard_state = _keyboard_state;
             _keyboard_state = Keyboard.GetState();
 

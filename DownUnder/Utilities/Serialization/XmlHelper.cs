@@ -12,8 +12,10 @@ namespace DownUnder.Content.Utilities.Serialization
         public static void ToXmlFile(Object obj, string filePath)
         {
             var xs = new DataContractSerializer(obj.GetType());
-            using FileStream writer = new FileStream(filePath, FileMode.Create);
-            xs.WriteObject(writer, obj);
+            using (FileStream writer = new FileStream(filePath, FileMode.Create))
+            {
+                xs.WriteObject(writer, obj);
+            }
         }
 
         /// <summary> Deserializes an object from an XML file. </summary>
@@ -21,13 +23,16 @@ namespace DownUnder.Content.Utilities.Serialization
         {
             DataContractSerializerSettings s = new DataContractSerializerSettings() { DataContractResolver = new DownUnderResolver() };
             s.SerializeReadOnlyTypes = true;
-            using FileStream fs = new FileStream(fileName, FileMode.Open);
-            using XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-            DataContractSerializer ser = new DataContractSerializer(typeof(T), s);
+            using (FileStream fs = new FileStream(fileName, FileMode.Open))
+            {
+                using (XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas()))
+                {
+                    DataContractSerializer ser = new DataContractSerializer(typeof(T), s);
 
-            T result = (T)ser.ReadObject(reader, true);
-
-            return result;
+                    T result = (T)ser.ReadObject(reader, true);
+                    return result;
+                }
+            }
         }
     }
 }

@@ -18,7 +18,10 @@ using DownUnder.RuntimeContent.Effects;
 namespace DownUnder.UI
 {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
-    public abstract class DWindow : Game, IParent {
+    public class DWindow : IParent {
+        public Game ParentGame;
+        //public GraphicsDevice GraphicsDevice;
+
         /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
         /// <summary> The <see cref="GraphicsDeviceManager"/> used by this <see cref="DWindow"/>. Is initiated on creation. </summary>
@@ -49,7 +52,7 @@ namespace DownUnder.UI
         /// <summary> A reference to each of this window's children. </summary>
         public List<DWindow> Children { get; } = new List<DWindow>();
         /// <summary> The window that owns this window. </summary>
-        public DWindow Parent { get; set; }
+        public Game Parent { get; set; }
         /// <summary> Represents this window's input each frame. </summary>
         public UIInputState InputState { get; } = new UIInputState();
         /// <summary> Used for text input. Typed text is added here. </summary>
@@ -76,7 +79,7 @@ namespace DownUnder.UI
         /// <summary> Set to false to disable UI mouse cursor changes. </summary>
         public bool UICursorsEnabled { get; set; } = true;
         /// <summary> The default <see cref="WindowFont"/> of this <see cref="DWindow"/>. Used by contained <see cref="Widget"/>s without a self-defined <see cref="WindowFont"/>. </summary>
-        public SpriteFont WindowFont { get; protected set; }
+        public SpriteFont WindowFont { get; set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
 
@@ -105,7 +108,7 @@ namespace DownUnder.UI
             set {
                 if (value != null) {
                     value.Parent = this;
-                    value.Area = GraphicsDevice.Viewport.Bounds;
+                    value.Area = ParentGame.GraphicsDevice.Viewport.Bounds;
                 }
 
                 _widget_backing = value;
@@ -125,7 +128,7 @@ namespace DownUnder.UI
 
         /// <summary> The location of this window on the screen. </summary>
         public Point2 Position {
-            get => GraphicsDevice.Viewport.Bounds.Location;
+            get => Parent.GraphicsDevice.Viewport.Bounds.Location;
             set => Area = new RectangleF(value, Area.Size);
         }
 
@@ -140,15 +143,16 @@ namespace DownUnder.UI
             get => _minimum_size_backing;
             set {
                 _minimum_size_backing = value;
-                OSInterface.SetMinimumWindowSize(Window, value.ToPoint());
+                //OSInterface.SetMinimumWindowSize(Window, value.ToPoint());
             }
         }
 
         /// <summary> The location and size of this window. </summary>
         public RectangleF Area {
             get {
-                if (!IsActive) return new RectangleF();
-                if (IsMainThread) return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
+                if (!ParentGame.IsActive) return new RectangleF();
+                return ParentGame.Window.ClientBounds;
+                //if (IsMainThread) return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
                 return _area_cache;
             }
             set {
@@ -194,41 +198,45 @@ namespace DownUnder.UI
 
         public object DraggingObject { get; set; }
 
-        IParent IParent.Parent => Parent;
+        IParent IParent.Parent => (IParent)Parent;
+
+        GraphicsDevice IParent.GraphicsDevice => ParentGame?.GraphicsDevice;
 
         #endregion Properties
 
         #region Constructors
 
-        public DWindow(DWindow parent = null) {
+        public DWindow(GraphicsDevice graphics, Game parent) {
             _thread_id = Thread.CurrentThread.ManagedThreadId;
+            ParentGame = parent;
+
+            MainWidget = new Widget();
 
             if (parent != null) {
                 Parent = parent;
-                parent.Children.Add(this);
+                //parent.Children.Add(this);
             }
             
             // unneeded possibly
             OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
-            Window.ClientSizeChanged += (sender, e) => {
+            ParentGame.Window.ClientSizeChanged += (sender, e) => {
                 if (MainWidget != null) MainWidget.Size = Area.Size;
             };
-            Window.TextInput += ProcessKeys;
-            Exiting += ExitAll;
+            ParentGame.Window.TextInput += ProcessKeys;
+            ParentGame.Exiting += ExitAll;
 
-            GraphicsManager = new GraphicsDeviceManager(this);
-            Window.AllowUserResizing = true;
-            IsMouseVisible = true;
+            //GraphicsManager = ParentGame.Components.;
+            ParentGame.Window.AllowUserResizing = true;
+            ParentGame.IsMouseVisible = true;
             
             MinimumSize = new Point2(100, 100);
             double time = (1000d / 144) * 10000d;
-            TargetElapsedTime = new TimeSpan((long)time);
+            ParentGame.TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
         }
 
-        protected override void Dispose(bool disposing) {
+        public void Dispose() {
             GraphicsManager.Dispose();
-            base.Dispose(disposing);
         }
 
         #endregion Constructors
@@ -257,8 +265,8 @@ namespace DownUnder.UI
 
         /// <summary> Closes all child <see cref="DWindow"/>s and removes own reference from parent on exiting. </summary>
         private void ExitAll(object sender, EventArgs args) { 
-            foreach (DWindow child in Children) child.Exit(); // Kill each of the children
-            Parent?.Children.Remove(this);
+            foreach (DWindow child in Children) child.ParentGame.Exit(); // Kill each of the children
+            //Parent?.Children.Remove(this);
         }
 
         public void SignalSpawnWindowAsActive(object sender, EventArgs args) {
@@ -273,7 +281,7 @@ namespace DownUnder.UI
 
             try {
                 GraphicsManager.ApplyChanges();
-                OSInterface.SetWindowPosition(this, value.Position.ToPoint());
+                //OSInterface.SetWindowPosition(this, value.Position.ToPoint());
             } catch (Exception e) { Console.WriteLine($"DWindow.AreaSet: Error, Failed to resize window. Message: {e.Message}"); }
 
             MainWidget.Area = value.SizeOnly();
@@ -296,15 +304,15 @@ namespace DownUnder.UI
             return Children[Children.Count - 1];
         }
 
-        protected void LoadDWindow() {
+        public void LoadDWindow(GraphicsDevice graphics) {
             //UIImages = new UIImages(GraphicsDevice);
-            EffectCollection.ShadingEffect = RuntimeLoader.CompileFX(GraphicsDevice, new Gradient());
+            EffectCollection.ShadingEffect = RuntimeLoader.CompileFX(graphics, new Gradient());
             //EffectCollection.ShadingEffect = Content.Load<Effect>("gradient");
             //EffectCollection.BlurEffect = Content.Load<Effect>("gaussian_blur");
             //EffectCollection.CrystalEffect = Content.Load<Effect>("crystal");
         }
 
-        protected void UpdateDWindow(GameTime game_time) {
+        public void Update(GameTime game_time) {
             _area_cache = Area;
             OnUpdate?.Invoke(this, EventArgs.Empty);
             if (!_first_update)
@@ -336,13 +344,10 @@ namespace DownUnder.UI
             UICursor = MouseCursor.Arrow;
             InputState.BackSpace = false;
             InputState.Enter = false;
-
-            base.Update(game_time);
         }
 
-        protected void DrawDWindow(GameTime game_time) {
+        public void Draw(GameTime game_time) {
             MainWidget.Draw();
-            base.Draw(game_time);
         }
 
         #endregion Protected Methods
