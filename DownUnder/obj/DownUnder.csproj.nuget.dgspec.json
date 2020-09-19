@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {}
+    "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {
+    "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
+        "projectUniqueName": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
         "projectName": "DownUnder",
-        "projectPath": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
+        "projectPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
         "packagesPath": "C:\\Users\\jamie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\obj\\",
+        "outputPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
