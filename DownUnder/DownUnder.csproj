@@ -6,6 +6,8 @@
     <Copyright>Matthew Cappel</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>license.md</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/jamieyello/DownUnder-UI</RepositoryUrl>
+    <PackageId>DownUnder.UI</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />

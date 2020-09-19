@@ -8,7 +8,7 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
-        "projectName": "DownUnder",
+        "projectName": "DownUnder.UI",
         "projectPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
         "packagesPath": "C:\\Users\\jamie\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\obj\\",

@@ -9,6 +9,7 @@
     <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
     <description>A UI library written with MonoGame.</description>
     <copyright>Matthew Cappel</copyright>
+    <repository url="https://github.com/jamieyello/DownUnder-UI" />
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="MonoGame.Extended" version="3.8.0" exclude="Build,Analyzers" />
