@@ -7,7 +7,7 @@ A UI library built with .NET and MonoGame.
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
 
 ## Documentation/How to Use
-Install with nuget
+Install with [nuget](https://www.nuget.org/packages/DownUnder.UI/)
 > `Install-Package DownUnder.UI`
 
 And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
