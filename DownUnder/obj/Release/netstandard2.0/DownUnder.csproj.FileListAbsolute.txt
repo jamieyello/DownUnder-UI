@@ -7,3 +7,12 @@ C:\Users\jamie\source\repos\DownUnderNew\DownUnder\obj\Release\netstandard2.0\Do
 C:\Users\jamie\source\repos\DownUnderNew\DownUnder\obj\Release\netstandard2.0\DownUnder.dll
 C:\Users\jamie\source\repos\DownUnderNew\DownUnder\obj\Release\netstandard2.0\DownUnder.pdb
 C:\Users\jamie\source\repos\DownUnderNew\DownUnder\obj\Release\netstandard2.0\DownUnder.csprojAssemblyReference.cache
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\bin\Release\netstandard2.0\DownUnder.deps.json
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\bin\Release\netstandard2.0\DownUnder.dll
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\bin\Release\netstandard2.0\DownUnder.pdb
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.csprojAssemblyReference.cache
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.AssemblyInfoInputs.cache
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.AssemblyInfo.cs
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.csproj.CoreCompileInputs.cache
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.dll
+C:\Users\jamie\Source\Repos\DownUnder-UI\DownUnder\obj\Release\netstandard2.0\DownUnder.pdb
