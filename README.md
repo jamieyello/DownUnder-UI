@@ -1,5 +1,5 @@
 # DownUnder UI
-An ambitious UI library built with .NET and MonoGame. Currently builds for Windows, platforms such as mobile, console, and browser are planned.
+A UI library built with .NET and MonoGame. Currently builds for Windows, platforms such as mobile, console, and browser are planned.
 
 To compile you'll need a recent version of MonoGame and the latest .NET SDKs installed.
 
