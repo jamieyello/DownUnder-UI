@@ -15,8 +15,7 @@ Open alpha. Testing and feedback needed!
  - Community marketplace to share Widgets and Widget behaviors.
 
 ## Documentation/How to Use
-[Download binaries.](/Downloads/Release.zip)  
-[Read the getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
+> nuget is currently WIP
 
 ## Community
 
