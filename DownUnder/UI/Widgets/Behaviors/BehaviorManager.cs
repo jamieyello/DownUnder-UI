@@ -11,8 +11,13 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         public Widget Parent { get; set; }
         [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
+        [DataMember] public GroupBehaviorManager GroupBehaviors { get; private set; }
 
-        public BehaviorManager(Widget parent) => Parent = parent;
+        public BehaviorManager(Widget parent)
+        {
+            Parent = parent;
+            GroupBehaviors = new GroupBehaviorManager(parent);
+        }
 
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => throw new NotImplementedException(); }
 

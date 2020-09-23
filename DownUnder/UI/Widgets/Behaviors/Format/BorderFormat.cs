@@ -111,7 +111,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         protected override void Initialize()
         {
-            Parent.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
+            Parent.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
             _center.FindIn(Parent.Children);
             _top_border.FindIn(Parent.Children);
             _bottom_border.FindIn(Parent.Children);

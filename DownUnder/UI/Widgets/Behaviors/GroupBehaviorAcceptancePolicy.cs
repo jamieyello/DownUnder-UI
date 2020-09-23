@@ -34,6 +34,6 @@ namespace DownUnder.UI.Widgets.Behaviors
             return result;
         }
 
-        public static GroupBehaviorAcceptancePolicy NonScrollable => new GroupBehaviorAcceptancePolicy() { DisallowedIDs = new List<string>() { DownUnderBehaviorIDs.SCROLL_FUNCTION } };
+        public static GroupBehaviorAcceptancePolicy NoUserScrolling => new GroupBehaviorAcceptancePolicy() { DisallowedIDs = new List<string>() { DownUnderBehaviorIDs.SCROLL_FUNCTION } };
     }
 }

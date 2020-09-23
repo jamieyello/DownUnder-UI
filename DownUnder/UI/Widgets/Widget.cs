@@ -206,9 +206,6 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        [DataMember]
-        public GroupBehaviorManager GroupBehaviors { get; private set; }
-
         /// <summary> Contains all information relevant to updating on this frame. </summary>
         public UpdateData UpdateData { get; set; }
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
@@ -284,11 +281,17 @@ namespace DownUnder.UI.Widgets
                 }
 
                 OnAreaChange?.Invoke(this, new RectangleFSetArgs(previous_area));
-                if (_area_backing.Position != previous_area.Position) OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
+                ParentWidget?.InvokeOnChildAreaChange(new RectangleFSetArgs(previous_area));
+                if (_area_backing.Position != previous_area.Position)
+                {
+                    OnResposition?.Invoke(this, new RectangleFSetArgs(previous_area));
+                    ParentWidget?.InvokeOnChildReposition(new RectangleFSetArgs(previous_area));
+                }
                 if (_area_backing.Size != previous_area.Size)
                 {
                     OnResize?.Invoke(this, new RectangleFSetArgs(previous_area));
                     foreach (Widget child in Children.OrEmptyIfNull()) child.InvokeOnParentResize(new RectangleFSetArgs(previous_area));
+                    ParentWidget?.InvokeOnChildResized(new RectangleFSetArgs(previous_area));
                 }
                 if (EmbedChildren && Children != null) {
                     foreach (var child in Children) child.EmbedIn(_area_backing);
@@ -556,8 +559,8 @@ namespace DownUnder.UI.Widgets
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
                 if (value == null) return;
-                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.GroupBehaviors.InheritedPolicies) {
-                    if (GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.Behaviors.GroupBehaviors.InheritedPolicies) {
+                    if (Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
                 OnParentWidgetSet?.Invoke(this, EventArgs.Empty);
             }
@@ -671,7 +674,6 @@ namespace DownUnder.UI.Widgets
             Behaviors = new BehaviorManager(this);
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
             Actions = new ActionManager(this);
-            GroupBehaviors = new GroupBehaviorManager(this);
             Children = new WidgetList(this);
         }
 
@@ -691,7 +693,6 @@ namespace DownUnder.UI.Widgets
             UpdateData = new UpdateData();
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
-            GroupBehaviors = new GroupBehaviorManager(this);
         }
 
         ~Widget() => Dispose(true);
@@ -1174,6 +1175,12 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnParentWidgetSet;
         /// <summary> Invoked when the Parent <see cref="Widget"/> is resized. </summary>
         public event EventHandler<RectangleFSetArgs> OnParentResize;
+        /// <summary> Invoked whenever a child <see cref="Widget"/>'s area is resized. </summary>
+        public event EventHandler<RectangleFSetArgs> OnChildResize;
+        /// <summary> Invoked whenever a child <see cref="Widget"/>'s area changes. </summary>
+        public event EventHandler<RectangleFSetArgs> OnChildAreaChange;
+        /// <summary> Invoked whenever a child <see cref="Widget"/>'s position is changed. </summary>
+        public event EventHandler<RectangleFSetArgs> OnChildReposition;
 
         internal void InvokeOnAdd()
         {
@@ -1195,6 +1202,21 @@ namespace DownUnder.UI.Widgets
         internal void InvokeOnParentResize(RectangleFSetArgs args)
         {
             OnParentResize?.Invoke(this, args);
+        }
+
+        internal void InvokeOnChildResized(RectangleFSetArgs args)
+        {
+            OnChildResize?.Invoke(this, args);
+        }
+
+        internal void InvokeOnChildAreaChange(RectangleFSetArgs args)
+        {
+            OnChildAreaChange?.Invoke(this, args);
+        }
+
+        internal void InvokeOnChildReposition(RectangleFSetArgs args)
+        {
+            OnChildReposition?.Invoke(this, args);
         }
 
         #endregion

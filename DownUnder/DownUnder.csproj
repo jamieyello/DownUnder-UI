@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Matthew Cappel</Authors>
@@ -8,6 +8,7 @@
     <PackageLicenseFile>license.md</PackageLicenseFile>
     <RepositoryUrl>https://github.com/jamieyello/DownUnder-UI</RepositoryUrl>
     <PackageId>DownUnder.UI</PackageId>
+    <Version>1.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />

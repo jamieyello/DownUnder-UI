@@ -40,7 +40,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         protected override void Initialize()
         {
             Parent.MinimumSize = new Point2(1f, 1f);
-            Parent.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
+            Parent.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
             if (Parent.IsGraphicsInitialized) Open(this, EventArgs.Empty);
         }
 

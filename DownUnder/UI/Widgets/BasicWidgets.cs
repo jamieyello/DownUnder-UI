@@ -77,7 +77,7 @@ namespace DownUnder.UI.Widgets
         public static Widget DropDown(IEnumerable<Widget> widgets, PopInOut pop_in_out_behavior = null)
         {
             Widget dropdown = new Widget();
-            dropdown.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NonScrollable;
+            dropdown.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
             dropdown.MinimumSize = new Point2(1f, 1f);
             dropdown.AddRange(widgets);
             dropdown.Behaviors.Add(new GridFormat(1, widgets.Count()));

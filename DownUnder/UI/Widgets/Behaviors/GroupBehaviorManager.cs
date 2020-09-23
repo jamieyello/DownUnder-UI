@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         [DataMember] private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
         [DataMember] private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
 
-        public Widget Parent { get; set; }
+        Widget Parent { get; set; }
         
         public GroupBehaviorAcceptancePolicy AcceptancePolicy
         {
@@ -37,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             _behavior_policies.Add(policy);
             ImplementPolicy(policy);
         }
+
         public void AddPolicy(IEnumerable<GroupBehaviorPolicy> policies)
         {
             foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
@@ -51,7 +52,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             
             foreach (Widget widget in widgets)
             {
-                if (widget.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
+                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
                 {
                     widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
@@ -63,7 +64,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             get
             {
                 var result = new List<GroupBehaviorPolicy>(_behavior_policies);
-                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.GroupBehaviors._InheritedPolicies);
+                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.Behaviors.GroupBehaviors._InheritedPolicies);
                 return result;
             }
         }
@@ -76,9 +77,11 @@ namespace DownUnder.UI.Widgets.Behaviors
                 for (int i = result.Count - 1; i >= 0; i--) {
                     if (result[0].InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.direct_children) result.RemoveAt(i);
                 }
-                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.GroupBehaviors._InheritedPolicies);
+                if (Parent.ParentWidget != null) result.AddRange(Parent.ParentWidget.Behaviors.GroupBehaviors._InheritedPolicies);
                 return result;
             }
         }
+
+        Widget IIsWidgetChild.Parent { get => Parent; set => Parent = value; }
     }
 }

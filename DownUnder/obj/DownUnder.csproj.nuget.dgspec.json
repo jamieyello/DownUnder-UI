@@ -1,24 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {}
+    "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {
-      "version": "1.0.0",
+    "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj": {
+      "version": "1.0.1",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
+        "projectUniqueName": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
         "projectName": "DownUnder.UI",
-        "projectPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
+        "projectPath": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\DownUnder.csproj",
         "packagesPath": "C:\\Users\\jamie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jamie\\Source\\Repos\\DownUnder-UI\\DownUnder\\obj\\",
+        "outputPath": "C:\\Users\\jamie\\source\\repos\\DownUnder-UI\\DownUnder\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\jamie\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
@@ -75,7 +77,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

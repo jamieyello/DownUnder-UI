@@ -23,7 +23,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         protected override void Initialize()
         {
             Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
-            Parent.GroupBehaviors.AddPolicy(SubWidgetBehavior);
+            Parent.Behaviors.GroupBehaviors.AddPolicy(SubWidgetBehavior);
         }
 
         protected override void ConnectEvents()
