@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
-    public class PinPosition : WidgetBehavior
+    /// <summary> Used to "pin" the widget's position/size to some position within the parent widget. </summary>
+    public class PinWidget : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
@@ -31,7 +32,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public override object Clone()
         {
-            PinPosition c = new PinPosition();
+            PinWidget c = new PinWidget();
             c.Pin = (InnerWidgetLocation)Pin.Clone();
             return c;
         }

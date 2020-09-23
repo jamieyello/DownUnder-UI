@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
+    /// <summary> Used to "connect" <see cref="WidgetAction"/>s to widget event handlers. Used to trigger actions from user input. </summary>
     public class TriggerAction : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
@@ -11,8 +12,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         private EventInfo _event;
         private Delegate _delegate;
 
+        /// <summary> The action that will be set off. </summary>
         public WidgetAction Action { get; set; }
+
+        /// <summary> The name of the <see cref="Widget"/> <see cref="EventHandler"/> that will add the action to the widget. Use the nameof() C# expression (or your language's equivalent) to set this consistently. </summary>
         public string NameofEventHandler { get; set; }
+
+        /// <summary> When set to true, the given action will be cloned. </summary>
         public bool CloneAction { get; set; } = true;
 
         public TriggerAction() { }
