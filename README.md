@@ -1,5 +1,5 @@
 # DownUnder UI
-A UI library built with .NET and MonoGame.
+A UI library built with .NET Core and MonoGame.
 
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
