@@ -19,8 +19,7 @@ And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI
 
 ## The Art Gallery
 ![Modern stuff](/Images/goodui3001.gif)
-
-![Login](/Images/Login movie.gif)
+![Login](/Images/login_movie.gif)
 
 Construction is ongoing
 
