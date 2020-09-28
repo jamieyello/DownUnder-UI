@@ -7,8 +7,7 @@ A UI library built with .NET Core and MonoGame.
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
 
 ## Documentation/How to Use
-Install with [nuget](https://www.nuget.org/packages/DownUnder.UI/)
-> `Install-Package DownUnder.UI`
+This project is a shared project library, meaning it does not compile without your project. An Azure DevOps package will be put up, but until then it can be added as a shared project reference directly.
 
 And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
