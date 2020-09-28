@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/jamie/source/repos/DownUnder/DownUnder/Content/DownUnder Native Content/Effects/Lens.fx</SourceFile>
+  <SourceFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/Lens.fx</SourceFile>
   <SourceTime>2020-08-10T16:17:28-04:00</SourceTime>
-  <DestFile>C:/Users/jamie/source/repos/DownUnder/DownUnder/Content/bin/DesktopGL/Content/DownUnder Native Content/Effects/Lens.xnb</DestFile>
-  <DestTime>2020-09-26T20:04:02.3789777-04:00</DestTime>
+  <DestFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/bin/DesktopGL/Content/DownUnder Native Content/Effects/Lens.xnb</DestFile>
+  <DestTime>2020-09-28T17:32:02.7614738-04:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
   <Processor>EffectProcessor</Processor>
