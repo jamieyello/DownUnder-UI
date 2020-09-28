@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6efba8a9-a407-4029-bdd0-651d22a87386</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>DownUnder</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Binding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Bindings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\BindingsSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\BufferedBool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\BufferedKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Cursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\DirectInput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Enum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\PlayerProfile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\PseudoButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\User Defined Actions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\SetGetEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ActionSequence.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AddMainWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AutoLayoutSlide.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\BasicWidgets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCube.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCubeActions\SpinCube.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCubeBehaviors\CubeRotation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCubeBehaviors\SpinOnHoverOnOff.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Format\AddPropertyEditChildren.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Format\BorderFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Format\GridFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Format\GridFormatBehaviors\MemberViewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Format\SpacedListFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\CenterContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\DragAndDropSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PinWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PopInOut.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\IEditorDisplaySubBehaviors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\TemplateBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\DrawEditableTextSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\ITextEntryRuleset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\TextEntryRuleSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\GlimmerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\GlimmerChild.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetTracker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\Point2SetOverrideArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RectangleFSetOverrideArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\BaseColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\BorderSize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\DesignerModeSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\DownUnderEffects.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ElementColors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\Focus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GridReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GridSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GridWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\CenteredLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\OverlayWidgetLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\OverlayWidgetLocations\CoverParentOverlay.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\OverlayWidgetLocations\SideOfParent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\SerializableType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\UIInputState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\UpdateData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DropDownEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\GroupBehaviorCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IParent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IWidgetChild.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\DrawPixelGrid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\Label.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\TextCursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Widget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\AutoDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ChangingValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CustomEventArgs\AddItemArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CustomEventArgs\RemoveItemArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DiagonalDirection2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DiagonalDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Direction2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Directions2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingEffects\GridPixel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingEffects\PixelGrid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\EventList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\ConversionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\DrawingExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\RectangleFExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\WidgetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GenericDiagonalDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GenericDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Interpolation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\InterpolationSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\OSInterface.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\PropertyHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RectanglePart.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\XmlHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringManipulation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\TestWidgets.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Gradient.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Lens.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\SpriteFonts\Default Font.spritefont" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Input\Reader Guide.txt" />
+    <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior Rules.txt" />
+    <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
+    <Content Include="$(MSBuildThisFileDirectory)Utilities\blurred_circle.png" />
+  </ItemGroup>
+</Project>
