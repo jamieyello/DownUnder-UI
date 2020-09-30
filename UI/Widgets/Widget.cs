@@ -933,8 +933,10 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
-        public void Draw() {
-            if (DrawingMode == DrawingModeType.use_render_target) throw new Exception("Drawing a Widget using a render target directly is not yet supported. Embed this widget in another to draw normally.");
+        public void Draw(SpriteBatch sprite_batch) {
+            //if (DrawingMode == DrawingModeType.use_render_target) throw new Exception("Drawing a Widget using a render target directly is not yet supported. Embed this widget in another to draw normally.");
+            _passed_sprite_batch = sprite_batch;
+
             UpdateRenderTargetSizes();
             DrawTree();
             foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
@@ -944,6 +946,7 @@ namespace DownUnder.UI.Widgets
         // https://github.com/jamieyello/DownUnder-UI/blob/master/Images/better_diagram.gif
         private void DrawTree() {
             WidgetList tree = WidgetExtensions.GetChildrenByDepth(this);
+            tree.Add(this);
             bool swapped_render_target = false;
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
 
@@ -958,9 +961,9 @@ namespace DownUnder.UI.Widgets
             }
 
             if (swapped_render_target) GraphicsDevice.SetRenderTargets(previous_render_targets);
-            _local_sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            DrawDirect(_local_sprite_batch);
-            _local_sprite_batch.End();
+            if (DrawingMode == DrawingModeType.direct) SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            DrawDirect(SpriteBatch);
+            if (DrawingMode == DrawingModeType.direct) SpriteBatch.End();
         }
 
         private void Render() {

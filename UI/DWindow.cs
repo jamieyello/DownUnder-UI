@@ -344,8 +344,8 @@ namespace DownUnder.UI
             InputState.Enter = false;
         }
 
-        public void Draw(GameTime game_time) {
-            MainWidget.Draw();
+        public void Draw(SpriteBatch sprite_batch, GameTime game_time) {
+            MainWidget.Draw(sprite_batch);
         }
 
         #endregion Protected Methods
