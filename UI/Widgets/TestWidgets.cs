@@ -36,6 +36,7 @@ namespace TestContent
         public static Widget LoginLayoutEffects()
         {
             Widget layout = new Widget { ChangeColorOnMouseOver = false };
+            //layout.DrawingMode = Widget.DrawingModeType.use_render_target;
 
             layout.Behaviors.Add(new DrawText
             {
@@ -100,6 +101,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             blue.BorderVisibility = 0.3f;
             blue.GradientVisibility = new Point2(0.1f, 0.1f);
             window.Behaviors.Add(blue);
+            //window.Behaviors.Add(new BGEffectTest());
 
             username_label.Behaviors.Add(new DrawText { Text = "Username: " });
             password_label.Behaviors.Add(new DrawText { Text = "Password: " });

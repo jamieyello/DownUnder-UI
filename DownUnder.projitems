@@ -61,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\TemplateBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\BGEffectTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawText.cs" />
@@ -138,6 +139,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\BGEffectTest.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Gradient.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Lens.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\SpriteFonts\Default Font.spritefont" />

@@ -4,11 +4,13 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/BGEffectTest.fx</File>
     <File>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/Gradient.fx</File>
     <File>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/Lens.fx</File>
     <File>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/SpriteFonts/Default Font.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

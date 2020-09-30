@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin DownUnder Native Content/Effects/BGEffectTest.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:DownUnder Native Content/Effects/BGEffectTest.fx
+
 #begin DownUnder Native Content/Effects/Gradient.fx
 /importer:EffectImporter
 /processor:EffectProcessor

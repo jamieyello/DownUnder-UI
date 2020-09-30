@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/Gradient.fx</SourceFile>
-  <SourceTime>2020-09-23T21:35:53.9998892-04:00</SourceTime>
-  <DestFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/bin/Windows/DownUnder Native Content/Effects/Gradient.xnb</DestFile>
-  <DestTime>2020-09-29T00:05:25.6055462-04:00</DestTime>
+  <SourceFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/DownUnder Native Content/Effects/BGEffectTest.fx</SourceFile>
+  <SourceTime>2020-09-29T00:43:43.0008143-04:00</SourceTime>
+  <DestFile>C:/Users/jamie/source/repos/DownUnder-UI/Content/bin/DesktopGL/Content/DownUnder Native Content/Effects/BGEffectTest.xnb</DestFile>
+  <DestTime>2020-09-29T00:44:37.3464862-04:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-04:00</ImporterTime>
   <Processor>EffectProcessor</Processor>

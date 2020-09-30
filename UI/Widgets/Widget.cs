@@ -11,7 +11,6 @@ using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -935,6 +934,7 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
         public void Draw() {
+            if (DrawingMode == DrawingModeType.use_render_target) throw new Exception("Drawing a Widget using a render target directly is not yet supported. Embed this widget in another to draw normally.");
             UpdateRenderTargetSizes();
             DrawTree();
             foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
@@ -948,8 +948,10 @@ namespace DownUnder.UI.Widgets
             RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
 
             // Render widgets that use a render target first
-            for (int i = tree.Count - 1; i >= 1; i--) {
-                if (tree[i].DrawingMode == DrawingModeType.use_render_target) {
+            for (int i = tree.Count - 1; i >= 1; i--)
+            {
+                if (tree[i].DrawingMode == DrawingModeType.use_render_target)
+                {
                     tree[i].Render();
                     swapped_render_target = true;
                 }
@@ -963,6 +965,8 @@ namespace DownUnder.UI.Widgets
 
         private void Render() {
             GraphicsDevice.SetRenderTarget(_render_target);
+            GraphicsDevice.Clear(Color.Transparent);
+
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             DrawContent();
             foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
@@ -974,10 +978,18 @@ namespace DownUnder.UI.Widgets
         private void DrawDirect(SpriteBatch sprite_batch) {
             _passed_sprite_batch = sprite_batch;
 
-            if (DrawingMode == DrawingModeType.use_render_target) {
+            //foreach (Delegate bg_effect in bg_effects.OrEmptyIfNull())
+            //{
+            //    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            //    bg_effect.DynamicInvoke(new object[] { this, EventArgs.Empty });
+            //    SpriteBatch.End();
+            //}
+
+            if (DrawingMode == DrawingModeType.use_render_target)
+            {
                 SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
                 if (Parent == null) SpriteBatch.Draw(_render_target, Position, Color.White);
-                else SpriteBatch.Draw(_render_target, Position.WithOffset(Parent.PositionInRender), Area.SizeOnly().ToRectangle(), Color.White);
+                else SpriteBatch.Draw(_render_target, Position.WithOffset(Parent.PositionInRender), Color.White);
                 SpriteBatch.End();
                 return;
             }
