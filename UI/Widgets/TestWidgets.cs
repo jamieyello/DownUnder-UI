@@ -6,9 +6,6 @@ using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TestContent
 {
@@ -35,7 +32,7 @@ namespace TestContent
 
         public static Widget LoginLayoutEffects()
         {
-            Widget layout = new Widget { ChangeColorOnMouseOver = false };
+            Widget layout = new Widget { ChangeColorOnMouseOver = true };
             //layout.DrawingMode = Widget.DrawingModeType.use_render_target;
 
             layout.Behaviors.Add(new DrawText
@@ -87,7 +84,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
 
-            window.ChangeColorOnMouseOver = false;
+            window.ChangeColorOnMouseOver = true;
 
             Widget username_entry = new Widget { Position = new Point2(100, 0), Width = 150, Height = 40 };
             Widget password_entry = new Widget { Position = new Point2(100, 60), Width = 150, Height = 40 };
@@ -101,7 +98,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             blue.BorderVisibility = 0.3f;
             blue.GradientVisibility = new Point2(0.1f, 0.1f);
             window.Behaviors.Add(blue);
-            //window.Behaviors.Add(new BGEffectTest());
+            window.Behaviors.Add(new BGEffectTest());
 
             username_label.Behaviors.Add(new DrawText { Text = "Username: " });
             password_label.Behaviors.Add(new DrawText { Text = "Password: " });
@@ -114,7 +111,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             password_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
 
             window.Add(username_label);
-            window.Add(password_label);
+            //window.Add(password_label);
             window.Add(username_entry);
             window.Add(password_entry);
             window.Add(login_button);

@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            
+            //Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
             if (Parent.ParentWindow != null) LoadEffect(this, EventArgs.Empty);
         }
 
@@ -36,14 +36,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void LoadEffect(object sender, EventArgs args)
         {
+            Parent.ParentWidget.DrawingMode = Widget.DrawingModeType.use_render_target;
             effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/BGEffectTest");
         }
 
-        private void ApplyEffect(object sender, EventArgs args)
+        private void ApplyEffect(object sender, DrawBGEffectsArgs args)
         {
             effect.CurrentTechnique.Passes[0].Apply();
-            Parent.SpriteBatch.FillRectangle(new RectangleF(20, 20, 100, 100), Color.Red);
-            Parent.SpriteBatch.DrawString(Parent.WindowFont, "Text", new Vector2(), Color.White);
+            Parent.SpriteBatch.FillRectangle(new RectangleF(20,20,20,20), Color.Red);
+            Parent.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), new Rectangle(0,0,500,500), Color.White);
+            Parent.SpriteBatch.DrawString(Parent.WindowFont, args.ChildAreaInRender.ToString(), new Vector2(), Color.White);
         }
     }
 }

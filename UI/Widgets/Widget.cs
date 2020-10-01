@@ -11,6 +11,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -33,7 +34,8 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract] public sealed class Widget : 
+    [DataContract]
+    public sealed class Widget :
         IParent, IDisposable, ICloneable, IList<Widget>
     {
         public bool debug_output = false;
@@ -117,7 +119,8 @@ namespace DownUnder.UI.Widgets
         private ActionManager _actions_backing;
         private bool _fit_to_content_area_backing = false;
 
-        public enum DrawingModeType {
+        public enum DrawingModeType
+        {
             /// <summary> Draw nothing. </summary>
             disable,
             /// <summary> Draw directly to the current <see cref="RenderTarget2D"/> without switching or clearing it. (default) </summary>
@@ -126,7 +129,8 @@ namespace DownUnder.UI.Widgets
             use_render_target
         }
 
-        public enum UserResizePolicyType {
+        public enum UserResizePolicyType
+        {
             disallow,
             allow,
             require_highlight
@@ -163,49 +167,51 @@ namespace DownUnder.UI.Widgets
         [DataMember]
         public bool DrawOutline { get; set; } = true;
         /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
-        [DataMember] 
+        [DataMember]
         public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
         /// <summary> How the render target will be handled. </summary>
         [DataMember]
         public RenderTargetResizeModeType RenderTargetResizeMode { get; set; } = RenderTargetResizeModeType.maximum_size;
         /// <summary> How thick the outline should be. 1 by default. </summary>
-        [DataMember] 
+        [DataMember]
         public float OutlineThickness { get; set; } = 1f;
         /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
         [DataMember]
         public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
         /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
-        [DataMember] 
+        [DataMember]
         public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.None;
         /// <summary> The distance from the edges of the widget this is snapped to. </summary>
-        [DataMember] 
+        [DataMember]
         public Size2 Spacing { get; set; }
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
-        [DataMember] 
+        [DataMember]
         public bool EnterConfirms { get; set; } = true;
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
-        [DataMember] 
+        [DataMember]
         public WidgetRoleType WidgetRole { get; set; } = WidgetRoleType.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
-        [DataMember] 
+        [DataMember]
         public bool IsFixedWidth { get; set; } = false;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Height"/>. </summary>
-        [DataMember] 
+        [DataMember]
         public bool IsFixedHeight { get; set; } = false;
         /// <summary> If set to true this <see cref="Widget"/> will passthrough all mouse input to it's parent. </summary>
-        [DataMember] 
+        [DataMember]
         public bool PassthroughMouse { get; set; } = false;
         /// <summary> Used by <see cref="WidgetBehavior"/>s to tag <see cref="Widget"/>s with values. </summary>
-        [DataMember] 
+        [DataMember]
         internal AutoDictionary<SerializableType, AutoDictionary<string, string>> BehaviorTags;
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
-        [DataMember] 
+        [DataMember]
         public bool IsCloningSupported { get; set; } = true;
 
         [DataMember]
-        public BehaviorManager Behaviors { 
-            get => _behaviors_backing; 
-            private set {
+        public BehaviorManager Behaviors
+        {
+            get => _behaviors_backing;
+            private set
+            {
                 _behaviors_backing = value;
                 if (value != null) value.Parent = this;
             }
@@ -218,8 +224,8 @@ namespace DownUnder.UI.Widgets
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll { get; set; } = new Point2();
 
-        public ActionManager Actions 
-        { 
+        public ActionManager Actions
+        {
             get => _actions_backing;
             private set
             {
@@ -230,10 +236,11 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Set to true after this <see cref="Widget"/> has been deleted (as well as disposed) and is no longer in use. </summary>
         public bool IsDeleted { get; private set; } = false;
-        
+
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        [DataMember] public WidgetList Children 
-        { 
+        [DataMember]
+        public WidgetList Children
+        {
             get => _children_backing;
             set
             {
@@ -248,8 +255,8 @@ namespace DownUnder.UI.Widgets
         #region Non-auto properties
 
         /// <summary> The name of this <see cref="Widget"/>. </summary>
-        public string Name 
-        { 
+        public string Name
+        {
             get => _name_backing;
             set
             {
@@ -260,18 +267,22 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Minimum time (in seconds) in-between two clicks needed for a double. </summary>
-        public float DoubleClickTiming {
+        public float DoubleClickTiming
+        {
             get => _double_click_timing_backing;
-            set {
+            set
+            {
                 if (value > 0) { _double_click_timing_backing = value; }
                 else { _double_click_timing_backing = 0f; }
             }
         }
 
         /// <summary> Area of this <see cref="Widget"/>. (Position relative to <see cref="IParent"/>) </summary>
-        public RectangleF Area {
+        public RectangleF Area
+        {
             get => _area_backing;
-            set {
+            set
+            {
                 if (IsFixedWidth) value.Width = _area_backing.Width;
                 if (IsFixedHeight) value.Height = _area_backing.Height;
                 RectangleF previous_area = _area_backing;
@@ -280,7 +291,8 @@ namespace DownUnder.UI.Widgets
 
                 var response = new RectangleFSetOverrideArgs(previous_area);
                 OnAreaChangePriority?.Invoke(this, response);
-                if (response.Override != null) {
+                if (response.Override != null)
+                {
                     _area_backing = response.Override.Value.WithMinimumSize(MinimumSize);
                     if (_area_backing == previous_area) return;
                 }
@@ -298,16 +310,19 @@ namespace DownUnder.UI.Widgets
                     foreach (Widget child in Children.OrEmptyIfNull()) child.InvokeOnParentResize(new RectangleFSetArgs(previous_area));
                     ParentWidget?.InvokeOnChildResized(new RectangleFSetArgs(previous_area));
                 }
-                if (EmbedChildren && Children != null) {
+                if (EmbedChildren && Children != null)
+                {
                     foreach (var child in Children) child.EmbedIn(_area_backing);
                 }
             }
         }
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
-        public Point2 MinimumSize {
+        public Point2 MinimumSize
+        {
             get => _minimum_size_backing;
-            set {
+            set
+            {
                 if (value.X < 1) throw new Exception("Minimum area width must be at least 1.");
                 if (value.Y < 1) throw new Exception("Minimum area height must be at least 1.");
                 if (value == _minimum_size_backing) return;
@@ -326,57 +341,68 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
         [DataMember]
-        public BaseColorScheme Theme {
+        public BaseColorScheme Theme
+        {
             get => _theme_backing;
-            set {
+            set
+            {
                 _theme_backing = value;
                 if (_theme_backing != null) _theme_backing.Parent = this;
             }
         }
-        
+
         /// <summary> What sides are allowed to be resized when <see cref="AllowUserResize"/> is enabled. </summary>
-        public Directions2D AllowedResizingDirections {
+        public Directions2D AllowedResizingDirections
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowedResizingDirections : _allowed_resizing_directions_backing;
             set => _allowed_resizing_directions_backing = value;
         }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can delete this <see cref="Widget"/> with the defined <see cref="UIInputState.Delete"/> or <see cref="UIInputState.BackSpace"/> (when highlighted). </summary>
-        [DataMember] 
-        public bool AllowDelete {
+        [DataMember]
+        public bool AllowDelete
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowDelete : _allow_delete_backing;
             set => _allow_delete_backing = value;
-        }        
+        }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can copy this <see cref="Widget"/> with the defined <see cref="UIInputState.Copy"/> (when highlighted). </summary>
-        [DataMember] 
-        public bool AllowCopy {
+        [DataMember]
+        public bool AllowCopy
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCopy : _allow_copy_backing;
             set => _allow_copy_backing = value;
-        }      
-        
+        }
+
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can cut this <see cref="Widget"/> with the defined <see cref="UIInputState.Cut"/> (when highlighted). </summary>
-        [DataMember] public bool AllowCut {
+        [DataMember]
+        public bool AllowCut
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCut : _allow_cut_backing;
             set => _allow_cut_backing = value;
         }
 
         /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
         // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        [DataMember] public bool AcceptsDrops {
+        [DataMember]
+        public bool AcceptsDrops
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptsDrops : _accepts_drops_backing;
             set => _accepts_drops_backing = value;
         }
 
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        [DataMember] 
-        public List<SerializableType> AcceptedDropTypes {
+        [DataMember]
+        public List<SerializableType> AcceptedDropTypes
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
             private set => _accepted_drop_types_backing = value;
         }
 
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
-        [DataMember] public bool FitToContentArea 
-        { 
+        [DataMember]
+        public bool FitToContentArea
+        {
             get => _fit_to_content_area_backing;
             set
             {
@@ -417,11 +443,13 @@ namespace DownUnder.UI.Widgets
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
         /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
-        
+
         /// <summary> Returns true if this <see cref="Widget"/> is hovered over. </summary>
-        public bool IsHoveredOver {
+        public bool IsHoveredOver
+        {
             get => _is_hovered_over_backing;
-            private set {
+            private set
+            {
                 _previous_is_hovered_over_backing = _is_hovered_over_backing;
                 _is_hovered_over_backing = value;
                 if (value && !_previous_is_hovered_over_backing) OnHover?.Invoke(this, EventArgs.Empty);
@@ -437,8 +465,10 @@ namespace DownUnder.UI.Widgets
         public RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
 
         /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
-        public Point2 PositionInWindow {
-            get {
+        public Point2 PositionInWindow
+        {
+            get
+            {
                 if (ParentWidget == null) { return Position; }
                 return Position.WithOffset(ParentWidget.PositionInWindow).WithOffset(ParentWidget.Scroll);
             }
@@ -447,8 +477,10 @@ namespace DownUnder.UI.Widgets
         Point2 IParent.PositionInRender => PositionInRender;
 
         /// <summary> The position of this <see cref="Widget"/> relative to the <see cref="RenderTarget2D"/> being used. </summary>
-        internal Point2 PositionInRender {
-            get {
+        internal Point2 PositionInRender
+        {
+            get
+            {
                 if (DrawingMode == DrawingModeType.use_render_target) return Scroll;
                 if (ParentWidget == null || DrawingMode == DrawingModeType.use_render_target) return Position.WithOffset(Scroll);
                 return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(Scroll);
@@ -456,20 +488,23 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        public RectangleF DrawingArea => Area.WithPosition(PositionInRender);
+        public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target? Area: AreaInWindow;
         /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
         public RectangleF DrawingAreaUnscrolled => DrawingArea.WithOffset(Scroll.Inverted());
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
         //public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
-        public RectangleF VisibleArea {
-            get {
+        public RectangleF VisibleArea
+        {
+            get
+            {
                 WidgetList tree = Parents;
                 tree.Insert(0, this);
                 RectangleF result = Area;
 
                 // start at the parent, go up the tree
-                for (int i = 1; i < tree.Count; i++) {
+                for (int i = 1; i < tree.Count; i++)
+                {
                     result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
                     result = result.Intersection(tree[i].Area);
                 }
@@ -478,20 +513,25 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public RectangleF VisibleDrawingArea {
-            get {
+        public RectangleF VisibleDrawingArea
+        {
+            get
+            {
                 //return PositionInRender.AsRectanglePosition(Size);
                 List<Widget> tree = RenderParents;
                 tree.Insert(0, this);
                 RectangleF result = tree[0].Area;
 
                 // start at the parent, go up the tree
-                for (int i = 1; i < tree.Count; i++) {
-                    if (tree[i].DrawingMode != DrawingModeType.use_render_target) {
+                for (int i = 1; i < tree.Count; i++)
+                {
+                    if (tree[i].DrawingMode != DrawingModeType.use_render_target)
+                    {
                         result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
                         result = result.Intersection(tree[i].Area);
                     }
-                    else {
+                    else
+                    {
                         result.Position = result.Position.WithOffset(tree[i].Scroll);
                     }
                 }
@@ -501,11 +541,14 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
-        public WidgetList Parents {
-            get {
+        public WidgetList Parents
+        {
+            get
+            {
                 WidgetList parents = new WidgetList();
                 Widget parent = ParentWidget;
-                while (parent != null) {
+                while (parent != null)
+                {
                     parents.Add(parent);
                     parent = parent.ParentWidget;
                 }
@@ -514,11 +557,14 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Returns a parent tree up to the first render target with this <see cref="Parent"/> being first. </summary>
-        private WidgetList RenderParents {
-            get {
+        private WidgetList RenderParents
+        {
+            get
+            {
                 WidgetList parents = new WidgetList();
                 Widget parent = ParentWidget;
-                while (parent != null) {
+                while (parent != null)
+                {
                     parents.Add(parent);
                     if (parent.DrawingMode == DrawingModeType.use_render_target) break;
                     parent = parent.ParentWidget;
@@ -528,28 +574,33 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
-        public IParent Parent {
+        public IParent Parent
+        {
             get => ParentWidget != null ? (IParent)ParentWidget : ParentWindow;
-            set {
+            set
+            {
                 if (value is Widget widget) ParentWidget = widget;
                 else if (value is DWindow window) ParentWindow = window;
             }
         }
 
         /// <summary> The <see cref="DWindow"/> that owns this <see cref="Widget"/>. </summary>
-        public DWindow ParentWindow {
+        public DWindow ParentWindow
+        {
             get => _parent_window_backing;
-            private set {
+            private set
+            {
                 if (_parent_window_backing == value) return;
 
                 _parent_window_backing = value;
                 bool initialized = false;
-                if (value != null) {
+                if (value != null)
+                {
                     initialized = InitializeGraphics();
                     OnParentWindowSet?.Invoke(this, EventArgs.Empty);
                     //ConnectEvents(value);
                 }
-                
+
                 foreach (Widget child in Children) child.ParentWindow = value;
 
                 if (initialized) OnPostGraphicsInitialized?.Invoke(this, EventArgs.Empty);
@@ -557,14 +608,17 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Widget"/> that owns this <see cref="Widget"/>. (if one exists) </summary>
-        public Widget ParentWidget {
+        public Widget ParentWidget
+        {
             get => _parent_widget_backing;
-            private set {
+            private set
+            {
                 if (value != _parent_widget_backing) _parent_widget_backing?.Remove(this);
                 _parent_widget_backing = value;
                 ParentWindow = value?.ParentWindow;
                 if (value == null) return;
-                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.Behaviors.GroupBehaviors.InheritedPolicies) {
+                foreach (GroupBehaviorPolicy policy in _parent_widget_backing.Behaviors.GroupBehaviors.InheritedPolicies)
+                {
                     if (Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
                 OnParentWidgetSet?.Invoke(this, EventArgs.Empty);
@@ -583,8 +637,10 @@ namespace DownUnder.UI.Widgets
         public bool IsSelected => ParentWindow != null && ParentWindow.SelectedWidgets.IsWidgetFocused(this);
 
         /// <summary> This <see cref="Widget"/> plus all <see cref="Widget"/>s contained in this <see cref="Widget"/>. </summary>
-        public WidgetList AllContainedWidgets {
-            get {
+        public WidgetList AllContainedWidgets
+        {
+            get
+            {
                 WidgetList result = new WidgetList { this };
                 foreach (Widget child in Children) result.AddRange(child.AllContainedWidgets);
                 return result;
@@ -593,13 +649,16 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Gets the index of this <see cref="Widget"/> in its <see cref="ParentWidget"/>. </summary>
         public int Index => ParentWidget == null ? -1 : ParentWidget.Children.IndexOf(this);
-        
+
         /// <summary> How many children deep this <see cref="Widget"/> is. </summary>
-        public int Depth {
-            get {
+        public int Depth
+        {
+            get
+            {
                 int result = 0;
                 Widget widget = this;
-                while (widget.ParentWidget != null) {
+                while (widget.ParentWidget != null)
+                {
                     widget = widget.ParentWidget;
                     result++;
                 }
@@ -609,37 +668,44 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> used by this <see cref="Widget"/>. If left null, the Parent of this <see cref="Widget"/>'s <see cref="Microsoft.Xna.Framework.Graphics.SpriteFont"/> will be used. </summary>
-        public SpriteFont WindowFont {
+        public SpriteFont WindowFont
+        {
             get => Parent == null || _sprite_font_backing != null ? _sprite_font_backing : Parent.WindowFont;
             set => _sprite_font_backing = value;
         }
 
         /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> used by this <see cref="Widget"/>. If left null, the <see cref="Parent"/>'s <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> will be used. </summary>
-        public GraphicsDevice GraphicsDevice {
+        public GraphicsDevice GraphicsDevice
+        {
             get => Parent == null || _graphics_backing != null ? _graphics_backing : Parent.GraphicsDevice;
             set => _graphics_backing = value;
         }
 
         /// <summary> Position of the cursor relative to this <see cref="Widget"/>. </summary>
-        public Point2 CursorPosition {
-            get {
+        public Point2 CursorPosition
+        {
+            get
+            {
                 if (UpdateData.UIInputState == null) return new Point2();
                 return UpdateData.UIInputState.CursorPosition - PositionInWindow - Scroll.ToVector2();
             }
         }
 
         /// <summary> When set to true this <see cref="Widget"/> will become highlighted when focused (in parent <see cref="DWindow.SelectedWidgets"/>). </summary>
-        public bool AllowHighlight {
+        public bool AllowHighlight
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowHighlight : _allow_highlight_backing;
             set => _allow_highlight_backing = value;
         }
 
-        public UserResizePolicyType UserResizePolicy {
+        public UserResizePolicyType UserResizePolicy
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.UserResizingPolicy : _user_resize_policy_backing;
             set => _user_resize_policy_backing = value;
         }
 
-        public UserResizePolicyType UserRepositionPolicy {
+        public UserResizePolicyType UserRepositionPolicy
+        {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.UserRepositionPolicy : _user_reposition_policy_backing;
             set => _user_reposition_policy_backing = value;
         }
@@ -707,7 +773,8 @@ namespace DownUnder.UI.Widgets
 
         public void Dispose() => Dispose(true);
 
-        private void Dispose(bool disposing) {
+        private void Dispose(bool disposing)
+        {
             OnDispose?.Invoke(this, EventArgs.Empty);
             _white_dot?.Dispose();
             _render_target?.Dispose();
@@ -721,7 +788,8 @@ namespace DownUnder.UI.Widgets
 
         #region Public/Internal Methods
 
-        public void Update(GameTime game_time, UIInputState input_state) {
+        public void Update(GameTime game_time, UIInputState input_state)
+        {
             UpdateGroupUpdateData(game_time, input_state);
             UpdateGroupInput();
             UpdateGroupResizeGrab();
@@ -729,13 +797,15 @@ namespace DownUnder.UI.Widgets
             UpdateGroupEvents(game_time);
             UpdateGroupPost(out _);
         }
-        
-        private void UpdateGroupHoverFocus() {
+
+        private void UpdateGroupHoverFocus()
+        {
             if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             foreach (Widget widget in Children) widget.UpdateGroupHoverFocus();
         }
 
-        private void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input) {
+        private void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input)
+        {
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
             UpdateData.SpeedModifier = UpdateData.ElapsedSeconds * 60f;
@@ -745,7 +815,8 @@ namespace DownUnder.UI.Widgets
         }
 
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
-        private void UpdateGroupInput() {
+        private void UpdateGroupInput()
+        {
             _update_clicked_on = false;
             _update_double_clicked = false;
             _update_triple_clicked = false;
@@ -756,19 +827,22 @@ namespace DownUnder.UI.Widgets
             _update_drop = false;
             _update_clicked_off = false;
 
-            if (!UpdateData.UIInputState.PrimaryClick) {
+            if (!UpdateData.UIInputState.PrimaryClick)
+            {
                 _dragging_in = false;
-                if (_dragging_off) {
+                if (_dragging_off)
+                {
                     _dragging_off = false;
                     _update_drop = true;
                 }
             }
 
-            if (UpdateData.UIInputState.CursorPosition != _previous_cursor_position) {
+            if (UpdateData.UIInputState.CursorPosition != _previous_cursor_position)
+            {
                 _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
                 _triple_click_countdown = 0f;
             }
-            
+
             if (_double_click_countdown > 0f) _double_click_countdown -= UpdateData.ElapsedSeconds;
 
             if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
@@ -806,17 +880,20 @@ namespace DownUnder.UI.Widgets
                     _update_drag = true;
                 }
             }
-            
-            if (UserResizePolicy == UserResizePolicyType.allow || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted)) {
+
+            if (UserResizePolicy == UserResizePolicyType.allow || (UserResizePolicy == UserResizePolicyType.require_highlight && IsHighlighted))
+            {
                 // Determining window resize
                 if (!PassthroughMouse
-                    && ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition)) {
+                    && ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))
+                {
                     Directions2D resize_grab = AreaInWindow.GetCursorHoverOnBorders(
                         ParentWindow.InputState.CursorPosition,
                         _USER_RESIZE_BOUNDS_SIZE
                         ) & AllowedResizingDirections;
-                    
-                    if (resize_grab != Directions2D.None) {
+
+                    if (resize_grab != Directions2D.None)
+                    {
                         ParentWindow.ResizeCursorGrabber = this;
                         ParentWindow.ResizingDirections = resize_grab;
                     }
@@ -824,12 +901,14 @@ namespace DownUnder.UI.Widgets
             }
             if ((UserRepositionPolicy == UserResizePolicyType.allow
                 || (UserRepositionPolicy == UserResizePolicyType.require_highlight && IsHighlighted))
-                && VisibleArea.Contains(InputState.CursorPosition)) {
+                && VisibleArea.Contains(InputState.CursorPosition))
+            {
                 ParentWindow.ResizeCursorGrabber = this;
                 ParentWindow.ResizingDirections = Directions2D.UDLR;
             }
 
-            if (IsHighlighted) {
+            if (IsHighlighted)
+            {
                 if (AllowDelete && (InputState.BackSpace || InputState.Delete)) _post_update_flags.Delete = true;
                 if (AllowCopy && InputState.Copy) _post_update_flags.Copy = true;
                 if (AllowCut && InputState.Cut) _post_update_flags.Cut = true;
@@ -838,32 +917,38 @@ namespace DownUnder.UI.Widgets
             foreach (Widget widget in Children) widget.UpdateGroupInput();
         }
 
-        private void UpdateGroupResizeGrab() {
+        private void UpdateGroupResizeGrab()
+        {
             if (
                 !ParentWindow.UserResizeModeEnable
                 && ParentWindow.ResizeCursorGrabber != this
-                && !_IsBeingResized) {
+                && !_IsBeingResized)
+            {
                 foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
                 return;
             }
 
             // User has resize cursor over this widget or is in the middle of resizing
-            if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable) {
-                if (ParentWindow.ResizingDirections != Directions2D.None) {
+            if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable)
+            {
+                if (ParentWindow.ResizingDirections != Directions2D.None)
+                {
                     _resizing_direction = ParentWindow.ResizingDirections;
                     ParentWindow.UserResizeModeEnable = true;
                     _resizing_initial_area = Area;
                     _repositioning_origin = InputState.CursorPosition;
                 }
             }
-            
+
             if (!UpdateData.UIInputState.PrimaryClick) ParentWindow.UserResizeModeEnable = false;
 
-            if (_IsBeingResized) {
+            if (_IsBeingResized)
+            {
                 RectangleF new_area = _resizing_initial_area;
                 Point2 amount = UpdateData.UIInputState.CursorPosition.WithOffset(_repositioning_origin.Inverted());
                 if (_resizing_direction == Directions2D.UDLR) new_area = new_area.WithOffset(amount);
-                else {
+                else
+                {
                     if (_resizing_direction & Directions2D.R) new_area = new_area.ResizedBy(amount.X, Directions2D.R, MinimumSize);
                     if (_resizing_direction & Directions2D.D) new_area = new_area.ResizedBy(amount.Y, Directions2D.D, MinimumSize);
                     if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U, MinimumSize);
@@ -878,13 +963,16 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
-        private void UpdateGroupEvents(GameTime game_time) {
+        private void UpdateGroupEvents(GameTime game_time)
+        {
             if (!_has_updated) return;
             // Skip some normal behavior if the user has the resize cursor over this widget
             if (!ParentWindow.UserResizeModeEnable
-                && ParentWindow.ResizeCursorGrabber != this 
-                && !_IsBeingResized) {
-                if (IsPrimaryHovered) {
+                && ParentWindow.ResizeCursorGrabber != this
+                && !_IsBeingResized)
+            {
+                if (IsPrimaryHovered)
+                {
                     if (_update_added_to_focused) AddToFocused();
                     if (_update_set_as_focused) SetAsFocused();
                     if (_update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
@@ -905,15 +993,17 @@ namespace DownUnder.UI.Widgets
             if (_IsBeingResized) SetAsFocused();
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
-            
+
             Theme.Update(game_time);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in new WidgetList(Children)) widget.UpdateGroupEvents(game_time);
         }
 
-        private void UpdateGroupPost(out bool deleted) {
-            if (_post_update_flags.Delete) {
+        private void UpdateGroupPost(out bool deleted)
+        {
+            if (_post_update_flags.Delete)
+            {
                 ParentWidget.DeleteChild(this);
                 deleted = true;
                 IsDeleted = true;
@@ -922,9 +1012,11 @@ namespace DownUnder.UI.Widgets
             }
 
             WidgetList children = Children;
-            for (int i = 0; i < children.Count; i++) {
+            for (int i = 0; i < children.Count; i++)
+            {
                 children[i].UpdateGroupPost(out bool deleted_);
-                if (deleted_) {
+                if (deleted_)
+                {
                     children = Children;
                     i--;
                 }
@@ -932,101 +1024,235 @@ namespace DownUnder.UI.Widgets
             deleted = false;
         }
 
-        /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
-        public void Draw(SpriteBatch sprite_batch) {
-            //if (DrawingMode == DrawingModeType.use_render_target) throw new Exception("Drawing a Widget using a render target directly is not yet supported. Embed this widget in another to draw normally.");
-            _passed_sprite_batch = sprite_batch;
+        // -------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------
 
-            UpdateRenderTargetSizes();
-            DrawTree();
-            foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
-            return;
-        }
-
-        // https://github.com/jamieyello/DownUnder-UI/blob/master/Images/better_diagram.gif
-        private void DrawTree() {
-            WidgetList tree = WidgetExtensions.GetChildrenByDepth(this);
-            tree.Add(this);
-            bool swapped_render_target = false;
-            RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-
-            // Render widgets that use a render target first
-            for (int i = tree.Count - 1; i >= 1; i--)
+        internal WidgetList AllRenderedWidgets
+        {
+            get
             {
-                if (tree[i].DrawingMode == DrawingModeType.use_render_target)
+                WidgetList result = AllContainedWidgets;
+                for (int i = result.Count - 1; i >= 0; i--)
                 {
-                    tree[i].Render();
-                    swapped_render_target = true;
+                    if (result[i].DrawingMode != DrawingModeType.use_render_target) result.RemoveAt(i);
                 }
+                return result;
             }
-
-            if (swapped_render_target) GraphicsDevice.SetRenderTargets(previous_render_targets);
-            if (DrawingMode == DrawingModeType.direct) SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            DrawDirect(SpriteBatch);
-            if (DrawingMode == DrawingModeType.direct) SpriteBatch.End();
         }
 
-        private void Render() {
-            GraphicsDevice.SetRenderTarget(_render_target);
-            GraphicsDevice.Clear(Color.Transparent);
-
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            DrawContent();
-            foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-            DrawOverlay();
-            SpriteBatch.End();
-            DrawOverlayEffects(OnDrawOverlayEffects);
-        }
-
-        private void DrawDirect(SpriteBatch sprite_batch) {
-            _passed_sprite_batch = sprite_batch;
-
-            //foreach (Delegate bg_effect in bg_effects.OrEmptyIfNull())
-            //{
-            //    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            //    bg_effect.DynamicInvoke(new object[] { this, EventArgs.Empty });
-            //    SpriteBatch.End();
-            //}
-
-            if (DrawingMode == DrawingModeType.use_render_target)
+        internal bool HasBGEffectChildren 
+        {
+            get
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                if (Parent == null) SpriteBatch.Draw(_render_target, Position, Color.White);
-                else SpriteBatch.Draw(_render_target, Position.WithOffset(Parent.PositionInRender), Color.White);
-                SpriteBatch.End();
-                return;
+                foreach (Widget child in Children)
+                {
+                    if (child.HasBackgroundEffects) return true;
+                }
+                return false;
             }
+        }
 
-            DrawContent();
-            foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-            DrawOverlay();
+        internal class DrawingFlagSet
+        {
+
+        }
+
+        internal DrawingFlagSet DrawingFlags = new DrawingFlagSet();
+
+        public void Draw2(SpriteBatch sprite_batch)
+        {
+            _passed_sprite_batch = sprite_batch;
+            var previous_targets = GraphicsDevice.GetRenderTargets();
+            UpdateRenderTargetSizes();
+            if (PrepareRenders())
+            {
+                GraphicsDevice.SetRenderTargets(previous_targets);
+            }
+            DrawFinal();
+        }
+
+        /// <summary>
+        /// Prepare all render targets by drawing all widget content to them.
+        /// </summary>
+        private bool PrepareRenders()
+        {
+            bool rendered = false;
+            foreach (Widget widget in AllRenderedWidgets)
+            {
+                rendered = true;
+                GraphicsDevice.SetRenderTarget(widget._render_target);
+                GraphicsDevice.Clear(Color.Transparent);
+                widget.DrawBaseContent(null);
+            }
+            return rendered;
         }
 
         /// <summary> Draws content without altering render target or spritebatch. </summary>
-        private void DrawContent() {
+        private void DrawBaseContent(SpriteBatch sprite_batch)
+        {
+            _passed_sprite_batch = sprite_batch;
             Rectangle previous_scissor_area = new Rectangle();
 
-            if (DrawingMode == DrawingModeType.direct) {
+            if (DrawingMode == DrawingModeType.direct)
+            {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
             }
-            if (DrawBackground) {
+            if (DrawBackground)
+            {
                 if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(VisibleDrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
-                else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
+                else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
             }
 
-            OnDraw?.Invoke(this, EventArgs.Empty);
+            if (DrawingMode == DrawingModeType.direct)
+            {
+                OnDraw?.Invoke(this, EventArgs.Empty);
+            }
+            else if (DrawingMode == DrawingModeType.use_render_target)
+            {
+                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                OnDraw?.Invoke(this, EventArgs.Empty);
+                SpriteBatch.End();
+            }
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
+        private void DrawFinal()
+        {
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            foreach (Widget widget in AllContainedWidgets)
+            {
+                if (widget.DrawingMode == DrawingModeType.direct) widget.DrawBaseContent(SpriteBatch);
+                if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0,0,(int)widget.Width, (int)widget.Height), Color.White);
+            }
+            SpriteBatch.End();
+        }
+
+        // -------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------
+
+        /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
+        //public void Draw(SpriteBatch sprite_batch)
+        //{
+        //    _passed_sprite_batch = sprite_batch;
+
+        //    UpdateRenderTargetSizes();
+        //    DrawTree();
+        //    foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
+        //    return;
+        //}
+
+        // https://github.com/jamieyello/DownUnder-UI/blob/master/Images/better_diagram.gif
+        //private void DrawTree()
+        //{
+        //    WidgetList tree = WidgetExtensions.GetChildrenByDepth(this);
+        //    tree.Add(this);
+        //    bool swapped_render_target = false;
+        //    RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
+
+        //    // Render widgets that use a render target first
+        //    for (int i = tree.Count - 1; i >= 1; i--)
+        //    {
+        //        if (tree[i].DrawingMode == DrawingModeType.use_render_target)
+        //        {
+        //            tree[i].Render();
+        //            swapped_render_target = true;
+        //        }
+        //    }
+
+        //    if (swapped_render_target) GraphicsDevice.SetRenderTargets(previous_render_targets);
+        //    if (DrawingMode == DrawingModeType.direct)
+        //    {
+        //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+        //        DrawDirect(SpriteBatch);
+        //        SpriteBatch.End();
+        //    }
+        //    else DrawDirect(SpriteBatch);
+        //}
+
+        //private void Render()
+        //{
+        //    GraphicsDevice.SetRenderTarget(_render_target);
+        //    GraphicsDevice.Clear(Color.Transparent);
+
+        //    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+        //    DrawContent();
+        //    foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
+        //    DrawOverlay();
+        //    SpriteBatch.End();
+        //    DrawOverlayEffects(OnDrawOverlayEffects);
+        //}
+
+        //private void DrawDirect(SpriteBatch sprite_batch) {
+        //    _passed_sprite_batch = sprite_batch;
+
+        //    Delegate[] bg_effects = OnDrawBackgroundEffects?.GetInvocationList();
+        //    RectangleF child_area_in_render;
+        //    if (DrawingMode == DrawingModeType.use_render_target) child_area_in_render = Position.WithOffset(Parent.PositionInRender).AsRectanglePosition(Size);
+        //    else { child_area_in_render = new RectangleF(); }
+
+        //    //if (bg_effects != null)
+        //    //{
+        //    //    if (ParentWidget.DrawingMode != DrawingModeType.use_render_target) throw new Exception($"Background effects can only be used on {nameof(Widget)}s when their parent is using a render target. ({nameof(Widget)}.{nameof(Widget.DrawingMode)} == {nameof(DrawingModeType)}.{nameof(DrawingModeType.use_render_target)})");
+        //    //    //Thread.Sleep(100);
+        //    //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.End();
+        //    //    foreach (Delegate bg_effect in bg_effects)
+        //    //    {
+        //    //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+        //    //        bg_effect.DynamicInvoke(new object[] { this, new DrawBGEffectsArgs(ParentWidget._render_target, child_area_in_render) });
+        //    //        SpriteBatch.End();
+        //    //    }
+        //    //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+
+        //    //}
+
+        //    if (DrawingMode == DrawingModeType.use_render_target)
+        //    {
+        //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+        //        if (Parent == null) SpriteBatch.Draw(_render_target, Position, Color.White);
+        //        else SpriteBatch.Draw(_render_target, child_area_in_render.ToRectangle(), new Rectangle(0, 0, (int)Width, (int)Height), Color.White);
+        //        SpriteBatch.End();
+        //        return;
+        //    }
+
+        //    DrawContent();
+        //    foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
+        //    DrawOverlay();
+        //}
+
+        ///// <summary> Draws content without altering render target or spritebatch. </summary>
+        //private void DrawContent()
+        //{
+        //    Rectangle previous_scissor_area = new Rectangle();
+
+        //    if (DrawingMode == DrawingModeType.direct)
+        //    {
+        //        previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+        //        SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
+        //    }
+        //    if (DrawBackground)
+        //    {
+        //        if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(VisibleDrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
+        //        else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
+        //    }
+
+        //    OnDraw?.Invoke(this, EventArgs.Empty);
+        //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
+        //}
+
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
-        private void DrawOverlay() {
+        private void DrawOverlay()
+        {
             Rectangle previous_scissor_area = new Rectangle();
-            if (DrawingMode == DrawingModeType.direct) {
+            if (DrawingMode == DrawingModeType.direct)
+            {
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
             }
-            if (DrawOutline) {
+            if (DrawOutline)
+            {
                 DrawingTools.DrawBorder(
                     _white_dot,
                     SpriteBatch,
@@ -1041,17 +1267,20 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private void DrawOverlayEffects(EventHandler handler) {
+        private void DrawOverlayEffects(EventHandler handler)
+        {
             Delegate[] delegates = handler?.GetInvocationList();
             if (delegates == null) return;
-            foreach (Delegate delegate_ in delegates) {
+            foreach (Delegate delegate_ in delegates)
+            {
                 SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
                 delegate_.DynamicInvoke(new object[] { this, EventArgs.Empty });
                 SpriteBatch.End();
             }
         }
 
-        private void DrawNoClip() {
+        private void DrawNoClip()
+        {
             if (OnDrawNoClip == null) return;
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
@@ -1060,10 +1289,11 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Initializes all graphics related content. </summary>
-        private bool InitializeGraphics() {
+        private bool InitializeGraphics()
+        {
             if (IsGraphicsInitialized) return false;
             if (GraphicsDevice == null) throw new Exception($"GraphicsDevice cannot be null.");
-            
+
             _local_sprite_batch = new SpriteBatch(GraphicsDevice);
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
             IsGraphicsInitialized = true;
@@ -1079,7 +1309,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Disposes this <see cref="Widget"/> and removes it from its parent. </summary>
         /// <param name="now"> Set to true to delete this <see cref="Widget"/> on calling this, false to delete on next update. </param>
-        public void Delete(bool now = false) {
+        public void Delete(bool now = false)
+        {
             if (now)
             {
                 ParentWidget.DeleteChild(this);
@@ -1088,7 +1319,8 @@ namespace DownUnder.UI.Widgets
             else _post_update_flags.Delete = true;
         }
 
-        private void DeleteChild(Widget widget) {
+        private void DeleteChild(Widget widget)
+        {
             if (!Children.Contains(widget)) throw new Exception($"Given {nameof(Widget)} is not owned by this {nameof(Widget)}.");
             HandleChildDelete(widget);
         }
@@ -1157,9 +1389,9 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrawOverlay;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
         public event EventHandler OnDrawOverlayEffects;
-        /// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
-        public event EventHandler OnDrawRenderEffects;
-        public event EventHandler OnDrawBackgroundEffects;
+        ///// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
+        //public event EventHandler OnDrawRenderEffects;
+        public event EventHandler<DrawBGEffectsArgs> OnDrawBackgroundEffects;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
@@ -1254,62 +1486,72 @@ namespace DownUnder.UI.Widgets
         /// <returns> The containing <see cref="Widget"/>. </returns>
         public Widget SendToContainer() => new Widget() { this };
 
-        public Widget WithAddedBehavior(WidgetBehavior behavior) {
+        public Widget WithAddedBehavior(WidgetBehavior behavior)
+        {
             Behaviors.Add(behavior);
             return this;
         }
 
-        public Widget WithAddedBehavior<T>(T behavior, out T added_behavior) {
+        public Widget WithAddedBehavior<T>(T behavior, out T added_behavior)
+        {
             if (!(behavior is WidgetBehavior behavior_)) throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
             Behaviors.Add(behavior_);
             added_behavior = behavior;
             return this;
         }
 
-        public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors) {
+        public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors)
+        {
             Behaviors.AddRange(behaviors);
             return this;
         }
 
-        public Widget WithAddedAction(WidgetAction action) {
+        public Widget WithAddedAction(WidgetAction action)
+        {
             Actions.Add(action);
             return this;
         }
 
-        public Widget WithAddedAction<T>(T action, out T added_action) {
+        public Widget WithAddedAction<T>(T action, out T added_action)
+        {
             if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a {nameof(WidgetAction)}.");
             Actions.Add(action_);
             added_action = action;
             return this;
         }
 
-        public Widget WithAddedAction(IEnumerable<WidgetAction> actions) {
+        public Widget WithAddedAction(IEnumerable<WidgetAction> actions)
+        {
             Actions.AddRange(actions);
             return this;
         }
 
-        public void EmbedIn(IParent parent) {
+        public void EmbedIn(IParent parent)
+        {
             if (parent == null) return;
             EmbedIn(parent.Area);
         }
 
         /// <summary> Embeds this <see cref="Widget"/> in the given area. Takes <see cref="SnappingPolicy"/> and <see cref="Spacing"/> into account. </summary>
-        internal void EmbedIn(RectangleF encompassing_area) {
+        internal void EmbedIn(RectangleF encompassing_area)
+        {
             encompassing_area = encompassing_area.SizeOnly();
             RectangleF new_area = Area;
 
             // Convert the corners into up/down left/right to determine which walls the new area should stick to
             Directions2D snapping = SnappingPolicy.ToPerpendicular();
-            
+
             if (snapping.Left && !snapping.Right) new_area.X = encompassing_area.X + Spacing.Width; // left
             if (!snapping.Left && snapping.Right) new_area.X = encompassing_area.X + encompassing_area.Width - new_area.Width - Spacing.Width; // right 
-            if (snapping.Left && snapping.Right) { // left and right 
+            if (snapping.Left && snapping.Right)
+            { // left and right 
                 new_area.X = encompassing_area.X + Spacing.Width;
                 new_area.Width = encompassing_area.Width - Spacing.Width * 2;
             }
             if (snapping.Up && !snapping.Down) new_area.Y = encompassing_area.Y + Spacing.Height; // up
             if (!snapping.Up && snapping.Down) new_area.Y = encompassing_area.Y + encompassing_area.Height - new_area.Height - Spacing.Height;// down
-            if (snapping.Up && snapping.Down) { // up and down
+            if (snapping.Up && snapping.Down)
+            { // up and down
                 new_area.Y = encompassing_area.Y + Spacing.Height;
                 new_area.Height = encompassing_area.Height - Spacing.Height * 2;
             }
@@ -1324,14 +1566,17 @@ namespace DownUnder.UI.Widgets
         private void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
-        private void UpdateRenderTargetSizes() {
-            if (DrawingMode == DrawingModeType.use_render_target) {
+        private void UpdateRenderTargetSizes()
+        {
+            if (DrawingMode == DrawingModeType.use_render_target)
+            {
                 UpdateRenderTargetSize(DrawingArea.Size);
             }
 
             foreach (Widget child in Children) child.UpdateRenderTargetSizes();
         }
-        private void UpdateRenderTargetSize(Point2 size) {
+        private void UpdateRenderTargetSize(Point2 size)
+        {
             if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
             {
                 if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, _MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
@@ -1344,11 +1589,14 @@ namespace DownUnder.UI.Widgets
             if (_render_target != null && (int)size.X == _render_target.Width && (int)size.Y == _render_target.Height) return;
             _graphics_updating = true;
 
-            if (_graphics_in_use) {
+            if (_graphics_in_use)
+            {
                 int i = 0;
-                while (_graphics_in_use) {
+                while (_graphics_in_use)
+                {
                     i += _WAIT_TIME;
-                    if (i > _MAX_WAIT_TIME) {
+                    if (i > _MAX_WAIT_TIME)
+                    {
                         Console.WriteLine($"Hanging in UpdateRenderTarget waiting for graphics to not be in use.");
                     }
                     Thread.Sleep(_WAIT_TIME);
@@ -1358,16 +1606,18 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE) {
+            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
+            {
                 size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
                 Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
             }
-            
-            if (_render_target != null) {
+
+            if (_render_target != null)
+            {
                 _render_target.Dispose();
                 while (!_render_target.IsDisposed) { Thread.Sleep(10); }
             }
-           
+
             _render_target = new RenderTarget2D(
                 GraphicsDevice,
                 (int)size.X,
@@ -1377,16 +1627,16 @@ namespace DownUnder.UI.Widgets
                 DepthFormat.Depth24,
                 0,
                 RenderTargetUsage.DiscardContents);
-            
+
             _graphics_updating = false;
         }
 
         #endregion
 
-        public void HandleDrop(object drop) 
+        public void HandleDrop(object drop)
         {
-            if (DesignerObjects.IsEditModeEnabled) 
-            { 
+            if (DesignerObjects.IsEditModeEnabled)
+            {
                 DesignerObjects.HandleDrop(drop);
                 return;
             }
@@ -1407,7 +1657,8 @@ namespace DownUnder.UI.Widgets
 
         #region ICloneable Implementation
 
-        public object Clone() {
+        public object Clone()
+        {
             if (!IsCloningSupported) throw new Exception($"Cloning was flagged as unsupported with this {nameof(Widget)}. ({nameof(IsCloningSupported)} == false)");
             Widget c = new Widget();
             for (int i = 0; i < Children.Count; i++) c.Children.Add((Widget)Children[i].Clone());
@@ -1480,7 +1731,7 @@ namespace DownUnder.UI.Widgets
         public int Count => Children.Count;
         public bool IsReadOnly => Children.IsReadOnly;
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }
-        public Widget this[int x, int y] 
+        public Widget this[int x, int y]
         {
             get
             {
@@ -1495,21 +1746,21 @@ namespace DownUnder.UI.Widgets
                 grid[x, y] = value;
             }
         }
-        public Widget this[string child_name] 
+        public Widget this[string child_name]
         {
-            get 
+            get
             {
                 foreach (Widget widget in Children)
                 {
                     if (widget.Name == child_name) return widget;
                 }
                 return null;
-            } 
+            }
         }
 
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;
-        
+
         #endregion
     }
 }

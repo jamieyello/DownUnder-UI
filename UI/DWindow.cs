@@ -345,7 +345,7 @@ namespace DownUnder.UI
         }
 
         public void Draw(SpriteBatch sprite_batch, GameTime game_time) {
-            MainWidget.Draw(sprite_batch);
+            MainWidget.Draw2(sprite_batch);
         }
 
         #endregion Protected Methods
