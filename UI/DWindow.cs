@@ -209,6 +209,9 @@ namespace DownUnder.UI
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
 
+            System.Diagnostics.Debugger.Launch();
+            Console.WriteLine("sdad");
+            
             MainWidget = new Widget();
 
             if (parent != null) {

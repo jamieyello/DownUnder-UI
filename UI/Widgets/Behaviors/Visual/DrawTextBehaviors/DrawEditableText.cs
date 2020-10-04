@@ -396,11 +396,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             }
         }
 
-        public void Draw(object sender, EventArgs args)
+        public void Draw(object sender, WDrawEventArgs args)
         {
             if (!Active) return;
             if (!allow_draw) return;
-            Vector2 offset = Parent.DrawingArea.Position.WithOffset(BaseBehavior.TextPosition).Floored();
+            Vector2 offset = args.DrawingArea.Position.WithOffset(BaseBehavior.TextPosition).Floored();
 
             if (_HighlightLength > 0)
             {
@@ -411,7 +411,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 }
             }
 
-            BaseBehavior.ForceDrawText(edit_text.ToString());
+            BaseBehavior.ForceDrawText(args.DrawingArea.Position, edit_text.ToString());
 
             if (_CaretCurrentlyDrawn)
             {

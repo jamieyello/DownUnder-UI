@@ -488,7 +488,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        public RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target? Area: AreaInWindow;
+        private RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target? Area: AreaInWindow;
         /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
         public RectangleF DrawingAreaUnscrolled => DrawingArea.WithOffset(Scroll.Inverted());
 
@@ -1107,12 +1107,12 @@ namespace DownUnder.UI.Widgets
 
             if (DrawingMode == DrawingModeType.direct)
             {
-                OnDraw?.Invoke(this, EventArgs.Empty);
+                OnDraw?.Invoke(this, new WDrawEventArgs(DrawingArea));
             }
             else if (DrawingMode == DrawingModeType.use_render_target)
             {
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                OnDraw?.Invoke(this, EventArgs.Empty);
+                OnDraw?.Invoke(this, new WDrawEventArgs(Size.AsRectangleSize()));
                 SpriteBatch.End();
             }
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1125,6 +1125,11 @@ namespace DownUnder.UI.Widgets
             {
                 if (widget.DrawingMode == DrawingModeType.direct) widget.DrawBaseContent(SpriteBatch);
                 if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0,0,(int)widget.Width, (int)widget.Height), Color.White);
+            }
+            foreach (Widget widget in AllContainedWidgets)
+            {
+                if (widget.DrawingMode == DrawingModeType.direct) widget.DrawOverlay();
+                //if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0, 0, (int)widget.Width, (int)widget.Height), Color.White);
             }
             SpriteBatch.End();
         }
@@ -1384,7 +1389,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked after the this <see cref="Widget"/> and its children have been initialized. </summary>
         public event EventHandler OnPostGraphicsInitialized;
         /// <summary> Invoked when this <see cref="Widget"/> is drawn. </summary>
-        public event EventHandler OnDraw;
+        public event EventHandler<WDrawEventArgs> OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler OnDrawOverlay;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
