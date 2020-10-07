@@ -35,7 +35,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         public WidgetList() { IsReadOnly = false; }
         public WidgetList(Widget parent) { Parent = parent; }
         public WidgetList(bool is_read_only = false) { IsReadOnly = is_read_only; }
-        public WidgetList(List<Widget> widget_list, bool is_read_only = false) {
+        public WidgetList(Widget parent, List<Widget> widget_list, bool is_read_only = false) {
+            _parent = parent;
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
             IsReadOnly = is_read_only;
 
@@ -261,6 +262,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void Add(Widget widget) {
             if (IsReadOnly) ThrowReadOnlyException();
+            if (_parent != null) widget.Parent = _parent;
             _widgets.Add(widget);
             LastAddedWidget = widget;
             OnAdd();
@@ -280,6 +282,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public void Insert(int index, Widget widget) {
             if (IsReadOnly) ThrowReadOnlyException();
+            if (_parent != null) widget.Parent = _parent;
             _widgets.Insert(index, widget);
             Count = _widgets.Count;
             LastAddedWidget = widget;
@@ -290,6 +293,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public bool Remove(Widget widget) {
             if (IsReadOnly) ThrowReadOnlyException();
             if (_widgets.Remove(widget)) {
+                if (_parent != null) widget.Parent = null;
                 Count = _widgets.Count;
                 LastRemovedWidget = widget;
                 OnRemove();
@@ -302,6 +306,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public void RemoveAt(int index) {
             if (IsReadOnly) ThrowReadOnlyException();
             LastRemovedWidget = _widgets[index];
+            if (_parent != null) _widgets[index].Parent = null;
             _widgets.RemoveAt(index);
             Count = _widgets.Count;
             OnRemove();
@@ -318,7 +323,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public WidgetList GetRange(int index, int count) => new WidgetList(_widgets.GetRange(index, count));
+        public WidgetList GetRange(int index, int count) => new WidgetList(null, _widgets.GetRange(index, count));
 
         #endregion
     }

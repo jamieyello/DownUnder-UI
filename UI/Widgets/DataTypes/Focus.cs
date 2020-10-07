@@ -49,6 +49,6 @@
 
         public bool IsWidgetFocused(Widget widget) => _focused_widgets.Contains(widget);
         /// <summary> Returns a shallow clone of the focused <see cref="Widget"/>s. </summary>
-        public WidgetList ToWidgetList() => new WidgetList(_focused_widgets, true);
+        public WidgetList ToWidgetList() => new WidgetList(null, _focused_widgets, true);
     }
 }

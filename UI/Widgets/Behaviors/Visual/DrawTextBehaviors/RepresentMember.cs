@@ -31,9 +31,15 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             UpdateText();
         }
 
-        protected override void ConnectEvents() { }
+        protected override void ConnectEvents() 
+        {
+            Parent.OnUpdate += UpdateText;
+        }
 
-        protected override void DisconnectEvents() { }
+        protected override void DisconnectEvents() 
+        {
+            Parent.OnUpdate -= UpdateText;
+        }
 
         public override object Clone()
         {

@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            //Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
+            Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
             if (Parent.ParentWindow != null) LoadEffect(this, EventArgs.Empty);
         }
 
@@ -43,9 +43,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private void ApplyEffect(object sender, DrawBGEffectsArgs args)
         {
             effect.CurrentTechnique.Passes[0].Apply();
-            Parent.SpriteBatch.FillRectangle(new RectangleF(20,20,20,20), Color.Red);
-            Parent.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), new Rectangle(0,0,500,500), Color.White);
-            Parent.SpriteBatch.DrawString(Parent.WindowFont, args.ChildAreaInRender.ToString(), new Vector2(), Color.White);
+            //args.SpriteBatch.FillRectangle(new RectangleF(20,20,2000,2000), Color.Red);
+            args.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), args.ChildAreaInRender.ToRectangle(), Color.Red);
+            args.RestartDraw();
         }
     }
 }
