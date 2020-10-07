@@ -45,7 +45,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             shading_effect = Parent.ParentWindow.EffectCollection.ShadingEffect.Clone();
         }
 
-        private void DrawEffect(object sender, EventArgs args) {
+        private void DrawEffect(object sender, WDrawEventArgs args) {
+            //args.SpriteBatch.DrawString(Parent.ParentWindow.WindowFont, "FDSAFSDA  UJFDSAJ FSDKLA", new Vector2(), Color.White);
+            //return;
+
             if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.WidgetRole).CurrentColor.ToVector4());
             else shading_effect.Parameters["ShadeColor"]?.SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["BorderWidth"]?.SetValue(BorderWidth);
@@ -58,7 +61,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             shading_effect.Parameters["Size"]?.SetValue(Parent.Size);
             //throw new Exception();
             shading_effect.CurrentTechnique.Passes[0].Apply();
-            Parent.SpriteBatch.FillRectangle(Parent.DrawingAreaUnscrolled, Color.Transparent);
+            args.SpriteBatch.FillRectangle(args.DrawingArea, Color.Transparent);
         }
 
         public override object Clone() {

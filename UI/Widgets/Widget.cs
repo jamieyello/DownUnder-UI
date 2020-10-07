@@ -1071,6 +1071,7 @@ namespace DownUnder.UI.Widgets
                 GraphicsDevice.SetRenderTargets(previous_targets);
             }
             DrawFinal();
+            DrawNoClip();
         }
 
         /// <summary>
@@ -1109,12 +1110,12 @@ namespace DownUnder.UI.Widgets
 
             if (DrawingMode == DrawingModeType.direct)
             {
-                OnDraw?.Invoke(this, new WDrawEventArgs(DrawingArea));
+                OnDraw?.Invoke(this, new WDrawEventArgs(DrawingArea, SpriteBatch));
             }
             else if (DrawingMode == DrawingModeType.use_render_target)
             {
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                OnDraw?.Invoke(this, new WDrawEventArgs(Size.AsRectangleSize()));
+                OnDraw?.Invoke(this, new WDrawEventArgs(Size.AsRectangleSize(), SpriteBatch));
                 SpriteBatch.End();
             }
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1134,120 +1135,12 @@ namespace DownUnder.UI.Widgets
                 DrawOverlay(widget, widget.AreaInWindow, SpriteBatch);
             }
             SpriteBatch.End();
+
+            foreach (Widget widget in AllContainedWidgets)
+            {
+                DrawOverlayEffects(widget, SpriteBatch, widget.OnDrawOverlayEffects, widget.AreaInWindow);
+            }
         }
-
-        // -------------------------------------------------------------------------------------------
-        // -------------------------------------------------------------------------------------------
-        // -------------------------------------------------------------------------------------------
-
-        /// <summary> Draws this <see cref="Widget"/> (and all children) to the screen. </summary>
-        //public void Draw(SpriteBatch sprite_batch)
-        //{
-        //    _passed_sprite_batch = sprite_batch;
-
-        //    UpdateRenderTargetSizes();
-        //    DrawTree();
-        //    foreach (Widget child in AllContainedWidgets) child.DrawNoClip();
-        //    return;
-        //}
-
-        // https://github.com/jamieyello/DownUnder-UI/blob/master/Images/better_diagram.gif
-        //private void DrawTree()
-        //{
-        //    WidgetList tree = WidgetExtensions.GetChildrenByDepth(this);
-        //    tree.Add(this);
-        //    bool swapped_render_target = false;
-        //    RenderTargetBinding[] previous_render_targets = GraphicsDevice.GetRenderTargets();
-
-        //    // Render widgets that use a render target first
-        //    for (int i = tree.Count - 1; i >= 1; i--)
-        //    {
-        //        if (tree[i].DrawingMode == DrawingModeType.use_render_target)
-        //        {
-        //            tree[i].Render();
-        //            swapped_render_target = true;
-        //        }
-        //    }
-
-        //    if (swapped_render_target) GraphicsDevice.SetRenderTargets(previous_render_targets);
-        //    if (DrawingMode == DrawingModeType.direct)
-        //    {
-        //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //        DrawDirect(SpriteBatch);
-        //        SpriteBatch.End();
-        //    }
-        //    else DrawDirect(SpriteBatch);
-        //}
-
-        //private void Render()
-        //{
-        //    GraphicsDevice.SetRenderTarget(_render_target);
-        //    GraphicsDevice.Clear(Color.Transparent);
-
-        //    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //    DrawContent();
-        //    foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-        //    DrawOverlay();
-        //    SpriteBatch.End();
-        //    DrawOverlayEffects(OnDrawOverlayEffects);
-        //}
-
-        //private void DrawDirect(SpriteBatch sprite_batch) {
-        //    _passed_sprite_batch = sprite_batch;
-
-        //    Delegate[] bg_effects = OnDrawBackgroundEffects?.GetInvocationList();
-        //    RectangleF child_area_in_render;
-        //    if (DrawingMode == DrawingModeType.use_render_target) child_area_in_render = Position.WithOffset(Parent.PositionInRender).AsRectanglePosition(Size);
-        //    else { child_area_in_render = new RectangleF(); }
-
-        //    //if (bg_effects != null)
-        //    //{
-        //    //    if (ParentWidget.DrawingMode != DrawingModeType.use_render_target) throw new Exception($"Background effects can only be used on {nameof(Widget)}s when their parent is using a render target. ({nameof(Widget)}.{nameof(Widget.DrawingMode)} == {nameof(DrawingModeType)}.{nameof(DrawingModeType.use_render_target)})");
-        //    //    //Thread.Sleep(100);
-        //    //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.End();
-        //    //    foreach (Delegate bg_effect in bg_effects)
-        //    //    {
-        //    //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //    //        bg_effect.DynamicInvoke(new object[] { this, new DrawBGEffectsArgs(ParentWidget._render_target, child_area_in_render) });
-        //    //        SpriteBatch.End();
-        //    //    }
-        //    //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-
-        //    //}
-
-        //    if (DrawingMode == DrawingModeType.use_render_target)
-        //    {
-        //        SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-        //        if (Parent == null) SpriteBatch.Draw(_render_target, Position, Color.White);
-        //        else SpriteBatch.Draw(_render_target, child_area_in_render.ToRectangle(), new Rectangle(0, 0, (int)Width, (int)Height), Color.White);
-        //        SpriteBatch.End();
-        //        return;
-        //    }
-
-        //    DrawContent();
-        //    foreach (Widget child in Children) child.DrawDirect(SpriteBatch);
-        //    DrawOverlay();
-        //}
-
-        ///// <summary> Draws content without altering render target or spritebatch. </summary>
-        //private void DrawContent()
-        //{
-        //    Rectangle previous_scissor_area = new Rectangle();
-
-        //    if (DrawingMode == DrawingModeType.direct)
-        //    {
-        //        previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-        //        SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleDrawingArea.ToRectangle();
-        //    }
-        //    if (DrawBackground)
-        //    {
-        //        if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(VisibleDrawingArea, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
-        //        else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(Theme.BackgroundColor.CurrentColor);
-        //    }
-
-        //    OnDraw?.Invoke(this, EventArgs.Empty);
-        //    if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
-        //}
 
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
         private static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch)
@@ -1271,19 +1164,19 @@ namespace DownUnder.UI.Widgets
                     );
             }
 
-            widget.InvokeDrawOverlay(new WDrawEventArgs(drawing_area));
+            widget.InvokeDrawOverlay(new WDrawEventArgs(drawing_area, sprite_batch));
             if (widget.DrawingMode == DrawingModeType.direct) sprite_batch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private void DrawOverlayEffects(EventHandler handler)
+        private static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WDrawEventArgs> handler, RectangleF area)
         {
             Delegate[] delegates = handler?.GetInvocationList();
             if (delegates == null) return;
             foreach (Delegate delegate_ in delegates)
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                delegate_.DynamicInvoke(new object[] { this, EventArgs.Empty });
-                SpriteBatch.End();
+                sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, widget.ParentWindow.RasterizerState);
+                delegate_.DynamicInvoke(new object[] { widget, new WDrawEventArgs(area, sprite_batch) });
+                sprite_batch.End();
             }
         }
 
@@ -1396,7 +1289,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
         public event EventHandler<WDrawEventArgs> OnDrawOverlay;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
-        public event EventHandler OnDrawOverlayEffects;
+        public event EventHandler<WDrawEventArgs> OnDrawOverlayEffects;
         ///// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
         //public event EventHandler OnDrawRenderEffects;
         public event EventHandler<DrawBGEffectsArgs> OnDrawBackgroundEffects;
@@ -1494,6 +1387,11 @@ namespace DownUnder.UI.Widgets
         internal void InvokeDrawBGEffects(DrawBGEffectsArgs args)
         {
             OnDrawBackgroundEffects?.Invoke(this, args);
+        }
+
+        internal void InvokeDrawOverlayEffects(WDrawEventArgs args)
+        {
+            OnDrawOverlayEffects?.Invoke(this, args);
         }
 
         #endregion

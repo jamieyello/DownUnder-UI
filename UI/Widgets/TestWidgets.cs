@@ -100,7 +100,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             ShadingBehavior blue = ShadingBehavior.SubtleBlue;
             blue.BorderVisibility = 0.3f;
             blue.GradientVisibility = new Point2(0.1f, 0.1f);
-            //window.Behaviors.Add(blue);
+            window.Behaviors.Add(blue);
             window.Behaviors.Add(new BGEffectTest());
 
             username_label.Behaviors.Add(new DrawText { Text = "Username: " });
