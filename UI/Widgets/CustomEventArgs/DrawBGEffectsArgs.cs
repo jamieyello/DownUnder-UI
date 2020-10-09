@@ -25,5 +25,20 @@ namespace DownUnder.UI.Widgets
             SpriteBatch.End();
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
         }
+
+        public void StartDraw()
+        {
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
+        }
+
+        public void StartImmediateDraw()
+        {
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
+        }
+
+        public void EndDraw()
+        {
+            SpriteBatch.End();
+        }
     }
 }

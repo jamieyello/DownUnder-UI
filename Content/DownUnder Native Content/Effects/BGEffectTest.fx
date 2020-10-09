@@ -8,6 +8,8 @@
 #endif
 
 Texture2D SpriteTexture;
+float2 Origin;
+float2 Size;
 
 Texture2D TextureA;
 sampler2D TextureASampler = sampler_state
@@ -29,7 +31,19 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-	return tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
+	//return float4(1,1,1,1);
+	//float4 result = tex2D(SpriteTextureSampler, input.TextureCoordinates);
+	//result.a = 1;
+	
+	float4 result = float4(0,0,0,0);
+	
+	for (int i = 0; i < 8; i++)
+	{
+		result = result + tex2D(SpriteTextureSampler, input.TextureCoordinates + float2(0, 0.0005 * (i - 4)));
+	}
+	
+	return result / 8;
+	//return tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
 }
 
 technique SpriteDrawing

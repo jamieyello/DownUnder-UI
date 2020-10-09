@@ -40,8 +40,8 @@ namespace TestContent
             {
                 Text =
 @"Sometimes stuff will be drawn under widgets. Those widgets will sometimes use the graphics
-under itself (parent widgets) to use in its own Effects. DownUnder does this by rendering a
-transparent rectangle below a widget before drawing it and applying any defined Effects.
+under itself (parent widgets) to use in its own Effects. This can be done by redrawing part
+of the parent's completed render directly under the Widget with an effect applied.
 
 This makes effects like blur and defraction possible and fairly easy to implement.",
                 TextPositioning = DrawText.TextPositioningPolicy.center
@@ -99,7 +99,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             password_entry.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             ShadingBehavior blue = ShadingBehavior.SubtleBlue;
             blue.BorderVisibility = 0.3f;
-            blue.GradientVisibility = new Point2(0.1f, 0.1f);
+            blue.GradientVisibility = new Point2(0.2f, 0.2f);
             window.Behaviors.Add(blue);
             window.Behaviors.Add(new BGEffectTest());
 

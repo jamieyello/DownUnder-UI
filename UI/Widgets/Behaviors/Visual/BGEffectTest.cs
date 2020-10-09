@@ -42,9 +42,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void ApplyEffect(object sender, DrawBGEffectsArgs args)
         {
+            args.EndDraw();
+            args.StartImmediateDraw();
+            effect.Parameters["Origin"]?.SetValue(new Vector2(args.ChildAreaInRender.X / args.ParentRender.Width, args.ChildAreaInRender.Y / args.ParentRender.Height));
             effect.CurrentTechnique.Passes[0].Apply();
-            //args.SpriteBatch.FillRectangle(new RectangleF(20,20,2000,2000), Color.Red);
-            args.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), args.ChildAreaInRender.ToRectangle(), Color.Red);
+            args.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), args.ChildAreaInRender.ToRectangle(), Color.White);
             args.RestartDraw();
         }
     }
