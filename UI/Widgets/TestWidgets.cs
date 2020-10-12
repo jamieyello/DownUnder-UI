@@ -33,9 +33,9 @@ namespace TestContent
 
         public static Widget LoginLayoutEffects()
         {
-            Widget layout = new Widget { ChangeColorOnMouseOver = true };
+            Widget layout = new Widget { ChangeColorOnMouseOver = false };
             //layout.DrawingMode = Widget.DrawingModeType.use_render_target;
-            //layout.Behaviors.Add(new MouseGlow());
+            //layout.Behaviors.Add(MouseGlow.SubtleGray);
             layout.Behaviors.Add(new DrawText
             {
                 Text =
@@ -68,6 +68,8 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
+            window.Behaviors.Add(MouseGlow.SubtleGray);
+            window.Behaviors.GetFirst<MouseGlow>().ActivationPolicy = MouseGlow.MouseGlowActivationPolicy.hovered_over;
 
             window.ChangeColorOnMouseOver = true;
 

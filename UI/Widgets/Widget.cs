@@ -516,33 +516,6 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public RectangleF VisibleDrawingArea
-        {
-            get
-            {
-                //return PositionInRender.AsRectanglePosition(Size);
-                List<Widget> tree = RenderParents;
-                tree.Insert(0, this);
-                RectangleF result = tree[0].Area;
-
-                // start at the parent, go up the tree
-                for (int i = 1; i < tree.Count; i++)
-                {
-                    if (tree[i].DrawingMode != DrawingModeType.use_render_target)
-                    {
-                        result.Position = result.Position.WithOffset(tree[i].Position).WithOffset(tree[i].Scroll);
-                        result = result.Intersection(tree[i].Area);
-                    }
-                    else
-                    {
-                        result.Position = result.Position.WithOffset(tree[i].Scroll);
-                    }
-                }
-
-                return result;
-            }
-        }
-
         /// <summary> Return a recursive list of all parents of this <see cref="Widget"/>, index 0 is the parent <see cref="Widget"/>. </summary>
         public WidgetList Parents
         {
@@ -553,23 +526,6 @@ namespace DownUnder.UI.Widgets
                 while (parent != null)
                 {
                     parents.Add(parent);
-                    parent = parent.ParentWidget;
-                }
-                return parents;
-            }
-        }
-
-        /// <summary> Returns a parent tree up to the first render target with this <see cref="Parent"/> being first. </summary>
-        private WidgetList RenderParents
-        {
-            get
-            {
-                WidgetList parents = new WidgetList();
-                Widget parent = ParentWidget;
-                while (parent != null)
-                {
-                    parents.Add(parent);
-                    if (parent.DrawingMode == DrawingModeType.use_render_target) break;
                     parent = parent.ParentWidget;
                 }
                 return parents;
