@@ -1134,14 +1134,20 @@ namespace DownUnder.UI.Widgets
             }
             foreach (Widget widget in AllContainedWidgets)
             {
+                Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+                SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
                 DrawOverlay(widget, widget.AreaInWindow, SpriteBatch, InputState.CursorPosition);
                 SpriteBatch.End();
+                SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
             }
             
             foreach (Widget widget in AllContainedWidgets)
             {
+                Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+                SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
                 DrawOverlayEffects(widget, SpriteBatch, widget.OnDrawOverlayEffects, widget.AreaInWindow, InputState.CursorPosition);
+                SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
             }
         }
 
