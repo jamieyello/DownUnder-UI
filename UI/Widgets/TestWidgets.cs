@@ -35,7 +35,7 @@ namespace TestContent
         {
             Widget layout = new Widget { ChangeColorOnMouseOver = true };
             //layout.DrawingMode = Widget.DrawingModeType.use_render_target;
-
+            //layout.Behaviors.Add(new MouseGlow());
             layout.Behaviors.Add(new DrawText
             {
                 Text =
@@ -49,30 +49,12 @@ This makes effects like blur and defraction possible and fairly easy to implemen
 
             Widget login_button = BasicWidgets.GenericButton("Login");
             login_button.Position = new Point2(20, 20);
+            login_button.Size = new Point2(100, 40);
             login_button.OnClick += (s, a) =>
             {
                 Widget login_popup = LoginWindow();
                 login_popup.DrawBackground = false;
                 if (layout["Login Window"] == null) layout.Add(login_popup);
-            };
-
-            layout.Add(login_button);
-
-            return layout;
-        }
-
-        public static Widget LoginLayout()
-        {
-            Widget layout = new Widget { ChangeColorOnMouseOver = false };
-
-            Widget login_button = BasicWidgets.GenericButton("Login");
-            login_button.Position = new Point2(20, 20);
-            login_button.OnClick += (s, a) => 
-            {
-                Widget login = LoginWindow();
-                if (layout["Login Window"] == null) layout.Add(login);
-                if (login.ParentWidget == null) throw new System.Exception();
-
             };
 
             layout.Add(login_button);
@@ -93,7 +75,8 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             Widget password_entry = new Widget { Position = new Point2(100, 60), Width = 150, Height = 40 };
             Widget username_label = new Widget { Position = new Point2(0, 0), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
             Widget password_label = new Widget { Position = new Point2(0, 60), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
-            Widget login_button = new Widget { Area = new RectangleF(100, 120, 150, 40) };
+            Widget login_button = BasicWidgets.GenericButton("Login");
+            login_button.Area = new RectangleF(100, 120, 150, 40);
 
             username_entry.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             password_entry.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
@@ -101,11 +84,11 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             blue.BorderVisibility = 0.3f;
             blue.GradientVisibility = new Point2(0.2f, 0.2f);
             window.Behaviors.Add(blue);
-            window.Behaviors.Add(new BGEffectTest());
+            window.Behaviors.Add(new BlurBackground());
 
             username_label.Behaviors.Add(new DrawText { Text = "Username: " });
             password_label.Behaviors.Add(new DrawText { Text = "Password: " });
-            login_button.Behaviors.Add(new DrawText { Text = "Login", TextPositioning = DrawText.TextPositioningPolicy.center });
+            //login_button.Behaviors.Add(new DrawText { Text = "Login", TextPositioning = DrawText.TextPositioningPolicy.center });
 
             username_entry.Behaviors.Add(new DrawEditableText());
             password_entry.Behaviors.Add(new DrawEditableText());

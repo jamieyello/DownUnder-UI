@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    class BGEffectTest : WidgetBehavior
+    class BlurBackground : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
         Effect effect;
@@ -37,14 +37,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private void LoadEffect(object sender, EventArgs args)
         {
             Parent.ParentWidget.DrawingMode = Widget.DrawingModeType.use_render_target;
-            effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/BGEffectTest");
+            effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");
         }
 
         private void ApplyEffect(object sender, DrawBGEffectsArgs args)
         {
             args.EndDraw();
             args.StartImmediateDraw();
-            effect.Parameters["Origin"]?.SetValue(new Vector2(args.ChildAreaInRender.X / args.ParentRender.Width, args.ChildAreaInRender.Y / args.ParentRender.Height));
             effect.CurrentTechnique.Passes[0].Apply();
             args.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), args.ChildAreaInRender.ToRectangle(), Color.White);
             args.RestartDraw();

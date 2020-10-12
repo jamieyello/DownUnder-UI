@@ -53,6 +53,16 @@ namespace DownUnder
             return new Point2(p.X / scale, p.Y / scale);
         }
 
+        public static double DistanceFrom(this Point2 p1, Point2 p2)
+        {
+            return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
+        }
+
+        public static double DistanceFrom(this Point2 p, RectangleF r)
+        {
+            return r.DistanceFrom(p);
+        }
+
         public static Point2 DividedBy(this Point2 p, Point2 p2)
         {
             return new Point2(p.X / p2.X, p.Y / p2.Y);
@@ -103,6 +113,34 @@ namespace DownUnder
                     c.A
                     );
             }
+        }
+
+        public static Color WithR(this Color c, byte r) 
+        {
+            Color result = c;
+            c.R = r;
+            return result;
+        }
+
+        public static Color WithG(this Color c, byte g)
+        {
+            Color result = c;
+            c.G = g;
+            return result;
+        }
+
+        public static Color WithB(this Color c, byte b)
+        {
+            Color result = c;
+            c.B = b;
+            return result;
+        }
+
+        public static Color WithA(this Color c, byte a)
+        {
+            Color result = c;
+            c.A = a;
+            return result;
         }
 
         /// <summary> Returns a <see cref="RectangleF"/> to represent each line of text. </summary>

@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets
         public readonly SpriteBatch SpriteBatch;
         public readonly RenderTarget2D ParentRender;
         public readonly RectangleF ChildAreaInRender;
-
+        
         public DrawBGEffectsArgs(Widget caller, RenderTarget2D parent_render, RectangleF child_area_in_render, SpriteBatch sprite_batch)
         {
             _caller = caller;

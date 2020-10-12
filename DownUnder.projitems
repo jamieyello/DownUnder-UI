@@ -61,7 +61,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\IHostWidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\TemplateBehavior.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\BGEffectTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MakeMousePointer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MouseGlow.cs" />
+    <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawText.cs" />
@@ -141,12 +144,13 @@
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
-    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\BGEffectTest.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Blur.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Gradient.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Lens.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\SpriteFonts\Default Font.spritefont" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Blurred Circle 512.png" />
     <Content Include="$(MSBuildThisFileDirectory)Input\Reader Guide.txt" />
     <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior Rules.txt" />
     <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />

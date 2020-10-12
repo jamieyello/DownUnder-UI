@@ -19,7 +19,10 @@ namespace DownUnder.UI.Widgets
     {
         public static Widget GenericButton(string text)
         {
-            return new Widget().WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true });
+            return new Widget()
+                .WithAddedBehavior(new MouseGlow())
+                .WithAddedBehavior(new MakeMousePointer())
+                .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, TextPositioning = DrawText.TextPositioningPolicy.center });
         }
 
         public static Widget PropertyGrid(object obj)
