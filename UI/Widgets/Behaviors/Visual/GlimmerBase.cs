@@ -29,14 +29,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         protected override void ConnectEvents()
         {
             Parent.OnGraphicsInitialized += Initialize;
-            Parent.OnDrawOverlayEffects += Draw;
+            Parent.OnDrawOverlay += Draw;
             Parent.OnUpdate += Update;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnGraphicsInitialized -= Initialize;
-            Parent.OnDrawOverlayEffects -= Draw;
+            Parent.OnDrawOverlay -= Draw;
             Parent.OnUpdate -= Update;
         }
 

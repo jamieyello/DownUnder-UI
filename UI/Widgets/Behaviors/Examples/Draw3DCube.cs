@@ -26,14 +26,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples
         protected override void ConnectEvents()
         {
             Parent.OnGraphicsInitialized += InitializeCube;
-            Parent.OnDrawOverlayEffects += Draw;
+            Parent.OnDrawOverlay += Draw;
             Parent.OnUpdate += Update;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnGraphicsInitialized -= InitializeCube;
-            Parent.OnDrawOverlayEffects -= Draw;
+            Parent.OnDrawOverlay -= Draw;
             Parent.OnUpdate -= Update;
         }
 

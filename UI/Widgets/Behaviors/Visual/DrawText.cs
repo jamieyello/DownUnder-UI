@@ -132,14 +132,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             return new Point2(area.Right, area.Bottom);
         }
 
-        private void Draw(object sender, WDrawEventArgs args) {
+        private void Draw(object sender, WidgetDrawArgs args) {
             if (!Visible || !EnableDefaultDraw) return;
             ForceDrawText(args.DrawingArea.Position, Text);
         }
 
         public void ForceDrawText(Point2 origin, string text)
         {
-            Parent.SpriteBatch.DrawString(Parent.WindowFont, text, origin.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.WidgetRole).CurrentColor);
+            Parent.SpriteBatch.DrawString(Parent.WindowFont, text, origin.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.VisualProfile).CurrentColor);
         }
     }
 }

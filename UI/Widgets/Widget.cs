@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -140,7 +141,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Defines the behavior of <see cref="Widget"/>s when being used by <see cref="WidgetBehavior"/>s. </summary>
-        public enum WidgetRoleType
+        public enum VisualProfileType
         {
             default_widget = 0,
             text_widget = 1,
@@ -192,7 +193,7 @@ namespace DownUnder.UI.Widgets
         public bool EnterConfirms { get; set; } = true;
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
         [DataMember]
-        public WidgetRoleType WidgetRole { get; set; } = WidgetRoleType.default_widget;
+        public VisualProfileType VisualProfile { get; set; } = VisualProfileType.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
         [DataMember]
         public bool IsFixedWidth { get; set; } = false;
@@ -676,9 +677,6 @@ namespace DownUnder.UI.Widgets
 
         private bool _IsBeingResized => ParentWindow.UserResizeModeEnable && ParentWindow.ResizingWidget == this;
 
-        /// <summary> Returns true if this <see cref="Widget"/> has background effects to be drawn to. </summary>
-        internal bool HasBackgroundEffects => OnDrawBackgroundEffects.GetInvocationList().Length > 0;
-
         private WidgetList AllRenderedWidgets
         {
             get
@@ -689,18 +687,6 @@ namespace DownUnder.UI.Widgets
                     if (result[i].DrawingMode != DrawingModeType.use_render_target) result.RemoveAt(i);
                 }
                 return result;
-            }
-        }
-
-        private bool HasBGEffectChildren
-        {
-            get
-            {
-                foreach (Widget child in Children)
-                {
-                    if (child.HasBackgroundEffects) return true;
-                }
-                return false;
             }
         }
 
@@ -1012,6 +998,10 @@ namespace DownUnder.UI.Widgets
 
         #region Drawing Code
 
+        RenderTarget2D ParentRender => ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
+        WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, ParentRender, DrawingArea, Area, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
+        WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, ParentRender, Size.AsRectangleSize(), Area, SpriteBatch, CursorPosition);
+
         public void Draw(SpriteBatch sprite_batch)
         {
             _passed_sprite_batch = sprite_batch;
@@ -1061,12 +1051,14 @@ namespace DownUnder.UI.Widgets
 
             if (DrawingMode == DrawingModeType.direct)
             {
-                OnDraw?.Invoke(this, new WDrawEventArgs(DrawingArea, SpriteBatch, InputState.CursorPosition));
+                OnDrawBackground?.Invoke(this, DirectEventArgs());
+                OnDraw?.Invoke(this, DirectEventArgs());
             }
             else if (DrawingMode == DrawingModeType.use_render_target)
             {
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                OnDraw?.Invoke(this, new WDrawEventArgs(Size.AsRectangleSize(), SpriteBatch, CursorPosition));
+                OnDrawBackground?.Invoke(this, RenderTargetEventArgs);
+                OnDraw?.Invoke(this, RenderTargetEventArgs);
                 SpriteBatch.End();
             }
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1074,10 +1066,10 @@ namespace DownUnder.UI.Widgets
 
         private void DrawFinal()
         {
+            // Draw BG/base content
             foreach (Widget widget in AllContainedWidgets)
             {
                 SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                if (widget.ParentWidget != null) widget.InvokeDrawBGEffects(new DrawBGEffectsArgs(this, widget.ParentWidget._render_target, widget.AreaInWindow, SpriteBatch));
                 if (widget.DrawingMode == DrawingModeType.direct) widget.DrawBaseContent(SpriteBatch);
                 if (widget.DrawingMode == DrawingModeType.use_render_target)
                 {
@@ -1088,6 +1080,8 @@ namespace DownUnder.UI.Widgets
                 }
                 SpriteBatch.End();
             }
+
+            // Draw overlay
             foreach (Widget widget in AllContainedWidgets)
             {
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
@@ -1095,14 +1089,6 @@ namespace DownUnder.UI.Widgets
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
                 DrawOverlay(widget, widget.AreaInWindow, SpriteBatch, InputState.CursorPosition);
                 SpriteBatch.End();
-                SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
-            }
-            
-            foreach (Widget widget in AllContainedWidgets)
-            {
-                Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
-                DrawOverlayEffects(widget, SpriteBatch, widget.OnDrawOverlayEffects, widget.AreaInWindow, InputState.CursorPosition);
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
             }
         }
@@ -1129,18 +1115,18 @@ namespace DownUnder.UI.Widgets
                     );
             }
 
-            widget.InvokeDrawOverlay(new WDrawEventArgs(drawing_area, sprite_batch, cursor_position));
+            widget.InvokeDrawOverlay(widget.DirectEventArgs(sprite_batch));
             if (widget.DrawingMode == DrawingModeType.direct) sprite_batch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WDrawEventArgs> handler, RectangleF area, Point2 cursor_position)
+        private static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WidgetDrawArgs> handler, RectangleF area, Point2 cursor_position)
         {
             Delegate[] delegates = handler?.GetInvocationList();
             if (delegates == null) return;
             foreach (Delegate delegate_ in delegates)
             {
                 sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, widget.ParentWindow.RasterizerState);
-                delegate_.DynamicInvoke(new object[] { widget, new WDrawEventArgs(area, sprite_batch, cursor_position) });
+                delegate_.DynamicInvoke(new object[] { widget, widget.DirectEventArgs() });
                 sprite_batch.End();
             }
         }
@@ -1252,14 +1238,14 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked after the this <see cref="Widget"/> and its children have been initialized. </summary>
         public event EventHandler OnPostGraphicsInitialized;
         /// <summary> Invoked when this <see cref="Widget"/> is drawn. </summary>
-        public event EventHandler<WDrawEventArgs> OnDraw;
+        public event EventHandler<WidgetDrawArgs> OnDraw;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
-        public event EventHandler<WDrawEventArgs> OnDrawOverlay;
+        public event EventHandler<WidgetDrawArgs> OnDrawOverlay;
         /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
-        public event EventHandler<WDrawEventArgs> OnDrawOverlayEffects;
+        //public event EventHandler<WidgetDrawArgs> OnDrawOverlayEffects;
         ///// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
         //public event EventHandler OnDrawRenderEffects;
-        public event EventHandler<DrawBGEffectsArgs> OnDrawBackgroundEffects;
+        public event EventHandler<WidgetDrawArgs> OnDrawBackground;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
@@ -1346,19 +1332,19 @@ namespace DownUnder.UI.Widgets
             OnChildReposition?.Invoke(this, args);
         }
 
-        internal void InvokeDrawOverlay(WDrawEventArgs args)
+        internal void InvokeDrawOverlay(WidgetDrawArgs args)
         {
             OnDrawOverlay?.Invoke(this, args);
         }
 
-        internal void InvokeDrawBGEffects(DrawBGEffectsArgs args)
+        internal void InvokeDrawBG(WidgetDrawArgs args)
         {
-            OnDrawBackgroundEffects?.Invoke(this, args);
+            OnDrawBackground?.Invoke(this, args);
         }
 
-        internal void InvokeDrawOverlayEffects(WDrawEventArgs args)
+        internal void InvokeDrawOverlayEffects(WidgetDrawArgs args)
         {
-            OnDrawOverlayEffects?.Invoke(this, args);
+            OnDrawOverlay?.Invoke(this, args);
         }
 
         #endregion
@@ -1562,7 +1548,7 @@ namespace DownUnder.UI.Widgets
             c.Area = Area;
             c.IsFixedWidth = IsFixedWidth;
             c.IsFixedHeight = IsFixedHeight;
-            c.WidgetRole = WidgetRole;
+            c.VisualProfile = VisualProfile;
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;

@@ -82,7 +82,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             _draw_color.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
-        void DrawImage(object sender, WDrawEventArgs args)
+        void DrawImage(object sender, WidgetDrawArgs args)
         {
             if (_follow) _position = new Point((int)args.CursorPosition.X - Diameter / 2, (int)args.CursorPosition.Y - Diameter / 2);
             if (_draw_color.GetCurrent() != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.GetCurrent());

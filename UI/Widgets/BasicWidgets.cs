@@ -38,7 +38,7 @@ namespace DownUnder.UI.Widgets
             {
                 ChangeColorOnMouseOver = false,
                 Height = 30,
-                WidgetRole = WidgetRoleType.header_widget
+                VisualProfile = VisualProfileType.header_widget
             };
 
             file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });

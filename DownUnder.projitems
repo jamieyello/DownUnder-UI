@@ -78,12 +78,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetTracker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\DrawBGEffectsArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetDrawArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\Point2SetArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\Point2SetOverrideArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RectangleFSetArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RectangleFSetOverrideArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WDrawEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\BaseColorScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\BorderSize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\DesignerModeSettings.cs" />

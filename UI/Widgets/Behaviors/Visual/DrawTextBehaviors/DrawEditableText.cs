@@ -396,7 +396,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             }
         }
 
-        public void Draw(object sender, WDrawEventArgs args)
+        public void Draw(object sender, WidgetDrawArgs args)
         {
             if (!Active) return;
             if (!allow_draw) return;

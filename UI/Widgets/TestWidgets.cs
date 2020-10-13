@@ -90,7 +90,6 @@ This makes effects like blur and defraction possible and fairly easy to implemen
 
             username_label.Behaviors.Add(new DrawText { Text = "Username: " });
             password_label.Behaviors.Add(new DrawText { Text = "Password: " });
-            //login_button.Behaviors.Add(new DrawText { Text = "Login", TextPositioning = DrawText.TextPositioningPolicy.center });
 
             username_entry.Behaviors.Add(new DrawEditableText());
             password_entry.Behaviors.Add(new DrawEditableText());

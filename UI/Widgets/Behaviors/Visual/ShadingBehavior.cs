@@ -30,13 +30,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         protected override void ConnectEvents() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);
             else Parent.OnGraphicsInitialized += InitializeEffect;
-            Parent.OnDrawOverlayEffects += DrawEffect;
+            Parent.OnDrawOverlay += DrawEffect;
             Parent.OnDispose += Dispose;
         }
 
         protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= InitializeEffect;
-            Parent.OnDrawOverlayEffects -= DrawEffect;
+            Parent.OnDrawOverlay -= DrawEffect;
             Parent.OnDispose -= Dispose;
             Dispose(this, EventArgs.Empty);
         }
@@ -45,11 +45,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             shading_effect = Parent.ParentWindow.EffectCollection.ShadingEffect.Clone();
         }
 
-        private void DrawEffect(object sender, WDrawEventArgs args) {
-            //args.SpriteBatch.DrawString(Parent.ParentWindow.WindowFont, "FDSAFSDA  UJFDSAJ FSDKLA", new Vector2(), Color.White);
-            //return;
-
-            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.WidgetRole).CurrentColor.ToVector4());
+        private void DrawEffect(object sender, WidgetDrawArgs args) {
+            args.RestartImmediate();
+            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.VisualProfile).CurrentColor.ToVector4());
             else shading_effect.Parameters["ShadeColor"]?.SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["BorderWidth"]?.SetValue(BorderWidth);
             shading_effect.Parameters["BorderVisibility"]?.SetValue(BorderVisibility);
@@ -59,9 +57,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             shading_effect.Parameters["GradientVisibility"]?.SetValue(GradientVisibility);
             shading_effect.Parameters["GradientExponential"]?.SetValue(GradientExponential);
             shading_effect.Parameters["Size"]?.SetValue(Parent.Size);
-            //throw new Exception();
             shading_effect.CurrentTechnique.Passes[0].Apply();
             args.SpriteBatch.FillRectangle(args.DrawingArea, Color.Transparent);
+            args.RestartDefault();
         }
 
         public override object Clone() {

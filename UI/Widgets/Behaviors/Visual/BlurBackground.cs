@@ -20,13 +20,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void ConnectEvents()
         {
-            Parent.OnDrawBackgroundEffects += ApplyEffect;
+            Parent.OnDrawBackground += ApplyEffect;
             Parent.OnParentWindowSet += LoadEffect;
         }
 
         protected override void DisconnectEvents()
         {
-            Parent.OnDrawBackgroundEffects -= ApplyEffect;
+            Parent.OnDrawBackground -= ApplyEffect;
         }
 
         public override object Clone()
@@ -40,13 +40,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");
         }
 
-        private void ApplyEffect(object sender, DrawBGEffectsArgs args)
+        private void ApplyEffect(object sender, WidgetDrawArgs args)
         {
-            args.EndDraw();
-            args.StartImmediateDraw();
+            args.RestartImmediate();
             effect.CurrentTechnique.Passes[0].Apply();
-            args.SpriteBatch.Draw(args.ParentRender, args.ChildAreaInRender.ToRectangle(), args.ChildAreaInRender.ToRectangle(), Color.White);
-            args.RestartDraw();
+            args.SpriteBatch.Draw(args.ParentRender, args.DrawingArea.ToRectangle(), args.AreaInRender.ToRectangle(), Color.White);
+            args.RestartDefault();
         }
     }
 }

@@ -20,36 +20,36 @@ namespace DownUnder.UI.Widgets.DataTypes {
         public BaseColorScheme()=> SetDefaults();
         
         private void SetDefaults() {
-            foreach (WidgetRoleType _ in Enum.GetValues(typeof(WidgetRoleType))) {
+            foreach (VisualProfileType _ in Enum.GetValues(typeof(VisualProfileType))) {
                 BackGroundColors.Add(new ElementColors(Color.LimeGreen));
                 TextColors.Add(new ElementColors());
                 OutlineColors.Add(new ElementColors());
             }
         }
 
-        public ElementColors BackgroundColor => GetBackground(Parent.WidgetRole);
-        public ElementColors GetBackground(WidgetRoleType category) => BackGroundColors[(int)category];
-        public ElementColors TextColor => GetText(Parent.WidgetRole);
-        public ElementColors GetText(WidgetRoleType category) => TextColors[(int)category];
-        public ElementColors OutlineColor => GetOutline(Parent.WidgetRole);
-        public ElementColors GetOutline(WidgetRoleType category) => OutlineColors[(int)category];
+        public ElementColors BackgroundColor => GetBackground(Parent.VisualProfile);
+        public ElementColors GetBackground(VisualProfileType category) => BackGroundColors[(int)category];
+        public ElementColors TextColor => GetText(Parent.VisualProfile);
+        public ElementColors GetText(VisualProfileType category) => TextColors[(int)category];
+        public ElementColors OutlineColor => GetOutline(Parent.VisualProfile);
+        public ElementColors GetOutline(VisualProfileType category) => OutlineColors[(int)category];
          
         public void Update(GameTime game_time) {
-            GetBackground(Parent.WidgetRole).Update(game_time.GetElapsedSeconds());
-            GetText(Parent.WidgetRole).Update(game_time.GetElapsedSeconds());
-            GetOutline(Parent.WidgetRole).Update(game_time.GetElapsedSeconds());
+            GetBackground(Parent.VisualProfile).Update(game_time.GetElapsedSeconds());
+            GetText(Parent.VisualProfile).Update(game_time.GetElapsedSeconds());
+            GetOutline(Parent.VisualProfile).Update(game_time.GetElapsedSeconds());
             if (Parent.ChangeColorOnMouseOver) SetHovered(Parent.IsPrimaryHovered);
         }
 
         private void SetHovered(bool hovered)
         {
-            GetBackground(Parent.WidgetRole).Hovered = hovered;
-            GetText(Parent.WidgetRole).Hovered = hovered;
-            GetOutline(Parent.WidgetRole).Hovered = hovered;
+            GetBackground(Parent.VisualProfile).Hovered = hovered;
+            GetText(Parent.VisualProfile).Hovered = hovered;
+            GetOutline(Parent.VisualProfile).Hovered = hovered;
         }
 
         public void ForceComplete() {
-            foreach (WidgetRoleType category in Enum.GetValues(typeof(WidgetRoleType))) {
+            foreach (VisualProfileType category in Enum.GetValues(typeof(VisualProfileType))) {
                 BackGroundColors[(int)category].ForceComplete();
                 TextColors[(int)category].ForceComplete();
                 OutlineColors[(int)category].ForceComplete();
@@ -62,7 +62,7 @@ namespace DownUnder.UI.Widgets.DataTypes {
             c.OutlineColors.Clear();
             c.TextColors.Clear();
 
-            foreach (WidgetRoleType category in Enum.GetValues(typeof(WidgetRoleType))) {
+            foreach (VisualProfileType category in Enum.GetValues(typeof(VisualProfileType))) {
                 c.BackGroundColors.Add((ElementColors)BackGroundColors[(int)category].Clone());
                 c.TextColors.Add((ElementColors)TextColors[(int)category].Clone());
                 c.OutlineColors.Add((ElementColors)OutlineColors[(int)category].Clone());
@@ -80,48 +80,48 @@ namespace DownUnder.UI.Widgets.DataTypes {
                 BaseColorScheme r = new BaseColorScheme();
 
                 // default_widget theme
-                r.GetOutline(WidgetRoleType.default_widget).DefaultColor = Color.Black;
-                r.GetOutline(WidgetRoleType.default_widget).SpecialColor = Color.Black;
-                r.GetOutline(WidgetRoleType.default_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
-                r.GetBackground(WidgetRoleType.default_widget).DefaultColor = Color.CornflowerBlue;
-                r.GetBackground(WidgetRoleType.default_widget).SpecialColor = Color.Yellow;
-                r.GetBackground(WidgetRoleType.default_widget).HoveredColor = Color.CornflowerBlue.ShiftBrightness(1.1f);
-                r.GetText(WidgetRoleType.default_widget).DefaultColor = Color.Black;
-                r.GetText(WidgetRoleType.default_widget).SpecialColor = Color.White;
-                r.GetText(WidgetRoleType.default_widget).HoveredColor = Color.Black;
+                r.GetOutline(VisualProfileType.default_widget).DefaultColor = Color.Black;
+                r.GetOutline(VisualProfileType.default_widget).SpecialColor = Color.Black;
+                r.GetOutline(VisualProfileType.default_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
+                r.GetBackground(VisualProfileType.default_widget).DefaultColor = Color.CornflowerBlue;
+                r.GetBackground(VisualProfileType.default_widget).SpecialColor = Color.Yellow;
+                r.GetBackground(VisualProfileType.default_widget).HoveredColor = Color.CornflowerBlue.ShiftBrightness(1.1f);
+                r.GetText(VisualProfileType.default_widget).DefaultColor = Color.Black;
+                r.GetText(VisualProfileType.default_widget).SpecialColor = Color.White;
+                r.GetText(VisualProfileType.default_widget).HoveredColor = Color.Black;
 
                 // text_widget theme
-                r.GetOutline(WidgetRoleType.text_widget).DefaultColor = Color.Black;
-                r.GetOutline(WidgetRoleType.text_widget).SpecialColor = Color.Black;
-                r.GetOutline(WidgetRoleType.text_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
-                r.GetBackground(WidgetRoleType.text_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
-                r.GetBackground(WidgetRoleType.text_widget).SpecialColor = Color.White;
-                r.GetBackground(WidgetRoleType.text_widget).HoveredColor = Color.White;
-                r.GetText(WidgetRoleType.text_widget).DefaultColor = Color.Black;
-                r.GetText(WidgetRoleType.text_widget).SpecialColor = Color.White;
-                r.GetText(WidgetRoleType.text_widget).HoveredColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_widget).DefaultColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_widget).SpecialColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
+                r.GetBackground(VisualProfileType.text_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
+                r.GetBackground(VisualProfileType.text_widget).SpecialColor = Color.White;
+                r.GetBackground(VisualProfileType.text_widget).HoveredColor = Color.White;
+                r.GetText(VisualProfileType.text_widget).DefaultColor = Color.Black;
+                r.GetText(VisualProfileType.text_widget).SpecialColor = Color.White;
+                r.GetText(VisualProfileType.text_widget).HoveredColor = Color.Black;
 
                 // text_edit_widget theme
-                r.GetOutline(WidgetRoleType.text_edit_widget).DefaultColor = Color.Black;
-                r.GetOutline(WidgetRoleType.text_edit_widget).SpecialColor = Color.Black;
-                r.GetOutline(WidgetRoleType.text_edit_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
-                r.GetBackground(WidgetRoleType.text_edit_widget).DefaultColor = Color.White;
-                r.GetBackground(WidgetRoleType.text_edit_widget).SpecialColor = Color.White;
-                r.GetBackground(WidgetRoleType.text_edit_widget).HoveredColor = Color.White;
-                r.GetText(WidgetRoleType.text_edit_widget).DefaultColor = Color.Black;
-                r.GetText(WidgetRoleType.text_edit_widget).SpecialColor = Color.White;
-                r.GetText(WidgetRoleType.text_edit_widget).HoveredColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_edit_widget).DefaultColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_edit_widget).SpecialColor = Color.Black;
+                r.GetOutline(VisualProfileType.text_edit_widget).HoveredColor = Color.Black.ShiftBrightness(1.1f);
+                r.GetBackground(VisualProfileType.text_edit_widget).DefaultColor = Color.White;
+                r.GetBackground(VisualProfileType.text_edit_widget).SpecialColor = Color.White;
+                r.GetBackground(VisualProfileType.text_edit_widget).HoveredColor = Color.White;
+                r.GetText(VisualProfileType.text_edit_widget).DefaultColor = Color.Black;
+                r.GetText(VisualProfileType.text_edit_widget).SpecialColor = Color.White;
+                r.GetText(VisualProfileType.text_edit_widget).HoveredColor = Color.Black;
 
                 // header_widget theme
-                r.GetOutline(WidgetRoleType.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.3f);
-                r.GetOutline(WidgetRoleType.header_widget).SpecialColor = Color.Black;
-                r.GetOutline(WidgetRoleType.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.35f);
-                r.GetBackground(WidgetRoleType.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.1f);
-                r.GetBackground(WidgetRoleType.header_widget).SpecialColor = Color.Blue.ShiftBrightness(0.5f);
-                r.GetBackground(WidgetRoleType.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.2f);
-                r.GetText(WidgetRoleType.header_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
-                r.GetText(WidgetRoleType.header_widget).SpecialColor = Color.White;
-                r.GetText(WidgetRoleType.header_widget).HoveredColor = Color.White;
+                r.GetOutline(VisualProfileType.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.3f);
+                r.GetOutline(VisualProfileType.header_widget).SpecialColor = Color.Black;
+                r.GetOutline(VisualProfileType.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.35f);
+                r.GetBackground(VisualProfileType.header_widget).DefaultColor = Color.Black.ShiftBrightness(1.1f);
+                r.GetBackground(VisualProfileType.header_widget).SpecialColor = Color.Blue.ShiftBrightness(0.5f);
+                r.GetBackground(VisualProfileType.header_widget).HoveredColor = Color.Black.ShiftBrightness(1.2f);
+                r.GetText(VisualProfileType.header_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
+                r.GetText(VisualProfileType.header_widget).SpecialColor = Color.White;
+                r.GetText(VisualProfileType.header_widget).HoveredColor = Color.White;
                 
                 return r;
             }
@@ -133,57 +133,57 @@ namespace DownUnder.UI.Widgets.DataTypes {
                 BaseColorScheme r = new BaseColorScheme();
 
                 // default_widget theme
-                ElementColors e = r.GetOutline(WidgetRoleType.default_widget);
+                ElementColors e = r.GetOutline(VisualProfileType.default_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                e = r.GetBackground(WidgetRoleType.default_widget);
+                e = r.GetBackground(VisualProfileType.default_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.07f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(WidgetRoleType.default_widget);
+                e = r.GetText(VisualProfileType.default_widget);
                 e.DefaultColor = Color.White.ShiftBrightness(0.75f);
                 e.SpecialColor = Color.White;
                 e.HoveredColor = Color.White;
 
                 // text_widget theme
-                e = r.GetOutline(WidgetRoleType.text_widget);
+                e = r.GetOutline(VisualProfileType.text_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
-                e = r.GetBackground(WidgetRoleType.text_widget);
+                e = r.GetBackground(VisualProfileType.text_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.1f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(WidgetRoleType.text_widget);
+                e = r.GetText(VisualProfileType.text_widget);
                 e.DefaultColor = Color.White.ShiftBrightness(0.75f);
                 e.SpecialColor = Color.White;
                 e.HoveredColor = Color.White;
 
                 // text_edit_widget theme
-                e = r.GetOutline(WidgetRoleType.text_edit_widget);
+                e = r.GetOutline(VisualProfileType.text_edit_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.6f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                e = r.GetBackground(WidgetRoleType.text_edit_widget);
+                e = r.GetBackground(VisualProfileType.text_edit_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.15f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(WidgetRoleType.text_edit_widget);
+                e = r.GetText(VisualProfileType.text_edit_widget);
                 e.DefaultColor = Color.White.ShiftBrightness(0.75f);
                 e.SpecialColor = Color.White;
                 e.HoveredColor = Color.White;
 
                 // header_widget theme
-                e = r.GetOutline(WidgetRoleType.header_widget);
+                e = r.GetOutline(VisualProfileType.header_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.2f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
-                e = r.GetBackground(WidgetRoleType.header_widget);
+                e = r.GetBackground(VisualProfileType.header_widget);
                 e.DefaultColor = Color.Black.ShiftBrightness(1.3f);
                 e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
                 e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(WidgetRoleType.header_widget);
+                e = r.GetText(VisualProfileType.header_widget);
                 e.DefaultColor = Color.Black;
                 e.SpecialColor = Color.White;
                 e.HoveredColor = Color.White.ShiftBrightness(0.75f);

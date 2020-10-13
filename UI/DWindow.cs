@@ -208,9 +208,6 @@ namespace DownUnder.UI
         public DWindow(GraphicsDevice graphics, Game parent) {
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
-
-            //System.Diagnostics.Debugger.Launch();
-            Console.WriteLine("sdad");
             
             MainWidget = new Widget();
 
