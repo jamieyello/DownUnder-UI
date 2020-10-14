@@ -12,6 +12,7 @@ namespace DownUnder.UI.Widgets
         public readonly RectangleF AreaInRender;
         public readonly RectangleF DrawingArea;
         public readonly Point2 CursorPosition;
+        public readonly RectangleF DrawingAreaUnscrolled;
 
         // Child area in render should be "area" normally
         public WidgetDrawArgs(Widget caller, RenderTarget2D parent_render, RectangleF drawing_area, RectangleF area_in_render, SpriteBatch sprite_batch, Point2 cursor_position)
@@ -22,6 +23,7 @@ namespace DownUnder.UI.Widgets
             DrawingArea = drawing_area;
             SpriteBatch = sprite_batch;
             CursorPosition = cursor_position;
+            DrawingAreaUnscrolled = DrawingArea.WithOffset(_caller.Scroll.Inverted());
         }
 
         /// <summary> Used to prevent <see cref="Effect"/>s from affecting further drawing. </summary>

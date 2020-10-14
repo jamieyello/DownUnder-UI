@@ -120,7 +120,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             #region Position / Size
 
             RectangleF widget_content_area = Parent.ContentArea;
-            RectangleF drawing_area = Parent.DrawingAreaUnscrolled;
+            //RectangleF drawing_area = Parent.DrawingAreaUnscrolled;
+            RectangleF drawing_area = new RectangleF(1,1,1,1);
             RectangleF widget_area = Parent.Area;
 
             if (_SideVisible) { SideBarWidth.SetTargetValue(Thickness); } else { SideBarWidth.SetTargetValue(0f); }

@@ -44,7 +44,8 @@ under itself (parent widgets) to use in its own Effects. This can be done by red
 of the parent's completed render directly under the Widget with an effect applied.
 
 This makes effects like blur and defraction possible and fairly easy to implement.",
-                TextPositioning = DrawText.TextPositioningPolicy.center
+                XTextPositioning = DrawText.XTextPositioningPolicy.center,
+                YTextPositioning = DrawText.YTextPositioningPolicy.center
             });
 
             Widget login_button = BasicWidgets.GenericButton("Login");
@@ -73,26 +74,25 @@ This makes effects like blur and defraction possible and fairly easy to implemen
 
             window.ChangeColorOnMouseOver = true;
 
-            Widget username_entry = new Widget { Position = new Point2(100, 0), Width = 150, Height = 40 };
-            Widget password_entry = new Widget { Position = new Point2(100, 60), Width = 150, Height = 40 };
+            Widget username_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
+            Widget password_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
+
+            username_entry.Area = new RectangleF(100, 0, 150, 40);
+            password_entry.Area = new RectangleF(100, 60, 150, 40);
+
             Widget username_label = new Widget { Position = new Point2(0, 0), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
             Widget password_label = new Widget { Position = new Point2(0, 60), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
             Widget login_button = BasicWidgets.GenericButton("Login");
             login_button.Area = new RectangleF(100, 120, 150, 40);
 
-            username_entry.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
-            password_entry.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             ShadingBehavior blue = ShadingBehavior.SubtleBlue;
             blue.BorderVisibility = 0.3f;
             blue.GradientVisibility = new Point2(0.2f, 0.2f);
             window.Behaviors.Add(blue);
             window.Behaviors.Add(new BlurBackground());
 
-            username_label.Behaviors.Add(new DrawText { Text = "Username: " });
-            password_label.Behaviors.Add(new DrawText { Text = "Password: " });
-
-            username_entry.Behaviors.Add(new DrawEditableText());
-            password_entry.Behaviors.Add(new DrawEditableText());
+            username_label.Behaviors.Add(new DrawText { Text = "Username: ", YTextPositioning = DrawText.YTextPositioningPolicy.center });
+            password_label.Behaviors.Add(new DrawText { Text = "Password: ", YTextPositioning = DrawText.YTextPositioningPolicy.center });
 
             username_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
             password_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;

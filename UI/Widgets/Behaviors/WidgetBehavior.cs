@@ -75,7 +75,8 @@ namespace DownUnder.UI.Widgets.Behaviors
 
                 DrawText text = new DrawText()
                 {
-                    TextPositioning = DrawText.TextPositioningPolicy.center
+                    XTextPositioning = DrawText.XTextPositioningPolicy.center,
+                    YTextPositioning = DrawText.YTextPositioningPolicy.center
                 };
                 text.Text = EditorDisplayText();
 

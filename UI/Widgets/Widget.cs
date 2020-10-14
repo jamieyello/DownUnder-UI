@@ -47,81 +47,81 @@ namespace DownUnder.UI.Widgets
         #region Fields/Delegates/Enums
 
         /// <summary> Used by some drawing code. </summary>
-        private Texture2D _white_dot;
+        Texture2D _white_dot;
         /// <summary> The render target this Widget uses to draw to. </summary>
-        private RenderTarget2D _render_target;
-        private SpriteBatch _local_sprite_batch;
-        private SpriteBatch _passed_sprite_batch;
+        RenderTarget2D _render_target;
+        SpriteBatch _local_sprite_batch;
+        SpriteBatch _passed_sprite_batch;
         /// <summary> Used to track the period of time where a second click would be considered a double click. (If this value is > 0) </summary>
-        private float _double_click_countdown;
+        float _double_click_countdown;
         /// <summary> Used to track the period of time where a third click would be considered a triple click. (If this value is > 0) </summary>
-        private float _triple_click_countdown;
+        float _triple_click_countdown;
         /// <summary> Used to tell whether the cursor moved or not when checking for double/triple clicks. </summary>
-        private Point2 _previous_cursor_position;
+        Point2 _previous_cursor_position;
         /// <summary> Set to true internally to prevent usage of graphics while modifying them on another thread. </summary>
-        private bool _graphics_updating;
+        bool _graphics_updating;
         /// <summary> Set to true internally to prevent multi-threaded changes to graphics while their being used. </summary>
-        private bool _graphics_in_use;
+        bool _graphics_in_use;
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/>. </summary>
-        private bool _dragging_in;
+        bool _dragging_in;
         /// <summary> Is true when the user is holding the mouse click that originated inside this <see cref="Widget"/> that has traveled outside this <see cref="Widget"/>'s area at some point. </summary>
-        private bool _dragging_off;
+        bool _dragging_off;
         /// <summary> The area of this <see cref="Widget"/> before the user started resizing it. (If the user is resizing) </summary>
-        private RectangleF _resizing_initial_area;
+        RectangleF _resizing_initial_area;
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        private WidgetUpdateFlags _post_update_flags;
+        WidgetUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
-        private bool _has_updated;
+        bool _has_updated;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
-        private const int _MAXIMUM_WIDGET_SIZE = 2048;
+        const int _MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
-        private const int _WAIT_TIME = 5;
+        const int _WAIT_TIME = 5;
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
-        private const int _MAX_WAIT_TIME = 100;
+        const int _MAX_WAIT_TIME = 100;
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
-        private const float _USER_RESIZE_BOUNDS_SIZE = 20f;
+        const float _USER_RESIZE_BOUNDS_SIZE = 20f;
 
         // The following are used by Update()/UpdatePriority().
         // They are set to true or false in UpdatePriority(), and Update() invokes events
         // by reading them.
-        private bool _update_clicked_on;
-        private bool _update_clicked_off;
-        private bool _update_double_clicked;
-        private bool _update_triple_clicked;
-        private bool _update_added_to_focused;
-        private bool _update_set_as_focused;
-        private bool _update_hovered_over;
-        private bool _update_drag;
-        private bool _update_drop;
+        bool _update_clicked_on;
+        bool _update_clicked_off;
+        bool _update_double_clicked;
+        bool _update_triple_clicked;
+        bool _update_added_to_focused;
+        bool _update_set_as_focused;
+        bool _update_hovered_over;
+        bool _update_drag;
+        bool _update_drop;
 
         // Various property backing fields.
-        [DataMember] private string _name_backing;
-        [DataMember] private RectangleF _area_backing;
-        [DataMember] private float _double_click_timing_backing;
-        [DataMember] private Point2 _minimum_size_backing;
-        private WidgetList _children_backing;
-        private SpriteFont _sprite_font_backing;
-        private GraphicsDevice _graphics_backing;
-        private bool _is_hovered_over_backing;
-        private bool _previous_is_hovered_over_backing;
-        private BaseColorScheme _theme_backing;
-        private Widget _parent_widget_backing;
-        private DWindow _parent_window_backing;
-        private bool _allow_highlight_backing = false;
+        [DataMember] string _name_backing;
+        [DataMember] RectangleF _area_backing;
+        [DataMember] float _double_click_timing_backing;
+        [DataMember] Point2 _minimum_size_backing;
+        WidgetList _children_backing;
+        SpriteFont _sprite_font_backing;
+        GraphicsDevice _graphics_backing;
+        bool _is_hovered_over_backing;
+        bool _previous_is_hovered_over_backing;
+        BaseColorScheme _theme_backing;
+        Widget _parent_widget_backing;
+        DWindow _parent_window_backing;
+        bool _allow_highlight_backing = false;
         [DataMember] Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
         UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
         UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
-        private bool _accepts_drops_backing;
-        private List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
-        private BehaviorManager _behaviors_backing;
-        private ActionManager _actions_backing;
-        private bool _fit_to_content_area_backing = false;
+        bool _accepts_drops_backing;
+        List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
+        BehaviorManager _behaviors_backing;
+        ActionManager _actions_backing;
+        bool _fit_to_content_area_backing = false;
 
         public enum DrawingModeType
         {
@@ -151,9 +151,9 @@ namespace DownUnder.UI.Widgets
 
         public enum RenderTargetResizeModeType
         {
-            /// <summary> Default. Keeps the render target at the maximum size at all times. More memory consumption but better responsiveness. </summary>
+            /// <summary> Keeps the render target at the maximum size at all times. Not recommended. </summary>
             maximum_size,
-            /// <summary> Resizes the render target along with the <see cref="Widget"/>. Values memory conservation over CPU usage. A new render target will be created each frame the Widget is resized. </summary>
+            /// <summary> Resizes the render target along with the <see cref="Widget"/>. A new render target will be created each frame the Widget is resized. </summary>
             auto_resize
         }
 
@@ -175,7 +175,7 @@ namespace DownUnder.UI.Widgets
         public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
         /// <summary> How the render target will be handled. </summary>
         [DataMember]
-        public RenderTargetResizeModeType RenderTargetResizeMode { get; set; } = RenderTargetResizeModeType.maximum_size;
+        public RenderTargetResizeModeType RenderTargetResizeMode { get; set; } = RenderTargetResizeModeType.auto_resize;
         /// <summary> How thick the outline should be. 1 by default. </summary>
         [DataMember]
         public float OutlineThickness { get; set; } = 1f;
@@ -492,13 +492,10 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The area this <see cref="Widget"/> should be drawing to. Using this while drawing ensures the proper position between drawing modes. </summary>
-        private RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target? Area: AreaInWindow;
-        /// <summary> <see cref="DrawingArea"/> without scroll offset. </summary>
-        public RectangleF DrawingAreaUnscrolled => DrawingArea.WithOffset(Scroll.Inverted());
+        RectangleF DrawingArea => DrawingMode == DrawingModeType.use_render_target? Area: AreaInWindow;
 
         /// <summary> The area of the screen where this <see cref="Widget"/> can be seen. </summary>
-        //public RectangleF VisibleArea => ParentWidget == null ? Area : AreaInWindow.Intersection(ParentWidget.VisibleArea);
-        public RectangleF VisibleArea
+        RectangleF VisibleArea
         {
             get
             {
@@ -699,7 +696,7 @@ namespace DownUnder.UI.Widgets
         public Widget() => SetDefaults();
 
         [OnDeserializing]
-        private void OnDeserialize(StreamingContext context)
+        void OnDeserialize(StreamingContext context)
         {
             SetNonSerialized();
         }
@@ -723,7 +720,7 @@ namespace DownUnder.UI.Widgets
             Children = new WidgetList(this);
         }
 
-        private void SetNonSerialized()
+        void SetNonSerialized()
         {
             _double_click_countdown = 0f;
             _triple_click_countdown = 0f;
@@ -745,7 +742,7 @@ namespace DownUnder.UI.Widgets
 
         public void Dispose() => Dispose(true);
 
-        private void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             OnDispose?.Invoke(this, EventArgs.Empty);
             _white_dot?.Dispose();
@@ -770,13 +767,13 @@ namespace DownUnder.UI.Widgets
             UpdateGroupPost(out _);
         }
 
-        private void UpdateGroupHoverFocus()
+        void UpdateGroupHoverFocus()
         {
             if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
             foreach (Widget widget in Children) widget.UpdateGroupHoverFocus();
         }
 
-        private void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input)
+        void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input)
         {
             UpdateData.GameTime = game_time;
             UpdateData.ElapsedSeconds = game_time.GetElapsedSeconds();
@@ -787,7 +784,7 @@ namespace DownUnder.UI.Widgets
         }
 
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
-        private void UpdateGroupInput()
+        void UpdateGroupInput()
         {
             _update_clicked_on = false;
             _update_double_clicked = false;
@@ -889,7 +886,7 @@ namespace DownUnder.UI.Widgets
             foreach (Widget widget in Children) widget.UpdateGroupInput();
         }
 
-        private void UpdateGroupResizeGrab()
+        void UpdateGroupResizeGrab()
         {
             if (
                 !ParentWindow.UserResizeModeEnable
@@ -935,7 +932,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
-        private void UpdateGroupEvents(GameTime game_time)
+        void UpdateGroupEvents(GameTime game_time)
         {
             if (!_has_updated) return;
             // Skip some normal behavior if the user has the resize cursor over this widget
@@ -972,7 +969,7 @@ namespace DownUnder.UI.Widgets
             foreach (Widget widget in new WidgetList(null, Children)) widget.UpdateGroupEvents(game_time);
         }
 
-        private void UpdateGroupPost(out bool deleted)
+        void UpdateGroupPost(out bool deleted)
         {
             if (_post_update_flags.Delete)
             {
@@ -998,6 +995,7 @@ namespace DownUnder.UI.Widgets
 
         #region Drawing Code
 
+        // It may be better that these are left here
         RenderTarget2D ParentRender => ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
         WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, ParentRender, DrawingArea, Area, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
         WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, ParentRender, Size.AsRectangleSize(), Area, SpriteBatch, CursorPosition);
@@ -1019,7 +1017,7 @@ namespace DownUnder.UI.Widgets
         /// Prepare all render targets by drawing all widget content to them.
         /// </summary>
         /// <returns> True if the render target was changed. </returns>
-        private bool PrepareRenders()
+        bool PrepareRenders()
         {
             bool rendered = false;
             foreach (Widget widget in AllRenderedWidgets)
@@ -1033,7 +1031,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draws content without altering render target or spritebatch. </summary>
-        private void DrawBaseContent(SpriteBatch sprite_batch)
+        void DrawBaseContent(SpriteBatch sprite_batch)
         {
             _passed_sprite_batch = sprite_batch;
             Rectangle previous_scissor_area = new Rectangle();
@@ -1064,21 +1062,18 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private void DrawFinal()
+        void DrawFinal()
         {
             // Draw BG/base content
             foreach (Widget widget in AllContainedWidgets)
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+                SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
+                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
                 if (widget.DrawingMode == DrawingModeType.direct) widget.DrawBaseContent(SpriteBatch);
-                if (widget.DrawingMode == DrawingModeType.use_render_target)
-                {
-                    Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                    SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
-                    SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0, 0, (int)widget.Width, (int)widget.Height), Color.White);
-                    SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
-                }
+                if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0, 0, (int)widget.Width, (int)widget.Height), Color.White);
                 SpriteBatch.End();
+                SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
             }
 
             // Draw overlay
@@ -1094,7 +1089,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
-        private static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch, Point2 cursor_position)
+        static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch, Point2 cursor_position)
         {
             Rectangle previous_scissor_area = new Rectangle();
             if (widget.DrawingMode == DrawingModeType.direct)
@@ -1119,7 +1114,7 @@ namespace DownUnder.UI.Widgets
             if (widget.DrawingMode == DrawingModeType.direct) sprite_batch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
         }
 
-        private static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WidgetDrawArgs> handler, RectangleF area, Point2 cursor_position)
+        static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WidgetDrawArgs> handler, RectangleF area, Point2 cursor_position)
         {
             Delegate[] delegates = handler?.GetInvocationList();
             if (delegates == null) return;
@@ -1131,7 +1126,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        private void DrawNoClip()
+        void DrawNoClip()
         {
             if (OnDrawNoClip == null) return;
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
@@ -1143,7 +1138,7 @@ namespace DownUnder.UI.Widgets
         #endregion
 
         /// <summary> Initializes all graphics related content. </summary>
-        private bool InitializeGraphics()
+        bool InitializeGraphics()
         {
             if (IsGraphicsInitialized) return false;
             if (GraphicsDevice == null) throw new Exception($"GraphicsDevice cannot be null.");
@@ -1154,12 +1149,6 @@ namespace DownUnder.UI.Widgets
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             return true;
         }
-
-        /// <summary>  Used by internal <see cref="Focus"/> object. </summary>
-        internal void TriggerSelectOffEvent() => OnSelectOff?.Invoke(this, EventArgs.Empty);
-
-        /// <summary> Used by internal <see cref="Focus"/> object. </summary>
-        internal void TriggerSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
 
         /// <summary> Disposes this <see cref="Widget"/> and removes it from its parent. </summary>
         /// <param name="now"> Set to true to delete this <see cref="Widget"/> on calling this, false to delete on next update. </param>
@@ -1173,41 +1162,17 @@ namespace DownUnder.UI.Widgets
             else _post_update_flags.Delete = true;
         }
 
-        private void DeleteChild(Widget widget)
+        void DeleteChild(Widget widget)
         {
             if (!Children.Contains(widget)) throw new Exception($"Given {nameof(Widget)} is not owned by this {nameof(Widget)}.");
             HandleChildDelete(widget);
         }
 
-        private void HandleChildDelete(Widget widget)
+        void HandleChildDelete(Widget widget)
         {
             widget.Dispose();
             Children.Remove(widget);
         }
-
-        /// <summary> Search for any methods in a <see cref="DWindow"/> for this to connect to. </summary>
-        //public void ConnectEvents()
-        //{
-        //    System.Reflection.EventInfo[] events = GetType().GetEvents();
-        //    for (int i = 0; i < events.GetLength(0); i++)
-        //    {
-        //        System.Reflection.EventInfo event_ = events[i];
-        //        string method_name = "Slot_" + Name + "_On" + event_.Name;
-        //        System.Reflection.MethodInfo window_method = ParentWindow.GetType().GetMethod(method_name);
-        //        if (window_method == null)
-        //        {
-        //            continue;
-        //        }
-        //        Delegate handler = Delegate.CreateDelegate(
-        //            event_.EventHandlerType,
-        //            ParentWindow,
-        //            window_method);
-        //        event_.AddEventHandler(this, handler);
-        //    }
-        //}
-
-        /// <summary> Signals confirming this <see cref="Widget"/>. (Such as pressing enter with this <see cref="Widget"/> selected) </summary>
-        public void SignalConfirm() => OnConfirm?.Invoke(this, EventArgs.Empty);
 
         #endregion
 
@@ -1237,14 +1202,11 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnGraphicsInitialized;
         /// <summary> Invoked after the this <see cref="Widget"/> and its children have been initialized. </summary>
         public event EventHandler OnPostGraphicsInitialized;
-        /// <summary> Invoked when this <see cref="Widget"/> is drawn. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s base content is drawn. </summary>
         public event EventHandler<WidgetDrawArgs> OnDraw;
-        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Contents are drawn over child <see cref="Widget"/>s. </summary>
         public event EventHandler<WidgetDrawArgs> OnDrawOverlay;
-        /// <summary> Invoked when this <see cref="Widget"/>'s overlay is drawn. Calls a new <see cref="SpriteBatch.Draw()"/> for each <see cref="Effect"/> applied here and draws a transparent rectangle. </summary>
-        //public event EventHandler<WidgetDrawArgs> OnDrawOverlayEffects;
-        ///// <summary> Invoked when this <see cref="Widget"/> is drawn to the buffer/parent <see cref="Widget"/>'s <see cref="RenderTarget2D"/>. <see cref="Widget.DrawingMode"/> must be set to <see cref="DrawingModeType.use_render_target"/> to use. </summary>
-        //public event EventHandler OnDrawRenderEffects;
+        /// <summary> Called before <see cref="OnDraw"/>. Used to draw anything under the content of this <see cref="Widget"/>. </summary>
         public event EventHandler<WidgetDrawArgs> OnDrawBackground;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
@@ -1295,61 +1257,22 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked whenever a child <see cref="Widget"/>'s position is changed. </summary>
         public event EventHandler<RectangleFSetArgs> OnChildReposition;
 
-        internal void InvokeOnAdd()
-        {
-            LastAddedWidget.Parent = this;
-            OnAddChild?.Invoke(this, EventArgs.Empty);
-        }
-
-        internal void InvokeOnRemove()
-        {
-            LastRemovedWidget.Parent = null;
-            OnRemoveChild?.Invoke(this, EventArgs.Empty);
-        }
-
-        internal void InvokeOnListChange()
-        {
-            OnListChange?.Invoke(this, EventArgs.Empty);
-        }
-
-        internal void InvokeOnParentResize(RectangleFSetArgs args)
-        {
-            OnParentResize?.Invoke(this, args);
-        }
-
-        internal void InvokeOnChildResized(RectangleFSetArgs args)
-        {
-            OnChildResize?.Invoke(this, args);
-        }
-
-        internal void InvokeOnChildAreaChange(RectangleFSetArgs args)
-        {
-            OnChildAreaChange?.Invoke(this, args);
-        }
-
-        internal void InvokeOnChildReposition(RectangleFSetArgs args)
-        {
-            OnChildReposition?.Invoke(this, args);
-        }
-
-        internal void InvokeDrawOverlay(WidgetDrawArgs args)
-        {
-            OnDrawOverlay?.Invoke(this, args);
-        }
-
-        internal void InvokeDrawBG(WidgetDrawArgs args)
-        {
-            OnDrawBackground?.Invoke(this, args);
-        }
-
-        internal void InvokeDrawOverlayEffects(WidgetDrawArgs args)
-        {
-            OnDrawOverlay?.Invoke(this, args);
-        }
-
+        internal void InvokeSelectOffEvent() => OnSelectOff?.Invoke(this, EventArgs.Empty);
+        internal void InvokeSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnAdd() => OnAddChild?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnRemove() => OnRemoveChild?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnListChange() => OnListChange?.Invoke(this, EventArgs.Empty);
+        void InvokeOnParentResize(RectangleFSetArgs args) => OnParentResize?.Invoke(this, args);
+        void InvokeOnChildResized(RectangleFSetArgs args) => OnChildResize?.Invoke(this, args);
+        void InvokeOnChildAreaChange(RectangleFSetArgs args) => OnChildAreaChange?.Invoke(this, args);
+        void InvokeOnChildReposition(RectangleFSetArgs args) => OnChildReposition?.Invoke(this, args);
+        void InvokeDrawOverlay(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
+        void InvokeDrawBG(WidgetDrawArgs args) => OnDrawBackground?.Invoke(this, args);
+        void InvokeDrawOverlayEffects(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
+        
         #endregion
 
-        #region Private/Protected Methods
+        #region Methods
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
@@ -1429,31 +1352,26 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
-        private void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
+        void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
 
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
-        private void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
+        void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
-        private void UpdateRenderTargetSizes()
+        void UpdateRenderTargetSizes()
         {
-            if (DrawingMode == DrawingModeType.use_render_target)
-            {
-                UpdateRenderTargetSize(DrawingArea.Size);
-            }
-
+            if (DrawingMode == DrawingModeType.use_render_target) UpdateRenderTargetSize(DrawingArea.Size);
+            
             foreach (Widget child in Children) child.UpdateRenderTargetSizes();
         }
-        private void UpdateRenderTargetSize(Point2 size)
+
+        void UpdateRenderTargetSize(Point2 size)
         {
             if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
             {
                 if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, _MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
                 return;
             }
-
-            _graphics_updating = false;
-
 
             if (_render_target != null && (int)size.X == _render_target.Width && (int)size.Y == _render_target.Height) return;
             _graphics_updating = true;
@@ -1484,7 +1402,6 @@ namespace DownUnder.UI.Widgets
             if (_render_target != null)
             {
                 _render_target.Dispose();
-                while (!_render_target.IsDisposed) { Thread.Sleep(10); }
             }
 
             _render_target = new RenderTarget2D(
@@ -1619,7 +1536,7 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                foreach (Widget widget in Children)
+                foreach (Widget widget in AllContainedWidgets)
                 {
                     if (widget.Name == child_name) return widget;
                 }

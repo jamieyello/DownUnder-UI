@@ -18,13 +18,13 @@
         public void AddFocus(Widget widget) {
             if (_focused_widgets.Contains(widget)) return;
             _focused_widgets.Add(widget);
-            if (_focus_type == FocusType.selection) widget.TriggerSelectEvent();
+            if (_focus_type == FocusType.selection) widget.InvokeSelectEvent();
         }
 
         public void UnFocus(Widget widget) {
             if (!_focused_widgets.Contains(widget)) return;
             _focused_widgets.Remove(widget);
-            if (_focus_type == FocusType.selection) widget.TriggerSelectOffEvent();
+            if (_focus_type == FocusType.selection) widget.InvokeSelectOffEvent();
         }
 
         public void SetFocus(Widget widget) {
@@ -43,7 +43,7 @@
         }
 
         public void Reset() {
-            if (_focus_type == FocusType.selection) foreach (Widget widget in _focused_widgets) widget.TriggerSelectOffEvent();
+            if (_focus_type == FocusType.selection) foreach (Widget widget in _focused_widgets) widget.InvokeSelectOffEvent();
             _focused_widgets.Clear();
         }
 

@@ -4,13 +4,16 @@ using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
 using DownUnder.Utilities;
 using DownUnder.Utility;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System.Collections.Generic;
 using System.Linq;
+using static DownUnder.UI.Widgets.Behaviors.Visual.DrawText;
 using static DownUnder.UI.Widgets.Widget;
 
 namespace DownUnder.UI.Widgets
@@ -19,10 +22,27 @@ namespace DownUnder.UI.Widgets
     {
         public static Widget GenericButton(string text)
         {
-            return new Widget()
+            Widget result = new Widget()
                 .WithAddedBehavior(new MouseGlow())
                 .WithAddedBehavior(new MakeMousePointer())
-                .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, TextPositioning = DrawText.TextPositioningPolicy.center });
+                .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
+            result.VisualProfile = VisualProfileType.default_widget;
+
+            return result;
+        }
+
+        public static Widget SingleLineTextEntry(string text = "", XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.top, float? side_spacing = null, bool constrain_area_to_text = false)
+        {
+            Widget result = new Widget { VisualProfile = VisualProfileType.text_edit_widget };
+            result.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
+            result.Behaviors.Add(new DrawEditableText { });
+            var draw_text = result.Behaviors.GetFirst<DrawText>();
+            draw_text.Text = text;
+            draw_text.XTextPositioning = x_positioning;
+            draw_text.YTextPositioning = y_positioning;
+            draw_text.ConstrainAreaToText = constrain_area_to_text;
+            if (side_spacing != null) draw_text.SideSpacing = side_spacing.Value;
+            return result;
         }
 
         public static Widget PropertyGrid(object obj)

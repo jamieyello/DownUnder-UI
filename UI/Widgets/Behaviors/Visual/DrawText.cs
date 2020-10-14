@@ -16,17 +16,25 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private string _text_backing = "";
         private Point2 _text_position_backing = new Point2();
-        private TextPositioningPolicy _text_positioning_backing = TextPositioningPolicy.top_left;
-
+        private XTextPositioningPolicy _x_position_policy = XTextPositioningPolicy.left;
+        private YTextPositioningPolicy _y_position_policy = YTextPositioningPolicy.top;
+        
         public DrawText() { }
         public DrawText(string text)
         {
             Text = text;
         }
 
-        public enum TextPositioningPolicy {
+        public enum XTextPositioningPolicy {
             none,
-            top_left,
+            left,
+            center
+        }
+
+        public enum YTextPositioningPolicy
+        {
+            none,
+            top,
             center
         }
 
@@ -49,13 +57,26 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             }
         }
 
-        public TextPositioningPolicy TextPositioning
+        public XTextPositioningPolicy XTextPositioning
+
         {
-            get => _text_positioning_backing;
+            get => _x_position_policy;
             set
             {
-                if (value == _text_positioning_backing) return;
-                _text_positioning_backing = value;
+                if (value == _x_position_policy) return;
+                _x_position_policy = value;
+                //SetMinimumSize(this, EventArgs.Empty);
+            }
+        }
+
+        public YTextPositioningPolicy YTextPositioning
+
+        {
+            get => _y_position_policy;
+            set
+            {
+                if (value == _y_position_policy) return;
+                _y_position_policy = value;
                 //SetMinimumSize(this, EventArgs.Empty);
             }
         }
@@ -89,7 +110,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             DrawText c = new DrawText();
             c.Text = Text;
             c.TextPosition = TextPosition;
-            c.TextPositioning = TextPositioning;
+            c.XTextPositioning = XTextPositioning;
+            c.YTextPositioning = YTextPositioning;
             c.SideSpacing = SideSpacing;
             c.ConstrainAreaToText = ConstrainAreaToText;
             return c;
@@ -105,12 +127,20 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private void AlignText(object sender, EventArgs args)
         {
             if (Parent == null || !Parent.IsGraphicsInitialized) return;
+            string text = Text == "" ? "|" : Text;
 
-            if (TextPositioning == TextPositioningPolicy.top_left) TextPosition = new Point2(SideSpacing, SideSpacing);
-            if (TextPositioning == TextPositioningPolicy.center)
+            if (XTextPositioning == XTextPositioningPolicy.left) TextPosition = new Point2(SideSpacing, TextPosition.Y);
+            if (XTextPositioning == XTextPositioningPolicy.center)
             {
-                Point2 size = Parent.WindowFont.MeasureString(Text);
-                TextPosition = Parent.Size.DividedBy(2f).WithOffset(size.DividedBy(2f).Inverted());
+                Point2 size = Parent.WindowFont.MeasureString(text);
+                TextPosition = new Point2(Parent.Width / 2 - size.X / 2, TextPosition.Y);
+            }
+
+            if (YTextPositioning == YTextPositioningPolicy.top) TextPosition = new Point2(TextPosition.X, SideSpacing);
+            if (YTextPositioning == YTextPositioningPolicy.center)
+            {
+                Point2 size = Parent.WindowFont.MeasureString(text);
+                TextPosition = new Point2(TextPosition.X, Parent.Height / 2 - size.Y / 2);
             }
         }
 
