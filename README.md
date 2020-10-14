@@ -1,5 +1,5 @@
 # DownUnder UI
-A UI library built with .NET Core and MonoGame 3.8.
+A UI library built with .NET Core and MonoGame 3.8. Compatible with all platforms MonoGame supports, Android, iOS, Windows, and more.
 
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
