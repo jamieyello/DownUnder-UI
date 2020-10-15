@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,9 @@ namespace DownUnder.UI.Widgets
         public static GroupBehaviorCollection StandardPC =>
             new GroupBehaviorCollection()
             {
-                new GroupBehaviorPolicy() { Behavior = new ScrollBar() }
+                //new GroupBehaviorPolicy() { Behavior = new ScrollBar() },
+                new GroupBehaviorPolicy() { Behavior = new DrawBackground() },
+                new GroupBehaviorPolicy() { Behavior = new DrawOutline() },
             };
 
         #region IList

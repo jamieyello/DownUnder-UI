@@ -417,7 +417,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             {
                 Vector2 position = Parent.ParentWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
-                Parent.SpriteBatch.DrawLine(position, position2, Parent.Theme.TextColor.CurrentColor, 1);
+                Parent.SpriteBatch.DrawLine(position, position2, Parent.VisualSettings.TextColor, 1);
             }
         }
     }

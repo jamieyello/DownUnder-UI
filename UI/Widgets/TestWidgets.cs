@@ -33,7 +33,8 @@ namespace TestContent
 
         public static Widget LoginLayoutEffects()
         {
-            Widget layout = new Widget { ChangeColorOnMouseOver = false };
+            Widget layout = new Widget { };
+            layout.VisualSettings.ChangeColorOnMouseOver = false;
             //layout.DrawingMode = Widget.DrawingModeType.use_render_target;
             //layout.Behaviors.Add(MouseGlow.SubtleGray);
             layout.Behaviors.Add(new DrawText
@@ -54,7 +55,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             login_button.OnClick += (s, a) =>
             {
                 Widget login_popup = LoginWindow();
-                login_popup.DrawBackground = false;
+                login_popup.VisualSettings.DrawBackground = false;
                 if (layout["Login Window"] == null) layout.Add(login_popup);
             };
 
@@ -72,7 +73,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Behaviors.Add(MouseGlow.SubtleGray);
             window.Behaviors.GetFirst<MouseGlow>().ActivationPolicy = MouseGlow.MouseGlowActivationPolicy.hovered_over;
 
-            window.ChangeColorOnMouseOver = true;
+            window.VisualSettings.ChangeColorOnMouseOver = true;
 
             Widget username_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             Widget password_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
@@ -80,8 +81,14 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             username_entry.Area = new RectangleF(100, 0, 150, 40);
             password_entry.Area = new RectangleF(100, 60, 150, 40);
 
-            Widget username_label = new Widget { Position = new Point2(0, 0), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
-            Widget password_label = new Widget { Position = new Point2(0, 60), Width = 60, Height = 40, DrawBackground = false, DrawOutline = false };
+            Widget username_label = new Widget { Position = new Point2(0, 0), Width = 60, Height = 40};
+            username_label.VisualSettings.DrawBackground = false;
+            username_label.VisualSettings.DrawOutline = false;
+
+            Widget password_label = new Widget { Position = new Point2(0, 60), Width = 60, Height = 40 };
+            password_label.VisualSettings.DrawBackground = false;
+            password_label.VisualSettings.DrawOutline = false;
+
             Widget login_button = BasicWidgets.GenericButton("Login");
             login_button.Area = new RectangleF(100, 120, 150, 40);
 

@@ -84,12 +84,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             return c;
         }
 
-        private Widget DefaultCell() =>
-            new Widget() {
-                OutlineSides = Directions2D.DR,
+        private Widget DefaultCell()
+        {
+            Widget result = new Widget()
+            {
                 FitToContentArea = true,
                 SnappingPolicy = DiagonalDirections2D.None
             };
+            result.VisualSettings.OutlineSides = Directions2D.DR;
+            return result;
+        }
 
         private void SetSizeToContent() {
             if (SizeToContent) Parent.Size = Parent.Children.AreaCoverage.Value.Size;

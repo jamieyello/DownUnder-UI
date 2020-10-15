@@ -77,11 +77,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         protected override void Initialize()
         {
-            SideInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
-            BottomInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
-            SideOuterBarPalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
-            BottomOuterBarPalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
-            BottomRightSquarePalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
+            //SideInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
+            //BottomInnerBarPalette = (ElementColors)Parent.Theme.InnerScrollBar.Clone();
+            //SideOuterBarPalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
+            //BottomOuterBarPalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
+            //BottomRightSquarePalette = (ElementColors)Parent.Theme.OuterScrollBar.Clone();
         }
 
         protected override void ConnectEvents()

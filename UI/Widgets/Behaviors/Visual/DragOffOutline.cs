@@ -44,7 +44,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             drag_rect_to_mouse = true;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), true);
             rect_color.TransitionSpeed = 4f;
-            rect_color.SetTargetValue(Parent.Theme.OutlineColor.CurrentColor);
+            rect_color.SetTargetValue(Parent.VisualSettings.OutlineColor);
             //rect.SetTargetValue(Parent.DrawingArea, true);
             round_amount.SetTargetValue(1f);
         }

@@ -37,7 +37,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\BasicWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSet.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCube.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Examples\Draw3DCubeActions\SpinCube.cs" />
@@ -62,8 +61,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\ISubWidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\TemplateBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawBackground.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MakeMousePointer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MouseGlow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />
@@ -73,8 +75,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\GlimmerBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\GlimmerChild.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\GlimmerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\GlimmerChild.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetTracker.cs" />

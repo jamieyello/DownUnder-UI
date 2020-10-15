@@ -169,7 +169,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         public void ForceDrawText(Point2 origin, string text)
         {
-            Parent.SpriteBatch.DrawString(Parent.WindowFont, text, origin.WithOffset(TextPosition).Floored(), Parent.Theme.GetText(Parent.VisualProfile).CurrentColor);
+            Parent.SpriteBatch.DrawString(Parent.WindowFont, text, origin.WithOffset(TextPosition).Floored(), Parent.VisualSettings.TextColor);
         }
     }
 }

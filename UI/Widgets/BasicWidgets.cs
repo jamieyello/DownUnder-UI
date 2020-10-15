@@ -14,7 +14,7 @@ using MonoGame.Extended;
 using System.Collections.Generic;
 using System.Linq;
 using static DownUnder.UI.Widgets.Behaviors.Visual.DrawText;
-using static DownUnder.UI.Widgets.Widget;
+using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
 
 namespace DownUnder.UI.Widgets
 {
@@ -26,14 +26,15 @@ namespace DownUnder.UI.Widgets
                 .WithAddedBehavior(new MouseGlow())
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
-            result.VisualProfile = VisualProfileType.default_widget;
+            result.VisualSettings.Role = VisualRoleType.default_widget;
 
             return result;
         }
 
         public static Widget SingleLineTextEntry(string text = "", XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.top, float? side_spacing = null, bool constrain_area_to_text = false)
         {
-            Widget result = new Widget { VisualProfile = VisualProfileType.text_edit_widget };
+            Widget result = new Widget { };
+            result.VisualSettings.Role = VisualRoleType.text_edit_widget;
             result.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             result.Behaviors.Add(new DrawEditableText { });
             var draw_text = result.Behaviors.GetFirst<DrawText>();
@@ -56,10 +57,11 @@ namespace DownUnder.UI.Widgets
         {
             Widget file_bar = new Widget
             {
-                ChangeColorOnMouseOver = false,
                 Height = 30,
-                VisualProfile = VisualProfileType.header_widget
             };
+
+            file_bar.VisualSettings.ChangeColorOnMouseOver = false;
+            file_bar.VisualSettings.Role = VisualRoleType.header_widget;
 
             file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
             file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });
@@ -67,8 +69,8 @@ namespace DownUnder.UI.Widgets
             foreach (var entry in entries)
             {
                 Widget w_entry = new Widget().WithAddedBehavior(new DrawText() { Text = entry.Key });
-                w_entry.DrawOutline = false;
-                w_entry.DrawBackground = false;
+                w_entry.VisualSettings.DrawOutline = false;
+                w_entry.VisualSettings.DrawBackground = false;
 
                 WidgetList items = new WidgetList();
                 foreach (var item in entry.Value)

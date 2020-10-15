@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets
         #region Fields/Delegates/Enums
 
         /// <summary> Used by some drawing code. </summary>
-        Texture2D _white_dot;
+        public Texture2D _white_dot;
         /// <summary> The render target this Widget uses to draw to. </summary>
         RenderTarget2D _render_target;
         SpriteBatch _local_sprite_batch;
@@ -107,7 +107,6 @@ namespace DownUnder.UI.Widgets
         GraphicsDevice _graphics_backing;
         bool _is_hovered_over_backing;
         bool _previous_is_hovered_over_backing;
-        BaseColorScheme _theme_backing;
         Widget _parent_widget_backing;
         DWindow _parent_window_backing;
         bool _allow_highlight_backing = false;
@@ -140,15 +139,6 @@ namespace DownUnder.UI.Widgets
             require_highlight
         }
 
-        /// <summary> Defines the behavior of <see cref="Widget"/>s when being used by <see cref="WidgetBehavior"/>s. </summary>
-        public enum VisualProfileType
-        {
-            default_widget = 0,
-            text_widget = 1,
-            text_edit_widget = 2,
-            header_widget = 3
-        }
-
         public enum RenderTargetResizeModeType
         {
             /// <summary> Keeps the render target at the maximum size at all times. Not recommended. </summary>
@@ -163,26 +153,12 @@ namespace DownUnder.UI.Widgets
 
         #region Auto properties
 
-        /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
-        [DataMember] public bool ChangeColorOnMouseOver { get; set; } = true;
-        /// <summary> If set to false, the background color will not be drawn. </summary>
-        [DataMember] public bool DrawBackground { get; set; } = true;
-        /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
-        [DataMember]
-        public bool DrawOutline { get; set; } = true;
         /// <summary> How this <see cref="Widget"/> should be drawn. Unless <see cref="RenderTarget2D"/>s are needed. direct = faster, use_render_target = needed for certain effects. </summary>
         [DataMember]
         public DrawingModeType DrawingMode { get; set; } = DrawingModeType.direct;
         /// <summary> How the render target will be handled. </summary>
         [DataMember]
         public RenderTargetResizeModeType RenderTargetResizeMode { get; set; } = RenderTargetResizeModeType.auto_resize;
-        /// <summary> How thick the outline should be. 1 by default. </summary>
-        [DataMember]
-        public float OutlineThickness { get; set; } = 1f;
-        /// <summary> Which sides of the outline are drawn (top, bottom, left, right) if <see cref="DrawOutline"/> is true. </summary>
-        [DataMember]
-        public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
-        /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
         [DataMember]
         public DiagonalDirections2D SnappingPolicy { get; set; } = DiagonalDirections2D.None;
         /// <summary> The distance from the edges of the widget this is snapped to. </summary>
@@ -191,9 +167,6 @@ namespace DownUnder.UI.Widgets
         /// <summary> When set to true pressing enter while this <see cref="Widget"/> is the primarily selected one will trigger confirmation events. </summary>
         [DataMember]
         public bool EnterConfirms { get; set; } = true;
-        /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
-        [DataMember]
-        public VisualProfileType VisualProfile { get; set; } = VisualProfileType.default_widget;
         /// <summary> While set to true this <see cref="Widget"/> will lock its current <see cref="Width"/>. </summary>
         [DataMember]
         public bool IsFixedWidth { get; set; } = false;
@@ -209,6 +182,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
         [DataMember]
         public bool IsCloningSupported { get; set; } = true;
+        public GeneralVisualSettings VisualSettings = new GeneralVisualSettings();
 
         [DataMember]
         public BehaviorManager Behaviors
@@ -340,18 +314,6 @@ namespace DownUnder.UI.Widgets
                 if (_minimum_size_backing == _previous_minimum_size) return;
                 if (Area.WithMinimumSize(value) != Area) Area = Area.WithMinimumSize(value);
                 if (_minimum_size_backing != _previous_minimum_size) OnMinimumSizeSet?.Invoke(this, new Point2SetArgs(_previous_minimum_size));
-            }
-        }
-
-        /// <summary> The color palette of this <see cref="Widget"/>. </summary>
-        [DataMember]
-        public BaseColorScheme Theme
-        {
-            get => _theme_backing;
-            set
-            {
-                _theme_backing = value;
-                if (_theme_backing != null) _theme_backing.Parent = this;
             }
         }
 
@@ -712,7 +674,7 @@ namespace DownUnder.UI.Widgets
             _allowed_resizing_directions_backing = Directions2D.All;
 
             Size = new Point2(10, 10);
-            Theme = BaseColorScheme.Dark;
+            //Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             Behaviors = new BehaviorManager(this);
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
@@ -963,7 +925,7 @@ namespace DownUnder.UI.Widgets
             if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
 
-            Theme.Update(game_time);
+            VisualSettings.Update(game_time.GetElapsedSeconds(), IsPrimaryHovered);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             foreach (Widget widget in new WidgetList(null, Children)) widget.UpdateGroupEvents(game_time);
@@ -1041,11 +1003,6 @@ namespace DownUnder.UI.Widgets
                 previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
             }
-            if (DrawBackground)
-            {
-                if (DrawingMode == DrawingModeType.direct) SpriteBatch.FillRectangle(AreaInWindow, IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
-                else if (DrawingMode == DrawingModeType.use_render_target) GraphicsDevice.Clear(IsHighlighted ? Color.Yellow : Theme.BackgroundColor.CurrentColor);
-            }
 
             if (DrawingMode == DrawingModeType.direct)
             {
@@ -1096,18 +1053,6 @@ namespace DownUnder.UI.Widgets
             {
                 previous_scissor_area = sprite_batch.GraphicsDevice.ScissorRectangle;
                 sprite_batch.GraphicsDevice.ScissorRectangle = drawing_area.ToRectangle();
-            }
-
-            if (widget.DrawOutline)
-            {
-                DrawingTools.DrawBorder(
-                    widget._white_dot,
-                    sprite_batch,
-                    drawing_area.ToRectangle(),
-                    widget.OutlineThickness,
-                    widget.Theme.OutlineColor.CurrentColor,
-                    widget.OutlineSides
-                    );
             }
 
             widget.InvokeDrawOverlay(widget.DirectEventArgs(sprite_batch));
@@ -1451,21 +1396,17 @@ namespace DownUnder.UI.Widgets
             c.FitToContentArea = FitToContentArea;
 
             c.Name = Name;
-            c.ChangeColorOnMouseOver = ChangeColorOnMouseOver;
-            c.DrawBackground = DrawBackground;
-            c.Theme = (BaseColorScheme)Theme.Clone();
-            c.OutlineThickness = OutlineThickness;
-            c.DrawOutline = DrawOutline;
+            c.VisualSettings = (GeneralVisualSettings)VisualSettings.Clone();
+            
             c.EnterConfirms = EnterConfirms;
             c.MinimumSize = MinimumSize;
             c.SnappingPolicy = SnappingPolicy;
-            c.OutlineSides = OutlineSides;
             c.DoubleClickTiming = DoubleClickTiming;
             c.Spacing = Spacing;
             c.Area = Area;
             c.IsFixedWidth = IsFixedWidth;
             c.IsFixedHeight = IsFixedHeight;
-            c.VisualProfile = VisualProfile;
+            c.VisualSettings = (GeneralVisualSettings)VisualSettings.Clone();
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;

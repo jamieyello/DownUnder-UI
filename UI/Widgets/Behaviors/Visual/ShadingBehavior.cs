@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void DrawEffect(object sender, WidgetDrawArgs args) {
             args.RestartImmediate();
-            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.Theme.GetOutline(Parent.VisualProfile).CurrentColor.ToVector4());
+            if (UseWidgetOutlineColor) shading_effect.Parameters["ShadeColor"].SetValue(Parent.VisualSettings.OutlineColor.ToVector4());
             else shading_effect.Parameters["ShadeColor"]?.SetValue(ShadeColor.ToVector4());
             shading_effect.Parameters["BorderWidth"]?.SetValue(BorderWidth);
             shading_effect.Parameters["BorderVisibility"]?.SetValue(BorderVisibility);

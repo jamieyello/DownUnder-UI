@@ -121,7 +121,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public static Widget BehaviorDisplay(IEnumerable<Type> behaviors)
         {
             Widget behaviors_list = new Widget().WithAddedBehavior(new SpacedListFormat());
-            behaviors_list.ChangeColorOnMouseOver = false;
+            behaviors_list.VisualSettings.ChangeColorOnMouseOver = false;
 
             foreach (Type type in behaviors)
             {
