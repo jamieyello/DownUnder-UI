@@ -11,8 +11,6 @@ This project is a shared project library, meaning it does not compile without yo
 
 And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
-To compile for Windows you will need the [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/).
-
 ## Community
 
 [Post in the MonoGame community thread.](https://community.monogame.net/t/downunder-ui-a-monogame-based-ui-framework/13353)  
