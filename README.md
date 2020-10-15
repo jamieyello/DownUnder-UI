@@ -19,4 +19,6 @@ To compile for Windows you will need the [Windows 10 SDK](https://developer.micr
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
 ## The Art Gallery
+![blur](/Images/living_ui.gif)
+
 ![Modern stuff](/Images/goodui3001.gif)
