@@ -9,6 +9,8 @@ A UI library built with .NET Core and MonoGame 3.8. Compatible with all platform
 ## Documentation/How to Use
 This project is a shared project library, meaning it does not compile without your project. An Azure DevOps package will be put up, but until then it can be added as a shared project reference directly.
 
+Note that the daily commits often times break things. Stable builds will be posted soon.
+
 And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
 ## Community
