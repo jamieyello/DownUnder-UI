@@ -1,6 +1,8 @@
 # DownUnder UI
 A UI library built with .NET Core and MonoGame 3.8. Compatible with all platforms MonoGame supports; Android, iOS, Windows, and more.
 
+Closer to usable than not, but still in development.
+
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
  - Built from the ground up with modern transitions, animations, and shaders in mind.
@@ -9,9 +11,9 @@ A UI library built with .NET Core and MonoGame 3.8. Compatible with all platform
 ## Documentation/How to Use
 This project is a shared project library, meaning it does not compile without your project. An Azure DevOps package will be put up, but until then it can be added as a shared project reference directly.
 
-And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
+Note that the daily commits often times break things. Stable builds will be posted soon.
 
-To compile for Windows you will need the [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/).
+And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
 
 ## Community
 
@@ -19,4 +21,6 @@ To compile for Windows you will need the [Windows 10 SDK](https://developer.micr
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
 ## The Art Gallery
+![blur](/Images/living_ui.gif)
+
 ![Modern stuff](/Images/goodui3001.gif)
