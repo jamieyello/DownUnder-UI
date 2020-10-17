@@ -13,6 +13,7 @@ using MonoGame.Extended;
 using DownUnder.UI.Widgets;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework.Content;
+using System.Diagnostics;
 
 namespace DownUnder.UI
 {
@@ -44,6 +45,8 @@ namespace DownUnder.UI
         private Widget _widget_backing;
         private Point2 _minimum_size_backing;
         bool _is_user_resizing_backing;
+
+        internal RenderTarget2D _back_buffer;
 
         #region Properties
         #region Auto Properties
@@ -215,11 +218,15 @@ namespace DownUnder.UI
                 Parent = parent;
                 //parent.Children.Add(this);
             }
-            
+
+            _back_buffer = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+
             // unneeded possibly
             OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame.Window.ClientSizeChanged += (sender, e) => {
                 if (MainWidget != null) MainWidget.Size = Area.Size;
+                _back_buffer.Dispose();
+                _back_buffer = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
             };
             ParentGame.Window.TextInput += ProcessKeys;
             ParentGame.Exiting += ExitAll;

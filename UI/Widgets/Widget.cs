@@ -966,13 +966,18 @@ namespace DownUnder.UI.Widgets
         {
             _passed_sprite_batch = sprite_batch;
             var previous_targets = GraphicsDevice.GetRenderTargets();
+            GraphicsDevice.SetRenderTarget(ParentWindow._back_buffer);
             UpdateRenderTargetSizes();
             if (PrepareRenders())
             {
-                GraphicsDevice.SetRenderTargets(previous_targets);
+                GraphicsDevice.SetRenderTargets(ParentWindow._back_buffer);
             }
             DrawFinal();
             DrawNoClip();
+            GraphicsDevice.SetRenderTargets(previous_targets);
+            sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            sprite_batch.Draw(ParentWindow._back_buffer, ParentWindow.Area.SizeOnly().ToRectangle(), Color.White);
+            sprite_batch.End();
         }
 
         /// <summary>
@@ -987,36 +992,17 @@ namespace DownUnder.UI.Widgets
                 rendered = true;
                 GraphicsDevice.SetRenderTarget(widget._render_target);
                 GraphicsDevice.Clear(Color.Transparent);
-                widget.DrawBaseContent(null);
+                widget.Render();
             }
             return rendered;
         }
 
-        /// <summary> Draws content without altering render target or spritebatch. </summary>
-        void DrawBaseContent(SpriteBatch sprite_batch)
+        void Render()
         {
-            _passed_sprite_batch = sprite_batch;
-            Rectangle previous_scissor_area = new Rectangle();
-
-            if (DrawingMode == DrawingModeType.direct)
-            {
-                previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
-            }
-
-            if (DrawingMode == DrawingModeType.direct)
-            {
-                OnDrawBackground?.Invoke(this, DirectEventArgs());
-                OnDraw?.Invoke(this, DirectEventArgs());
-            }
-            else if (DrawingMode == DrawingModeType.use_render_target)
-            {
-                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                OnDrawBackground?.Invoke(this, RenderTargetEventArgs);
-                OnDraw?.Invoke(this, RenderTargetEventArgs);
-                SpriteBatch.End();
-            }
-            if (DrawingMode == DrawingModeType.direct) SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
+            _local_sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            OnDrawBackground?.Invoke(this, RenderTargetEventArgs);
+            OnDraw?.Invoke(this, RenderTargetEventArgs);
+            _local_sprite_batch.End();
         }
 
         void DrawFinal()
@@ -1027,7 +1013,7 @@ namespace DownUnder.UI.Widgets
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-                if (widget.DrawingMode == DrawingModeType.direct) widget.DrawBaseContent(SpriteBatch);
+                if (widget.DrawingMode == DrawingModeType.direct) widget.DrawDirect(SpriteBatch);
                 if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0, 0, (int)widget.Width, (int)widget.Height), Color.White);
                 SpriteBatch.End();
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1045,6 +1031,21 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> Draws content without altering render target or spritebatch. </summary>
+        void DrawDirect(SpriteBatch sprite_batch)
+        {
+            _passed_sprite_batch = sprite_batch;
+
+            if (DrawingMode == DrawingModeType.direct)
+            {
+                Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+                OnDrawBackground?.Invoke(this, DirectEventArgs());
+                OnDraw?.Invoke(this, DirectEventArgs());
+                SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
+            }
+        }
+
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
         static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch, Point2 cursor_position)
         {
@@ -1057,18 +1058,6 @@ namespace DownUnder.UI.Widgets
 
             widget.InvokeDrawOverlay(widget.DirectEventArgs(sprite_batch));
             if (widget.DrawingMode == DrawingModeType.direct) sprite_batch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
-        }
-
-        static void DrawOverlayEffects(Widget widget, SpriteBatch sprite_batch, EventHandler<WidgetDrawArgs> handler, RectangleF area, Point2 cursor_position)
-        {
-            Delegate[] delegates = handler?.GetInvocationList();
-            if (delegates == null) return;
-            foreach (Delegate delegate_ in delegates)
-            {
-                sprite_batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, widget.ParentWindow.RasterizerState);
-                delegate_.DynamicInvoke(new object[] { widget, widget.DirectEventArgs() });
-                sprite_batch.End();
-            }
         }
 
         void DrawNoClip()
