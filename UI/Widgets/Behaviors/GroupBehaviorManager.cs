@@ -32,7 +32,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             foreach (var policy_ in _behavior_policies)
             {
-                if (policy_.Behavior.GetType() == policy.Behavior.GetType()) throw new System.Exception($"This {nameof(GroupBehaviorManager)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
+                if (policy_.Behavior.GetType() == policy.Behavior.GetType()) return; // throw new System.Exception($"This {nameof(GroupBehaviorManager)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
             }
             _behavior_policies.Add(policy);
             ImplementPolicy(policy);
@@ -43,19 +43,22 @@ namespace DownUnder.UI.Widgets.Behaviors
             foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
         }
 
+        internal void ImplementPolicies()
+        {
+            foreach (GroupBehaviorPolicy policy in _behavior_policies) ImplementPolicy(policy);
+        }
+
         private void ImplementPolicy(GroupBehaviorPolicy policy)
         {
             WidgetList widgets;
 
             if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widgets = Parent.AllContainedWidgets;
             else widgets = Parent.Children;
-            
+
             foreach (Widget widget in widgets)
             {
-                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior))
-                {
-                    widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
-                }
+                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widget.Behaviors.GroupBehaviors.AddPolicy((GroupBehaviorPolicy)policy.Clone());
             }
         }
 

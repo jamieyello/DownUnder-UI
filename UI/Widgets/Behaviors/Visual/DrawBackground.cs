@@ -12,6 +12,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
+            //throw new Exception();
         }
 
         protected override void ConnectEvents()

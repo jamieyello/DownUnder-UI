@@ -6,6 +6,7 @@ using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using System.Diagnostics;
 using System.Threading;
 
 namespace TestContent
@@ -67,6 +68,9 @@ This makes effects like blur and defraction possible and fairly easy to implemen
         public static Widget LoginWindow()
         {
             Widget window = new Widget { Size = new Point2(450, 320), Name = "Login Window" };
+            window.VisualSettings.DrawOutline = false;
+            window.VisualSettings.DrawBackground = false;
+
             window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
@@ -77,7 +81,7 @@ This makes effects like blur and defraction possible and fairly easy to implemen
 
             Widget username_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             Widget password_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
-
+            
             username_entry.Area = new RectangleF(100, 0, 150, 40);
             password_entry.Area = new RectangleF(100, 60, 150, 40);
 
@@ -104,6 +108,9 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             username_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
             password_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
 
+            username_entry.OnDraw += DebugArea;
+            username_entry.OnDrawOverlay += DebugArea2;
+
             window.Add(username_label);
             window.Add(password_label);
             window.Add(username_entry);
@@ -111,6 +118,18 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Add(login_button);
 
             return window;
+        }
+
+        private static void DebugArea(object sender, WidgetDrawArgs args)
+        {
+            Debug.WriteLine($"draw args " + args.AreaInRender);
+        }
+
+        private static void DebugArea2(object sender, WidgetDrawArgs args)
+        {
+            Debug.WriteLine($"draw overlay args " + args.AreaInRender);
+
+
         }
     }
 }

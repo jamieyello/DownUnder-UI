@@ -680,6 +680,10 @@ namespace DownUnder.UI.Widgets
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
             Actions = new ActionManager(this);
             Children = new WidgetList(this);
+            OnAddChild += (s, a) =>
+            {
+                Behaviors.GroupBehaviors.ImplementPolicies();
+            };
         }
 
         void SetNonSerialized()
@@ -958,9 +962,9 @@ namespace DownUnder.UI.Widgets
         #region Drawing Code
 
         // It may be better that these are left here
-        RenderTarget2D ParentRender => ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
-        WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, ParentRender, DrawingArea, Area, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
-        WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, ParentRender, Size.AsRectangleSize(), Area, SpriteBatch, CursorPosition);
+        RenderTarget2D ParentRender => ParentWindow._back_buffer; //ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
+        WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, ParentRender, AreaInWindow, AreaInWindow, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
+        WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, ParentRender, Size.AsRectangleSize(), AreaInWindow, SpriteBatch, CursorPosition);
 
         public void Draw(SpriteBatch sprite_batch)
         {
