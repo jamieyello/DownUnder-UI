@@ -108,8 +108,8 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             username_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
             password_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
 
-            username_entry.OnDraw += DebugArea;
-            username_entry.OnDrawOverlay += DebugArea2;
+            window.OnDraw += DebugArea;
+            window.OnDrawOverlay += DebugArea2;
 
             window.Add(username_label);
             window.Add(password_label);

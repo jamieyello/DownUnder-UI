@@ -24,7 +24,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         [DataMember] public bool UseWidgetOutlineColor = false;
 
         protected override void Initialize() {
-            Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
+            //Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
         }
 
         protected override void ConnectEvents() {

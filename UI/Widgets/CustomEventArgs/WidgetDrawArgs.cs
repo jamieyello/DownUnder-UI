@@ -8,21 +8,21 @@ namespace DownUnder.UI.Widgets
     {
         private readonly Widget _caller;
         public readonly SpriteBatch SpriteBatch;
-        public readonly RenderTarget2D ParentRender;
         public readonly RectangleF AreaInRender;
         public readonly RectangleF DrawingArea;
         public readonly Point2 CursorPosition;
         public readonly RectangleF DrawingAreaUnscrolled;
+        public readonly GraphicsDevice GraphicsDevice;
 
         // Child area in render should be "area" normally
-        public WidgetDrawArgs(Widget caller, RenderTarget2D parent_render, RectangleF drawing_area, RectangleF area_in_render, SpriteBatch sprite_batch, Point2 cursor_position)
+        public WidgetDrawArgs(Widget caller, GraphicsDevice graphics, RectangleF drawing_area, RectangleF area_in_render, SpriteBatch sprite_batch, Point2 cursor_position)
         {
             _caller = caller;
-            ParentRender = parent_render;
             AreaInRender = area_in_render;
             DrawingArea = drawing_area;
             SpriteBatch = sprite_batch;
             CursorPosition = cursor_position;
+            GraphicsDevice = graphics;
             DrawingAreaUnscrolled = DrawingArea.WithOffset(_caller.Scroll.Inverted());
         }
 
@@ -52,6 +52,14 @@ namespace DownUnder.UI.Widgets
         public void EndDraw()
         {
             SpriteBatch.End();
+        }
+
+        public RenderTarget2D GetBackgroundRender()
+        {
+            RestartImmediate();
+            _caller.ParentWindow.SwapBackBuffer(GraphicsDevice, SpriteBatch);
+            RestartDefault();
+            return _caller.ParentWindow.OtherBuffer;
         }
     }
 }

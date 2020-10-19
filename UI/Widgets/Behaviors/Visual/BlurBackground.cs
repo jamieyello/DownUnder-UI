@@ -42,10 +42,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void ApplyEffect(object sender, WidgetDrawArgs args)
         {
+            RenderTarget2D background = args.GetBackgroundRender();
             args.RestartImmediate();
+
             effect.CurrentTechnique.Passes[0].Apply();
-            args.SpriteBatch.Draw(args.ParentRender, args.DrawingArea.ToRectangle(), args.AreaInRender.ToRectangle(), Color.White);
+            args.SpriteBatch.Draw(background, args.DrawingArea.ToRectangle(), args.AreaInRender.ToRectangle(), Color.White);
             args.RestartDefault();
+
+            //Parent.GraphicsDevice.Clear(Color.Blue);
         }
     }
 }

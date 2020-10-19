@@ -962,25 +962,25 @@ namespace DownUnder.UI.Widgets
         #region Drawing Code
 
         // It may be better that these are left here
-        RenderTarget2D ParentRender => ParentWindow._back_buffer; //ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
-        WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, ParentRender, AreaInWindow, AreaInWindow, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
-        WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, ParentRender, Size.AsRectangleSize(), AreaInWindow, SpriteBatch, CursorPosition);
+        //RenderTarget2D ParentRender => ParentWindow._back_buffer; //ParentWidget == null ? null : ParentWidget.DrawingMode == DrawingModeType.use_render_target ? ParentWidget._render_target : null;
+        WidgetDrawArgs DirectEventArgs(SpriteBatch sprite_batch = null) => new WidgetDrawArgs(this, GraphicsDevice, AreaInWindow, AreaInWindow, sprite_batch ?? SpriteBatch, InputState.CursorPosition);
+        WidgetDrawArgs RenderTargetEventArgs => new WidgetDrawArgs(this, GraphicsDevice, Size.AsRectangleSize(), AreaInWindow, SpriteBatch, CursorPosition);
 
         public void Draw(SpriteBatch sprite_batch)
         {
             _passed_sprite_batch = sprite_batch;
             var previous_targets = GraphicsDevice.GetRenderTargets();
-            GraphicsDevice.SetRenderTarget(ParentWindow._back_buffer);
+            GraphicsDevice.SetRenderTarget(ParentWindow.DrawTargetBuffer);
             UpdateRenderTargetSizes();
             if (PrepareRenders())
             {
-                GraphicsDevice.SetRenderTargets(ParentWindow._back_buffer);
+                GraphicsDevice.SetRenderTargets(ParentWindow.DrawTargetBuffer);
             }
             DrawFinal();
             DrawNoClip();
             GraphicsDevice.SetRenderTargets(previous_targets);
             sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            sprite_batch.Draw(ParentWindow._back_buffer, ParentWindow.Area.SizeOnly().ToRectangle(), Color.White);
+            sprite_batch.Draw(ParentWindow.DrawTargetBuffer, ParentWindow.Area.SizeOnly().ToRectangle(), Color.White);
             sprite_batch.End();
         }
 

@@ -46,7 +46,8 @@ namespace DownUnder.UI
         private Point2 _minimum_size_backing;
         bool _is_user_resizing_backing;
 
-        internal RenderTarget2D _back_buffer;
+        RenderTarget2D[] _back_buffer = new RenderTarget2D[2];
+        int _current_back_buffer = 0;
 
         #region Properties
         #region Auto Properties
@@ -200,6 +201,19 @@ namespace DownUnder.UI
 
         public object DraggingObject { get; set; }
 
+        internal RenderTarget2D DrawTargetBuffer => _back_buffer[_current_back_buffer];
+        internal RenderTarget2D OtherBuffer => _back_buffer[_current_back_buffer == 0 ? 1 : 0];
+        
+        /// <summary> Swap buffers. The contents of the old buffer will be drawn to the new one. The purpose of this is to create a RenderTarget2D that can be used to draw its own contents to itself. </summary>
+        internal void SwapBackBuffer(GraphicsDevice graphics, SpriteBatch sprite_batch)
+        {
+            int old_buffer = _current_back_buffer;
+            int new_buffer = _current_back_buffer == 0 ? 1 : 0;
+            graphics.SetRenderTarget(_back_buffer[new_buffer]);
+            sprite_batch.Draw(_back_buffer[old_buffer], new Vector2(), Color.White);
+            _current_back_buffer = new_buffer;
+        }
+
         IParent IParent.Parent => (IParent)Parent;
 
         GraphicsDevice IParent.GraphicsDevice => ParentGame?.GraphicsDevice;
@@ -219,14 +233,18 @@ namespace DownUnder.UI
                 //parent.Children.Add(this);
             }
 
-            _back_buffer = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+            _back_buffer[0] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+            _back_buffer[1] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
 
             // unneeded possibly
             OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
+
             ParentGame.Window.ClientSizeChanged += (sender, e) => {
                 if (MainWidget != null) MainWidget.Size = Area.Size;
-                _back_buffer.Dispose();
-                _back_buffer = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+                _back_buffer[0].Dispose();
+                _back_buffer[1].Dispose();
+                _back_buffer[0] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+                _back_buffer[1] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
             };
             ParentGame.Window.TextInput += ProcessKeys;
             ParentGame.Exiting += ExitAll;
