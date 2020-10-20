@@ -7,7 +7,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
     class NewBehavior : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
-        
+
         /// <summary> Called when the parent widget is set. Use for initialization logic. </summary>
         protected override void Initialize()
         {

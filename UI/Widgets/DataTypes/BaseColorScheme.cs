@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
 using static DownUnder.UI.Widgets.Widget;
@@ -199,8 +200,26 @@ namespace DownUnder.UI.Widgets.DataTypes {
                 r.BottomInnerScrollBar = (ElementColors)r.SideInnerScrollBar.Clone();
                 r.BottomOuterScrollBar = (ElementColors)r.SideOuterScrollBar.Clone();
 
+                ElementColors default_colors = r.GetBackground(VisualRoleType.default_widget);
+                r.SetEmptyElementColors(default_colors);
+                
                 return r;
             }
+        }
+
+        public void SetEmptyElementColors(ElementColors default_colors)
+        {
+            foreach (var enum_ in Enum.GetValues(typeof(VisualRoleType)))
+            {
+                if (BackGroundColors[(int)(VisualRoleType)enum_] == null) BackGroundColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
+                if (OutlineColors[(int)(VisualRoleType)enum_] == null) OutlineColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
+                if (TextColors[(int)(VisualRoleType)enum_] == null) TextColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
+            }
+
+            SideInnerScrollBar = SideInnerScrollBar ?? (ElementColors)default_colors.Clone();
+            SideOuterScrollBar = SideOuterScrollBar ?? (ElementColors)default_colors.Clone();
+            BottomInnerScrollBar = BottomInnerScrollBar ?? (ElementColors)default_colors.Clone();
+            BottomOuterScrollBar = BottomOuterScrollBar ?? (ElementColors)default_colors.Clone();
         }
     }
 }

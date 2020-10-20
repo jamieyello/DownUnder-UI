@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets;
+﻿using DownUnder;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
@@ -70,10 +71,18 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             Widget window = new Widget { Size = new Point2(450, 320), Name = "Login Window" };
             window.VisualSettings.DrawOutline = false;
             window.VisualSettings.DrawBackground = false;
-
             window.Behaviors.Add(new CenterContent());
+
+            //window.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            //window.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
+            //window.OnParentWidgetSet += (s, a) => 
+            //{
+            //    Widget _this = (Widget)s;
+            //    _this.Area = _this.Area.WithCenter(_this.ParentWidget.Area);
+            //};
+
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
-            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
+            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
             window.Behaviors.Add(MouseGlow.SubtleGray);
             window.Behaviors.GetFirst<MouseGlow>().ActivationPolicy = MouseGlow.MouseGlowActivationPolicy.hovered_over;
 

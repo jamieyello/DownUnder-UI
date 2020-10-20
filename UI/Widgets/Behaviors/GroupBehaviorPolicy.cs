@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
@@ -16,12 +17,14 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         [DataMember] public WidgetBehavior Behavior;
         [DataMember] public BehaviorInheritancePolicy InheritancePolicy = BehaviorInheritancePolicy.all_children;
+        public GeneralVisualSettings.VisualRoleType? NecessaryVisualRole;
 
         public object Clone()
         {
             GroupBehaviorPolicy c = new GroupBehaviorPolicy();
             c.Behavior = (WidgetBehavior)Behavior.Clone();
             c.InheritancePolicy = InheritancePolicy;
+            if (NecessaryVisualRole != null) c.NecessaryVisualRole = NecessaryVisualRole.Value;
             return c;
         }
     }

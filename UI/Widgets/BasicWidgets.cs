@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets
                 .WithAddedBehavior(new MouseGlow())
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
-            result.VisualSettings.Role = VisualRoleType.default_widget;
+            result.VisualSettings.VisualRole = VisualRoleType.default_widget;
 
             return result;
         }
@@ -34,7 +34,7 @@ namespace DownUnder.UI.Widgets
         public static Widget SingleLineTextEntry(string text = "", XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.top, float? side_spacing = null, bool constrain_area_to_text = false)
         {
             Widget result = new Widget { };
-            result.VisualSettings.Role = VisualRoleType.text_edit_widget;
+            result.VisualSettings.VisualRole = VisualRoleType.text_edit_widget;
             result.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             result.Behaviors.Add(new DrawEditableText { });
             var draw_text = result.Behaviors.GetFirst<DrawText>();
@@ -61,7 +61,7 @@ namespace DownUnder.UI.Widgets
             };
 
             file_bar.VisualSettings.ChangeColorOnMouseOver = false;
-            file_bar.VisualSettings.Role = VisualRoleType.header_widget;
+            file_bar.VisualSettings.VisualRole = VisualRoleType.header_widget;
 
             file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
             file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });

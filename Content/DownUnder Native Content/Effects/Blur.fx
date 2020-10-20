@@ -25,12 +25,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	float4 result = float4(0, 0, 0, 0);
 	
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 16; i++)
 	{
-		result = result + tex2D(SpriteTextureSampler, input.TextureCoordinates + float2(0, 0.0005 * (i - 4)));
+		result = result + tex2D(SpriteTextureSampler, input.TextureCoordinates + float2(0, 0.0005 * (i - 8)));
 	}
 	
-	return result / 8;
+	return result / 16;
 }
 
 technique SpriteDrawing

@@ -7,13 +7,15 @@ namespace DownUnder.UI.Widgets.Behaviors
     {
         [DataMember] public List<string> DisallowedIDs { get; set; } = new List<string>();
 
-        internal bool IsBehaviorAllowed(WidgetBehavior behavior)
+        internal bool IsBehaviorAllowed(Widget widget, GroupBehaviorPolicy policy)
         {
-            foreach (string id in behavior.BehaviorIDs)
+            foreach (string id in policy.Behavior.BehaviorIDs)
             {
                 if (DisallowedIDs.Contains(id)) return false;
             }
 
+            if (policy.NecessaryVisualRole != null && policy.NecessaryVisualRole.Value != widget.VisualSettings.VisualRole) return false;
+            
             return true;
         }
 

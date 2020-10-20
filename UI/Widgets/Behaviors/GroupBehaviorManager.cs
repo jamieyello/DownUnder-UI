@@ -57,7 +57,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             foreach (Widget widget in widgets)
             {
-                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(widget, policy)) widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widget.Behaviors.GroupBehaviors.AddPolicy((GroupBehaviorPolicy)policy.Clone());
             }
         }

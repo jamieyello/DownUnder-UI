@@ -65,6 +65,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MakeMousePointer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MouseGlow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NewBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
@@ -75,8 +76,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\TextEntryRuleSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DrawEditableText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\RepresentMember.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\GlimmerBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\GlimmerChild.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\ShadingBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetTracker.cs" />
@@ -105,13 +104,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DropDownEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\GroupBehaviorCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IParent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IWidgetChild.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\DrawPixelGrid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\Label.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Re-Implement\TextCursor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Widget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AutoDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ChangingValue.cs" />
