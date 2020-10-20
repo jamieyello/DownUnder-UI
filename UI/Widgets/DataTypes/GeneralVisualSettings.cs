@@ -15,16 +15,17 @@ namespace DownUnder.UI.Widgets.DataTypes
             default_widget = 0,
             text_widget = 1,
             text_edit_widget = 2,
-            header_widget = 3
+            header_widget = 3,
+            pop_up
         }
 
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
         [DataMember]
-        public VisualRoleType Role { get; set; } = VisualRoleType.default_widget;
+        public VisualRoleType VisualRole { get; set; } = VisualRoleType.default_widget;
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
         [DataMember]
-        public BaseColorScheme Theme { get; set; } = BaseColorScheme.Dark;
+        public BaseColorScheme ColorScheme { get; set; } = BaseColorScheme.Dark;
 
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
         [DataMember] 
@@ -43,20 +44,20 @@ namespace DownUnder.UI.Widgets.DataTypes
         public Directions2D OutlineSides { get; set; } = Directions2D.UDLR;
         /// <summary> Represents the corners this <see cref="Widget"/> will snap to within the <see cref="IParent"/>. </summary>
 
-        public Color TextColor => Theme.GetText(Role).CurrentColor;
-        public Color BackgroundColor => Theme.GetBackground(Role).CurrentColor;
-        public Color OutlineColor => Theme.GetOutline(Role).CurrentColor;
+        public Color TextColor => ColorScheme.GetText(VisualRole).CurrentColor;
+        public Color BackgroundColor => ColorScheme.GetBackground(VisualRole).CurrentColor;
+        public Color OutlineColor => ColorScheme.GetOutline(VisualRole).CurrentColor;
 
         public void Update(float step, bool is_hovered)
         {
-            Theme.Update(Role, step, ChangeColorOnMouseOver, is_hovered);
+            ColorScheme.Update(VisualRole, step, ChangeColorOnMouseOver, is_hovered);
         }
 
         public object Clone()
         {
             GeneralVisualSettings c = new GeneralVisualSettings();
-            c.Role = Role;
-            c.Theme = (BaseColorScheme)Theme.Clone();
+            c.VisualRole = VisualRole;
+            c.ColorScheme = (BaseColorScheme)ColorScheme.Clone();
             c.ChangeColorOnMouseOver = ChangeColorOnMouseOver;
             c.DrawBackground = DrawBackground;
             c.DrawOutline = DrawOutline;

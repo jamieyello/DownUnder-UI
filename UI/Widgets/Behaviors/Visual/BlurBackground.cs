@@ -14,7 +14,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            //Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
             if (Parent.ParentWindow != null) LoadEffect(this, EventArgs.Empty);
         }
 
@@ -36,7 +35,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void LoadEffect(object sender, EventArgs args)
         {
-            //Parent.ParentWidget.DrawingMode = Widget.DrawingModeType.use_render_target;
             effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");
         }
 
@@ -48,8 +46,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             effect.CurrentTechnique.Passes[0].Apply();
             args.SpriteBatch.Draw(background, args.DrawingArea.ToRectangle(), args.AreaInRender.ToRectangle(), Color.White);
             args.RestartDefault();
-
-            //Parent.GraphicsDevice.Clear(Color.Blue);
         }
     }
 }

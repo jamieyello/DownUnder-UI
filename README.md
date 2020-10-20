@@ -9,11 +9,7 @@ Closer to usable than not, but still in development.
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
 
 ## Documentation/How to Use
-This project is a shared project library, meaning it does not compile without your project. An Azure DevOps package will be put up, but until then it can be added as a shared project reference directly.
-
-Note that the daily commits often times break things. Stable builds will be posted soon.
-
-And read the [getting started guide.](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up)
+This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) on instructions.
 
 ## Community
 

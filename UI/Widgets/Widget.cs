@@ -538,7 +538,7 @@ namespace DownUnder.UI.Widgets
                 if (value == null) return;
                 foreach (GroupBehaviorPolicy policy in _parent_widget_backing.Behaviors.GroupBehaviors.InheritedPolicies)
                 {
-                    if (Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(policy.Behavior)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
+                    if (Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(this, policy)) Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
                 }
                 OnParentWidgetSet?.Invoke(this, EventArgs.Empty);
             }
