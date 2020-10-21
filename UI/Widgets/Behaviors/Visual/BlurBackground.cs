@@ -14,6 +14,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
+            Parent.VisualSettings.DrawBackground = false;
             if (Parent.ParentWindow != null) LoadEffect(this, EventArgs.Empty);
         }
 
@@ -26,16 +27,17 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         protected override void DisconnectEvents()
         {
             Parent.OnDrawBackground -= ApplyEffect;
+            Parent.OnParentWindowSet -= LoadEffect;
         }
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            return new BlurBackground();
         }
 
         private void LoadEffect(object sender, EventArgs args)
         {
-            effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");
+            if (effect == null) effect = Parent.ParentWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");
         }
 
         private void ApplyEffect(object sender, WidgetDrawArgs args)

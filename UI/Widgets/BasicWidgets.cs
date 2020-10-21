@@ -20,14 +20,22 @@ namespace DownUnder.UI.Widgets
 {
     public static class BasicWidgets
     {
-        public static Widget GenericButton(string text)
+        public static Widget Button(string text)
         {
             Widget result = new Widget()
-                .WithAddedBehavior(new MouseGlow())
                 .WithAddedBehavior(new MakeMousePointer())
-                .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
-            result.VisualSettings.VisualRole = VisualRoleType.default_widget;
+                .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
+            result.VisualSettings.VisualRole = VisualRoleType.button;
 
+            return result;
+        }
+
+        public static Widget Label(string text)
+        {
+            Widget result = new Widget();
+            result.VisualSettings.DrawBackground = false;
+            result.VisualSettings.DrawOutline = false;
+            result.Behaviors.Add(new DrawText { Text = text, YTextPositioning = YTextPositioningPolicy.center });
             return result;
         }
 
@@ -35,7 +43,6 @@ namespace DownUnder.UI.Widgets
         {
             Widget result = new Widget { };
             result.VisualSettings.VisualRole = VisualRoleType.text_edit_widget;
-            result.Behaviors.Add(new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) });
             result.Behaviors.Add(new DrawEditableText { });
             var draw_text = result.Behaviors.GetFirst<DrawText>();
             draw_text.Text = text;
