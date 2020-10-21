@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
     public class MouseGlow : WidgetBehavior
     {
-        public override string[] BehaviorIDs { get => throw new NotImplementedException(); protected set => throw new NotImplementedException(); }
+        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
         Texture2D _circle;
         Point _position = new Point(0, 0);
         bool _follow = false;
@@ -37,30 +37,37 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
+            if (Parent.ParentWindow != null) LoadImage(Parent, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()
         {
             Parent.OnParentWindowSet += LoadImage;
-            Parent.OnDraw += DrawImage;
+            Parent.OnDrawBackground += DrawImage;
             Parent.OnUpdate += Update;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnParentWindowSet -= LoadImage;
-            Parent.OnDraw -= DrawImage;
+            Parent.OnDrawBackground -= DrawImage;
             Parent.OnUpdate -= Update;
         }
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            MouseGlow c = new MouseGlow();
+            c.Color = Color;
+            c.Diameter = Diameter;
+            c.ShineSpeed = ShineSpeed;
+            c.ShineOffSpeed = ShineOffSpeed;
+            c.ActivationPolicy = ActivationPolicy;
+            return c;
         }
 
         void LoadImage(object sender, EventArgs args)
         {
-            _circle = Parent.Content.Load<Texture2D>("DownUnder Native Content/Images/Blurred Circle 512");
+            if (_circle == null) _circle = Parent.Content.Load<Texture2D>("DownUnder Native Content/Images/Blurred Circle 512");
         }
 
         void Update(object sender, EventArgs args)

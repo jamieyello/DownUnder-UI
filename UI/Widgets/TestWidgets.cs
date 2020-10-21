@@ -51,14 +51,12 @@ This makes effects like blur and defraction possible and fairly easy to implemen
                 YTextPositioning = DrawText.YTextPositioningPolicy.center
             });
 
-            Widget login_button = BasicWidgets.GenericButton("Login");
+            Widget login_button = BasicWidgets.Button("Login");
             login_button.Position = new Point2(20, 20);
             login_button.Size = new Point2(100, 40);
             login_button.OnClick += (s, a) =>
             {
-                Widget login_popup = LoginWindow();
-                login_popup.VisualSettings.DrawBackground = false;
-                if (layout["Login Window"] == null) layout.Add(login_popup);
+                if (layout["Login Window"] == null) layout.Add(LoginWindow());
             };
 
             layout.Add(login_button);
@@ -69,24 +67,11 @@ This makes effects like blur and defraction possible and fairly easy to implemen
         public static Widget LoginWindow()
         {
             Widget window = new Widget { Size = new Point2(450, 320), Name = "Login Window" };
-            window.VisualSettings.DrawOutline = false;
-            window.VisualSettings.DrawBackground = false;
+            window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
+
             window.Behaviors.Add(new CenterContent());
-
-            //window.UserResizePolicy = Widget.UserResizePolicyType.allow;
-            //window.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
-            //window.OnParentWidgetSet += (s, a) => 
-            //{
-            //    Widget _this = (Widget)s;
-            //    _this.Area = _this.Area.WithCenter(_this.ParentWidget.Area);
-            //};
-
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
-            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
-            window.Behaviors.Add(MouseGlow.SubtleGray);
-            window.Behaviors.GetFirst<MouseGlow>().ActivationPolicy = MouseGlow.MouseGlowActivationPolicy.hovered_over;
-
-            window.VisualSettings.ChangeColorOnMouseOver = true;
+            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
 
             Widget username_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             Widget password_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
@@ -94,31 +79,14 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             username_entry.Area = new RectangleF(100, 0, 150, 40);
             password_entry.Area = new RectangleF(100, 60, 150, 40);
 
-            Widget username_label = new Widget { Position = new Point2(0, 0), Width = 60, Height = 40};
-            username_label.VisualSettings.DrawBackground = false;
-            username_label.VisualSettings.DrawOutline = false;
+            Widget username_label = BasicWidgets.Label("Username:");
+            username_label.Area = new RectangleF(0, 0, 60, 40);
 
-            Widget password_label = new Widget { Position = new Point2(0, 60), Width = 60, Height = 40 };
-            password_label.VisualSettings.DrawBackground = false;
-            password_label.VisualSettings.DrawOutline = false;
+            Widget password_label = BasicWidgets.Label("Password:");
+            password_label.Area= new RectangleF(0, 60, 60, 40 );
 
-            Widget login_button = BasicWidgets.GenericButton("Login");
+            Widget login_button = BasicWidgets.Button("Login");
             login_button.Area = new RectangleF(100, 120, 150, 40);
-
-            ShadingBehavior blue = ShadingBehavior.SubtleBlue;
-            blue.BorderVisibility = 0.3f;
-            blue.GradientVisibility = new Point2(0.2f, 0.2f);
-            window.Behaviors.Add(blue);
-            window.Behaviors.Add(new BlurBackground());
-
-            username_label.Behaviors.Add(new DrawText { Text = "Username: ", YTextPositioning = DrawText.YTextPositioningPolicy.center });
-            password_label.Behaviors.Add(new DrawText { Text = "Password: ", YTextPositioning = DrawText.YTextPositioningPolicy.center });
-
-            username_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
-            password_entry.Behaviors.GetFirst<DrawText>().ConstrainAreaToText = false;
-
-            window.OnDraw += DebugArea;
-            window.OnDrawOverlay += DebugArea2;
 
             window.Add(username_label);
             window.Add(password_label);
@@ -127,18 +95,6 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Add(login_button);
 
             return window;
-        }
-
-        private static void DebugArea(object sender, WidgetDrawArgs args)
-        {
-            Debug.WriteLine($"draw args " + args.AreaInRender);
-        }
-
-        private static void DebugArea2(object sender, WidgetDrawArgs args)
-        {
-            Debug.WriteLine($"draw overlay args " + args.AreaInRender);
-
-
         }
     }
 }

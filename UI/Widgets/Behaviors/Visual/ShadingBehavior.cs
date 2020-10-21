@@ -13,14 +13,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         [DataMember] public float ShadeVisibility = 1f;
         [DataMember] public Color ShadeColor { get; set; } = Color.Black;
-
         [DataMember] public float BorderWidth = 40f;
         [DataMember] public float BorderExponential = 1f;
         [DataMember] public float BorderVisibility = 1f;
-
         [DataMember] public Point2 GradientVisibility = new Point2(0.5f, 0.5f);
         [DataMember] public Point2 GradientExponential = new Point2(1f, 1f);
-
         [DataMember] public bool UseWidgetOutlineColor = false;
 
         protected override void Initialize() {
@@ -64,8 +61,16 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         public override object Clone() {
             ShadingBehavior c = new ShadingBehavior();
-            if (shading_effect != null) c.shading_effect = shading_effect.Clone();
+
+            c.ShadeVisibility = ShadeVisibility;
             c.ShadeColor = ShadeColor;
+            c.BorderWidth = BorderWidth;
+            c.BorderExponential = BorderExponential;
+            c.BorderVisibility = BorderVisibility;
+            c.GradientVisibility = GradientVisibility;
+            c.GradientExponential = GradientExponential;
+            c.UseWidgetOutlineColor = false;
+
             return c;
         }
 

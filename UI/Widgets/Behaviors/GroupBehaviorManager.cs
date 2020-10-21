@@ -32,7 +32,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             foreach (var policy_ in _behavior_policies)
             {
-                if (policy_.Behavior.GetType() == policy.Behavior.GetType()) return; // throw new System.Exception($"This {nameof(GroupBehaviorManager)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
+                if (policy_.Behavior.GetType() == policy.Behavior.GetType() && policy_.NecessaryVisualRole == policy.NecessaryVisualRole) return; // throw new System.Exception($"This {nameof(GroupBehaviorManager)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
             }
             _behavior_policies.Add(policy);
             ImplementPolicy(policy);

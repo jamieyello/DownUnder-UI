@@ -11,22 +11,22 @@ using static DownUnder.UI.Widgets.Widget;
 namespace DownUnder.UI.Widgets.DataTypes {
     [DataContract] public class BaseColorScheme : ICloneable {
         /// <summary> A reference to the widget that owns this palette. </summary>
-        [DataMember] public List<ElementColors> BackGroundColors { get; set; } = new List<ElementColors>();
-        [DataMember] public List<ElementColors> TextColors { get; set; } = new List<ElementColors>();
-        [DataMember] public List<ElementColors> OutlineColors { get; set; } = new List<ElementColors>();
-        [DataMember] public ElementColors SideInnerScrollBar { get; set; } = new ElementColors();
-        [DataMember] public ElementColors SideOuterScrollBar { get; set; } = new ElementColors();
-        [DataMember] public ElementColors BottomInnerScrollBar { get; set; } = new ElementColors();
-        [DataMember] public ElementColors BottomOuterScrollBar { get; set; } = new ElementColors();
+        [DataMember] public ElementColors[] BackGroundColors { get; set; }
+        [DataMember] public ElementColors[] TextColors { get; set; }
+        [DataMember] public ElementColors[] OutlineColors { get; set; } 
+        [DataMember] public ElementColors SideInnerScrollBar { get; set; }
+        [DataMember] public ElementColors SideOuterScrollBar { get; set; }
+        [DataMember] public ElementColors BottomInnerScrollBar { get; set; }
+        [DataMember] public ElementColors BottomOuterScrollBar { get; set; }
 
         public BaseColorScheme()=> SetDefaults();
         
         private void SetDefaults() {
-            foreach (VisualRoleType _ in Enum.GetValues(typeof(VisualRoleType))) {
-                BackGroundColors.Add(new ElementColors(Color.LimeGreen));
-                TextColors.Add(new ElementColors());
-                OutlineColors.Add(new ElementColors());
-            }
+            int length = Enum.GetValues(typeof(VisualRoleType)).Length;
+
+            BackGroundColors = new ElementColors[length];
+            TextColors = new ElementColors[length];
+            OutlineColors = new ElementColors[length];
         }
 
         public ElementColors GetBackground(VisualRoleType category) => BackGroundColors[(int)category];
@@ -57,26 +57,25 @@ namespace DownUnder.UI.Widgets.DataTypes {
 
         public object Clone() {
             BaseColorScheme c = new BaseColorScheme();
-            c.BackGroundColors.Clear();
-            c.OutlineColors.Clear();
-            c.TextColors.Clear();
 
-            foreach (VisualRoleType category in Enum.GetValues(typeof(VisualRoleType))) {
-                c.BackGroundColors.Add((ElementColors)BackGroundColors[(int)category].Clone());
-                c.TextColors.Add((ElementColors)TextColors[(int)category].Clone());
-                c.OutlineColors.Add((ElementColors)OutlineColors[(int)category].Clone());
+            int length = Enum.GetValues(typeof(VisualRoleType)).Length;
+            for (int i = 0; i < length; i++)
+            {
+                c.BackGroundColors[i] = (ElementColors)BackGroundColors[i]?.Clone();
+                c.TextColors[i] = (ElementColors)TextColors[i]?.Clone();
+                c.OutlineColors[i] = (ElementColors)OutlineColors[i]?.Clone();
             }
 
-            c.SideInnerScrollBar = (ElementColors)SideInnerScrollBar.Clone();
-            c.SideOuterScrollBar = (ElementColors)SideOuterScrollBar.Clone();
-            c.BottomInnerScrollBar = (ElementColors)BottomInnerScrollBar.Clone();
-            c.BottomOuterScrollBar = (ElementColors)BottomOuterScrollBar.Clone();
+            c.SideInnerScrollBar = (ElementColors)SideInnerScrollBar?.Clone();
+            c.SideOuterScrollBar = (ElementColors)SideOuterScrollBar?.Clone();
+            c.BottomInnerScrollBar = (ElementColors)BottomInnerScrollBar?.Clone();
+            c.BottomOuterScrollBar = (ElementColors)BottomOuterScrollBar?.Clone();
 
             return c;
         }
 
         /// <summary> The basic MonoGame-esque CornFlowerBlue theme. </summary>
-        public static BaseColorScheme Default {
+        private static BaseColorScheme Default {
             get {
                 BaseColorScheme r = new BaseColorScheme();
 
@@ -134,92 +133,50 @@ namespace DownUnder.UI.Widgets.DataTypes {
                 BaseColorScheme r = new BaseColorScheme();
 
                 // default_widget theme
-                ElementColors e = r.GetOutline(VisualRoleType.default_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                e = r.GetBackground(VisualRoleType.default_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.07f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(VisualRoleType.default_widget);
-                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
-                e.SpecialColor = Color.White;
-                e.HoveredColor = Color.White;
+                r.OutlineColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.6f), Color.Red.ShiftBrightness(0.2f));
+                r.BackGroundColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.07f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
+                r.TextColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.White.ShiftBrightness(0.75f), Color.White, Color.White);
 
                 // text_widget theme
-                e = r.GetOutline(VisualRoleType.text_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.35f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
-                e = r.GetBackground(VisualRoleType.text_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.1f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(VisualRoleType.text_widget);
-                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
-                e.SpecialColor = Color.White;
-                e.HoveredColor = Color.White;
+                r.OutlineColors[(int)VisualRoleType.text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.5f), Color.Red.ShiftBrightness(0.2f));
+                r.BackGroundColors[(int)VisualRoleType.text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.1f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
+                r.TextColors[(int)VisualRoleType.text_widget] = new ElementColors(Color.White, Color.White.ShiftBrightness(0.75f), Color.White);
 
                 // text_edit_widget theme
-                e = r.GetOutline(VisualRoleType.text_edit_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.6f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.6f);
-                e = r.GetBackground(VisualRoleType.text_edit_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.15f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(VisualRoleType.text_edit_widget);
-                e.DefaultColor = Color.White.ShiftBrightness(0.75f);
-                e.SpecialColor = Color.White;
-                e.HoveredColor = Color.White;
+                r.OutlineColors[(int)VisualRoleType.text_edit_widget] = new ElementColors(Color.Black.ShiftBrightness(1.6f), Color.Black.ShiftBrightness(1.6f), Color.Red.ShiftBrightness(0.2f));
+                r.BackGroundColors[(int)VisualRoleType.text_edit_widget] = new ElementColors(Color.Black.ShiftBrightness(1.15f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
+                r.TextColors[(int)VisualRoleType.text_edit_widget] = new ElementColors(Color.White.ShiftBrightness(0.75f), Color.White, Color.White);
 
                 // header_widget theme
-                e = r.GetOutline(VisualRoleType.header_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.2f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.2f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.5f);
-                e = r.GetBackground(VisualRoleType.header_widget);
-                e.DefaultColor = Color.Black.ShiftBrightness(1.3f);
-                e.SpecialColor = Color.Red.ShiftBrightness(0.4f);
-                e.HoveredColor = Color.Black.ShiftBrightness(1.15f);
-                e = r.GetText(VisualRoleType.header_widget);
-                e.DefaultColor = Color.Black;
-                e.SpecialColor = Color.White;
-                e.HoveredColor = Color.White.ShiftBrightness(0.75f);
+                r.OutlineColors[(int)VisualRoleType.header_widget] = new ElementColors(Color.Black.ShiftBrightness(1.2f), Color.Black.ShiftBrightness(1.5f), Color.Red.ShiftBrightness(0.2f));
+                r.BackGroundColors[(int)VisualRoleType.header_widget] = new ElementColors(Color.Black.ShiftBrightness(1.3f), Color.Red.ShiftBrightness(0.4f), Color.Black.ShiftBrightness(1.15f));
+                r.TextColors[(int)VisualRoleType.header_widget] = new ElementColors(Color.Black, Color.White.ShiftBrightness(0.75f), Color.White);
 
-                r.SideOuterScrollBar.DefaultColor = new Color(0, 0, 0, 0);
-                r.SideOuterScrollBar.SpecialColor = new Color(0, 0, 0, 0);
-                r.SideOuterScrollBar.HoveredColor = new Color(0, 0, 0, 70);
-
-                r.SideInnerScrollBar.DefaultColor = new Color(100, 100, 100, 100);
-                r.SideInnerScrollBar.SpecialColor = new Color(255, 255, 255, 255);
-                r.SideInnerScrollBar.HoveredColor = new Color(200, 200, 200, 100);
+                r.SideOuterScrollBar = new ElementColors(new Color(0, 0, 0, 0), new Color(0, 0, 0, 70), new Color(0, 0, 0, 0));
+                r.SideInnerScrollBar = new ElementColors(new Color(100, 100, 100, 100), new Color(200, 200, 200, 100), new Color(255, 255, 255, 255));
 
                 r.BottomInnerScrollBar = (ElementColors)r.SideInnerScrollBar.Clone();
                 r.BottomOuterScrollBar = (ElementColors)r.SideOuterScrollBar.Clone();
 
-                ElementColors default_colors = r.GetBackground(VisualRoleType.default_widget);
-                r.SetEmptyElementColors(default_colors);
+                r.SetEmptyElementColors(VisualRoleType.default_widget);
                 
                 return r;
             }
         }
 
-        public void SetEmptyElementColors(ElementColors default_colors)
+        public void SetEmptyElementColors(VisualRoleType replacement)
+        {
+            SetEmptyElementColors(OutlineColors[(int)replacement], BackGroundColors[(int)replacement], TextColors[(int)replacement]);
+        }
+
+        public void SetEmptyElementColors(ElementColors outline, ElementColors background, ElementColors text)
         {
             foreach (var enum_ in Enum.GetValues(typeof(VisualRoleType)))
             {
-                if (BackGroundColors[(int)(VisualRoleType)enum_] == null) BackGroundColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
-                if (OutlineColors[(int)(VisualRoleType)enum_] == null) OutlineColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
-                if (TextColors[(int)(VisualRoleType)enum_] == null) TextColors[(int)(VisualRoleType)enum_] = (ElementColors)default_colors.Clone();
+                if (BackGroundColors[(int)(VisualRoleType)enum_] == null) BackGroundColors[(int)(VisualRoleType)enum_] = (ElementColors)background.Clone();
+                if (OutlineColors[(int)(VisualRoleType)enum_] == null) OutlineColors[(int)(VisualRoleType)enum_] = (ElementColors)outline.Clone();
+                if (TextColors[(int)(VisualRoleType)enum_] == null) TextColors[(int)(VisualRoleType)enum_] = (ElementColors)text.Clone();
             }
-
-            SideInnerScrollBar = SideInnerScrollBar ?? (ElementColors)default_colors.Clone();
-            SideOuterScrollBar = SideOuterScrollBar ?? (ElementColors)default_colors.Clone();
-            BottomInnerScrollBar = BottomInnerScrollBar ?? (ElementColors)default_colors.Clone();
-            BottomOuterScrollBar = BottomOuterScrollBar ?? (ElementColors)default_colors.Clone();
         }
     }
 }

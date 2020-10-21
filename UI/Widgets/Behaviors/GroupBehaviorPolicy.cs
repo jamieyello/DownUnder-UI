@@ -27,5 +27,10 @@ namespace DownUnder.UI.Widgets.Behaviors
             if (NecessaryVisualRole != null) c.NecessaryVisualRole = NecessaryVisualRole.Value;
             return c;
         }
+
+        public bool ConflictsWith(GroupBehaviorPolicy policy)
+        {
+            return policy.Behavior.GetType() == Behavior.GetType() && policy.NecessaryVisualRole == NecessaryVisualRole;
+        }
     }
 }
