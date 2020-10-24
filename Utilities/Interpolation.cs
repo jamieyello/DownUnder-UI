@@ -13,6 +13,12 @@ namespace DownUnder.Utility
         squared,
         /// <summary> y = x * x * x </summary>
         cubed,
+        /// <summary> y = x^4 </summary>
+        exponential4,
+        /// <summary> y = x^5</summary>
+        exponential5,
+        /// <summary> y = x^6 </summary>
+        exponential6,
         /// <summary> y = sin(x * π / 2) (A stretched sin wave where the bottom x/y is at 0 and the top x/y is at 1, recommended) </summary>
         fake_sin,
         /// <summary> y = x / y  </summary>
@@ -110,6 +116,18 @@ namespace DownUnder.Utility
 
                 case InterpolationType.cubed:
                     y = x * x * x;
+                    break;
+
+                case InterpolationType.exponential4:
+                    y = x * x * x * x;
+                    break;
+
+                case InterpolationType.exponential5:
+                    y = x * x * x * x * x;
+                    break;
+
+                case InterpolationType.exponential6:
+                    y = x * x * x * x * x * x;
                     break;
 
                 case InterpolationType.fake_sin:

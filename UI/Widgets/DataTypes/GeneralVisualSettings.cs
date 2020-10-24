@@ -17,7 +17,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             text_edit_widget = 2,
             header_widget = 3,
             pop_up = 4,
-            button = 5
+            button = 5,
+            background = 6
         }
 
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>

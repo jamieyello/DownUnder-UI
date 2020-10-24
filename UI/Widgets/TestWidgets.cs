@@ -15,7 +15,8 @@ namespace TestContent
     public static class TestWidgets
     {
         public static Widget CurrentTest =>
-            LoginLayoutEffects();
+            //LoginLayoutEffects();
+            BGAnimationTest();
 
         public static Widget CenterTest()
         {
@@ -95,6 +96,14 @@ This makes effects like blur and defraction possible and fairly easy to implemen
             window.Add(login_button);
 
             return window;
+        }
+
+        public static Widget BGAnimationTest()
+        {
+            Widget result = new Widget();
+            result.Behaviors.Add(new DrawText { Text = "Click me", XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
+            result.Behaviors.Add(new Neurons());
+            return result;
         }
     }
 }

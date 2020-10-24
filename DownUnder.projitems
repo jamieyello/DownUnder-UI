@@ -65,8 +65,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MakeMousePointer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\MouseGlow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\Neurons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NeuronsObjects\NeuronsCircle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NewBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxArrayContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProximityArray.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />

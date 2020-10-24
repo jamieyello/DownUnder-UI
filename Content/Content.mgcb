@@ -43,6 +43,18 @@
 /processorParam:TextureFormat=Color
 /build:DownUnder Native Content/Images/Blurred Circle 512.png
 
+#begin DownUnder Native Content/Images/Tiny Circle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:DownUnder Native Content/Images/Tiny Circle.png
+
 #begin DownUnder Native Content/SpriteFonts/Default Font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
