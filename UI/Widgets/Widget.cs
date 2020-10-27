@@ -76,7 +76,7 @@ namespace DownUnder.UI.Widgets
         bool _has_updated;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
-        const int _MAXIMUM_WIDGET_SIZE = 2048;
+        public static int MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         const int _WAIT_TIME = 5;
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
@@ -1307,7 +1307,7 @@ namespace DownUnder.UI.Widgets
         {
             if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
             {
-                if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, _MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
+                if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
                 return;
             }
 
@@ -1331,10 +1331,10 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
+            if (Math.Max((int)size.X, (int)size.Y) > MAXIMUM_WIDGET_SIZE)
             {
-                size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
-                Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
+                size = size.Min(new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE));
+                Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
             }
 
             if (_render_target != null)

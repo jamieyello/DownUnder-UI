@@ -6,67 +6,68 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
-    class ProximityArray<T> : IEnumerable<ProxArrayContainer<T>>
+    public class ProxList// : IEnumerable<ProxListPosition>
     {
-        List<ProxArrayContainer<T>>[,] groups;
-        int _width;
-        int _height;
-        float _interact_diameter;
+        List<ProxListPosition>[,] groups;
+        public readonly int Width;
+        public readonly int _height;
+        public readonly float InteractDiameter;
 
         public object Current => throw new NotImplementedException();
 
-        public ProximityArray(float interact_diameter, float width, float height)
+        public ProxList(float interact_diameter, float width, float height)
         {
-            _interact_diameter = interact_diameter;
-            _width = (int)(width / interact_diameter) + 1;
+            InteractDiameter = interact_diameter;
+            Width = (int)(width / interact_diameter) + 1;
             _height = (int)(height / interact_diameter) + 1;
-            groups = new List<ProxArrayContainer<T>>[_width, _height];
+            groups = new List<ProxListPosition>[Width, _height];
 
-            for (int x = 0; x < _width; x++)
+            for (int x = 0; x < Width; x++)
             {
-                for (int y = 0; y < _height; y++) groups[x, y] = new List<ProxArrayContainer<T>>();
+                for (int y = 0; y < _height; y++) groups[x, y] = new List<ProxListPosition>();
             }
         }
 
-        public List<ProxArrayContainer<T>> GetNeighbors(ProxArrayContainer<T> item)
+        public List<ProxListPosition> GetNeighbors(ProxListPosition item)
         {
-            int x = (int)(item.Position.X / _interact_diameter);
-            int y = (int)(item.Position.Y / _interact_diameter);
-            List<ProxArrayContainer<T>> result = new List<ProxArrayContainer<T>>();
+            int x = (int)(item.Position.X / InteractDiameter - 0.5f);
+            int y = (int)(item.Position.Y / InteractDiameter - 0.5f);
+            List<ProxListPosition> result = new List<ProxListPosition>();
 
-            if (x > 0 && y > 0 && x < _width && y < _height) result.AddRange(groups[x, y]);
+            if (x > 0 && y > 0 && x < Width && y < _height) result.AddRange(groups[x, y]);
             x++;
-            if (x > 0 && y > 0 && x < _width && y < _height) result.AddRange(groups[x, y]);
+            if (x > 0 && y > 0 && x < Width && y < _height) result.AddRange(groups[x, y]);
             x--;
             y++;
-            if (x > 0 && y > 0 && x < _width && y < _height) result.AddRange(groups[x, y]);
+            if (x > 0 && y > 0 && x < Width && y < _height) result.AddRange(groups[x, y]);
             x++;
-            if (x > 0 && y > 0 && x < _width && y < _height) result.AddRange(groups[x, y]);
+            if (x > 0 && y > 0 && x < Width && y < _height) result.AddRange(groups[x, y]);
             
             return result;
         }
 
-        public ProxArrayContainer<T> Add(T item, Point2 position)
+        public ProxListPosition Add(Point2 position)
         {
-            int x = (int)(position.X / _interact_diameter);
-            int y = (int)(position.Y / _interact_diameter);
-            groups[x, y].Add(new ProxArrayContainer<T>(this, item, position));
+            int x = (int)position.X / (int)InteractDiameter;
+            int y = (int)position.Y / (int)InteractDiameter;
+            var result = new ProxListPosition(this, position);
+            groups[x, y].Add(result);
             return groups[x, y][groups[x, y].Count - 1];
         }
 
-        public void Remove(ProxArrayContainer<T> item)
+        public void Remove(ProxListPosition item)
         {
-            if (!groups[(int)(item.Position.X / _interact_diameter), (int)(item.Position.Y / _interact_diameter)].Remove(item)) throw new Exception("Failed to remove given item.");
+            if (!groups[(int)(item.Position.X / InteractDiameter), (int)(item.Position.Y / InteractDiameter)].Remove(item)) throw new Exception("Failed to remove given item.");
         }
 
-        internal Point2 UpdatePosition(ProxArrayContainer<T> item, Point2 position)
+        internal Point2 UpdatePosition(ProxListPosition item, Point2 position)
         {
             if (position == item.Position) return position;
 
-            int start_x = (int)(item.Position.X / _interact_diameter);
-            int start_y = (int)(item.Position.Y / _interact_diameter);
-            int new_x = (int)(position.X / _interact_diameter);
-            int new_y = (int)(position.Y / _interact_diameter);
+            int start_x = (int)item.Position.X / (int)InteractDiameter;
+            int start_y = (int)item.Position.Y / (int)InteractDiameter;
+            int new_x = (int)position.X / (int)InteractDiameter;
+            int new_y = (int)position.Y / (int)InteractDiameter;
 
             if (start_x == new_x && start_y == new_y) return position;
             if (!groups[start_x, start_y].Remove(item)) throw new Exception("Error updating position.");
@@ -75,23 +76,30 @@ namespace DownUnder.UI.Widgets.DataTypes
             return position;
         }
 
-        public IEnumerator<ProxArrayContainer<T>> GetEnumerator()
+        internal void AddToArray(ProxListPosition item, Point2 position)
         {
-            return GetEnumerator();
+            int new_x = (int)position.X / (int)InteractDiameter;
+            int new_y = (int)position.Y / (int)InteractDiameter;
+            groups[new_x, new_y].Add(item);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            for (int x = 0; x < _width; x++)
-            {
-                for (int y = 0; y < _height; y++)
-                {
-                    for (int i = 0; i < groups[x, y].Count; i++)
-                    {
-                        yield return groups[x, y][i];
-                    }
-                }
-            }
-        }
+        //public IEnumerator<ProxListPosition> GetEnumerator()
+        //{
+        //    return GetEnumerator();
+        //}
+
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    for (int x = 0; x < Width; x++)
+        //    {
+        //        for (int y = 0; y < _height; y++)
+        //        {
+        //            for (int i = 0; i < groups[x, y].Count; i++)
+        //            {
+        //                yield return groups[x, y][i];
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
