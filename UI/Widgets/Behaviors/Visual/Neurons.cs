@@ -1,5 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -18,15 +19,17 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         Texture2D circle_t;
         ProxList prox_list;
         List<NeuronsCircle> circles = new List<NeuronsCircle>();
-
         ProxListPosition cursor;
         List<ProxListPosition> neighbors = new List<ProxListPosition>();
         ConcurrentDictionary<RectangleF, float> lines = new ConcurrentDictionary<RectangleF, float>();
-        float proximity = 100f;
+        
+        public float Proximity = 50f;
+        public bool DrawCircles = true;
+        public bool UseSingleThread = false;
 
         protected override void Initialize()
         {
-            prox_list = new ProxList(proximity, Widget.MAXIMUM_WIDGET_SIZE, Widget.MAXIMUM_WIDGET_SIZE);
+            prox_list = new ProxList(Proximity, Widget.MAXIMUM_WIDGET_SIZE, Widget.MAXIMUM_WIDGET_SIZE);
             cursor = prox_list.Add(new Point2());
             if (Parent.ParentWindow != null) LoadContent(this, EventArgs.Empty);
         }
@@ -54,16 +57,26 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void Update(object sender, EventArgs args)
         {
-            Parallel.ForEach(circles, (circle) => circle.Update());
+            // Update circle positions
+            for (int i = 0; i < circles.Count; i++) circles[i].Update();
 
-            // Make lines
+            // Update connection lines
             lines.Clear();
-
-            Parallel.ForEach(circles, (circle) => 
+            if (UseSingleThread)
             {
-                foreach (var neighbor in prox_list.GetNeighbors(circle.circle_position))
+                for (int i = 0; i < circles.Count; i++) UpdateCircleLines(circles[i]);
+            }
+            else Parallel.ForEach(circles, (circle) => UpdateCircleLines(circle));
+        }
+
+        private void UpdateCircleLines(NeuronsCircle circle)
+        {
+            foreach (var neighbor in prox_list.GetNeighbors(circle.circle_position))
+            {
+                // use x * y to determine the first point in the rectangle (smaller first) to avoid duplicate lines
+                float transparency = 1f - (float)circle.circle_position.Position.DistanceFrom(neighbor.Position) / Proximity;
+                if (transparency > 0f)
                 {
-                    // use x * y to determine the first point in the rectangle (smaller first) to avoid duplicate lines
                     if (circle.circle_position.Position.Product() < neighbor.Position.Product())
                     {
                         lines.TryAdd(new RectangleF
@@ -72,7 +85,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
                             circle.circle_position.Y,
                             neighbor.X,
                             neighbor.Y
-                            ), (float)circle.circle_position.Position.DistanceFrom(neighbor.Position) / proximity / 2f);
+                            ), transparency);
                     }
                     else
                     {
@@ -82,25 +95,33 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
                             neighbor.Y,
                             circle.circle_position.X,
                             circle.circle_position.Y
-                            ), (float)circle.circle_position.Position.DistanceFrom(neighbor.Position) / proximity / 2f);
+                            ), transparency);
                     }
                 }
-            });
+            }
         }
 
         void Draw(object sender, WidgetDrawArgs args)
         {
+            //args.RestartDefault();
             foreach (var neighbor in neighbors)
             {
                 args.SpriteBatch.DrawLine(cursor.Position, neighbor.Position, Color.White);
             }
-            foreach (var line in lines) args.SpriteBatch.DrawLine(line.Key.Position, line.Key.Size, Color.Lerp(Color.Red, Color.Transparent, line.Value));
-            foreach (var circle in circles) circle.Draw(circle_t, args);
+            foreach (var line in lines) args.SpriteBatch.DrawLine(line.Key.Position, line.Key.Size, Color.Lerp(Color.Transparent, Color.Red, line.Value));
+            if (DrawCircles) foreach (var circle in circles) circle.Draw(circle_t, args);
         }
 
         void AddCircle(object sender, EventArgs args)
         {
-            for (int i = 0; i < 50; i++) circles.Add(NeuronsCircle.RandomCircle(prox_list, Parent.Area.SizeOnly()));
+            RectangleF area = Parent.Area.SizeOnly().ResizedBy(-120f, Directions2D.All);
+
+            for (int i = 0; i < 50; i++) circles.Add(NeuronsCircle.RandomCircle(prox_list, area));
+        }
+
+        public void AddRandomCircle(RectangleF area)
+        {
+            circles.Add(NeuronsCircle.RandomCircle(prox_list, area));
         }
 
         public override object Clone()

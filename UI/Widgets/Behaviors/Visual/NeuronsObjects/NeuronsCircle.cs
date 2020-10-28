@@ -43,7 +43,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects
             float x_offset = (random.Next(10000) / 10000f) * list.InteractDiameter * 2 - list.InteractDiameter;
             float y_offset = (random.Next(10000) / 10000f) * list.InteractDiameter * 2 - list.InteractDiameter;
 
-            Vector2 circle_origin = new Vector2(random.Next((int)area.Width), random.Next((int)area.Height));
+            Vector2 circle_origin = new Vector2(random.Next((int)area.Width), random.Next((int)area.Height)) + area.Position;
             Vector2 circle_offset = new Vector2(x_offset, y_offset);
             Vector2 gravity_force = new Vector2(0.0005f + random.Next(1000) * 0.00001f, 0.0005f + random.Next(1000) * 0.00001f);
 
