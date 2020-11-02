@@ -349,7 +349,7 @@ namespace DownUnder.UI
             if (!InputState.PrimaryClick) DraggingObject = null;
             InputState.UpdateAll(this, game_time);
 
-            //Console.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
+            //Debug.WriteLine("FPS: " + (1 / game_time.ElapsedGameTime.TotalSeconds));
 
             InputText.Clear();
             CommandText.Clear();

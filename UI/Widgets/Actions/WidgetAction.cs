@@ -49,7 +49,7 @@ namespace DownUnder.UI.Widgets.Actions {
         public WidgetAction OverrodeAction { get; internal set; }
 
         public bool HasParent => Parent != null;
-        public bool IsCompleted { get; protected set; } = false;
+        public bool IsCompleted { get; private set; } = false;
 
         public bool IsDuplicate(WidgetAction action)
         {

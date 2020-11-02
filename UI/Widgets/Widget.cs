@@ -74,9 +74,11 @@ namespace DownUnder.UI.Widgets
         WidgetUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
         bool _has_updated;
+        /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
+        bool _trigger_first_update = true;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
-        const int _MAXIMUM_WIDGET_SIZE = 2048;
+        public static int MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         const int _WAIT_TIME = 5;
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
@@ -932,6 +934,11 @@ namespace DownUnder.UI.Widgets
             VisualSettings.Update(game_time.GetElapsedSeconds(), IsPrimaryHovered);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
+            if (_trigger_first_update)
+            {
+                OnFirstUpdate?.Invoke(this, EventArgs.Empty);
+                _trigger_first_update = false;
+            }
             foreach (Widget widget in new WidgetList(null, Children)) widget.UpdateGroupEvents(game_time);
         }
 
@@ -1150,6 +1157,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
         public event EventHandler OnUpdate;
+        /// <summary> Invoked when this <see cref="Widget"/> is first updated. </summary>
+        public event EventHandler OnFirstUpdate;
         /// <summary> Invoked when this <see cref="Widget"/> is selected. </summary>
         public event EventHandler OnSelection;
         /// <summary> Invoked when this <see cref="Widget"/> is un-selected. </summary>
@@ -1307,7 +1316,7 @@ namespace DownUnder.UI.Widgets
         {
             if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
             {
-                if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, _MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
+                if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
                 return;
             }
 
@@ -1331,10 +1340,10 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            if (Math.Max((int)size.X, (int)size.Y) > _MAXIMUM_WIDGET_SIZE)
+            if (Math.Max((int)size.X, (int)size.Y) > MAXIMUM_WIDGET_SIZE)
             {
-                size = size.Min(new Point2(_MAXIMUM_WIDGET_SIZE, _MAXIMUM_WIDGET_SIZE));
-                Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {_MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
+                size = size.Min(new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE));
+                Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
             }
 
             if (_render_target != null)

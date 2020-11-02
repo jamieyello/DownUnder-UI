@@ -30,6 +30,16 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
+        public static Widget ImageButton(string asset_name, float side_spacing)
+        {
+            Widget result = new Widget()
+                .WithAddedBehavior(new MakeMousePointer())
+                .WithAddedBehavior(new DrawCenteredImage(asset_name, side_spacing));
+            result.VisualSettings.VisualRole = VisualRoleType.button;
+
+            return result;
+        }
+
         public static Widget Label(string text)
         {
             Widget result = new Widget();
@@ -122,6 +132,16 @@ namespace DownUnder.UI.Widgets
             else dropdown.Behaviors.Add(pop_in_out_behavior);
 
             return dropdown;
+        }
+
+        public static Widget WindowHandle()
+        {
+            Widget result = new Widget();
+            Widget x_button = BasicWidgets.ImageButton("DownUnder Native Content/Images/Window X", 5f);
+            result.Add(x_button);
+            result.MinimumHeight = 50f;
+
+            return result;
         }
     }
 }

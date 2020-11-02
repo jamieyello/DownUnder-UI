@@ -53,6 +53,11 @@ namespace DownUnder
             return new Point2(p.X / scale, p.Y / scale);
         }
 
+        public static float Product(this Point2 p)
+        {
+            return p.X * p.Y;
+        }
+
         public static double DistanceFrom(this Point2 p1, Point2 p2)
         {
             return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));

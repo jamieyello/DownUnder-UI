@@ -87,7 +87,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             if (this is IEditorDisplaySubBehaviors b_this)
             {
-                result.Behaviors.Add(new Behaviors.Functional.TriggerAction(
+                result.Behaviors.Add(new TriggerAction(
                     nameof(Widget.OnDoubleClick),
                     new Actions.Functional.AddMainWidget()
                     {

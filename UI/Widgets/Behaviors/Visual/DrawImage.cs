@@ -1,49 +1,57 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    public class DrawImage : WidgetBehavior
+    public class DrawCenteredImage : WidgetBehavior
     {
-        public Texture2D Texture { get; set; }
-        public Vector2 Position { get; set; }
-        public Rectangle? DestinationRectangle;
-        public Rectangle? SourceRectangle { get; set; }
-        public Vector2? Origin;
-        public float Rotation = 0f;
-        public Vector2? Scale;
-        public Color? Color;
-        public SpriteEffects SpriteEffects = SpriteEffects.None;
-        public float LayerDepth = 0f;
-        public bool CloneImage { get; set; } = false;
+        string image;
+        Texture2D texture;
+        float side_spacing;
+
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
+        public DrawCenteredImage(string image, float side_spacing)
+        {
+            this.image = image;
+            this.side_spacing = side_spacing;
+        }
+
+        protected override void Initialize()
+        {
+            if (Parent.ParentWindow != null) Load(this, EventArgs.Empty);
+        }
+
+        protected override void ConnectEvents()
+        {
+            Parent.OnParentWindowSet += Load;
+            Parent.OnDraw += Draw;
+        }
+
+        protected override void DisconnectEvents()
+        {
+            Parent.OnParentWindowSet -= Load;
+            Parent.OnDraw -= Draw;
+        }
 
         public override object Clone()
         {
             throw new NotImplementedException();
         }
 
-        protected override void Initialize()
+        void Load(object sender, EventArgs args)
         {
-            
+            if (texture == null) texture = Parent.Content.Load<Texture2D>(image);
+            Parent.MinimumSize = texture.Bounds.ToRectangleF().ResizedBy(side_spacing).Size;
         }
 
-        protected override void ConnectEvents()
+        private void Draw(object sender, WidgetDrawArgs args)
         {
-            Parent.OnDraw += Draw;
-        }
+            Rectangle draw_area = texture.Bounds.ToRectangleF().WithCenter(args.DrawingArea).ToRectangle();
 
-        protected override void DisconnectEvents()
-        {
-            Parent.OnDraw -= Draw;
-        }
-
-        private void Draw(object sender, EventArgs args)
-        {
-
-            //Parent.SpriteBatch.Draw(Texture,);
+            Parent.SpriteBatch.Draw(texture, draw_area, Color.White);
         }
     }
 }

@@ -85,8 +85,8 @@ namespace DownUnder {
         }
 
         
-        public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D directions, Point2? minimum_size = null) =>
-            r.ResizedBy(new BorderSize(amount, directions), minimum_size);
+        public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D? directions = null, Point2? minimum_size = null) =>
+            r.ResizedBy(new BorderSize(amount, directions ?? Directions2D.All), minimum_size);
 
         public static RectangleF ResizedBy(this RectangleF r, RectanglePart part)
         {
