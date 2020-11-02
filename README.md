@@ -6,10 +6,10 @@ Closer to usable than not, but still in development.
 ## Features
  - Familiar functionality and workflow with Windows Forms and Qt.
  - Built from the ground up with modern transitions, animations, and shaders in mind.
- - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-3,-Creating-WidgetBehaviors) that can add any functionality.
+ - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Native-WidgetBehaviors) that can add any functionality.
 
 ## Documentation/How to Use
-This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) on instructions.
+This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [Wiki](https://github.com/jamieyello/DownUnder-UI/wiki) for documentaion, and the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) for a short introduction.
 
 ## Community
 
