@@ -61,13 +61,14 @@ namespace TestContent
 
             layout.Add(login_button);
             layout.Behaviors.Add(new Neurons());
+            layout.Behaviors.Add(ShadingBehavior.GlowingGreen);
 
             return layout;
         }
 
         public static Widget LoginWindow()
         {
-            Widget window = new Widget { Size = new Point2(450, 320), Name = "Login Window" };
+            Widget window = new Widget { Size = new Point2(800, 600), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
             
             window.Behaviors.Add(new CenterContent());

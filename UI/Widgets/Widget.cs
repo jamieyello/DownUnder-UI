@@ -74,6 +74,8 @@ namespace DownUnder.UI.Widgets
         WidgetUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
         bool _has_updated;
+        /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
+        bool _trigger_first_update = true;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         public static int MAXIMUM_WIDGET_SIZE = 2048;
@@ -932,6 +934,11 @@ namespace DownUnder.UI.Widgets
             VisualSettings.Update(game_time.GetElapsedSeconds(), IsPrimaryHovered);
             Actions.UpdateQuedActions();
             OnUpdate?.Invoke(this, EventArgs.Empty);
+            if (_trigger_first_update)
+            {
+                OnFirstUpdate?.Invoke(this, EventArgs.Empty);
+                _trigger_first_update = false;
+            }
             foreach (Widget widget in new WidgetList(null, Children)) widget.UpdateGroupEvents(game_time);
         }
 
@@ -1150,6 +1157,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDrawNoClip;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
         public event EventHandler OnUpdate;
+        /// <summary> Invoked when this <see cref="Widget"/> is first updated. </summary>
+        public event EventHandler OnFirstUpdate;
         /// <summary> Invoked when this <see cref="Widget"/> is selected. </summary>
         public event EventHandler OnSelection;
         /// <summary> Invoked when this <see cref="Widget"/> is un-selected. </summary>

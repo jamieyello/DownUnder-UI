@@ -21,8 +21,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         public ProxList(float interact_diameter, float width, float height)
         {
             InteractDiameter = interact_diameter;
-            Width = (int)(width / interact_diameter) + 1;
-            Height = (int)(height / interact_diameter) + 1;
+            Width = (int)(width / interact_diameter) + 5;
+            Height = (int)(height / interact_diameter) + 5;
             groups = new List<ProxListPosition>[Width, Height];
 
             for (int x = 0; x < Width; x++)

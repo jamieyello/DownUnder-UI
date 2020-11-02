@@ -48,17 +48,15 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects
             Vector2 gravity_force = new Vector2(0.0005f + random.Next(1000) * 0.00001f, 0.0005f + random.Next(1000) * 0.00001f);
 
             NeuronsCircle result = new NeuronsCircle(list, circle_origin, circle_offset, gravity_force);
-            int mixup = random.Next(400);
-            for (int i = 0; i < mixup; i++) result.Update();
+            int mixup = random.Next(100);
+            for (int i = 0; i < mixup; i++) result.Update(0.5f);
             return result;
         }
 
-        public void Update()
+        public void Update(float step)
         {
-            float speed = 0.1f;
-
-            circle_momentum -= circle_offset * gravity_force * speed;
-            circle_offset += circle_momentum * speed;
+            circle_momentum -= circle_offset * gravity_force * step;
+            circle_offset += circle_momentum * step;
             circle_position.Position = circle_origin + circle_offset;
         }
 

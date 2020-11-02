@@ -86,5 +86,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             BorderWidth = 10f,
             GradientVisibility = new Point2(0.25f, 0.25f)
         };
+
+        public static ShadingBehavior GlowingGreen => new ShadingBehavior()
+        {
+            ShadeColor = Color.LimeGreen.ShiftBrightness(0.3f),
+            BorderVisibility = 0.3f,
+            BorderWidth = 10f,
+            GradientVisibility = new Point2(0.25f, 0.25f)
+        };
     }
 }

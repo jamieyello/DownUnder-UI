@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +23,22 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         ProxListPosition cursor;
         List<ProxListPosition> neighbors = new List<ProxListPosition>();
         ConcurrentDictionary<RectangleF, float> lines = new ConcurrentDictionary<RectangleF, float>();
-        
-        public float Proximity = 50f;
-        public bool DrawCircles = true;
+        int circle_count = 900;
+
+        public float Proximity = 150f;
+        public bool DrawCircles = false;
         public bool UseSingleThread = false;
+        public float LineThickness = 2f;
+        public Color LineColor = Color.LimeGreen.ShiftBrightness(0.3f);
+        public Point2 Offset = new Point2(-200f,-200f);
+        public float circle_speed = 0.015f;
 
         protected override void Initialize()
         {
             prox_list = new ProxList(Proximity, Widget.MAXIMUM_WIDGET_SIZE, Widget.MAXIMUM_WIDGET_SIZE);
             cursor = prox_list.Add(new Point2());
+            RectangleF area = new RectangleF(0, 0, 1920 + 400, 1080 + 400); //Parent.Area.SizeOnly().ResizedBy(100f, Directions2D.DR);
+            for (int i = 0; i < circle_count; i++) circles.Add(NeuronsCircle.RandomCircle(prox_list, area));
             if (Parent.ParentWindow != null) LoadContent(this, EventArgs.Empty);
         }
 
@@ -39,7 +47,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             Parent.OnParentWindowSet += LoadContent;
             Parent.OnUpdate += Update;
             Parent.OnDraw += Draw;
-            Parent.OnClick += AddCircle;
         }
 
         protected override void DisconnectEvents()
@@ -47,7 +54,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             Parent.OnParentWindowSet -= LoadContent;
             Parent.OnUpdate -= Update;
             Parent.OnDraw -= Draw;
-            Parent.OnClick -= AddCircle;
         }
 
         void LoadContent(object sender, EventArgs args)
@@ -57,8 +63,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void Update(object sender, EventArgs args)
         {
+            Debug.WriteLine("Point count: " + circles.Count);
+
             // Update circle positions
-            for (int i = 0; i < circles.Count; i++) circles[i].Update();
+            for (int i = 0; i < circles.Count; i++) circles[i].Update(circle_speed);
 
             // Update connection lines
             lines.Clear();
@@ -74,7 +82,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             foreach (var neighbor in prox_list.GetNeighbors(circle.circle_position))
             {
                 // use x * y to determine the first point in the rectangle (smaller first) to avoid duplicate lines
-                float transparency = 1f - (float)circle.circle_position.Position.DistanceFrom(neighbor.Position) / Proximity;
+                float transparency = 1f - (float)circle.circle_position.Position.DistanceFrom(neighbor.Position) / (Proximity / 2);
                 if (transparency > 0f)
                 {
                     if (circle.circle_position.Position.Product() < neighbor.Position.Product())
@@ -108,15 +116,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             {
                 args.SpriteBatch.DrawLine(cursor.Position, neighbor.Position, Color.White);
             }
-            foreach (var line in lines) args.SpriteBatch.DrawLine(line.Key.Position, line.Key.Size, Color.Lerp(Color.Transparent, Color.Red, line.Value));
+            foreach (var line in lines) args.SpriteBatch.DrawLine(line.Key.Position.WithOffset(Offset), line.Key.Size.ToPoint2().WithOffset(Offset), Color.Lerp(Color.Transparent, LineColor, line.Value), LineThickness);
             if (DrawCircles) foreach (var circle in circles) circle.Draw(circle_t, args);
-        }
-
-        void AddCircle(object sender, EventArgs args)
-        {
-            RectangleF area = Parent.Area.SizeOnly().ResizedBy(-120f, Directions2D.All);
-
-            for (int i = 0; i < 50; i++) circles.Add(NeuronsCircle.RandomCircle(prox_list, area));
         }
 
         public void AddRandomCircle(RectangleF area)

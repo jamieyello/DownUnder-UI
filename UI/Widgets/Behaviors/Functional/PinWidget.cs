@@ -18,13 +18,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public InnerWidgetLocation Pin { get; set; }
 
-        public InterpolationSettings Interpolation = InterpolationSettings.Default;
-
-        WidgetAction _action;
-
         protected override void Initialize()
         {
-            //ApplyPin(this, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()
