@@ -9,7 +9,7 @@ Closer to usable than not, but still in development.
  - [Modular behavior system](https://github.com/jamieyello/DownUnder-UI/wiki/Native-WidgetBehaviors) that can add any functionality.
 
 ## Documentation/How to Use
-This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [Wiki](https://github.com/jamieyello/DownUnder-UI/wiki) for documentaion, and the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) for a short introduction.
+This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [Wiki](https://github.com/jamieyello/DownUnder-UI/wiki) for documentation, and the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) for a short introduction.
 
 ## Community
 
