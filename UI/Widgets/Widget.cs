@@ -1,5 +1,4 @@
-﻿using DownUnder.Input;
-using DownUnder.UI.Widgets.Actions;
+﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.DataTypes;
@@ -10,12 +9,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -214,6 +210,8 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        /// <summary> Set to true while this <see cref="Widget"/> is deleting itself. </summary>
+        public bool IsDeleting { get; private set; } = false;
         /// <summary> Set to true after this <see cref="Widget"/> has been deleted (as well as disposed) and is no longer in use. </summary>
         public bool IsDeleted { get; private set; } = false;
 
@@ -411,6 +409,8 @@ namespace DownUnder.UI.Widgets
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
         /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumWidth { get => MinimumSize.X; set => MinimumSize = MinimumSize.WithX(value); }
+        /// <summary> <see cref="WidgetAction"/>s that must be completed before this <see cref="Widget"/> can be closed. </summary>
+        public ActionSet ClosingActions { get; private set; } = new ActionSet();
 
         /// <summary> Returns true if this <see cref="Widget"/> is hovered over. </summary>
         public bool IsHoveredOver
@@ -426,7 +426,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Returns true if this <see cref="Widget"/> is being hovered over as well as on top of all the other <see cref="Widget"/>s being hovered over. </summary>
-        public bool IsPrimaryHovered => ParentWindow != null && ParentWindow.HoveredWidgets.Primary == this;
+        public bool IsPrimaryHovered => ParentDWindow != null && ParentDWindow.HoveredWidgets.Primary == this;
         /// <summary> Returns true if this <see cref="Widget"/> has been initialized graphically. Setting this <see cref="Widget"/>'s <see cref="Parent"/> to an initialized <see cref="Widget"/> or <see cref="DWindow"/> will initialize graphics. </summary>
         public bool IsGraphicsInitialized { get; private set; } = false;
         /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
@@ -497,16 +497,16 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
         public IParent Parent
         {
-            get => ParentWidget != null ? (IParent)ParentWidget : ParentWindow;
+            get => ParentWidget != null ? (IParent)ParentWidget : ParentDWindow;
             set
             {
                 if (value is Widget widget) ParentWidget = widget;
-                else if (value is DWindow window) ParentWindow = window;
+                else if (value is DWindow window) ParentDWindow = window;
             }
         }
 
         /// <summary> The <see cref="DWindow"/> that owns this <see cref="Widget"/>. </summary>
-        public DWindow ParentWindow
+        public DWindow ParentDWindow
         {
             get => _parent_window_backing;
             private set
@@ -522,7 +522,7 @@ namespace DownUnder.UI.Widgets
                     //ConnectEvents(value);
                 }
 
-                foreach (Widget child in Children) child.ParentWindow = value;
+                foreach (Widget child in Children) child.ParentDWindow = value;
 
                 if (initialized) OnPostGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             }
@@ -536,7 +536,7 @@ namespace DownUnder.UI.Widgets
             {
                 if (value != _parent_widget_backing) _parent_widget_backing?.Remove(this);
                 _parent_widget_backing = value;
-                ParentWindow = value?.ParentWindow;
+                ParentDWindow = value?.ParentDWindow;
                 if (value == null) return;
                 foreach (GroupBehaviorPolicy policy in _parent_widget_backing.Behaviors.GroupBehaviors.InheritedPolicies)
                 {
@@ -546,16 +546,21 @@ namespace DownUnder.UI.Widgets
             }
         }
 
+        public GameWindow Window => ParentGame?.Window;
+
         /// <summary> Returns true if this <see cref="Widget"/> is owned by a parent. </summary>
         public bool IsOwned => Parent != null;
         /// <summary> Area relative to the screen. (not the window) </summary>
-        public RectangleF AreaOnScreen => ParentWindow == null ? new RectangleF() : new RectangleF(ParentWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
+        public RectangleF AreaOnScreen => ParentDWindow == null ? new RectangleF() : new RectangleF(ParentDWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
         /// <summary> Represents the window's input each frame. </summary>
-        public UIInputState InputState => ParentWindow?.InputState;
+        public UIInputState InputState => ParentDWindow?.InputState;
         /// <summary> Returns true if this is the main selected <see cref="Widget"/>. </summary>
-        public bool IsPrimarySelected => ParentWindow != null && ParentWindow.SelectedWidgets.Primary == this;
+        public bool IsPrimarySelected => ParentDWindow != null && ParentDWindow.SelectedWidgets.Primary == this;
         /// <summary>Returns true if this <see cref="Widget"/> is selected. </summary>
-        public bool IsSelected => ParentWindow != null && ParentWindow.SelectedWidgets.IsWidgetFocused(this);
+        public bool IsSelected => ParentDWindow != null && ParentDWindow.SelectedWidgets.IsWidgetFocused(this);
+        /// <summary> The <see cref="Game"/> this <see cref="Widget"/> belongs to. </summary>
+        public Game ParentGame => ParentDWindow?.ParentGame;
+
 
         /// <summary> This <see cref="Widget"/> plus all <see cref="Widget"/>s contained in this <see cref="Widget"/>. </summary>
         public WidgetList AllContainedWidgets
@@ -595,7 +600,7 @@ namespace DownUnder.UI.Widgets
             set => _sprite_font_backing = value;
         }
 
-        public ContentManager Content => ParentWindow?.ParentGame.Content;
+        public ContentManager Content => ParentDWindow?.ParentGame.Content;
 
         /// <summary> The <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> used by this <see cref="Widget"/>. If left null, the <see cref="Parent"/>'s <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> will be used. </summary>
         public GraphicsDevice GraphicsDevice
@@ -636,7 +641,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> Returns true if this <see cref="Widget"/> is not only focused, but highlighted. </summary>
         public bool IsHighlighted => AllowHighlight && IsSelected;
 
-        private bool _IsBeingResized => ParentWindow.UserResizeModeEnable && ParentWindow.ResizingWidget == this;
+        private bool _IsBeingResized => ParentDWindow.UserResizeModeEnable && ParentDWindow.ResizingWidget == this;
 
         private WidgetList AllRenderedWidgets
         {
@@ -737,7 +742,7 @@ namespace DownUnder.UI.Widgets
 
         void UpdateGroupHoverFocus()
         {
-            if (_update_hovered_over) ParentWindow?.HoveredWidgets.AddFocus(this);
+            if (_update_hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
             foreach (Widget widget in Children) widget.UpdateGroupHoverFocus();
         }
 
@@ -822,17 +827,17 @@ namespace DownUnder.UI.Widgets
             {
                 // Determining window resize
                 if (!PassthroughMouse
-                    && ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentWindow.InputState.CursorPosition))
+                    && ParentWidget != null && ParentWidget.AreaInWindow.Contains(ParentDWindow.InputState.CursorPosition))
                 {
                     Directions2D resize_grab = AreaInWindow.GetCursorHoverOnBorders(
-                        ParentWindow.InputState.CursorPosition,
+                        ParentDWindow.InputState.CursorPosition,
                         _USER_RESIZE_BOUNDS_SIZE
                         ) & AllowedResizingDirections;
 
                     if (resize_grab != Directions2D.None)
                     {
-                        ParentWindow.ResizeCursorGrabber = this;
-                        ParentWindow.ResizingDirections = resize_grab;
+                        ParentDWindow.ResizeCursorGrabber = this;
+                        ParentDWindow.ResizingDirections = resize_grab;
                     }
                 }
             }
@@ -840,8 +845,8 @@ namespace DownUnder.UI.Widgets
                 || (UserRepositionPolicy == UserResizePolicyType.require_highlight && IsHighlighted))
                 && VisibleArea.Contains(InputState.CursorPosition))
             {
-                ParentWindow.ResizeCursorGrabber = this;
-                ParentWindow.ResizingDirections = Directions2D.UDLR;
+                ParentDWindow.ResizeCursorGrabber = this;
+                ParentDWindow.ResizingDirections = Directions2D.UDLR;
             }
 
             if (IsHighlighted)
@@ -857,8 +862,8 @@ namespace DownUnder.UI.Widgets
         void UpdateGroupResizeGrab()
         {
             if (
-                !ParentWindow.UserResizeModeEnable
-                && ParentWindow.ResizeCursorGrabber != this
+                !ParentDWindow.UserResizeModeEnable
+                && ParentDWindow.ResizeCursorGrabber != this
                 && !_IsBeingResized)
             {
                 foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
@@ -866,18 +871,18 @@ namespace DownUnder.UI.Widgets
             }
 
             // User has resize cursor over this widget or is in the middle of resizing
-            if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentWindow.UserResizeModeEnable)
+            if (UpdateData.UIInputState.PrimaryClickTriggered && !ParentDWindow.UserResizeModeEnable)
             {
-                if (ParentWindow.ResizingDirections != Directions2D.None)
+                if (ParentDWindow.ResizingDirections != Directions2D.None)
                 {
-                    _resizing_direction = ParentWindow.ResizingDirections;
-                    ParentWindow.UserResizeModeEnable = true;
+                    _resizing_direction = ParentDWindow.ResizingDirections;
+                    ParentDWindow.UserResizeModeEnable = true;
                     _resizing_initial_area = Area;
                     _repositioning_origin = InputState.CursorPosition;
                 }
             }
 
-            if (!UpdateData.UIInputState.PrimaryClick) ParentWindow.UserResizeModeEnable = false;
+            if (!UpdateData.UIInputState.PrimaryClick) ParentDWindow.UserResizeModeEnable = false;
 
             if (_IsBeingResized)
             {
@@ -904,8 +909,8 @@ namespace DownUnder.UI.Widgets
         {
             if (!_has_updated) return;
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (!ParentWindow.UserResizeModeEnable
-                && ParentWindow.ResizeCursorGrabber != this
+            if (!ParentDWindow.UserResizeModeEnable
+                && ParentDWindow.ResizeCursorGrabber != this
                 && !_IsBeingResized)
             {
                 if (IsPrimaryHovered)
@@ -946,11 +951,20 @@ namespace DownUnder.UI.Widgets
         {
             if (_post_update_flags.Delete)
             {
-                ParentWidget.DeleteChild(this);
-                deleted = true;
-                IsDeleted = true;
-                OnDelete?.Invoke(this, EventArgs.Empty);
-                return;
+                if (!IsDeleting)
+                {
+                    IsDeleting = true;
+                    Actions.Add(ClosingActions);
+                }
+                if (ClosingActions.IsCompleted)
+                {
+                    deleted = true;
+                    IsDeleted = true;
+                    OnDelete?.Invoke(this, EventArgs.Empty);
+                    if (ParentWidget != null) ParentWidget.DeleteChild(this);
+                    else ParentDWindow?.ParentGame.Exit();
+                    return;
+                }
             }
 
             WidgetList children = Children;
@@ -977,17 +991,17 @@ namespace DownUnder.UI.Widgets
         {
             _passed_sprite_batch = sprite_batch;
             var previous_targets = GraphicsDevice.GetRenderTargets();
-            GraphicsDevice.SetRenderTarget(ParentWindow.DrawTargetBuffer);
+            GraphicsDevice.SetRenderTarget(ParentDWindow.DrawTargetBuffer);
             UpdateRenderTargetSizes();
             if (PrepareRenders())
             {
-                GraphicsDevice.SetRenderTargets(ParentWindow.DrawTargetBuffer);
+                GraphicsDevice.SetRenderTargets(ParentDWindow.DrawTargetBuffer);
             }
             DrawFinal();
             DrawNoClip();
             GraphicsDevice.SetRenderTargets(previous_targets);
-            sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
-            sprite_batch.Draw(ParentWindow.DrawTargetBuffer, ParentWindow.Area.SizeOnly().ToRectangle(), Color.White);
+            sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
+            sprite_batch.Draw(ParentDWindow.DrawTargetBuffer, ParentDWindow.Area.SizeOnly().ToRectangle(), Color.White);
             sprite_batch.End();
         }
 
@@ -1010,7 +1024,7 @@ namespace DownUnder.UI.Widgets
 
         void Render()
         {
-            _local_sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            _local_sprite_batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
             OnDrawBackground?.Invoke(this, RenderTargetEventArgs);
             OnDraw?.Invoke(this, RenderTargetEventArgs);
             _local_sprite_batch.End();
@@ -1023,7 +1037,7 @@ namespace DownUnder.UI.Widgets
             {
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
-                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
                 if (widget.DrawingMode == DrawingModeType.direct) widget.DrawDirect(SpriteBatch);
                 if (widget.DrawingMode == DrawingModeType.use_render_target) SpriteBatch.Draw(widget._render_target, widget.AreaInWindow.ToRectangle(), new Rectangle(0, 0, (int)widget.Width, (int)widget.Height), Color.White);
                 SpriteBatch.End();
@@ -1035,7 +1049,7 @@ namespace DownUnder.UI.Widgets
             {
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
-                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+                SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
                 DrawOverlay(widget, widget.AreaInWindow, SpriteBatch, InputState.CursorPosition);
                 SpriteBatch.End();
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1074,7 +1088,7 @@ namespace DownUnder.UI.Widgets
         void DrawNoClip()
         {
             if (OnDrawNoClip == null) return;
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentWindow.RasterizerState);
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
             SpriteBatch.End();
             foreach (Widget child in Children) child.DrawNoClip();
@@ -1191,7 +1205,7 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
         /// <summary> Invoked after this <see cref="Widget"/> is deleted by <see cref="Delete"/>. </summary>
         public event EventHandler OnDelete;
-        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWindow"/> value is set. (to a non-null value) </summary>
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentDWindow"/> value is set. (to a non-null value) </summary>
         public event EventHandler OnParentWindowSet;
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentWidget"/> value is set. (to a non-null value) </summary>
         public event EventHandler OnParentWidgetSet;
@@ -1299,10 +1313,10 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
-        void SetAsFocused() => ParentWindow?.SelectedWidgets.SetFocus(this);
+        void SetAsFocused() => ParentDWindow?.SelectedWidgets.SetFocus(this);
 
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
-        void AddToFocused() => ParentWindow?.SelectedWidgets.AddFocus(this);
+        void AddToFocused() => ParentDWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
         void UpdateRenderTargetSizes()

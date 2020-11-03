@@ -25,7 +25,7 @@ namespace DownUnder.UI
         /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
         public delegate void WindowCreate(Type window_type, DWindow parent = null);
         /// <summary> The <see cref="GraphicsDeviceManager"/> used by this <see cref="DWindow"/>. Is initiated on creation. </summary>
-        protected readonly GraphicsDeviceManager GraphicsManager;
+        public readonly GraphicsDeviceManager GraphicsManager;
         /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
         private int _spawned_window_is_active = -1;
         /// <summary> Used to keep track of this <see cref="DWindow"/>'s thread. </summary>
@@ -222,7 +222,8 @@ namespace DownUnder.UI
 
         #region Constructors
 
-        public DWindow(GraphicsDevice graphics, Game parent) {
+        public DWindow(GraphicsDeviceManager graphics, Game parent) {
+            GraphicsManager = graphics;
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
             
@@ -233,19 +234,13 @@ namespace DownUnder.UI
                 //parent.Children.Add(this);
             }
 
-            _back_buffer[0] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
-            _back_buffer[1] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
+            _back_buffer[0] = new RenderTarget2D(graphics.GraphicsDevice, (int)Area.Width, (int)Area.Height);
+            _back_buffer[1] = new RenderTarget2D(graphics.GraphicsDevice, (int)Area.Width, (int)Area.Height);
 
             // unneeded possibly
             OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
 
-            ParentGame.Window.ClientSizeChanged += (sender, e) => {
-                if (MainWidget != null) MainWidget.Size = Area.Size;
-                _back_buffer[0].Dispose();
-                _back_buffer[1].Dispose();
-                _back_buffer[0] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
-                _back_buffer[1] = new RenderTarget2D(graphics, (int)Area.Width, (int)Area.Height);
-            };
+            ParentGame.Window.ClientSizeChanged += ResetBuffers;
             ParentGame.Window.TextInput += ProcessKeys;
             ParentGame.Exiting += ExitAll;
 
@@ -258,7 +253,16 @@ namespace DownUnder.UI
             ParentGame.TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
 
-            LoadDWindow(graphics);
+            LoadDWindow(graphics.GraphicsDevice);
+        }
+
+        internal void ResetBuffers(object sender, EventArgs args)
+        {
+            if (MainWidget != null) MainWidget.Size = Area.Size;
+            _back_buffer[0].Dispose();
+            _back_buffer[1].Dispose();
+            _back_buffer[0] = new RenderTarget2D(GraphicsManager.GraphicsDevice, (int)Area.Width, (int)Area.Height);
+            _back_buffer[1] = new RenderTarget2D(GraphicsManager.GraphicsDevice, (int)Area.Width, (int)Area.Height);
         }
 
         public void Dispose() {

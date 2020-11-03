@@ -22,10 +22,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional {
         }
 
         private void SetDragObject(object sender, EventArgs args) {
-            Parent.ParentWindow.DraggingObject = DragObject?.Clone();
+            Parent.ParentDWindow.DraggingObject = DragObject?.Clone();
             OnSetWindowClone?.Invoke(this, EventArgs.Empty);
         }
-        private void DropObject(object sender, EventArgs args) => Parent.ParentWindow.HoveredWidgets.Primary?.HandleDrop(Parent.ParentWindow.DraggingObject);
+        private void DropObject(object sender, EventArgs args) => Parent.ParentDWindow.HoveredWidgets.Primary?.HandleDrop(Parent.ParentDWindow.DraggingObject);
 
         public event EventHandler OnSetWindowClone;
 

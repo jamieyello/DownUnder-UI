@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.Utilities;
+using System;
 
 namespace DownUnder.Utility
 {
@@ -14,6 +15,13 @@ namespace DownUnder.Utility
             TopRight = top_right;
             BottomLeft = bottom_left;
             BottomRight = bottom_right;
+        }
+
+        public DiagonalDirections2D(DiagonalDirection2D direction) {
+            TopLeft = direction == DiagonalDirection2D.top_left;
+            TopRight = direction == DiagonalDirection2D.top_right;
+            BottomLeft = direction == DiagonalDirection2D.bottom_left;
+            BottomRight = direction == DiagonalDirection2D.bottom_right;
         }
 
         public Directions2D ToPerpendicular() =>

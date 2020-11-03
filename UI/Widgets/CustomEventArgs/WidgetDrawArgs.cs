@@ -30,12 +30,12 @@ namespace DownUnder.UI.Widgets
         public void RestartDefault()
         {
             SpriteBatch.End();
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
         }
 
         public void StartDraw()
         {
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
         }
 
         public void RestartImmediate()
@@ -46,7 +46,7 @@ namespace DownUnder.UI.Widgets
 
         public void StartImmediate()
         {
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentWindow.RasterizerState);
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
         }
 
         public void EndDraw()
@@ -57,9 +57,9 @@ namespace DownUnder.UI.Widgets
         public RenderTarget2D GetBackgroundRender()
         {
             RestartImmediate();
-            _caller.ParentWindow.SwapBackBuffer(GraphicsDevice, SpriteBatch);
+            _caller.ParentDWindow.SwapBackBuffer(GraphicsDevice, SpriteBatch);
             RestartDefault();
-            return _caller.ParentWindow.OtherBuffer;
+            return _caller.ParentDWindow.OtherBuffer;
         }
     }
 }

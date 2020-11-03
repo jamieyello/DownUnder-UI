@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
 
         protected override void Initialize() 
         {
-            if (Parent.ParentWindow != null) AddWidget(this, EventArgs.Empty);
+            if (Parent.ParentDWindow != null) AddWidget(this, EventArgs.Empty);
             else Parent.OnParentWindowSet += AddWidget;
         }
 
@@ -40,7 +40,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             if (CloneWidgetOnAdd) widget = (Widget)Widget.Clone();
             else widget = Widget;
             LocationOptions?.ApplyLocation(Parent, widget);
-            Parent.ParentWindow.MainWidget.Add(widget);
+            Parent.ParentDWindow.MainWidget.Add(widget);
             EndAction();
         }
 

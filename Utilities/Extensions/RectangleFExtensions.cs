@@ -10,10 +10,10 @@ namespace DownUnder {
         public static Rectangle ToRectangle(this RectangleF r, bool round) =>
             !round ? r.ToRectangle() : new Rectangle(r.X.Rounded(), r.Y.Rounded(), r.Width.Rounded(), r.Height.Rounded());
         
-        public static RectangleF SnapInsideRectangle(this RectangleF inner, RectangleF outer, DiagonalDirections2D snapping_policy) {
+        public static RectangleF BorderingInside(this RectangleF inner, RectangleF outer, DiagonalDirections2D sides) {
             inner.Position = outer.Position.WithOffset(inner.Position);
 
-            Directions2D snapping = snapping_policy.ToPerpendicular();
+            Directions2D snapping = sides.ToPerpendicular();
 
             if (snapping.Left && !snapping.Right) inner.X = outer.X; // left
             if (!snapping.Left && snapping.Right) inner.X = outer.X + outer.Width - inner.Width; // right
@@ -98,12 +98,6 @@ namespace DownUnder {
             return r.ResizedBy(resize);
 
         }
-
-        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF SizeMultipliedBy(this RectangleF r, Point2 modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
-        
-        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
-        public static RectangleF SizeMultipliedBy(this RectangleF r, float modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
         
         /// <summary> Returns a new RectangleF without the position values. </summary>
         public static RectangleF SizeOnly(this RectangleF r) => new RectangleF(new Point2(), r.Size);
@@ -118,6 +112,14 @@ namespace DownUnder {
         public static RectangleF WithBottom(this RectangleF r, float bottom) => new RectangleF(r.X, bottom - r.Height, r.Width, r.Height);
         public static RectangleF WithLeft(this RectangleF r, float left) => new RectangleF(left, r.Y, r.Width, r.Height);
         public static RectangleF WithRight(this RectangleF r, float right) => new RectangleF(right - r.Width, r.Y, r.Width, r.Height);
+        public static RectangleF WithAdditionalSize(this RectangleF r, float width, float height) => new RectangleF(r.X, r.Y, r.Width + width, r.Height + height);
+        public static RectangleF WithOffset(this RectangleF r, float x, float y) => new RectangleF(r.X + x, r.Y + y, r.Width, r.Height);
+        public static RectangleF WithScaledSize(this RectangleF r, float x, float y) => new RectangleF(r.X, r.Y, r.Width * x, r.Height * y);
+        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
+        public static RectangleF WithScaledSize(this RectangleF r, Point2 modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+        /// <summary> Returns a new <see cref="RectangleF"/> that's had its size multiplied by the given modifier. </summary>
+        public static RectangleF WithScaledSize(this RectangleF r, float modifier) => new RectangleF(r.Position, r.Size.ToPoint2().MultipliedBy(modifier));
+
 
         public static RectangleF WithMinimumSize(this RectangleF r, Point2 s) {
             RectangleF result = r;
@@ -200,7 +202,7 @@ namespace DownUnder {
             throw new Exception($"Invalid {nameof(DiagonalDirection2D)} given.");
         }
 
-        public static RectangleF Bordering(this RectangleF r, RectangleF border, Direction2D side)
+        public static RectangleF BorderingOutside(this RectangleF r, RectangleF border, Direction2D side)
         {
             RectangleF result = r;
             if (side == Direction2D.up) return r.WithBottom(border.Top);

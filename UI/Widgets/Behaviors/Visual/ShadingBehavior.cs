@@ -39,7 +39,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         }
 
         private void InitializeEffect(object sender, EventArgs args) {
-            shading_effect = Parent.ParentWindow.EffectCollection.ShadingEffect.Clone();
+            shading_effect = Parent.ParentDWindow.EffectCollection.ShadingEffect.Clone();
         }
 
         private void DrawEffect(object sender, WidgetDrawArgs args) {

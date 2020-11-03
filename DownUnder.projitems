@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AddMainWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PinWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PopInOut.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ToggleWindowFullscreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
@@ -68,12 +70,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\Neurons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NeuronsObjects\NeuronsCircle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NewBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CommonWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxArrayContainer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProximityArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
+    <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxListPosition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxList.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawCenteredImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\DrawEditableTextSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawTextBehaviors\DataTypes\ITextEntryRuleset.cs" />

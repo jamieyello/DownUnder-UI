@@ -9,19 +9,19 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
     {
         string image;
         Texture2D texture;
-        float side_spacing;
+        public float SizeModifier { get; set; }
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
-        public DrawCenteredImage(string image, float side_spacing)
+        public DrawCenteredImage(string image, float scaling = 1f)
         {
             this.image = image;
-            this.side_spacing = side_spacing;
+            SizeModifier = scaling;
         }
 
         protected override void Initialize()
         {
-            if (Parent.ParentWindow != null) Load(this, EventArgs.Empty);
+            if (Parent.ParentDWindow != null) Load(this, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()
@@ -44,12 +44,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         void Load(object sender, EventArgs args)
         {
             if (texture == null) texture = Parent.Content.Load<Texture2D>(image);
-            Parent.MinimumSize = texture.Bounds.ToRectangleF().ResizedBy(side_spacing).Size;
         }
 
         private void Draw(object sender, WidgetDrawArgs args)
         {
-            Rectangle draw_area = texture.Bounds.ToRectangleF().WithCenter(args.DrawingArea).ToRectangle();
+            Rectangle draw_area = texture.Bounds.ToRectangleF().WithScaledSize(SizeModifier).WithCenter(args.DrawingArea).ToRectangle();
 
             Parent.SpriteBatch.Draw(texture, draw_area, Color.White);
         }

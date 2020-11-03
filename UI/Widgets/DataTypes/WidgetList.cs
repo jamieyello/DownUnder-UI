@@ -181,11 +181,11 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public void ExpandAll(float modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.SizeMultipliedBy(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.WithScaledSize(modifier);
         }
 
         public void ExpandAll(Point2 modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.SizeMultipliedBy(modifier);
+            foreach (Widget widget in _widgets) widget.Area = widget.Area.WithScaledSize(modifier);
         }
 
         public void ResizeBy(BorderSize border_size, bool uniform_minimum_size = false) {

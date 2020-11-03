@@ -37,7 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            if (Parent.ParentWindow != null) LoadImage(Parent, EventArgs.Empty);
+            if (Parent.ParentDWindow != null) LoadImage(Parent, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()

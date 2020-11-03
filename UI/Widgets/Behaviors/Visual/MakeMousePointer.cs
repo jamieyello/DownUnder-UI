@@ -31,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void Update(object sender, EventArgs args)
         {
-            if (Parent.IsPrimaryHovered) Parent.ParentWindow.UICursor = MouseCursor.Hand;
+            if (Parent.IsPrimaryHovered) Parent.ParentDWindow.UICursor = MouseCursor.Hand;
         }
     }
 }

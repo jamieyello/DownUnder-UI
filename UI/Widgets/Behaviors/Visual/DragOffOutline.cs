@@ -55,14 +55,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             round_amount.SetTargetValue(0f);
             rect_color.TransitionSpeed = 1f;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), false);
-            rect.SetTargetValue(rect.GetCurrent().SizeMultipliedBy(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
+            rect.SetTargetValue(rect.GetCurrent().WithScaledSize(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
         }
 
         private void Update(object sender, EventArgs args) {
             if (drag_rect_to_mouse) {
-                bool? is_drop_acceptable = Parent.ParentWindow.HoveredWidgets.Primary?.IsDropAcceptable(Parent.ParentWindow.DraggingObject);
-                Widget victim = Parent.ParentWindow.HoveredWidgets.Primary;
-                if (Parent.ParentWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
+                bool? is_drop_acceptable = Parent.ParentDWindow.HoveredWidgets.Primary?.IsDropAcceptable(Parent.ParentDWindow.DraggingObject);
+                Widget victim = Parent.ParentDWindow.HoveredWidgets.Primary;
+                if (Parent.ParentDWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
                     // Set to new Widget area
                     rect.SetTargetValue(
                         victim.DesignerObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
