@@ -66,6 +66,11 @@ namespace DownUnder.UI.Widgets.Actions {
             return;
         }
 
+        public void Add(IEnumerable<WidgetAction> actions)
+        {
+            foreach (var action in actions) Add(action);
+        }
+
         private bool SeesDuplicate(WidgetAction action)
         {
             for (int i = 0; i < _actions.Count; i++)

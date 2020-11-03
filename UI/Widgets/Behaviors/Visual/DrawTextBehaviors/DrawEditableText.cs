@@ -5,10 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 {
@@ -58,7 +55,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             edit_text.Clear();
             edit_text.Append(BaseBehavior.Text);
             if (Settings.HighlightTextOnActivation) HighlightRange(0, edit_text.Length);
-            else MoveCaretTo(Parent.ParentWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
+            else MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
             BaseBehavior.EnableDefaultDraw = false;
             active_backing = true;
         }
@@ -185,12 +182,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
         public void Update(object sender, EventArgs args)
         {
             if (!Parent.UpdateData.UIInputState.PrimaryClick) clicking = false;
-            if (!Settings.RequireDoubleClick && Parent.IsPrimaryHovered) Parent.ParentWindow.UICursor = MouseCursor.IBeam;
+            if (!Settings.RequireDoubleClick && Parent.IsPrimaryHovered) Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
             if (!Active) return;
             Vector2 offset = Parent.PositionInWindow.ToVector2().Floored();
             UIInputState inp = Parent.UpdateData.UIInputState;
 
-            if (clicking) MoveCaretTo(Parent.ParentWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
+            if (clicking) MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
             
             // Movement of the caret
             if (inp.TextCursorMovement.Left && caret_position != 0) MoveCaretTo(caret_position - 1);
@@ -201,10 +198,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 else
                 {
                     MoveCaretTo(
-                        Parent.ParentWindow.WindowFont.IndexFromPoint
+                        Parent.ParentDWindow.WindowFont.IndexFromPoint
                         (
                             edit_text.ToString(),
-                            Parent.ParentWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, Parent.ParentWindow.WindowFont.MeasureString("|").Y),
+                            Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, Parent.ParentDWindow.WindowFont.MeasureString("|").Y),
                             true
                         )
                     );
@@ -217,10 +214,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 else
                 {
                     MoveCaretTo(
-                        Parent.ParentWindow.WindowFont.IndexFromPoint
+                        Parent.ParentDWindow.WindowFont.IndexFromPoint
                         (
                             edit_text.ToString(),
-                            Parent.ParentWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + new Vector2(0f, Parent.ParentWindow.WindowFont.MeasureString("|").Y),
+                            Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + new Vector2(0f, Parent.ParentDWindow.WindowFont.MeasureString("|").Y),
                             true
                         )
                     );
@@ -284,8 +281,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 if (Settings.LiveUpdate) BaseBehavior.Text = edit_text.ToString();
             }
 
-            text_area = Parent.ParentWindow.WindowFont.MeasureStringAreas(edit_text.ToString());
-            highlight_area = Parent.ParentWindow.WindowFont.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
+            text_area = Parent.ParentDWindow.WindowFont.MeasureStringAreas(edit_text.ToString());
+            highlight_area = Parent.ParentDWindow.WindowFont.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
             caret_blink_timer += Parent.UpdateData.ElapsedSeconds;
 
             bool over_highlighted_text = false;
@@ -294,7 +291,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 if (text.Contains(Parent.CursorPosition)) over_highlighted_text = true;
             }
 
-            if (Parent.IsPrimaryHovered && (!over_highlighted_text || clicking)) Parent.ParentWindow.UICursor = MouseCursor.IBeam;
+            if (Parent.IsPrimaryHovered && (!over_highlighted_text || clicking)) Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
             if (caret_blink_timer >= caret_blink_time) caret_blink_timer -= caret_blink_time;
 
             allow_draw = true;
@@ -351,7 +348,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
         {
             if (Active)
             {
-                MoveCaretTo(Parent.ParentWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
+                MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
                 clicking = true;
             }
 
@@ -415,7 +412,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 
             if (_CaretCurrentlyDrawn)
             {
-                Vector2 position = Parent.ParentWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
+                Vector2 position = Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
                 Vector2 position2 = position + new Vector2(0, 20);
                 Parent.SpriteBatch.DrawLine(position, position2, Parent.VisualSettings.TextColor, 1);
             }

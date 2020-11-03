@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
 
         public override RectangleF GetLocation(Widget spawner, Widget widget)
         {
-            return spawner.AreaInWindow.Bordering(spawner.GetParentUp(ParentUp).AreaInWindow, ParentSide);
+            return spawner.AreaInWindow.BorderingOutside(spawner.GetParentUp(ParentUp).AreaInWindow, ParentSide);
         }
 
         public override object Clone()

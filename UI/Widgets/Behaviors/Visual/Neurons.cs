@@ -1,15 +1,11 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects;
 using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
@@ -39,7 +35,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             cursor = prox_list.Add(new Point2());
             RectangleF area = new RectangleF(0, 0, 1920 + 400, 1080 + 400); //Parent.Area.SizeOnly().ResizedBy(100f, Directions2D.DR);
             for (int i = 0; i < circle_count; i++) circles.Add(NeuronsCircle.RandomCircle(prox_list, area));
-            if (Parent.ParentWindow != null) LoadContent(this, EventArgs.Empty);
+            if (Parent.ParentDWindow != null) LoadContent(this, EventArgs.Empty);
         }
 
         protected override void ConnectEvents()
@@ -63,7 +59,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void Update(object sender, EventArgs args)
         {
-            Debug.WriteLine("Point count: " + circles.Count);
+            //Debug.WriteLine("Point count: " + circles.Count);
 
             // Update circle positions
             for (int i = 0; i < circles.Count; i++) circles[i].Update(circle_speed);
