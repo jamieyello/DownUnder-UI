@@ -70,3 +70,71 @@
 //        }
 //    }
 //}
+
+using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Actions;
+using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.Utilities;
+using DownUnder.Utility;
+using MonoGame.Extended;
+using System;
+
+public class ReplaceWidget : WidgetAction
+{
+    Widget _new_widget;
+    ChangingValue<RectangleF> _new_widget_area;
+    ChangingValue<RectangleF> _old_widget_area;
+
+    DiagonalDirections2D _new_widget_snapping_policy_prev;
+
+    public ReplaceWidget(
+        Widget new_widget, 
+        InnerWidgetLocation new_widget_start,
+        InnerWidgetLocation old_widget_end,
+        InterpolationSettings? new_widget_movement = null, 
+        InterpolationSettings? old_widget_movement = null)
+    {
+        _new_widget = new_widget;
+    }
+
+    protected override void Initialize()
+    {
+        _new_widget.EmbedIn(Parent);
+        //Parent.SendToContainer();
+        _new_widget_snapping_policy_prev = _new_widget.SnappingPolicy;
+        _new_widget.SnappingPolicy = DiagonalDirections2D.None;
+    }
+
+    protected override void ConnectEvents()
+    {
+        Parent.OnUpdate += Update;
+    }
+
+    protected override void DisconnectEvents()
+    {
+        Parent.OnUpdate -= Update;
+    }
+
+    protected override bool InterferesWith(WidgetAction action)
+    {
+        return action.GetType() == action.GetType();
+    }
+
+    protected override bool Matches(WidgetAction action)
+    {
+        return action.GetType() == action.GetType();
+    }
+
+    void Update(object sender, EventArgs args)
+    {
+        _new_widget_area.Update(Parent.UpdateData.ElapsedSeconds);
+        _old_widget_area.Update(Parent.UpdateData.ElapsedSeconds);
+        if (!_new_widget_area.IsTransitioning && !_old_widget_area.IsTransitioning) Complete();
+    }
+
+    void Complete()
+    {
+        _new_widget.SnappingPolicy = _new_widget_snapping_policy_prev;
+        EndAction();
+    }
+}

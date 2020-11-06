@@ -76,7 +76,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         }
 
         [DataMember] public GenericDirections2D<ChangingValue<float>> BorderOccupy { get; private set; } = new GenericDirections2D<ChangingValue<float>>(new ChangingValue<float>(1f));
-        [DataMember] public BorderSize Spacing { get; set; } = new BorderSize(5f);
+        [DataMember] public BorderSize Spacing { get; set; } = new BorderSize(0f);
 
         public BorderFormat()
         {

@@ -32,8 +32,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AddMainWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AutoLayoutSlide.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ReplaceWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\BasicWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorManager.cs" />
@@ -53,7 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PinWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\PopInOut.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ToggleWindowFullscreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ToggleWindowFullscreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
@@ -72,6 +72,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NewBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CommonWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\BorderingSide.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxListPosition.cs" />

@@ -9,7 +9,6 @@ using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
 using DownUnder.Utilities;
 using DownUnder.Utility;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System.Collections.Generic;
 using System.Linq;

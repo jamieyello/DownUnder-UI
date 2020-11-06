@@ -494,7 +494,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
+        /// <summary> Returns the parent of this <see cref="Widget"/>. The parent <see cref="Widget"/> if one exists. </summary>
         public IParent Parent
         {
             get => ParentWidget != null ? (IParent)ParentWidget : ParentDWindow;
@@ -550,6 +550,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Returns true if this <see cref="Widget"/> is owned by a parent. </summary>
         public bool IsOwned => Parent != null;
+        /// <summary> True if this <see cref="Widget"/> is the main widget in its current parent <see cref="DWindow"/>. </summary>
+        public bool IsMainWindow => ParentDWindow?.MainWidget == this;
         /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentDWindow == null ? new RectangleF() : new RectangleF(ParentDWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
         /// <summary> Represents the window's input each frame. </summary>
@@ -1230,14 +1232,23 @@ namespace DownUnder.UI.Widgets
         void InvokeDrawOverlay(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
         void InvokeDrawBG(WidgetDrawArgs args) => OnDrawBackground?.Invoke(this, args);
         void InvokeDrawOverlayEffects(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
-        
+
         #endregion
 
         #region Methods
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer() => new Widget() { this };
+        public Widget SendToContainer()
+        {
+            Widget parent = ParentWidget;
+            Widget result = new Widget();
+            result.Area = Area;
+            result.Add(this);
+            Position = new Point2();
+            parent?.Add(result);
+            return result;
+        }
 
         public Widget WithAddedBehavior(WidgetBehavior behavior)
         {
@@ -1427,9 +1438,7 @@ namespace DownUnder.UI.Widgets
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
             c.BehaviorTags = (AutoDictionary<SerializableType, AutoDictionary<string, string>>)BehaviorTags.Clone();
-
             c._accepts_drops_backing = _accepts_drops_backing;
-
             c._user_resize_policy_backing = _user_resize_policy_backing;
             c._user_reposition_policy_backing = _user_reposition_policy_backing;
             c._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
@@ -1440,6 +1449,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Type type in _accepted_drop_types_backing) c._accepted_drop_types_backing.Add(type);
             foreach (WidgetBehavior behavior in Behaviors) c.Behaviors.Add((WidgetBehavior)behavior.Clone());
+            foreach (WidgetAction action in ClosingActions) c.Actions.Add((WidgetAction)action.InitialClone());
 
             return c;
         }

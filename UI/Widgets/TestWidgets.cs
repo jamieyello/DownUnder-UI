@@ -1,22 +1,39 @@
-﻿using DownUnder;
-using DownUnder.UI.Widgets;
+﻿using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System.Diagnostics;
-using System.Threading;
 
 namespace TestContent
 {
     public static class TestWidgets
     {
         public static Widget CurrentTest =>
-            LoginLayoutEffects();
+            WidgetTransitionTest();
+            //LoginLayoutEffects();
             //BGAnimationTest();
+
+        public static Widget WidgetTransitionTest()
+        {
+            Widget result = new Widget();
+            Widget button = BasicWidgets.Button("Send to container");
+            Widget test_widget = new Widget
+            {
+                Area = new RectangleF(10, 40, 200, 200)
+            };
+            test_widget.Behaviors.Add(new GridFormat(2, 2));
+
+            button.OnClick += (s, a) =>
+            {
+                //test_widget.Actions.Add(new ReplaceWidget(new Widget().WithAddedBehavior(new DrawText("New Widget")), InnerWidgetLocation.))
+            };
+
+            result.Add(button);
+            result.Add(test_widget);
+            return result;
+        }
 
         public static Widget CenterTest()
         {
@@ -68,7 +85,7 @@ namespace TestContent
 
         public static Widget LoginWindow()
         {
-            Widget window = new Widget { Size = new Point2(800, 600), Name = "Login Window" };
+            Widget window = new Widget { Size = new Point2(400, 300), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
             
             window.Behaviors.Add(new CenterContent());
