@@ -691,6 +691,7 @@ namespace DownUnder.UI.Widgets
             Children = new WidgetList(this);
             OnAddChild += (s, a) =>
             {
+                LastAddedWidget.EmbedIn(this);
                 Behaviors.GroupBehaviors.ImplementPolicies();
             };
         }
@@ -1250,6 +1251,22 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
+        /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>
+        /// <returns> The deleted parent <see cref="Widget"/>. </returns>
+        public Widget ReplaceContainer(bool replace_position = true, bool replace_size = false)
+        {
+            Widget old_parent = ParentWidget;
+            Widget new_parent = ParentWidget.ParentWidget;
+
+            if (replace_position && !replace_size) Position = old_parent.Position;
+            if (!replace_position && replace_size) Size = old_parent.Size;
+            if (replace_position && replace_size) Area = old_parent.Area;
+
+            new_parent.Add(this);
+            old_parent.Delete();
+            return old_parent;
+        }
+
         public Widget WithAddedBehavior(WidgetBehavior behavior)
         {
             Behaviors.Add(behavior);
@@ -1499,17 +1516,7 @@ namespace DownUnder.UI.Widgets
                 grid[x, y] = value;
             }
         }
-        public Widget this[string child_name]
-        {
-            get
-            {
-                foreach (Widget widget in AllContainedWidgets)
-                {
-                    if (widget.Name == child_name) return widget;
-                }
-                return null;
-            }
-        }
+        public Widget this[string child_name] => Children[child_name];
         
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;

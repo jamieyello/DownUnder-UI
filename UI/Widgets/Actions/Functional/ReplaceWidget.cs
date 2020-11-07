@@ -1,78 +1,6 @@
-﻿//using DownUnder.Utilities;
-//using DownUnder.Utility;
-//using MonoGame.Extended;
-//using System;
-
-//namespace DownUnder.UI.Widgets.Actions.Functional
-//{
-//    public class AutoLayoutSlide : WidgetAction
-//    {
-//        private readonly Widget _new_widget;
-//        private readonly Directions2D _direction;
-//        private readonly InterpolationSettings _interpolation;
-
-//        private Widget _old_widget;
-//        private RectangleF _new_widget_start;
-//        private RectangleF _new_widget_end;
-//        private ChangingValue<RectangleF> _new_widget_area;
-
-//        public AutoLayoutSlide(Widget new_widget, Directions2D direction, InterpolationSettings? interpolation = null)
-//        {
-//            if (direction.HasMultiple) throw new Exception($"Cannot use multiple directions in {nameof(AutoLayoutSlide)}.");
-//            if (direction == Directions2D.None) throw new Exception($"No direction given.");
-//            _new_widget = new_widget;
-//            _direction = direction;
-//            _interpolation = interpolation == null ? InterpolationSettings.Default : interpolation.Value;
-//        }
-
-//        public override object InitialClone()
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        protected override void ConnectToParent()
-//        {
-//            if (!(Parent is Layout p_layout)) throw new Exception($"{nameof(AutoLayoutSlide)} can only be used with {nameof(Layout)}.");
-//            if (Parent.Children.Count != 1) throw new Exception($"Parent {nameof(Layout)} can only have one child for this to work.");
-//            _old_widget = p_layout.Children[0];
-//            p_layout.Add(_new_widget);
-//            Parent.OnUpdate += Update;
-//            _new_widget_start = _direction.ValueInDirection(Parent.Size).AsRectanglePosition(_new_widget.Size);
-//            _new_widget_end = _new_widget.Area;
-//            _new_widget_area = new ChangingValue<RectangleF>(_new_widget_start, _new_widget_end, _interpolation);
-
-//        }
-
-//        protected override void DisconnectFromParent()
-//        {
-//            Parent.OnUpdate -= Update;
-//            _old_widget.Delete();
-//        }
-
-//        protected override bool InterferesWith(WidgetAction action) => action is AsyncLayoutSlide || action is AutoLayoutSlide;
-
-//        private void Update(object sender, EventArgs args)
-//        {
-//            _new_widget_area.Update(Parent.UpdateData.ElapsedSeconds);
-//            Align();
-//            if (!_new_widget_area.IsTransitioning) EndAction();
-//        }
-
-//        private void Align()
-//        {
-//            _new_widget.Position = _new_widget_area.GetCurrent().Position;
-//            _old_widget.Position = _new_widget_start.Position.WithOffset(_new_widget_end.Position).MultipliedBy(_new_widget_area.ProgressPlotted).Inverted();
-//        }
-
-//        protected override bool Matches(WidgetAction action)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}
-
-using DownUnder.UI.Widgets;
+﻿using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Actions;
+using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using DownUnder.Utility;
@@ -81,11 +9,15 @@ using System;
 
 public class ReplaceWidget : WidgetAction
 {
-    Widget _new_widget;
-    ChangingValue<RectangleF> _new_widget_area;
-    ChangingValue<RectangleF> _old_widget_area;
-
     DiagonalDirections2D _new_widget_snapping_policy_prev;
+    PropertyTransitionAction<RectangleF> _new_widget_area;
+    PropertyTransitionAction<RectangleF> _old_widget_area;
+
+    public Widget NewWidget { get; set; }
+    public InnerWidgetLocation NewWidgetStart { get; set; }
+    public InnerWidgetLocation OldWidgetEnd { get; set; }
+    public InterpolationSettings NewWidgetMovement { get; set; }
+    public InterpolationSettings OldWidgetMovement { get; set; }
 
     public ReplaceWidget(
         Widget new_widget, 
@@ -94,15 +26,29 @@ public class ReplaceWidget : WidgetAction
         InterpolationSettings? new_widget_movement = null, 
         InterpolationSettings? old_widget_movement = null)
     {
-        _new_widget = new_widget;
+        NewWidget = new_widget;
+        NewWidgetStart = new_widget_start;
+        OldWidgetEnd = old_widget_end;
+        NewWidgetMovement = new_widget_movement ?? InterpolationSettings.Default;
+        OldWidgetMovement = old_widget_movement ?? InterpolationSettings.Default;
     }
 
     protected override void Initialize()
     {
-        _new_widget.EmbedIn(Parent);
-        //Parent.SendToContainer();
-        _new_widget_snapping_policy_prev = _new_widget.SnappingPolicy;
-        _new_widget.SnappingPolicy = DiagonalDirections2D.None;
+        Parent.SendToContainer();
+        Parent.ParentWidget.Insert(0, NewWidget);
+
+        _new_widget_snapping_policy_prev = NewWidget.SnappingPolicy;
+        NewWidget.SnappingPolicy = DiagonalDirections2D.None;
+
+        RectangleF new_widget_target_area = NewWidget.Area;
+        NewWidget.Area = NewWidgetStart.GetLocation(Parent, NewWidget);
+
+        _old_widget_area = new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), OldWidgetEnd.GetLocation(Parent, Parent), OldWidgetMovement);
+        _new_widget_area = new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), new_widget_target_area, NewWidgetMovement);
+
+        Parent.Actions.Add(_old_widget_area);
+        NewWidget.Actions.Add(_new_widget_area);
     }
 
     protected override void ConnectEvents()
@@ -125,16 +71,26 @@ public class ReplaceWidget : WidgetAction
         return action.GetType() == action.GetType();
     }
 
+    public override object InitialClone()
+    {
+        ReplaceWidget c = (ReplaceWidget)base.InitialClone();
+        c.NewWidget = (Widget)NewWidget?.Clone();
+        c.NewWidgetStart = (InnerWidgetLocation)NewWidgetStart?.Clone();
+        c.OldWidgetEnd = (InnerWidgetLocation)OldWidgetEnd?.Clone();
+        c.NewWidgetMovement = NewWidgetMovement;
+        c.OldWidgetMovement = OldWidgetMovement;
+        return c;
+    }
+
     void Update(object sender, EventArgs args)
     {
-        _new_widget_area.Update(Parent.UpdateData.ElapsedSeconds);
-        _old_widget_area.Update(Parent.UpdateData.ElapsedSeconds);
-        if (!_new_widget_area.IsTransitioning && !_old_widget_area.IsTransitioning) Complete();
+        if (_old_widget_area.IsCompleted && _new_widget_area.IsCompleted) Complete();
     }
 
     void Complete()
     {
-        _new_widget.SnappingPolicy = _new_widget_snapping_policy_prev;
+        NewWidget.SnappingPolicy = _new_widget_snapping_policy_prev;
+        NewWidget.ReplaceContainer();
         EndAction();
     }
 }

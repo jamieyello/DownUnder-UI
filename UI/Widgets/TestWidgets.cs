@@ -27,7 +27,7 @@ namespace TestContent
 
             button.OnClick += (s, a) =>
             {
-                //test_widget.Actions.Add(new ReplaceWidget(new Widget().WithAddedBehavior(new DrawText("New Widget")), InnerWidgetLocation.))
+                test_widget.Actions.Add(new ReplaceWidget(new Widget().WithAddedBehavior(new DrawText("New Widget")), InnerWidgetLocation.OutsideLeft, InnerWidgetLocation.OutsideRight));
             };
 
             result.Add(button);

@@ -253,6 +253,18 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
+        public Widget this[string name]
+        {
+            get 
+            {
+                for (int i = 0; i < _widgets[i].Count; i++)
+                {
+                    if (_widgets[i].Name == name) return _widgets[i];
+                }
+                return null;
+            }
+        }
+
         public int Count { get; private set; } = 0;
 
         public bool IsReadOnly { get; }

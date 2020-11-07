@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Input\User Defined Actions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DesktopWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionSet.cs" />

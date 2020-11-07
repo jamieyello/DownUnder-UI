@@ -30,6 +30,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _center.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _center.Widget = value;
                 _Align();
             }
@@ -40,6 +41,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _top_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _top_border.Widget = value;
                 _Align();
             }
@@ -50,6 +52,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _bottom_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _bottom_border.Widget = value;
                 _Align();
             }
@@ -60,6 +63,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _left_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _left_border.Widget = value;
                 _Align();
             }
@@ -70,6 +74,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _right_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _right_border.Widget = value;
                 _Align();
             }
