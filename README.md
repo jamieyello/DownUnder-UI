@@ -17,6 +17,6 @@ This project is a shared project library, meaning it does not compile without yo
 [Talk on Discord.](https://discord.gg/bEZPvQE)
 
 ## The Art Gallery
-![blur](/Images/living_ui.gif)
+![blur](/Images/new_ui.gif)
 
 ![Modern stuff](/Images/goodui3001.gif)
