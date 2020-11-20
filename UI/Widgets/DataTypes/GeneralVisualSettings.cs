@@ -55,6 +55,13 @@ namespace DownUnder.UI.Widgets.DataTypes
             ColorScheme.Update(VisualRole, step, ChangeColorOnMouseOver, is_hovered);
         }
 
+        public static GeneralVisualSettings Invisible => new GeneralVisualSettings
+        {
+            ChangeColorOnMouseOver = false,
+            DrawBackground = false,
+            DrawOutline = false,
+        };
+
         public object Clone()
         {
             GeneralVisualSettings c = new GeneralVisualSettings();

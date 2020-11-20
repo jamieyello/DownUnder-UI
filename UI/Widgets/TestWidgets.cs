@@ -11,9 +11,28 @@ namespace TestContent
     public static class TestWidgets
     {
         public static Widget CurrentTest =>
-            WidgetTransitionTest();
-            //LoginLayoutEffects();
+            //WidgetReorderTest();
+            //WidgetTransitionTest();
+            LoginLayoutEffects();
             //BGAnimationTest();
+
+
+        public static Widget WidgetReorderTest()
+        {
+            Widget result = new Widget();
+            Widget box1 = new Widget();
+            Widget box2 = new Widget();
+            box1.Area = new RectangleF(50,50,100,100);
+            box2.Area = new RectangleF(100,100,100,100);
+
+            result.Add(box1);
+            result.Add(box2);
+
+            box1.OnClick += (s, a) => box1.SendToFront();
+            box2.OnClick += (s, a) => box2.SendToFront();
+
+            return result;
+        }
 
         public static Widget WidgetTransitionTest()
         {
@@ -55,6 +74,7 @@ namespace TestContent
         {
             Widget layout = new Widget { };
             layout.VisualSettings.ChangeColorOnMouseOver = false;
+            layout.VisualSettings.DrawBackground = false;
 
 //            layout.Behaviors.Add(new DrawText
 //            {

@@ -79,8 +79,12 @@ namespace DownUnder.Utility
                 case Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)):
                     return (T)Convert.ChangeType
                         (
-                            ((Vector2)Convert.ChangeType(initial_object, typeof(Vector2)))
-                            * Plot(progress, interpolation_type), typeof(T)
+                            Vector2.Lerp
+                            (
+                                (Vector2)Convert.ChangeType(initial_object, typeof(Vector2)),
+                                (Vector2)Convert.ChangeType(target_object, typeof(Vector2)),
+                                Plot(progress, interpolation_type)
+                            ), typeof(T)
                         );
 
                 // Add new cases here.

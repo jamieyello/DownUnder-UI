@@ -63,7 +63,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             {
                 result = ((WidgetBehavior)Activator.CreateInstance(BaseBehaviorType)).EditorWidgetRepresentation();
                 result.Behaviors.GetFirst<DrawText>().Text = EditorDisplayText();
-                result.Behaviors.RemoveType(typeof(TriggerAction));
+                result.Behaviors.RemoveType(typeof(TriggerWidgetAction));
                 result.Behaviors.GetFirst<DragAndDropSource>().DragObject = this;
             }
             else
@@ -87,7 +87,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
             if (this is IEditorDisplaySubBehaviors b_this)
             {
-                result.Behaviors.Add(new TriggerAction(
+                result.Behaviors.Add(new TriggerWidgetAction(
                     nameof(Widget.OnDoubleClick),
                     new Actions.Functional.AddMainWidget()
                     {

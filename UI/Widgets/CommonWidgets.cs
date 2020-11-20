@@ -43,9 +43,9 @@ namespace DownUnder.UI.Widgets
             bar.MinimumHeight = 40;
 
             x_button.OnClick += (s, a) => { handle.Delete(); };
-            rect_button.Behaviors.Add(new TriggerAction(nameof(Widget.OnClick), new ToggleWindowFullscreen()));
+            rect_button.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), new ToggleWindowFullscreen()));
             control_grid.Behaviors.Add(new PinWidget() { Pin = InnerWidgetLocation.InsideTopRight });
-            bar.Behaviors.Add(new TriggerAction(nameof(Widget.OnDoubleClick), new ToggleWindowFullscreen()));
+            bar.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnDoubleClick), new ToggleWindowFullscreen()));
 
             return bar;
         }

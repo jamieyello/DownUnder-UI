@@ -78,29 +78,34 @@ namespace DownUnder.UI.Widgets
 
             file_bar.VisualSettings.ChangeColorOnMouseOver = false;
             file_bar.VisualSettings.VisualRole = VisualRoleType.header_widget;
+            file_bar.FitToContentArea = true;
+            file_bar.Height = 40f;
 
-            file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
-            file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 5f });
+            //file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
+            file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 0f });
 
             foreach (var entry in entries)
             {
-                Widget w_entry = new Widget().WithAddedBehavior(new DrawText() { Text = entry.Key });
+                Widget w_entry = BasicWidgets.Button(entry.Key);
+                w_entry.Behaviors.GetFirst<DrawText>().SideSpacing = 25f;
                 w_entry.VisualSettings.DrawOutline = false;
                 w_entry.VisualSettings.DrawBackground = false;
-
+                
                 WidgetList items = new WidgetList();
                 foreach (var item in entry.Value)
                 {
-                    Widget new_entry = new Widget()
-                        .WithAddedBehavior(new DrawText() { Text = item.Key });
-                    if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
+                    Widget new_entry = BasicWidgets.Button(item.Key);
+                    new_entry.VisualSettings.DrawOutline = false;
+                    new_entry.VisualSettings.DrawBackground = false;
+                    new_entry.Behaviors.GetFirst<DrawText>().XTextPositioning = XTextPositioningPolicy.left;
+                    if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
                     items.Add(new_entry);
                 }
 
                 Widget dropdown = DropDown(items);
 
                 w_entry.Behaviors.Add(
-                    new TriggerAction(
+                    new TriggerWidgetAction(
                         nameof(Widget.OnClick), 
                         new AddMainWidget(dropdown) 
                         { 
@@ -123,11 +128,12 @@ namespace DownUnder.UI.Widgets
         public static Widget DropDown(IEnumerable<Widget> widgets, PopInOut pop_in_out_behavior = null)
         {
             Widget dropdown = new Widget();
+            dropdown.VisualSettings.VisualRole = VisualRoleType.pop_up;
             dropdown.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
             dropdown.MinimumSize = new Point2(1f, 1f);
             dropdown.AddRange(widgets);
             dropdown.Behaviors.Add(new GridFormat(1, widgets.Count()));
-            if (pop_in_out_behavior == null) dropdown.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.95f, Directions2D.DLR), RectanglePart.Uniform(0f, Directions2D.D, 1f)) { ClosingMotion = InterpolationSettings.Faster });
+            if (pop_in_out_behavior == null) dropdown.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.95f, Directions2D.DLR), RectanglePart.Uniform(0f, Directions2D.D, 1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
             else dropdown.Behaviors.Add(pop_in_out_behavior);
 
             return dropdown;

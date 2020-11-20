@@ -33,6 +33,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                 if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _center.Widget = value;
                 _Align();
+                value?.SendToBack();
             }
         }
 
@@ -139,10 +140,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         public void Update(object sender, EventArgs args)
         {
+            bool align = false;
+            if (BorderOccupy.Up.IsTransitioning || BorderOccupy.Down.IsTransitioning || BorderOccupy.Left.IsTransitioning || BorderOccupy.Right.IsTransitioning) align = true;
             BorderOccupy.Up.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Down.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Left.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Right.Update(Parent.UpdateData.ElapsedSeconds);
+            if (align) _Align();
         }
 
         private void Align(object sender, RectangleFSetArgs args)

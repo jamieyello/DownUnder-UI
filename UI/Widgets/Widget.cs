@@ -67,7 +67,7 @@ namespace DownUnder.UI.Widgets
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        WidgetUpdateFlags _post_update_flags;
+        internal WidgetUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
         bool _has_updated;
         /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
@@ -970,16 +970,32 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
-            WidgetList children = Children;
-            for (int i = 0; i < children.Count; i++)
+            if (_post_update_flags.SendToFront)
             {
-                children[i].UpdateGroupPost(out bool deleted_);
-                if (deleted_)
-                {
-                    children = Children;
-                    i--;
-                }
+                SendToFront(true);
+                _post_update_flags.SendToFront = false;
             }
+            if (_post_update_flags.SendToBack)
+            {
+                SendToBack(true);
+                _post_update_flags.SendToBack = false;
+            }
+            _post_update_flags._updated = true;
+
+            WidgetUpdateFlags.SetUpdatedFlagsToFalse(Children);
+            do
+            {
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    if (Children[i]._post_update_flags._updated) continue;
+                    Children[i].UpdateGroupPost(out bool deleted_);
+                    if (deleted_)
+                    {
+                        i--;
+                    }
+                }
+            } while (!WidgetUpdateFlags.UpdatedFlagsAreTrue(Children)); // This is to account for widgets re-ordering themselves, potentially skipping an update.
+
             deleted = false;
         }
 
@@ -1404,6 +1420,18 @@ namespace DownUnder.UI.Widgets
                 RenderTargetUsage.DiscardContents);
 
             _graphics_updating = false;
+        }
+
+        public void SendToBack(bool immediate = false)
+        {
+            if (immediate) ParentWidget?.Children.SendWidgetToBack(this);
+            else _post_update_flags.SendToBack = true;
+        }
+
+        public void SendToFront(bool immediate = false)
+        {
+            if (immediate) ParentWidget?.Children.SendWidgetToFront(this);
+            else _post_update_flags.SendToFront = true;
         }
 
         #endregion

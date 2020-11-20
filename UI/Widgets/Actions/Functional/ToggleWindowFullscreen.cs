@@ -14,8 +14,7 @@
 
         protected override void Initialize()
         {
-            Parent.ParentDWindow.GraphicsManager.HardwareModeSwitch = false;
-            Parent.ParentDWindow.GraphicsManager.ToggleFullScreen();
+            Parent.ParentDWindow.ToggleFullscreen();
             EndAction();
         }
 

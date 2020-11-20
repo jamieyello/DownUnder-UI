@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         public override object Clone()
         {
-            throw new NotImplementedException();
+            return new MakeMousePointer();
         }
 
         protected override void ConnectEvents()

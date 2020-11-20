@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ActionSequence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AddMainWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\AsyncLayoutSlide.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\DirectAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ReplaceWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
@@ -56,6 +57,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ScrollBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ToggleWindowFullscreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
+    <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />

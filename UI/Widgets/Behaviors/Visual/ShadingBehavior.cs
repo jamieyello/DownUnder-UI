@@ -27,13 +27,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         protected override void ConnectEvents() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);
             else Parent.OnGraphicsInitialized += InitializeEffect;
-            Parent.OnDrawOverlay += DrawEffect;
+            Parent.OnDrawBackground += DrawEffect;
             Parent.OnDispose += Dispose;
         }
 
         protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= InitializeEffect;
-            Parent.OnDrawOverlay -= DrawEffect;
+            Parent.OnDrawBackground -= DrawEffect;
             Parent.OnDispose -= Dispose;
             Dispose(this, EventArgs.Empty);
         }
