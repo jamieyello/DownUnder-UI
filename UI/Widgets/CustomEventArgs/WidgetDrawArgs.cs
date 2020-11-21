@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 
@@ -57,7 +58,9 @@ namespace DownUnder.UI.Widgets
         public RenderTarget2D GetBackgroundRender()
         {
             RestartImmediate();
+            Rectangle scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
             _caller.ParentDWindow.SwapBackBuffer(GraphicsDevice, SpriteBatch);
+            SpriteBatch.GraphicsDevice.ScissorRectangle = scissor_area;
             RestartDefault();
             return _caller.ParentDWindow.OtherBuffer;
         }

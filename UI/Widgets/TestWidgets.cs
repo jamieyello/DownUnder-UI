@@ -4,6 +4,7 @@ using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
+using DownUnder.Utility;
 using MonoGame.Extended;
 
 namespace TestContent
@@ -13,9 +14,32 @@ namespace TestContent
         public static Widget CurrentTest =>
             //WidgetReorderTest();
             //WidgetTransitionTest();
-            LoginLayoutEffects();
+            //LoginLayoutEffects();
             //BGAnimationTest();
+            GridDebug();
 
+        public static Widget GridDebug()
+        {
+            Widget result = new Widget();
+            Widget grid_widget = new Widget().WithAddedBehavior(new GridFormat(1, 4));
+            grid_widget[0].debug_output = true;
+            grid_widget.Area = new RectangleF(50, 50, 100, 75);
+
+            grid_widget[0, 0].Behaviors.Add(new DrawText("Test text 55555555555 5"));
+            grid_widget[0, 1].Behaviors.Add(new DrawText("Test text 55555555555 5"));
+
+            grid_widget.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            grid_widget.AllowedResizingDirections = Directions2D.All;
+            result.Add(grid_widget);
+
+            Widget second = new Widget();
+            second.Area = new RectangleF(50, 150, 100, 75);
+            second.Behaviors.Add(new GridFormat(3, 3, new Widget { UserResizePolicy = Widget.UserResizePolicyType.allow }));
+
+            result.Add(second);
+
+            return result;
+        }
 
         public static Widget WidgetReorderTest()
         {

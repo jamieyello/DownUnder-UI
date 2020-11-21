@@ -1083,7 +1083,7 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct)
             {
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+                //SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
                 OnDrawBackground?.Invoke(this, DirectEventArgs());
                 OnDraw?.Invoke(this, DirectEventArgs());
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
