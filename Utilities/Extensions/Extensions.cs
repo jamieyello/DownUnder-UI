@@ -479,5 +479,10 @@ namespace DownUnder
                 yield return items[i];
             }
         }
+
+        /// <summary> Returns a new <see cref="Vector2"/> with a -X value. </summary>
+        public static Vector2 InvertX(this Vector2 v) => new Vector2(-v.X, v.Y);
+        /// <summary> Returns a new <see cref="Vector2"/> with a -Y value. </summary>
+        public static Vector2 InvertY(this Vector2 v) => new Vector2(v.X, -v.Y);
     }
 }

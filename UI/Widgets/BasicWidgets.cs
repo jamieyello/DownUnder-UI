@@ -11,6 +11,7 @@ using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using static DownUnder.UI.Widgets.Behaviors.Visual.DrawText;
 using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
@@ -135,6 +136,7 @@ namespace DownUnder.UI.Widgets
             dropdown.Behaviors.Add(new GridFormat(1, widgets.Count()));
             if (pop_in_out_behavior == null) dropdown.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.95f, Directions2D.DLR), RectanglePart.Uniform(0f, Directions2D.D, 1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
             else dropdown.Behaviors.Add(pop_in_out_behavior);
+
 
             return dropdown;
         }

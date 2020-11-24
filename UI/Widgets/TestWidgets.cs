@@ -3,6 +3,7 @@ using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
 using DownUnder.Utilities;
 using DownUnder.Utility;
 using MonoGame.Extended;
@@ -16,7 +17,18 @@ namespace TestContent
             //WidgetTransitionTest();
             //LoginLayoutEffects();
             //BGAnimationTest();
-            GridDebug();
+            //GridDebug();
+            GraphicTest();
+
+        public static Widget GraphicTest()
+        {
+            Widget result = new Widget();
+            result.Add(new Widget().WithAddedBehavior(new DrawGraphic(new PausePlayGraphic())), out var inner);
+            inner.Area = new RectangleF(50, 50, 100, 100);
+            inner.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            inner.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
+            return result;
+        }
 
         public static Widget GridDebug()
         {
