@@ -67,7 +67,7 @@ namespace DownUnder.UI.Widgets
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        WidgetUpdateFlags _post_update_flags;
+        internal WidgetUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
         bool _has_updated;
         /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
@@ -494,7 +494,7 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        /// <summary> Returns the parent of this <see cref="Widget"/>. </summary>
+        /// <summary> Returns the parent of this <see cref="Widget"/>. The parent <see cref="Widget"/> if one exists. </summary>
         public IParent Parent
         {
             get => ParentWidget != null ? (IParent)ParentWidget : ParentDWindow;
@@ -550,6 +550,8 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Returns true if this <see cref="Widget"/> is owned by a parent. </summary>
         public bool IsOwned => Parent != null;
+        /// <summary> True if this <see cref="Widget"/> is the main widget in its current parent <see cref="DWindow"/>. </summary>
+        public bool IsMainWindow => ParentDWindow?.MainWidget == this;
         /// <summary> Area relative to the screen. (not the window) </summary>
         public RectangleF AreaOnScreen => ParentDWindow == null ? new RectangleF() : new RectangleF(ParentDWindow.Area.Position + AreaInWindow.Position.ToPoint(), Area.Size);
         /// <summary> Represents the window's input each frame. </summary>
@@ -689,6 +691,7 @@ namespace DownUnder.UI.Widgets
             Children = new WidgetList(this);
             OnAddChild += (s, a) =>
             {
+                LastAddedWidget.EmbedIn(this);
                 Behaviors.GroupBehaviors.ImplementPolicies();
             };
         }
@@ -967,16 +970,32 @@ namespace DownUnder.UI.Widgets
                 }
             }
 
-            WidgetList children = Children;
-            for (int i = 0; i < children.Count; i++)
+            if (_post_update_flags.SendToFront)
             {
-                children[i].UpdateGroupPost(out bool deleted_);
-                if (deleted_)
-                {
-                    children = Children;
-                    i--;
-                }
+                SendToFront(true);
+                _post_update_flags.SendToFront = false;
             }
+            if (_post_update_flags.SendToBack)
+            {
+                SendToBack(true);
+                _post_update_flags.SendToBack = false;
+            }
+            _post_update_flags._updated = true;
+
+            WidgetUpdateFlags.SetUpdatedFlagsToFalse(Children);
+            do
+            {
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    if (Children[i]._post_update_flags._updated) continue;
+                    Children[i].UpdateGroupPost(out bool deleted_);
+                    if (deleted_)
+                    {
+                        i--;
+                    }
+                }
+            } while (!WidgetUpdateFlags.UpdatedFlagsAreTrue(Children)); // This is to account for widgets re-ordering themselves, potentially skipping an update.
+
             deleted = false;
         }
 
@@ -1064,7 +1083,7 @@ namespace DownUnder.UI.Widgets
             if (DrawingMode == DrawingModeType.direct)
             {
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
-                SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
+                //SpriteBatch.GraphicsDevice.ScissorRectangle = VisibleArea.ToRectangle();
                 OnDrawBackground?.Invoke(this, DirectEventArgs());
                 OnDraw?.Invoke(this, DirectEventArgs());
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
@@ -1230,14 +1249,39 @@ namespace DownUnder.UI.Widgets
         void InvokeDrawOverlay(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
         void InvokeDrawBG(WidgetDrawArgs args) => OnDrawBackground?.Invoke(this, args);
         void InvokeDrawOverlayEffects(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
-        
+
         #endregion
 
         #region Methods
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer() => new Widget() { this };
+        public Widget SendToContainer()
+        {
+            Widget parent = ParentWidget;
+            Widget result = new Widget();
+            result.Area = Area;
+            result.Add(this);
+            Position = new Point2();
+            parent?.Add(result);
+            return result;
+        }
+
+        /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>
+        /// <returns> The deleted parent <see cref="Widget"/>. </returns>
+        public Widget ReplaceContainer(bool replace_position = true, bool replace_size = false)
+        {
+            Widget old_parent = ParentWidget;
+            Widget new_parent = ParentWidget.ParentWidget;
+
+            if (replace_position && !replace_size) Position = old_parent.Position;
+            if (!replace_position && replace_size) Size = old_parent.Size;
+            if (replace_position && replace_size) Area = old_parent.Area;
+
+            new_parent.Add(this);
+            old_parent.Delete();
+            return old_parent;
+        }
 
         public Widget WithAddedBehavior(WidgetBehavior behavior)
         {
@@ -1378,6 +1422,18 @@ namespace DownUnder.UI.Widgets
             _graphics_updating = false;
         }
 
+        public void SendToBack(bool immediate = false)
+        {
+            if (immediate) ParentWidget?.Children.SendWidgetToBack(this);
+            else _post_update_flags.SendToBack = true;
+        }
+
+        public void SendToFront(bool immediate = false)
+        {
+            if (immediate) ParentWidget?.Children.SendWidgetToFront(this);
+            else _post_update_flags.SendToFront = true;
+        }
+
         #endregion
 
         public void HandleDrop(object drop)
@@ -1427,9 +1483,7 @@ namespace DownUnder.UI.Widgets
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
             c.BehaviorTags = (AutoDictionary<SerializableType, AutoDictionary<string, string>>)BehaviorTags.Clone();
-
             c._accepts_drops_backing = _accepts_drops_backing;
-
             c._user_resize_policy_backing = _user_resize_policy_backing;
             c._user_reposition_policy_backing = _user_reposition_policy_backing;
             c._allowed_resizing_directions_backing = _allowed_resizing_directions_backing;
@@ -1440,6 +1494,7 @@ namespace DownUnder.UI.Widgets
 
             foreach (Type type in _accepted_drop_types_backing) c._accepted_drop_types_backing.Add(type);
             foreach (WidgetBehavior behavior in Behaviors) c.Behaviors.Add((WidgetBehavior)behavior.Clone());
+            foreach (WidgetAction action in ClosingActions) c.Actions.Add((WidgetAction)action.InitialClone());
 
             return c;
         }
@@ -1489,17 +1544,7 @@ namespace DownUnder.UI.Widgets
                 grid[x, y] = value;
             }
         }
-        public Widget this[string child_name]
-        {
-            get
-            {
-                foreach (Widget widget in AllContainedWidgets)
-                {
-                    if (widget.Name == child_name) return widget;
-                }
-                return null;
-            }
-        }
+        public Widget this[string child_name] => Children[child_name];
         
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;

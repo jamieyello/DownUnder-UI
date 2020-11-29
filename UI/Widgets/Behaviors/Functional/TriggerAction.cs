@@ -13,7 +13,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         private Delegate _delegate;
 
         /// <summary> The action that will be set off. </summary>
-        public WidgetAction Action { get; set; }
+        public Action Action { get; set; }
 
         /// <summary> The name of the <see cref="Widget"/> <see cref="EventHandler"/> that will add the action to the widget. Use the nameof() C# expression (or your language's equivalent) to set this consistently. </summary>
         public string NameofEventHandler { get; set; }
@@ -22,7 +22,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         public bool CloneAction { get; set; } = true;
 
         public TriggerAction() { }
-        public TriggerAction(string nameof_eventhandler, WidgetAction action)
+        public TriggerAction(string nameof_eventhandler, Action action)
         {
             NameofEventHandler = nameof_eventhandler;
             Action = action;
@@ -31,7 +31,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         protected override void Initialize()
         {
             _event = Parent.GetType().GetEvent(NameofEventHandler);
-            _delegate = Delegate.CreateDelegate(_event.EventHandlerType, this, nameof(AddAction));
+            _delegate = Delegate.CreateDelegate(_event.EventHandlerType, this, nameof(InvokeAction));
         }
 
         protected override void ConnectEvents()
@@ -47,16 +47,15 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         public override object Clone()
         {
             TriggerAction c = new TriggerAction();
-            if (Action != null) c.Action = (WidgetAction)Action.InitialClone();
+            if (Action != null) c.Action = Action;
             c.NameofEventHandler = NameofEventHandler;
             c.CloneAction = CloneAction;
             return c;
         }
 
-        public void AddAction(object sender, EventArgs args)
+        public void InvokeAction(object sender, EventArgs args)
         {
-            if (CloneAction) Parent.Actions.Add((WidgetAction)Action.InitialClone());
-            else Parent.Actions.Add(Action);
+            Action.Invoke();
         }
     }
 }

@@ -30,8 +30,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _center.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _center.Widget = value;
                 _Align();
+                value?.SendToBack();
             }
         }
 
@@ -40,6 +42,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _top_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _top_border.Widget = value;
                 _Align();
             }
@@ -50,6 +53,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _bottom_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _bottom_border.Widget = value;
                 _Align();
             }
@@ -60,6 +64,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _left_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _left_border.Widget = value;
                 _Align();
             }
@@ -70,13 +75,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             get => _right_border.Widget;
             set
             {
+                if (value != null) value.SnappingPolicy = DiagonalDirections2D.None;
                 _right_border.Widget = value;
                 _Align();
             }
         }
 
         [DataMember] public GenericDirections2D<ChangingValue<float>> BorderOccupy { get; private set; } = new GenericDirections2D<ChangingValue<float>>(new ChangingValue<float>(1f));
-        [DataMember] public BorderSize Spacing { get; set; } = new BorderSize(5f);
+        [DataMember] public BorderSize Spacing { get; set; } = new BorderSize(0f);
 
         public BorderFormat()
         {
@@ -134,10 +140,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         public void Update(object sender, EventArgs args)
         {
+            bool align = false;
+            if (BorderOccupy.Up.IsTransitioning || BorderOccupy.Down.IsTransitioning || BorderOccupy.Left.IsTransitioning || BorderOccupy.Right.IsTransitioning) align = true;
             BorderOccupy.Up.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Down.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Left.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Right.Update(Parent.UpdateData.ElapsedSeconds);
+            if (align) _Align();
         }
 
         private void Align(object sender, RectangleFSetArgs args)

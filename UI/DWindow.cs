@@ -218,6 +218,8 @@ namespace DownUnder.UI
 
         GraphicsDevice IParent.GraphicsDevice => ParentGame?.GraphicsDevice;
 
+        public bool IsFullscreen => GraphicsManager.IsFullScreen;
+
         #endregion Properties
 
         #region Constructors
@@ -269,12 +271,19 @@ namespace DownUnder.UI
             GraphicsManager.Dispose();
         }
 
+        public virtual Widget DisplayWidget
+        {
+            get => MainWidget;
+            set => MainWidget = value;
+        }
+
         #endregion Constructors
 
         #region Event Handlers
 
         public event EventHandler<EventArgs> OnFirstUpdate;
         public event EventHandler<EventArgs> OnUpdate;
+        public event EventHandler<EventArgs> OnToggleFullscreen;
 
         #endregion
 
@@ -375,6 +384,13 @@ namespace DownUnder.UI
 
         public void Draw(SpriteBatch sprite_batch, GameTime game_time) {
             MainWidget.Draw(sprite_batch);
+        }
+
+        public void ToggleFullscreen()
+        {
+            GraphicsManager.HardwareModeSwitch = false;
+            GraphicsManager.ToggleFullScreen();
+            OnToggleFullscreen?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion Protected Methods

@@ -15,6 +15,7 @@ namespace DownUnder.Utility
         public float ProgressPlotted => Utility.Interpolation.Plot(Progress, Interpolation);
 
         public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
+        /// <summary> Speed modifier of the value. Default is 1f. </summary>
         public float TransitionSpeed { get; set; } = 1f;
         public bool IsTransitioning { get => Progress != 1f; }
         public InterpolationSettings InterpolationSettings {

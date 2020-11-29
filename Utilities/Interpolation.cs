@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Diagnostics;
@@ -79,8 +80,22 @@ namespace DownUnder.Utility
                 case Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)):
                     return (T)Convert.ChangeType
                         (
-                            ((Vector2)Convert.ChangeType(initial_object, typeof(Vector2)))
-                            * Plot(progress, interpolation_type), typeof(T)
+                            Vector2.Lerp
+                            (
+                                (Vector2)Convert.ChangeType(initial_object, typeof(Vector2)),
+                                (Vector2)Convert.ChangeType(target_object, typeof(Vector2)),
+                                Plot(progress, interpolation_type)
+                            ), typeof(T)
+                        );
+
+                case Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)):
+                    return (T)Convert.ChangeType
+                        (
+                            ((VertexPositionColor)Convert.ChangeType(initial_object, typeof(VertexPositionColor))).Lerp
+                            (
+                                (VertexPositionColor)Convert.ChangeType(target_object, typeof(VertexPositionColor)),
+                                Plot(progress, interpolation_type)
+                            ), typeof(T)
                         );
 
                 // Add new cases here.

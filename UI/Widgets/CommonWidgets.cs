@@ -1,12 +1,8 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Format;
+﻿using DownUnder.UI.Widgets.Actions.Functional;
+using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace DownUnder.UI.Widgets
 {
@@ -47,9 +43,9 @@ namespace DownUnder.UI.Widgets
             bar.MinimumHeight = 40;
 
             x_button.OnClick += (s, a) => { handle.Delete(); };
-            rect_button.Behaviors.Add(new ToggleWindowFullscreen());
-
-            control_grid.Behaviors.Add(new PinWidget() { Pin = InnerWidgetLocation.TopRight });
+            rect_button.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), new ToggleWindowFullscreen()));
+            control_grid.Behaviors.Add(new PinWidget() { Pin = InnerWidgetLocation.InsideTopRight });
+            bar.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnDoubleClick), new ToggleWindowFullscreen()));
 
             return bar;
         }

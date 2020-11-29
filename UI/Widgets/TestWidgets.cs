@@ -1,22 +1,97 @@
-﻿using DownUnder;
-using DownUnder.UI.Widgets;
+﻿using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
 using DownUnder.Utilities;
-using Microsoft.Xna.Framework;
+using DownUnder.Utility;
 using MonoGame.Extended;
-using System.Diagnostics;
-using System.Threading;
 
 namespace TestContent
 {
     public static class TestWidgets
     {
         public static Widget CurrentTest =>
-            LoginLayoutEffects();
+            //WidgetReorderTest();
+            //WidgetTransitionTest();
+            //LoginLayoutEffects();
             //BGAnimationTest();
+            //GridDebug();
+            GraphicTest();
+
+        public static Widget GraphicTest()
+        {
+            Widget result = new Widget();
+            result.Add(new Widget().WithAddedBehavior(new DrawGraphic(new PausePlayGraphic()), out var pause_play), out var inner);
+            inner.Area = new RectangleF(50, 50, 650, 300);
+            inner.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            inner.VisualSettings.DrawBackground = false;
+            inner.VisualSettings.DrawOutline = false;
+            //pause_play.Graphic.Progress.InterpolationSettings = InterpolationSettings.Faster;
+            //inner.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
+            return result;
+        }
+
+        public static Widget GridDebug()
+        {
+            Widget result = new Widget();
+            Widget grid_widget = new Widget().WithAddedBehavior(new GridFormat(1, 4));
+            grid_widget[0].debug_output = true;
+            grid_widget.Area = new RectangleF(50, 50, 100, 75);
+
+            grid_widget[0, 0].Behaviors.Add(new DrawText("Test text 55555555555 5"));
+            grid_widget[0, 1].Behaviors.Add(new DrawText("Test text 55555555555 5"));
+
+            grid_widget.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            grid_widget.AllowedResizingDirections = Directions2D.All;
+            result.Add(grid_widget);
+
+            Widget second = new Widget();
+            second.Area = new RectangleF(50, 150, 100, 75);
+            second.Behaviors.Add(new GridFormat(3, 3, new Widget { UserResizePolicy = Widget.UserResizePolicyType.allow }));
+
+            result.Add(second);
+
+            return result;
+        }
+
+        public static Widget WidgetReorderTest()
+        {
+            Widget result = new Widget();
+            Widget box1 = new Widget();
+            Widget box2 = new Widget();
+            box1.Area = new RectangleF(50,50,100,100);
+            box2.Area = new RectangleF(100,100,100,100);
+
+            result.Add(box1);
+            result.Add(box2);
+
+            box1.OnClick += (s, a) => box1.SendToFront();
+            box2.OnClick += (s, a) => box2.SendToFront();
+
+            return result;
+        }
+
+        public static Widget WidgetTransitionTest()
+        {
+            Widget result = new Widget();
+            Widget button = BasicWidgets.Button("Send to container");
+            Widget test_widget = new Widget
+            {
+                Area = new RectangleF(10, 40, 200, 200)
+            };
+            test_widget.Behaviors.Add(new GridFormat(2, 2));
+
+            button.OnClick += (s, a) =>
+            {
+                test_widget.Actions.Add(new ReplaceWidget(new Widget().WithAddedBehavior(new DrawText("New Widget")), InnerWidgetLocation.OutsideLeft, InnerWidgetLocation.OutsideRight));
+            };
+
+            result.Add(button);
+            result.Add(test_widget);
+            return result;
+        }
 
         public static Widget CenterTest()
         {
@@ -38,6 +113,7 @@ namespace TestContent
         {
             Widget layout = new Widget { };
             layout.VisualSettings.ChangeColorOnMouseOver = false;
+            layout.VisualSettings.DrawBackground = false;
 
 //            layout.Behaviors.Add(new DrawText
 //            {
@@ -68,7 +144,7 @@ namespace TestContent
 
         public static Widget LoginWindow()
         {
-            Widget window = new Widget { Size = new Point2(800, 600), Name = "Login Window" };
+            Widget window = new Widget { Size = new Point2(400, 300), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
             
             window.Behaviors.Add(new CenterContent());

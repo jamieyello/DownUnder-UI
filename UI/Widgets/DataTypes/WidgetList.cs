@@ -236,6 +236,22 @@ namespace DownUnder.UI.Widgets.DataTypes
             foreach (Widget widget in _widgets) widget.Height = height;
         }
 
+        public void SendWidgetToBack(Widget widget)
+        {
+            int index = IndexOf(widget);
+            if (index == -1) throw new Exception($"{nameof(Widget)} not found.");
+            _widgets.RemoveAt(index);
+            _widgets.Insert(0, widget);
+        }
+
+        public void SendWidgetToFront(Widget widget)
+        {
+            int index = IndexOf(widget);
+            if (index == -1) throw new Exception($"{nameof(Widget)} not found.");
+            _widgets.RemoveAt(index);
+            _widgets.Add(widget);
+        }
+
         private void ThrowReadOnlyException() => throw new Exception($"This {GetType().Name} is read only.");
 
         #region IList Implementation
@@ -250,6 +266,18 @@ namespace DownUnder.UI.Widgets.DataTypes
                 OnRemove();
                 OnAdd();
                 OnListChange();
+            }
+        }
+
+        public Widget this[string name]
+        {
+            get 
+            {
+                for (int i = 0; i < _widgets[i].Count; i++)
+                {
+                    if (_widgets[i].Name == name) return _widgets[i];
+                }
+                return null;
             }
         }
 
