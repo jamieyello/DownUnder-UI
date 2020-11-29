@@ -24,7 +24,7 @@ namespace TestContent
         {
             Widget result = new Widget();
             result.Add(new Widget().WithAddedBehavior(new DrawGraphic(new PausePlayGraphic())), out var inner);
-            inner.Area = new RectangleF(50, 50, 100, 100);
+            inner.Area = new RectangleF(50, 50, 650, 300);
             inner.UserResizePolicy = Widget.UserResizePolicyType.allow;
             inner.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
             return result;

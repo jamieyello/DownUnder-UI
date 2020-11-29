@@ -55,7 +55,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void Draw(object sender, WidgetDrawArgs args)
         {
-            Graphic.DrawExternal(args, args.DrawingArea);
+            Graphic.DrawExternal(args);
         }
     }
 }

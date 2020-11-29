@@ -64,5 +64,26 @@ namespace DownUnder.UI.Widgets
             RestartDefault();
             return _caller.ParentDWindow.OtherBuffer;
         }
+
+        /// <summary> Get the projection <see cref="Matrix"/> of the given <see cref="Widget"/> to draw graphics inside of. </summary>
+        public Matrix GetStretchedProjection()
+        {
+            Vector2 target_size = ((Texture2D)SpriteBatch.GraphicsDevice.GetRenderTargets()[0].RenderTarget).Bounds.Size.ToVector2();
+            Vector2 area_size = DrawingArea.Size;
+
+            Vector2 window_offset = AreaInRender.Position.ToVector2() * 2 / target_size - new Vector2(1f, 1f);
+            Vector2 area_offset = area_size / target_size;
+            Vector2 resize = area_size / target_size;
+
+            return
+                Matrix.CreateScale(
+                resize.X,
+                resize.Y,
+                1f)
+            * Matrix.CreateTranslation(
+                area_offset.X + window_offset.X,
+                -area_offset.Y - window_offset.Y,
+                0f);
+        }
     }
 }

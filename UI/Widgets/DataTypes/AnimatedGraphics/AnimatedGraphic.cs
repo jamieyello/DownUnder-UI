@@ -25,14 +25,14 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
             Update(step);
         }
 
-        internal void DrawExternal(WidgetDrawArgs args, RectangleF area)
+        internal void DrawExternal(WidgetDrawArgs args)
         {
-            Draw(args, area);
+            Draw(args);
         }
 
         protected abstract void Initialize(GraphicsDevice gd);
         protected abstract void Update(float step);
-        protected abstract void Draw(WidgetDrawArgs args, RectangleF area);
+        protected abstract void Draw(WidgetDrawArgs args);
 
         public void SetStateStart()
         {

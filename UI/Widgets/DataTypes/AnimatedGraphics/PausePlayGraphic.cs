@@ -13,8 +13,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
     class PausePlayGraphic : AnimatedGraphic
     {
         BasicEffect basicEffect;
-        VertexPositionColor[] vert = new VertexPositionColor[4];
-        short[] ind = new short[6];
+        VertexPositionColor[] vert;
 
         Vector2[] left_start;
         Vector2[] right_start;
@@ -34,24 +33,29 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
         protected override void Initialize(GraphicsDevice gd)
         {
             basicEffect = new BasicEffect(gd);
-            //basicEffect.TextureEnabled = false;
 
-            vert[0].Position = new Vector3(0, 0, 0);
-            vert[1].Position = new Vector3(1f, 0, 0);
-            vert[2].Position = new Vector3(1f, 1f, 0);
-            //vert[3].Position = new Vector3(0f, 1f, 0);
+            vert = new VertexPositionColor[12];
 
-            vert[0].Color = Color.White;
-            vert[1].Color = Color.White;
-            vert[2].Color = Color.White;
-            vert[3].Color = Color.White;
+            vert[2].Position = new Vector3(0.1f, 0.1f, 0);
+            vert[1].Position = new Vector3(0.6f, 0.1f, 0);
+            vert[0].Position = new Vector3(0.1f, 0.6f, 0);
 
-            ind[0] = 0;
-            ind[1] = 2;
-            ind[2] = 1;
-            ind[3] = 1;
-            ind[4] = 2;
-            ind[5] = 3;
+            vert[3].Position = new Vector3(-0.1f, 0.1f, 0);
+            vert[4].Position = new Vector3(-0.6f, 0.1f, 0);
+            vert[5].Position = new Vector3(-0.1f, 0.6f, 0);
+
+            vert[6].Position = new Vector3(0.1f, -0.1f, 0);
+            vert[7].Position = new Vector3(0.6f, -0.1f, 0);
+            vert[8].Position = new Vector3(0.1f, -0.6f, 0);
+
+            vert[11].Position = new Vector3(-0.1f, -0.1f, 0);
+            vert[10].Position = new Vector3(-0.6f, -0.1f, 0);
+            vert[9].Position = new Vector3(-0.1f, -0.6f, 0);
+
+            for (int i = 0; i < vert.Length; i++)
+            {
+                vert[i].Color = Color.White;
+            }
         }
 
         protected override void Update(float step)
@@ -59,33 +63,20 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
             color.Update(step);
         }
 
-        protected override void Draw(WidgetDrawArgs args, RectangleF area)
+        protected override void Draw(WidgetDrawArgs args)
         {
             float progress = 1f; //base.progress.GetCurrent();
             Color color = Color.White; //this.color.GetCurrent();
-            Vector2 area_size = area.Size;
-            Texture2D current_target = (Texture2D)args.SpriteBatch.GraphicsDevice.GetRenderTargets()[0].RenderTarget;
-            Vector2 target_size = current_target.Bounds.Size.ToVector2();
 
-            Vector2 window_offset = area.Position / target_size;
-            Vector2 area_offset = area_size / target_size;
-            Vector2 offset = window_offset * 2;// + area_offset / 2;
-
-            //Debug.WriteLine("offset = " + offset);
-            Debug.WriteLine("area_offset = " + area_offset);
-
-            Vector2 resize = area_size / target_size;
-            //basicEffect.Projection = ;
-            basicEffect.View = Matrix.CreateTranslation(offset.X, -offset.Y, 1f) * Matrix.CreateScale(resize.X, resize.Y, 1f);
-
+            basicEffect.Projection = args.GetStretchedProjection();
 
             args.RestartImmediate();
 
             foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                args.GraphicsDevice.DrawUserIndexedPrimitives(
-                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+                args.GraphicsDevice.DrawUserPrimitives(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length / 3);
             }
 
             args.RestartDefault();
