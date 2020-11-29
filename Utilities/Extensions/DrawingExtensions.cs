@@ -117,12 +117,5 @@ namespace DownUnder
                 spriteBatch.DrawLine(points[i - 1].X, points[i - 1].Y, points[i].X, points[i].Y, color, thickness);
             }
         }
-
-        public static void DrawQuad(this SpriteBatch spriteBatch, Vector2 position, IReadOnlyList<Vector2> points, Color color, float layer_depth = 0f)
-        {
-            
-            spriteBatch.DrawPolygon(position, new MonoGame.Extended.Shapes.Polygon(new Vector2[] { points[0], points[1], points[2] }), color, layer_depth);
-            spriteBatch.DrawPolygon(position, new MonoGame.Extended.Shapes.Polygon(new Vector2[] { points[3], points[1], points[2] }), color, layer_depth);
-        }
     }
 }

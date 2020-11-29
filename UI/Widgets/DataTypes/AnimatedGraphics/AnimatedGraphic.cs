@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 {
     public abstract class AnimatedGraphic : ICloneable
     {
-        protected readonly ChangingValue<float> progress = new ChangingValue<float>(0f);
+        public ChangingValue<float> Progress { get; private set; } = new ChangingValue<float>(0f);
         public bool IsInitialized { get; private set; }
 
         public void InitializeExternal(GraphicsDevice gd)
@@ -21,7 +21,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 
         internal void UpdateExternal(float step)
         {
-            progress.Update(step);
+            Progress.Update(step);
             Update(step);
         }
 
@@ -36,12 +36,12 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 
         public void SetStateStart()
         {
-            progress.SetTargetValue(0f);
+            Progress.SetTargetValue(0f);
         }
 
         public void SetStateEnd()
         {
-            progress.SetTargetValue(1f);
+            Progress.SetTargetValue(1f);
         }
 
         public abstract object Clone();

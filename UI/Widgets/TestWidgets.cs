@@ -23,10 +23,13 @@ namespace TestContent
         public static Widget GraphicTest()
         {
             Widget result = new Widget();
-            result.Add(new Widget().WithAddedBehavior(new DrawGraphic(new PausePlayGraphic())), out var inner);
+            result.Add(new Widget().WithAddedBehavior(new DrawGraphic(new PausePlayGraphic()), out var pause_play), out var inner);
             inner.Area = new RectangleF(50, 50, 650, 300);
             inner.UserResizePolicy = Widget.UserResizePolicyType.allow;
-            inner.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
+            inner.VisualSettings.DrawBackground = false;
+            inner.VisualSettings.DrawOutline = false;
+            //pause_play.Graphic.Progress.InterpolationSettings = InterpolationSettings.Faster;
+            //inner.UserRepositionPolicy = Widget.UserResizePolicyType.allow;
             return result;
         }
 

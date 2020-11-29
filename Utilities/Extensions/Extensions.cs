@@ -484,5 +484,10 @@ namespace DownUnder
         public static Vector2 InvertX(this Vector2 v) => new Vector2(-v.X, v.Y);
         /// <summary> Returns a new <see cref="Vector2"/> with a -Y value. </summary>
         public static Vector2 InvertY(this Vector2 v) => new Vector2(v.X, -v.Y);
+
+        public static VertexPositionColor Lerp(this VertexPositionColor vpc, VertexPositionColor target, float amount)
+        {
+            return new VertexPositionColor(Vector3.Lerp(vpc.Position, target.Position, amount), Color.Lerp(vpc.Color, target.Color, amount));
+        }
     }
 }

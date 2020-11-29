@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using DownUnder.Utilities;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,49 +14,23 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
     class PausePlayGraphic : AnimatedGraphic
     {
         BasicEffect basicEffect;
-        VertexPositionColor[] vert;
+        VertexPositionColor[] starting_vert;
+        VertexPositionColor[] ending_vert;
 
-        Vector2[] left_start;
-        Vector2[] right_start;
-        Vector2[] left_end;
-        Vector2[] right_end;
+        ChangingValue<Color> color = new ChangingValue<Color>(Color.White);
 
-        ChangingValue<Color> color= new ChangingValue<Color>(Color.White);
-        
+        float pause_gap = 0.8f;
+
         public PausePlayGraphic()
         {
-            left_start = new Vector2[] { new Vector2(0f, 0f), new Vector2(0.4f, 0f), new Vector2(0.4f, 1f), new Vector2(0f, 1f) };
-            right_start = new Vector2[4];
-            left_end = new Vector2[4];
-            right_end = new Vector2[4];
+            starting_vert = PauseVertex(pause_gap);
+            ending_vert = PlayVertex();
+            Progress.InterpolationSettings = InterpolationSettings.Faster;
         }
 
         protected override void Initialize(GraphicsDevice gd)
         {
             basicEffect = new BasicEffect(gd);
-
-            vert = new VertexPositionColor[12];
-
-            vert[2].Position = new Vector3(0.1f, 0.1f, 0);
-            vert[1].Position = new Vector3(0.6f, 0.1f, 0);
-            vert[0].Position = new Vector3(0.1f, 0.6f, 0);
-
-            vert[3].Position = new Vector3(-0.1f, 0.1f, 0);
-            vert[4].Position = new Vector3(-0.6f, 0.1f, 0);
-            vert[5].Position = new Vector3(-0.1f, 0.6f, 0);
-
-            vert[6].Position = new Vector3(0.1f, -0.1f, 0);
-            vert[7].Position = new Vector3(0.6f, -0.1f, 0);
-            vert[8].Position = new Vector3(0.1f, -0.6f, 0);
-
-            vert[11].Position = new Vector3(-0.1f, -0.1f, 0);
-            vert[10].Position = new Vector3(-0.6f, -0.1f, 0);
-            vert[9].Position = new Vector3(-0.1f, -0.6f, 0);
-
-            for (int i = 0; i < vert.Length; i++)
-            {
-                vert[i].Color = Color.White;
-            }
         }
 
         protected override void Update(float step)
@@ -65,8 +40,13 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 
         protected override void Draw(WidgetDrawArgs args)
         {
-            float progress = 1f; //base.progress.GetCurrent();
-            Color color = Color.White; //this.color.GetCurrent();
+            float progress = Progress.GetCurrent();
+
+            VertexPositionColor[] vert = new VertexPositionColor[starting_vert.Length];
+            for (int i = 0; i < vert.Length; i++)
+            {
+                vert[i] = starting_vert[i].Lerp(ending_vert[i], progress);
+            }
 
             basicEffect.Projection = args.GetStretchedProjection();
 
@@ -105,6 +85,71 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
         public override object Clone()
         {
             return new PausePlayGraphic();
+        }
+
+        private static VertexPositionColor[] PauseVertex(float pause_gap, Color? color = null)
+        {
+            VertexPositionColor[] vert = new VertexPositionColor[12];
+            float pg = pause_gap / 2f;
+
+            // TL
+            vert[0].Position = new Vector3(-1f, -1f, 0f);
+            vert[1].Position = new Vector3(-1f, 1f, 0f);
+            vert[2].Position = new Vector3(-pg, 1f, 0f);
+
+            // BL
+            vert[3].Position = new Vector3(-1f, -1f, 0f);
+            vert[4].Position = new Vector3(-pg, 1f, 0f);
+            vert[5].Position = new Vector3(-pg, -1f, 0f);
+
+            // TR
+            vert[8].Position = new Vector3(1f, -1f, 0f);
+            vert[7].Position = new Vector3(1f, 1f, 0f);
+            vert[6].Position = new Vector3(pg, 1f, 0f);
+
+            // BR
+            vert[11].Position = new Vector3(1f, -1f, 0f);
+            vert[10].Position = new Vector3(pg, 1f, 0f);
+            vert[9].Position = new Vector3(pg, -1f, 0f);
+
+            for (int i = 0; i < vert.Length; i++)
+            {
+                vert[i].Color = color ?? Color.White;
+            }
+
+            return vert;
+        }
+
+        private static VertexPositionColor[] PlayVertex(Color? color = null)
+        {
+            VertexPositionColor[] vert = new VertexPositionColor[12];
+
+            // TL
+            vert[0].Position = new Vector3(-1f, -1f, 0f);
+            vert[1].Position = new Vector3(-1f, 1f, 0f);
+            vert[2].Position = new Vector3(1f, 0f, 0f);
+
+            //// BL
+            vert[3].Position = new Vector3(-1f, -1f, 0f);
+            vert[4].Position = new Vector3(1f, 0f, 0f);
+            vert[5].Position = new Vector3(-1f, 1f, 0f);
+
+            //// TR
+            vert[8].Position = new Vector3(1f, -1f, 0f);
+            vert[7].Position = new Vector3(1f, 1f, 0f);
+            vert[6].Position = new Vector3(1f, 1f, 0f);
+
+            //// BR
+            vert[11].Position = new Vector3(1f, -1f, 0f);
+            vert[10].Position = new Vector3(1f, 1f, 0f);
+            vert[9].Position = new Vector3(1f, -1f, 0f);
+
+            for (int i = 0; i < vert.Length; i++)
+            {
+                vert[i].Color = color ?? Color.White;
+            }
+
+            return vert;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
@@ -8,6 +9,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
     class DrawGraphic : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
+        bool IsToggled = false;
 
         public AnimatedGraphic Graphic;
 
@@ -27,6 +29,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             Parent.OnGraphicsInitialized += Initialize;
             Parent.OnUpdate += Update;
             Parent.OnDraw += Draw;
+            Parent.OnClick += ToggleAnimation;
         }
 
         protected override void DisconnectEvents()
@@ -34,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             Parent.OnGraphicsInitialized -= Initialize;
             Parent.OnUpdate -= Update;
             Parent.OnDraw -= Draw;
+            Parent.OnClick -= ToggleAnimation;
         }
 
         public override object Clone()
@@ -56,6 +60,20 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         void Draw(object sender, WidgetDrawArgs args)
         {
             Graphic.DrawExternal(args);
+        }
+
+        void ToggleAnimation(object sender, EventArgs args)
+        {
+            if (!IsToggled)
+            {
+                Graphic.Progress.SetTargetValue(1f);
+                IsToggled = true;
+            }
+            else
+            {
+                Graphic.Progress.SetTargetValue(0f);
+                IsToggled = false;
+            }
         }
     }
 }
