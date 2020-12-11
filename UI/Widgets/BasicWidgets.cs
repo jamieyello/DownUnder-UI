@@ -20,9 +20,9 @@ namespace DownUnder.UI.Widgets
 {
     public static class BasicWidgets
     {
-        public static Widget Button(string text)
+        public static Widget Button(string text, RectangleF? area = null)
         {
-            Widget result = new Widget()
+            Widget result = new Widget(area)
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
             result.VisualSettings.VisualRole = VisualRoleType.button;
@@ -30,9 +30,9 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public static Widget ImageButton(string asset_name, float scaling = 1f)
+        public static Widget ImageButton(string asset_name, float scaling = 1f, RectangleF? area = null)
         {
-            Widget result = new Widget()
+            Widget result = new Widget(area)
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawCenteredImage(asset_name, scaling));
             result.VisualSettings.VisualRole = VisualRoleType.button;
@@ -40,18 +40,18 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public static Widget Label(string text)
+        public static Widget Label(string text, RectangleF? area = null)
         {
-            Widget result = new Widget();
+            Widget result = new Widget(area);
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
             result.Behaviors.Add(new DrawText { Text = text, YTextPositioning = YTextPositioningPolicy.center });
             return result;
         }
 
-        public static Widget SingleLineTextEntry(string text = "", XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.top, float? side_spacing = null, bool constrain_area_to_text = false)
+        public static Widget SingleLineTextEntry(string text = "", XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.center, float? side_spacing = null, bool constrain_area_to_text = false, RectangleF? area = null)
         {
-            Widget result = new Widget { };
+            Widget result = new Widget(area);
             result.VisualSettings.VisualRole = VisualRoleType.text_edit_widget;
             result.Behaviors.Add(new DrawEditableText { });
             var draw_text = result.Behaviors.GetFirst<DrawText>();

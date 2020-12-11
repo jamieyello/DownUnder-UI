@@ -1,4 +1,5 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
+﻿using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,11 +11,13 @@ namespace DownUnder.UI.Widgets.Behaviors
     [DataContract] public class BehaviorManager : IList<WidgetBehavior>, IIsWidgetChild
     {
         public Widget Parent { get; set; }
+        public BehaviorFinder Common;
         [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
         [DataMember] public GroupBehaviorManager GroupBehaviors { get; private set; }
-
+        
         public BehaviorManager(Widget parent)
         {
+            Common = new BehaviorFinder(this);
             Parent = parent;
             GroupBehaviors = new GroupBehaviorManager(parent);
         }
@@ -144,5 +147,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         IEnumerator IEnumerable.GetEnumerator() => _behaviors.GetEnumerator();
+
+        
     }
 }

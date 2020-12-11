@@ -6,15 +6,15 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    public class DrawSwitchGraphic : WidgetBehavior
+    class DrawSwitchGraphic : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
         bool IsToggled = false;
 
-        public SwitchingGraphic Graphic;
+        public AnimatedGraphic Graphic;
 
         public DrawSwitchGraphic() { }
-        public DrawSwitchGraphic(SwitchingGraphic graphic)
+        public DrawSwitchGraphic(AnimatedGraphic graphic)
         {
             Graphic = graphic;
         }
@@ -43,23 +43,23 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         public override object Clone()
         {
             var result = new DrawSwitchGraphic();
-            result.Graphic = (SwitchingGraphic)Graphic.Clone();
+            result.Graphic = (AnimatedGraphic)Graphic.Clone();
             return result;
         }
 
         void Initialize(object sender, EventArgs args)
         {
-            Graphic.Initialize(Parent.GraphicsDevice);
+            Graphic.InitializeExternal(Parent.GraphicsDevice);
         }
 
         void Update(object sender, EventArgs args)
         {
-            Graphic.Update(Parent.UpdateData.ElapsedSeconds);
+            Graphic.UpdateExternal(Parent.UpdateData.ElapsedSeconds);
         }
 
         void Draw(object sender, WidgetDrawArgs args)
         {
-            Graphic.Draw(args);
+            Graphic.DrawExternal(args);
         }
 
         void ToggleAnimation(object sender, EventArgs args)

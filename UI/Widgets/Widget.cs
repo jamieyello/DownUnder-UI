@@ -405,6 +405,17 @@ namespace DownUnder.UI.Widgets
         public float X { get => Area.X; set => Area = Area.WithX(value); }
         /// <summary> The y position of this <see cref="Widget"/> in its <see cref="IParent"/> (in terms of pixels on a 1080p monitor) </summary>
         public float Y { get => Area.Y; set => Area = Area.WithY(value); }
+
+        public float Top => Area.Top;
+        public float Bottom => Area.Bottom;
+        public float Left => Area.Left;
+        public float Right => Area.Right;
+
+        public Point2 TopLeft => Area.TopLeft;
+        public Point2 TopRight => Area.TopRight;
+        public Point2 BottomLeft => Area.BottomLeft;
+        public Point2 BottomRight => Area.BottomRight;
+        
         /// <summary> Minimum height allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
         /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
@@ -665,6 +676,11 @@ namespace DownUnder.UI.Widgets
         #region Constructors/Destructors
 
         public Widget() => SetDefaults();
+
+        public Widget(RectangleF? area) : this()
+        {
+            if (area.HasValue) Area = area.Value;
+        }
 
         [OnDeserializing]
         void OnDeserialize(StreamingContext context)

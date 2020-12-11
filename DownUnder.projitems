@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ReplaceWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\BasicWidgets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\DownUnderBehaviorIDs.cs" />
@@ -59,8 +60,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawGraphic.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\AnimatedGraphic.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\PausePlayGraphic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
+    <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />

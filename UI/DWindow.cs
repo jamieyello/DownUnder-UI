@@ -14,6 +14,8 @@ using DownUnder.UI.Widgets;
 using DownUnder.Utility;
 using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
+using DownUnder.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.Widgets.Behaviors.Visual;
 
 namespace DownUnder.UI
 {
@@ -391,6 +393,21 @@ namespace DownUnder.UI
             GraphicsManager.HardwareModeSwitch = false;
             GraphicsManager.ToggleFullScreen();
             OnToggleFullscreen?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ShowPopUpMessage(string message)
+        {
+            Widget window = new Widget { Size = new Point2(400, 300) };
+
+            window.Behaviors.Add(new CenterContent());
+            window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
+            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster }, out var pop_in_out);
+            window.Add(BasicWidgets.Label(message), out var label);
+
+            label.PassthroughMouse = true;
+            window.OnClick += (s, a) => pop_in_out.Close();
+
+            DisplayWidget.Add(window);
         }
 
         #endregion Protected Methods

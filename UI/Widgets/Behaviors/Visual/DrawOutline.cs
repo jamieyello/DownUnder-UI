@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    class DrawOutline : WidgetBehavior
+    public class DrawOutline : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 

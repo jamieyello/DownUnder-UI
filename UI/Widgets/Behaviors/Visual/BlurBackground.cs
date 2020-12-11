@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    class BlurBackground : WidgetBehavior
+    public class BlurBackground : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
         Effect effect;

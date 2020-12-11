@@ -92,9 +92,10 @@ namespace DownUnder.Utility
 
         public T GetCurrent() => current_value;
 
-        public object Clone() {
+        object ICloneable.Clone() => Clone();
+        public ChangingValue<T> Clone(bool reset_progress = false) {
             var c = new ChangingValue<T>();
-            c.Progress = Progress;
+            if (!reset_progress) c.Progress = Progress;
             c.Interpolation = Interpolation;
             c.TransitionSpeed = TransitionSpeed;
 
@@ -104,5 +105,7 @@ namespace DownUnder.Utility
 
             return c;
         }
+
+
     }
 }
