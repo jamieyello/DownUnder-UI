@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using MonoGame.Extended;
-using DownUnder.Utility;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
@@ -17,9 +16,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private float _expand_rect_on_release = 1f;
 
         public DragOffOutline() {
-            round_amount.Interpolation = InterpolationType.fake_sin;
+            round_amount.UsedInterpolation = InterpolationType.fake_sin;
             round_amount.TransitionSpeed = 1f;
-            rect.Interpolation = InterpolationType.linear;
+            rect.UsedInterpolation = InterpolationType.linear;
             rect.TransitionSpeed = 20f;
             rect_color.TransitionSpeed = 4f;
         }

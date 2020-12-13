@@ -4,7 +4,7 @@ using MonoGame.Extended;
 using System;
 using System.Diagnostics;
 
-namespace DownUnder.Utility
+namespace DownUnder
 {
     public enum InterpolationType
     {
@@ -16,7 +16,7 @@ namespace DownUnder.Utility
         cubed,
         /// <summary> y = x^4 </summary>
         exponential4,
-        /// <summary> y = x^5</summary>
+        /// <summary> y = x^5 </summary>
         exponential5,
         /// <summary> y = x^6 </summary>
         exponential6,

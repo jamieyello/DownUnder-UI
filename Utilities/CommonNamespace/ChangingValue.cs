@@ -1,8 +1,7 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace DownUnder.Utility
+namespace DownUnder
 {
     /// <summary> Value designed to smoothly transition between two states. </summary>
     public class ChangingValue<T> : ICloneable
@@ -12,16 +11,16 @@ namespace DownUnder.Utility
         [NonSerialized] private T target_value = (T)Activator.CreateInstance(typeof(T));
 
         public float Progress { get; private set; } = 0f; // From 0f to 1f
-        public float ProgressPlotted => Utility.Interpolation.Plot(Progress, Interpolation);
+        public float ProgressPlotted => Interpolation.Plot(Progress, UsedInterpolation);
 
-        public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
+        public InterpolationType UsedInterpolation { get; set; } = InterpolationType.fake_sin;
         /// <summary> Speed modifier of the value. Default is 1f. </summary>
         public float TransitionSpeed { get; set; } = 1f;
         public bool IsTransitioning { get => Progress != 1f; }
         public InterpolationSettings InterpolationSettings {
-            get => new InterpolationSettings(Interpolation, TransitionSpeed);
+            get => new InterpolationSettings(UsedInterpolation, TransitionSpeed);
             set {
-                Interpolation = value.Interpolation;
+                UsedInterpolation = value.Interpolation;
                 TransitionSpeed = value.TransitionSpeed;
             }
         }
@@ -87,7 +86,7 @@ namespace DownUnder.Utility
             }
 
             Progress += TransitionSpeed * step;
-            current_value = Utility.Interpolation.GetMiddle(initial_value, target_value, Progress, Interpolation);
+            current_value = Interpolation.GetMiddle(initial_value, target_value, Progress, UsedInterpolation);
         }
 
         public T GetCurrent() => current_value;
@@ -96,7 +95,7 @@ namespace DownUnder.Utility
         public ChangingValue<T> Clone(bool reset_progress = false) {
             var c = new ChangingValue<T>();
             if (!reset_progress) c.Progress = Progress;
-            c.Interpolation = Interpolation;
+            c.UsedInterpolation = UsedInterpolation;
             c.TransitionSpeed = TransitionSpeed;
 
             c.initial_value = initial_value;

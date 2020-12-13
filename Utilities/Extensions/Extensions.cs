@@ -489,5 +489,7 @@ namespace DownUnder
         {
             return new VertexPositionColor(Vector3.Lerp(vpc.Position, target.Position, amount), Color.Lerp(vpc.Color, target.Color, amount));
         }
+
+        public static Size2 ToSize2(this Point2 p) => new Size2(p.X, p.Y);
     }
 }

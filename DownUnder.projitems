@@ -37,7 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ReplaceWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\BasicWidgets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CommonWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\BehaviorSet.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\Neurons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NeuronsObjects\NeuronsCircle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\NewBehavior.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CommonWidgets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\InternalWidgets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\BorderingSide.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
@@ -128,13 +128,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IWidgetChild.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Widget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AutoDictionary.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ChangingValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\ChangingValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CustomEventArgs\AddItemArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CustomEventArgs\RemoveItemArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DiagonalDirection2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DiagonalDirections2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Direction2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Directions2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\DiagonalDirection2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\DiagonalDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\Direction2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\Directions2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingEffects\GridPixel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingEffects\PixelGrid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DrawingTools.cs" />
@@ -144,13 +144,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\RectangleFExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\WidgetExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GenericDiagonalDirections2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GenericDirections2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Interpolation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\InterpolationSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\GenericDiagonalDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\GenericDirections2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\Interpolation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\InterpolationSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OSInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PropertyHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RectanglePart.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\RectanglePart.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringManipulation.cs" />
@@ -170,5 +170,8 @@
     <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehavior Rules.txt" />
     <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
     <Content Include="$(MSBuildThisFileDirectory)Utilities\blurred_circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\" />
   </ItemGroup>
 </Project>

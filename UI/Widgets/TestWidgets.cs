@@ -1,11 +1,10 @@
-﻿using DownUnder.UI.Widgets;
+﻿using DownUnder;
+using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
-using DownUnder.Utilities;
-using DownUnder.Utility;
 using MonoGame.Extended;
 
 namespace TestContent
@@ -18,7 +17,17 @@ namespace TestContent
             //LoginLayoutEffects();
             //BGAnimationTest();
             //GridDebug();
-            GraphicTest();
+            //GraphicTest();
+            SpacedGridTest();
+
+        public static Widget SpacedGridTest()
+        {
+            Widget result = new Widget();
+            result.Add(new Widget(new RectangleF(10, 10, 200, 200)).WithAddedBehavior(new GridFormat(2, 3, null, new Point2(10,10)), out var grid_format), out var grid_widget);
+            grid_widget.UserResizePolicy = Widget.UserResizePolicyType.allow;
+            grid_widget[0, 0].MinimumHeight = 30f;
+            return result;
+        }
 
         public static Widget GraphicTest()
         {
@@ -76,7 +85,7 @@ namespace TestContent
         public static Widget WidgetTransitionTest()
         {
             Widget result = new Widget();
-            Widget button = BasicWidgets.Button("Send to container");
+            Widget button = CommonWidgets.Button("Send to container");
             Widget test_widget = new Widget
             {
                 Area = new RectangleF(10, 40, 200, 200)
@@ -127,7 +136,7 @@ namespace TestContent
 //                YTextPositioning = DrawText.YTextPositioningPolicy.center
 //            });
 
-            Widget login_button = BasicWidgets.Button("Login");
+            Widget login_button = CommonWidgets.Button("Login");
             login_button.Position = new Point2(20, 20);
             login_button.Size = new Point2(100, 40);
             login_button.OnClick += (s, a) =>
@@ -151,19 +160,19 @@ namespace TestContent
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
 
-            Widget username_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
-            Widget password_entry = BasicWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
+            Widget username_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
+            Widget password_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             
             username_entry.Area = new RectangleF(100, 0, 150, 40);
             password_entry.Area = new RectangleF(100, 60, 150, 40);
 
-            Widget username_label = BasicWidgets.Label("Username:");
+            Widget username_label = CommonWidgets.Label("Username:");
             username_label.Area = new RectangleF(0, 0, 60, 40);
 
-            Widget password_label = BasicWidgets.Label("Password:");
+            Widget password_label = CommonWidgets.Label("Password:");
             password_label.Area= new RectangleF(0, 60, 60, 40 );
 
-            Widget login_button = BasicWidgets.Button("Login");
+            Widget login_button = CommonWidgets.Button("Login");
             login_button.Area = new RectangleF(100, 120, 150, 40);
 
             window.Add(username_label);

@@ -1,6 +1,4 @@
-﻿using DownUnder.Utility;
-
-namespace DownUnder.Utilities
+﻿namespace DownUnder
 {
     public class RectanglePart
     {

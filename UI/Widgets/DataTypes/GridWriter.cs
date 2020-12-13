@@ -1,5 +1,6 @@
 ﻿using MonoGame.Extended;
 using System.Collections.Generic;
+using DownUnder;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -11,12 +12,15 @@ namespace DownUnder.UI.Widgets.DataTypes
             while (widget.Children.Count < width * height) widget.Add((Widget)filler.Clone());
         }
 
-        public static void Align(WidgetList widgets, int width, int height, RectangleF new_area, bool debug = false)
+        public static void Align(WidgetList widgets, int width, int height, RectangleF new_area, Point2? spacing = null, bool debug = false)
         {
             if (width == 0 || height == 0) return;
-            SetSize(widgets, width, height, new_area.Size, debug);
-            AutoSizeAllWidgets(widgets, width, height);
-            AutoSpaceAllWidgets(widgets, width, height, new_area.Position);
+
+            // I am trying to get away with this
+            if (spacing.HasValue) new_area.Size = new_area.Size - new Size2(spacing.Value.X * (width + 1), spacing.Value.Y * (height + 1));
+            SetSize(widgets, width, height, new_area.Size, debug); // expand
+            AutoSizeAllWidgets(widgets, width, height); // match follows
+            AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing); 
         }
 
         public static void AddRow(WidgetList widgets, int width, int height, int row, IEnumerable<Widget> new_row)
@@ -61,8 +65,9 @@ namespace DownUnder.UI.Widgets.DataTypes
             for (int y = 0; y < height; y++) GridReader.GetRow(widgets, width, y).AutoSizeHeight();
         }
 
-        public static void AutoSpaceAllWidgets(WidgetList widgets, int width, int height, Point2 start)
+        public static void AutoSpaceAllWidgets(WidgetList widgets, int width, int height, Point2 start, Point2? spacing = null)
         {
+            if (spacing.HasValue) start = start.WithOffset(spacing.Value);
             Point2 position = start;
 
             for (int x = 0; x < width; x++)
@@ -73,9 +78,11 @@ namespace DownUnder.UI.Widgets.DataTypes
                     Widget widget = GridReader.Get(widgets, width, height, x, y);
                     widget.Position = position;
                     position.Y += widget.Height;
+                    if (spacing.HasValue) position.Y += spacing.Value.Y;
                 }
 
                 position.X += widgets[x].Width;
+                if (spacing.HasValue) position.X += spacing.Value.X;
             }
         }
 

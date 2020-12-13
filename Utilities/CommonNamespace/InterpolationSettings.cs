@@ -1,7 +1,6 @@
-﻿using DownUnder.Utility;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace DownUnder.Utilities
+namespace DownUnder
 {
     [DataContract] public struct InterpolationSettings
     {

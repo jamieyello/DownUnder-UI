@@ -2,9 +2,7 @@
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework;
-using System.Diagnostics;
 
 namespace DownUnder.UI
 {
@@ -17,9 +15,9 @@ namespace DownUnder.UI
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
             _border_format.BorderOccupy.Up.TransitionSpeed = 4f;
-            _border_format.BorderOccupy.Up.Interpolation = InterpolationType.fake_sin;
+            _border_format.BorderOccupy.Up.UsedInterpolation = InterpolationType.fake_sin;
 
-            _border_format.TopBorder = CommonWidgets.WindowHandle(MainWidget);
+            _border_format.TopBorder = InternalWidgets.WindowHandle(MainWidget);
             _border_format.TopBorder.ParentDWindow.OnToggleFullscreen += (s, a) =>
             {
                 if (_border_format.TopBorder.ParentDWindow.IsFullscreen)

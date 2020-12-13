@@ -1,8 +1,5 @@
-﻿using DownUnder.Utilities;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
 {
@@ -17,7 +14,7 @@ namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
 
         public override RectangleF GetLocation(Widget spawner, Widget widget)
         {
-            return widget.Area.BorderingInside(spawner.Area, new Utility.DiagonalDirections2D(Corner));
+            return widget.Area.BorderingInside(spawner.Area, new DiagonalDirections2D(Corner));
         }
         
         public override object Clone()

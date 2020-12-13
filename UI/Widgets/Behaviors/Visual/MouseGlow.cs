@@ -1,11 +1,6 @@
-﻿using DownUnder.Utilities;
-using DownUnder.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
@@ -15,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         Texture2D _circle;
         Point _position = new Point(0, 0);
         bool _follow = false;
-        readonly ChangingValue<Color> _draw_color = new ChangingValue<Color>(Color.Transparent, Utilities.InterpolationSettings.Default);
+        readonly ChangingValue<Color> _draw_color = new ChangingValue<Color>(Color.Transparent, InterpolationSettings.Default);
 
         public enum MouseGlowActivationPolicy
         {

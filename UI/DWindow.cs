@@ -402,7 +402,7 @@ namespace DownUnder.UI
             window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster }, out var pop_in_out);
-            window.Add(BasicWidgets.Label(message), out var label);
+            window.Add(CommonWidgets.Label(message), out var label);
 
             label.PassthroughMouse = true;
             window.OnClick += (s, a) => pop_in_out.Close();

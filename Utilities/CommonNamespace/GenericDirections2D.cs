@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.Utility {
+namespace DownUnder {
     [DataContract] public class GenericDirections2D <T> : ICloneable
     {
         T up_backing;
