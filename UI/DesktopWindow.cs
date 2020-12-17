@@ -10,7 +10,7 @@ namespace DownUnder.UI
     {
         BorderFormat _border_format = new BorderFormat();
 
-        public DesktopWindow(GraphicsDeviceManager graphics, Game game, Widget display_widget = null) : base(graphics, game)
+        public DesktopWindow(GraphicsDeviceManager graphics, Game game, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game)
         {
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
@@ -35,6 +35,7 @@ namespace DownUnder.UI
             _border_format.Center = new Widget { };
             _border_format.Center.VisualSettings = GeneralVisualSettings.Invisible;
             DisplayWidget = display_widget ?? new Widget { };
+            if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.AddPolicy(group_behaviors);
         }
 
         public override Widget DisplayWidget

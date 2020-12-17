@@ -28,7 +28,6 @@ using System.Threading;
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Convert RectangleF.DistanceFrom to float
 // Add ICloneable and INeedsParent to BehaviorCollection
-// Wonder if Directions2D should be enum
 // IsHoveredOver is antiquated
 
 namespace DownUnder.UI.Widgets
@@ -1281,6 +1280,11 @@ namespace DownUnder.UI.Widgets
             Position = new Point2();
             parent?.Add(result);
             return result;
+        }
+
+        public void AnimatedReplace(Widget new_widget, InnerWidgetLocation new_widget_start = null, InnerWidgetLocation old_widget_end = null, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null)
+        {
+            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideLeft, old_widget_end ?? InnerWidgetLocation.OutsideRight, new_widget_movement, old_widget_movement));
         }
 
         /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>

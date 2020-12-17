@@ -1,6 +1,9 @@
 ﻿using MonoGame.Extended;
 using System.Collections.Generic;
 using DownUnder;
+using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -17,10 +20,9 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (width == 0 || height == 0) return;
 
             // I am trying to get away with this
-            if (spacing.HasValue) new_area.Size = new_area.Size - new Size2(spacing.Value.X * (width + 1), spacing.Value.Y * (height + 1));
-            SetSize(widgets, width, height, new_area.Size, debug); // expand
+            SetSize(widgets, width, height, new_area.Size, debug, spacing); // expand
             AutoSizeAllWidgets(widgets, width, height); // match follows
-            AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing); 
+            AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing);
         }
 
         public static void AddRow(WidgetList widgets, int width, int height, int row, IEnumerable<Widget> new_row)
@@ -52,7 +54,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public static void RemoveColumn(WidgetList widgets, int width, int height, int column)
         {
-            for (int i = height -1; i >= 0; i--)
+            for (int i = height - 1; i >= 0; i--)
             {
                 widgets.RemoveAt(column + i * width);
             }
@@ -86,11 +88,19 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        private static void SetSize(WidgetList widgets, int width, int height, Point2 new_size, bool debug = false) {
+        private static void SetSize(WidgetList widgets, int width, int height, Point2 new_size, bool debug = false, Point2? spacing = null)
+        {
+            if (spacing.HasValue) new_size = new_size - TotalSpacingOffset(width, height, spacing.Value);
             Point2 original_size = new Point2(GridReader.GetRow(widgets, width, 0).CombinedWidth, GridReader.GetColumn(widgets, width, height, 0).CombinedHeight);
             Point2 fixed_size = GridReader.FixedContentSizeTotal(widgets, width, height);
-            Point2 modifier = new_size.DividedBy(original_size.WithOffset(fixed_size.Inverted()).WithMinValue(0.0001f));
+            Point2 modifier = new_size.DividedBy(original_size.WithOffset(fixed_size.Inverted().WithOffset(TotalSpacingOffset(width, height, spacing.Value))).WithMinValue(0.0001f));
             widgets.ExpandAll(modifier);
+        }
+
+        private static Size2 TotalSpacingOffset(float width, float height, Point2 spacing)
+        {
+            return new Size2(spacing.X * (width + 1), spacing.Y * (height + 1));
         }
     }
 }
+

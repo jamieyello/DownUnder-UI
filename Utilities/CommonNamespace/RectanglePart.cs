@@ -1,5 +1,6 @@
 ﻿namespace DownUnder
 {
+    /// <summary> Represents a (percentage-wise) indent of a rectangle. </summary>
     public class RectanglePart
     {
         public GenericDirections2D<float> Indents { get; set; } = new GenericDirections2D<float>(1f);

@@ -24,6 +24,7 @@ namespace DownUnder.UI.Widgets
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
             result.VisualSettings.VisualRole = VisualRoleType.button;
+            result.Name = text;
 
             return result;
         }

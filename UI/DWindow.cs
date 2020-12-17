@@ -410,6 +410,16 @@ namespace DownUnder.UI
             DisplayWidget.Add(window);
         }
 
+        public void ReplaceSlideRight(Widget new_layout, InterpolationSettings? movement = null)
+        {
+            ReplaceAnimated(new_layout, InnerWidgetLocation.OutsideLeft, InnerWidgetLocation.OutsideRight, movement, movement);
+        }
+
+        public void ReplaceAnimated(Widget new_layout, InnerWidgetLocation new_widget_start, InnerWidgetLocation old_widget_end, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null)
+        {
+            DisplayWidget.AnimatedReplace(new_layout, new_widget_start, old_widget_end, new_widget_movement, old_widget_movement);
+        }
+
         #endregion Protected Methods
 
         private void ProcessQueuedEvents() {

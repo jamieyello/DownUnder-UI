@@ -6,8 +6,9 @@ using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
 using MonoGame.Extended;
+using System;
 
-namespace TestContent
+namespace DownUnder.UI.Widgets
 {
     public static class TestWidgets
     {
@@ -25,7 +26,8 @@ namespace TestContent
             Widget result = new Widget();
             result.Add(new Widget(new RectangleF(10, 10, 200, 200)).WithAddedBehavior(new GridFormat(2, 3, null, new Point2(10,10)), out var grid_format), out var grid_widget);
             grid_widget.UserResizePolicy = Widget.UserResizePolicyType.allow;
-            grid_widget[0, 0].MinimumHeight = 30f;
+            //grid_widget[0, 0].MinimumHeight = 30f;
+            grid_widget[0, 0].IsFixedHeight = true;
             return result;
         }
 
@@ -118,7 +120,7 @@ namespace TestContent
             return layout;
         }
 
-        public static Widget LoginLayoutEffects()
+        public static Widget LoginLayout(Action<LoginSignal> confirm_handle)
         {
             Widget layout = new Widget { };
             layout.VisualSettings.ChangeColorOnMouseOver = false;
@@ -141,7 +143,7 @@ namespace TestContent
             login_button.Size = new Point2(100, 40);
             login_button.OnClick += (s, a) =>
             {
-                if (layout["Login Window"] == null) layout.Add(LoginWindow());
+                if (layout["Login Window"] == null) layout.Add(LoginWindow(confirm_handle));
             };
 
             layout.Add(login_button);
@@ -151,14 +153,14 @@ namespace TestContent
             return layout;
         }
 
-        public static Widget LoginWindow()
+        public static Widget LoginWindow(Action<LoginSignal> confirm_handle)
         {
             Widget window = new Widget { Size = new Point2(400, 300), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
             
             window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
-            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
+            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
 
             Widget username_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             Widget password_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
@@ -180,6 +182,11 @@ namespace TestContent
             window.Add(username_entry);
             window.Add(password_entry);
             window.Add(login_button);
+
+            login_button.OnClick += (s, a) =>
+            {
+                confirm_handle.Invoke(new LoginSignal(username_entry.Behaviors.Common.DrawText.Text, password_entry.Behaviors.Common.DrawText.Text));
+            };
 
             return window;
         }
