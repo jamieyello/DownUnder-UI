@@ -1,7 +1,6 @@
 ﻿using DownUnder.UI.DataTypes;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,11 +10,7 @@ using System.Text;
 using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets;
-using DownUnder.Utility;
-using Microsoft.Xna.Framework.Content;
-using System.Diagnostics;
 using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
 
 namespace DownUnder.UI
 {
@@ -257,6 +252,10 @@ namespace DownUnder.UI
             ParentGame.TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
 
+            parent.Exiting += (s, a) => {
+                foreach (Widget widget in MainWidget.AllContainedWidgets) widget.InvokeOnWindowClose();
+            };
+
             LoadDWindow(graphics.GraphicsDevice);
         }
 
@@ -342,7 +341,7 @@ namespace DownUnder.UI
             } while (_spawned_window_is_active != 1);
             Console.WriteLine($"{GetType().Name}: Waiting done");
 
-            return Children[Children.Count - 1];
+            return Children[^1];
         }
 
         public void LoadDWindow(GraphicsDevice graphics) {
@@ -407,7 +406,7 @@ namespace DownUnder.UI
             label.PassthroughMouse = true;
             window.OnClick += (s, a) => pop_in_out.Close();
 
-            DisplayWidget.Add(window);
+            DisplayWidget.ParentWidget.Add(window);
         }
 
         public void ReplaceSlideRight(Widget new_layout, InterpolationSettings? movement = null)

@@ -120,30 +120,18 @@ namespace DownUnder.UI.Widgets
             return layout;
         }
 
-        public static Widget LoginLayout(Action<LoginSignal> confirm_handle)
+        public static Widget LoginLayout(Action<LoginSignal> handle_login, Action<CreateAccountSignal> handle_account_creation = null)
         {
             Widget layout = new Widget { };
             layout.VisualSettings.ChangeColorOnMouseOver = false;
             layout.VisualSettings.DrawBackground = false;
-
-//            layout.Behaviors.Add(new DrawText
-//            {
-//                Text =
-//@"Sometimes stuff will be drawn under widgets. Those widgets will sometimes use the graphics
-//under itself (parent widgets) to use in its own Effects. This can be done by redrawing part
-//of the parent's completed render directly under the Widget with an effect applied.
-
-//This makes effects like blur and defraction possible and fairly easy to implement.",
-//                XTextPositioning = DrawText.XTextPositioningPolicy.center,
-//                YTextPositioning = DrawText.YTextPositioningPolicy.center
-//            });
 
             Widget login_button = CommonWidgets.Button("Login");
             login_button.Position = new Point2(20, 20);
             login_button.Size = new Point2(100, 40);
             login_button.OnClick += (s, a) =>
             {
-                if (layout["Login Window"] == null) layout.Add(LoginWindow(confirm_handle));
+                if (layout["Login Window"] == null) layout.Add(LoginWindow(handle_login, handle_account_creation));
             };
 
             layout.Add(login_button);
@@ -153,8 +141,10 @@ namespace DownUnder.UI.Widgets
             return layout;
         }
 
-        public static Widget LoginWindow(Action<LoginSignal> confirm_handle)
+        public static Widget LoginWindow(Action<LoginSignal> confirm_handle, Action<CreateAccountSignal> handle_account_creation = null)
         {
+            int login_create_spacing = 8 / 2;
+
             Widget window = new Widget { Size = new Point2(400, 300), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
             
@@ -175,7 +165,8 @@ namespace DownUnder.UI.Widgets
             password_label.Area= new RectangleF(0, 60, 60, 40 );
 
             Widget login_button = CommonWidgets.Button("Login");
-            login_button.Area = new RectangleF(100, 120, 150, 40);
+            if (handle_account_creation != null) login_button.Area = new RectangleF(125 + login_create_spacing, 120, 125 - login_create_spacing, 40);
+            else login_button.Area = new RectangleF(100, 120, 150, 40);
 
             window.Add(username_label);
             window.Add(password_label);
@@ -183,10 +174,38 @@ namespace DownUnder.UI.Widgets
             window.Add(password_entry);
             window.Add(login_button);
 
+            void HandleResponse(WidgetResponse response)
+            {
+                if (response.Reply == WidgetResponse.ResponseType.reject) window.ParentDWindow.ShowPopUpMessage("Could not log in.\n\nError: " + response.Message);
+            }
+
             login_button.OnClick += (s, a) =>
             {
-                confirm_handle.Invoke(new LoginSignal(username_entry.Behaviors.Common.DrawText.Text, password_entry.Behaviors.Common.DrawText.Text));
+                confirm_handle.Invoke(new LoginSignal(
+                    username_entry.Behaviors.Common.DrawText.Text,
+                    password_entry.Behaviors.Common.DrawText.Text, 
+                    HandleResponse));
             };
+
+            if (handle_account_creation != null)
+            {
+                Widget create_account_button = CommonWidgets.Button("Create Account");
+                create_account_button.Area = new RectangleF(0, 120, 125 - login_create_spacing, 40);
+
+                void HandleCreationResponse(WidgetResponse r) 
+                {
+                    if (r.Reply == WidgetResponse.ResponseType.reject) window.ParentDWindow.ShowPopUpMessage("Error creating account: " + r.Message);
+                }
+
+                create_account_button.OnClick += (s, a) =>
+                {
+                    handle_account_creation.Invoke(new CreateAccountSignal(
+                        username_entry.Behaviors.Common.DrawText.Text,
+                        password_entry.Behaviors.Common.DrawText.Text, "", HandleCreationResponse));
+                };
+
+                window.Add(create_account_button);
+            }
 
             return window;
         }

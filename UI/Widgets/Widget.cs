@@ -681,6 +681,9 @@ namespace DownUnder.UI.Widgets
             if (area.HasValue) Area = area.Value;
         }
 
+        public Widget(float x, float y, float width, float height) : this(new RectangleF(x, y, width, height)) { }
+        public Widget(Point2 location, Point2 size) : this(new RectangleF(location, size)) { }
+
         [OnDeserializing]
         void OnDeserialize(StreamingContext context)
         {
@@ -1251,7 +1254,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<RectangleFSetArgs> OnChildAreaChange;
         /// <summary> Invoked whenever a child <see cref="Widget"/>'s position is changed. </summary>
         public event EventHandler<RectangleFSetArgs> OnChildReposition;
+        /// <summary> Invoked when the parent <see cref="DWindow"/> is closed. </summary>
+        public event EventHandler OnWindowClose;
 
+        internal void InvokeOnWindowClose() => OnWindowClose?.Invoke(this, EventArgs.Empty);
         internal void InvokeSelectOffEvent() => OnSelectOff?.Invoke(this, EventArgs.Empty);
         internal void InvokeSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
         internal void InvokeOnAdd() => OnAddChild?.Invoke(this, EventArgs.Empty);
@@ -1284,7 +1290,9 @@ namespace DownUnder.UI.Widgets
 
         public void AnimatedReplace(Widget new_widget, InnerWidgetLocation new_widget_start = null, InnerWidgetLocation old_widget_end = null, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null)
         {
-            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideLeft, old_widget_end ?? InnerWidgetLocation.OutsideRight, new_widget_movement, old_widget_movement));
+            //new_widget.Size = Size;
+            new_widget.SnappingPolicy = SnappingPolicy;
+            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideRight, old_widget_end ?? InnerWidgetLocation.OutsideLeft, new_widget_movement, old_widget_movement));
         }
 
         /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>
