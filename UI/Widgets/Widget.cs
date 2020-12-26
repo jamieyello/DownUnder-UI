@@ -197,7 +197,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> The <see cref="SpriteBatch"/> currently used by this <see cref="Widget"/>. </summary>
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public DesignerModeSettings DesignerObjects { get; set; }
-        public Point2 Scroll { get; set; } = new Point2();
+        public Point2 Scroll = new Point2();
 
         public ActionManager Actions
         {

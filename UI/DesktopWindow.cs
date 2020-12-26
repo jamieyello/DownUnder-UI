@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
@@ -37,6 +38,7 @@ namespace DownUnder.UI
         /// <summary> A <see cref="DWindow"/> suited for desktop environments. </summary>
         public DesktopWindow(GraphicsDeviceManager graphics, Game game, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game)
         {
+            MainWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
             _border_format.BorderOccupy.Up.TransitionSpeed = 4f;
@@ -47,9 +49,12 @@ namespace DownUnder.UI
             
             _border_format.Center = new Widget { };
             _border_format.Center.VisualSettings = GeneralVisualSettings.Invisible;
+            _border_format.Center.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
+
             _initialized = true;
 
             DisplayWidget = display_widget ?? new Widget { };
+            DisplayWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             TopBarPolicy = TopBarPolicyType.disable;
             _border_format.BorderOccupy.Up.ForceComplete();
             if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.AddPolicy(group_behaviors);

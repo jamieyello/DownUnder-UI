@@ -9,6 +9,7 @@ namespace DownUnder
         [NonSerialized] private T initial_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T current_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T target_value = (T)Activator.CreateInstance(typeof(T));
+        [NonSerialized] private T previous_value = (T)Activator.CreateInstance(typeof(T));
 
         public float Progress { get; private set; } = 0f; // From 0f to 1f
         public float ProgressPlotted => Interpolation.Plot(Progress, UsedInterpolation);
@@ -86,10 +87,14 @@ namespace DownUnder
             }
 
             Progress += TransitionSpeed * step;
+            previous_value = current_value;
             current_value = Interpolation.GetMiddle(initial_value, target_value, Progress, UsedInterpolation);
         }
 
+        public T GetInitial() => initial_value;
         public T GetCurrent() => current_value;
+        public T GetTarget() => target_value;
+        public T GetPrevious() => previous_value;
 
         object ICloneable.Clone() => Clone();
         public ChangingValue<T> Clone(bool reset_progress = false) {
@@ -101,6 +106,7 @@ namespace DownUnder
             c.initial_value = initial_value;
             c.current_value = current_value;
             c.target_value = target_value;
+            c.previous_value = previous_value;
 
             return c;
         }

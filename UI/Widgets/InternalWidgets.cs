@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Actions.Functional;
+using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
@@ -11,6 +12,8 @@ namespace DownUnder.UI.Widgets
         public static Widget WindowHandle(Widget handle)
         {
             Widget bar = new Widget();
+            bar.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
+
             Widget x_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window X", 0.5f);
             Widget __button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window _", 0.5f);
             Widget rect_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window Rect", 0.5f);

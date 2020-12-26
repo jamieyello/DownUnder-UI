@@ -36,6 +36,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\PropertyTransitionAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ReplaceWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\WidgetAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ApplyInputScrolling.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\ScrollBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\CreateAccountSignal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\LoginSignal.cs" />

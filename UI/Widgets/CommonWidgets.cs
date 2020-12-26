@@ -25,6 +25,7 @@ namespace DownUnder.UI.Widgets
                 .WithAddedBehavior(new DrawText { Text = text, SideSpacing = 8f, ConstrainAreaToText = true, XTextPositioning = XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
             result.VisualSettings.VisualRole = VisualRoleType.button;
             result.Name = text;
+            result.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
 
             return result;
         }
@@ -35,6 +36,7 @@ namespace DownUnder.UI.Widgets
                 .WithAddedBehavior(new MakeMousePointer())
                 .WithAddedBehavior(new DrawCenteredImage(asset_name, scaling));
             result.VisualSettings.VisualRole = VisualRoleType.button;
+            result.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
 
             return result;
         }
@@ -45,6 +47,8 @@ namespace DownUnder.UI.Widgets
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
             result.Behaviors.Add(new DrawText { Text = text, YTextPositioning = YTextPositioningPolicy.center });
+            result.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
+
             return result;
         }
 
@@ -140,6 +144,24 @@ namespace DownUnder.UI.Widgets
             return dropdown;
         }
 
+        public static Widget EntryField(string label_text, out Widget text_box, Point2? location = null, Point2? size = null, float ratio = 0.5f)
+        {
+            if (size == null) size = new Point2(250, 40);
+            if (location == null) location = new Point2();
+            Widget result = new Widget(location.Value, size.Value);
+            result.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.background;
+            result.VisualSettings.DrawBackground = false;
+            result.VisualSettings.DrawOutline = false;
+            Widget label = Label(label_text);
+            text_box = SingleLineTextEntry();
 
+            label.Area = new RectangleF(0, 0, size.Value.X * ratio, size.Value.Y);
+            text_box.Area = new RectangleF(size.Value.X * ratio, 0, size.Value.X * (1f - ratio), size.Value.Y);
+
+            result.Add(label);
+            result.Add(text_box);
+
+            return result;
+        }
     }
 }

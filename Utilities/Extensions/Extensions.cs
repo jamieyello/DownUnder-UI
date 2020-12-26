@@ -331,6 +331,16 @@ namespace DownUnder
             return new Point2(p1.X + p2.X, p1.Y + p2.Y);
         }
 
+        public static Point2 WithXOffset(this Point2 p, float x)
+        {
+            return new Point2(p.X + x, p.Y);
+        }
+
+        public static Point2 WithYOffset(this Point2 p, float y)
+        {
+            return new Point2(p.X, p.Y + y);
+        }
+
         public enum NumericRelationship
         {
             GreaterThan = 1,
