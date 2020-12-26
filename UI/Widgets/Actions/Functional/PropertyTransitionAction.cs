@@ -71,7 +71,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             }
 
             _changing_value.Update(((Widget)sender).UpdateData.ElapsedSeconds);
-            _property_info.SetValue(Parent, _changing_value.GetCurrent());
+            _property_info.SetValue(Parent, _changing_value.Current);
             if (!_changing_value.IsTransitioning) EndAction();
         }
     }

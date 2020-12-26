@@ -10,6 +10,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
     {
         ChangingValue<Point2> Offset;
         public bool HardLock = true;
+        //public InterpolationSettings Interpolation
+        //{
+        //    get => Offset.InterpolationSettings;
+        //    set => Offset.InterpolationSettings = value;
+        //}
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.SCROLL_FUNCTION };
 
@@ -32,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         public override object Clone()
         {
             ScrollBase c = new ScrollBase();
+            c.HardLock = HardLock;
             return c;
         }
 
@@ -44,14 +50,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             if (!Offset.IsTransitioning) return;
 
             Offset.Update(Parent.UpdateData.ElapsedSeconds);
-            Point2 movement = Offset.GetCurrent() - Offset.GetPrevious();
+            Point2 movement = Offset.Current - Offset.Previous;
             Parent.Scroll = Parent.Scroll.WithOffset(movement);
             if (HardLock) HardLockScroll();
         }
 
         public void AddOffset(Point2 offset)
         {
-            Offset.SetTargetValue(Offset.GetTarget().WithOffset(offset));
+            Offset.SetTargetValue(Offset.Target.WithOffset(offset));
         }
 
         void HardLockScroll()

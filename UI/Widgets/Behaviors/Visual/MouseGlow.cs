@@ -87,7 +87,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         void DrawImage(object sender, WidgetDrawArgs args)
         {
             if (_follow) _position = new Point((int)args.CursorPosition.X - Diameter / 2, (int)args.CursorPosition.Y - Diameter / 2);
-            if (_draw_color.GetCurrent() != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.GetCurrent());
+            if (_draw_color.Current != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.Current);
         }
 
         public static MouseGlow SubtleGray => new MouseGlow() { Diameter = 8192 * 2, Color = new Color(30, 30, 30, 30) };

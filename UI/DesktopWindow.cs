@@ -42,7 +42,7 @@ namespace DownUnder.UI
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
             _border_format.BorderOccupy.Up.TransitionSpeed = 4f;
-            _border_format.BorderOccupy.Up.UsedInterpolation = InterpolationType.fake_sin;
+            _border_format.BorderOccupy.Up.Interpolation = InterpolationType.fake_sin;
 
             _border_format.TopBorder = InternalWidgets.WindowHandle(MainWidget);
             _border_format.TopBorder.ParentDWindow.OnToggleFullscreen += (s, a) => ToggleTopBarWithFullscreen();

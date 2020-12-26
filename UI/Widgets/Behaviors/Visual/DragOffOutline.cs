@@ -16,9 +16,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         private float _expand_rect_on_release = 1f;
 
         public DragOffOutline() {
-            round_amount.UsedInterpolation = InterpolationType.fake_sin;
+            round_amount.Interpolation = InterpolationType.fake_sin;
             round_amount.TransitionSpeed = 1f;
-            rect.UsedInterpolation = InterpolationType.linear;
+            rect.Interpolation = InterpolationType.linear;
             rect.TransitionSpeed = 20f;
             rect_color.TransitionSpeed = 4f;
         }
@@ -54,7 +54,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             round_amount.SetTargetValue(0f);
             rect_color.TransitionSpeed = 1f;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), false);
-            rect.SetTargetValue(rect.GetCurrent().WithScaledSize(_expand_rect_on_release).WithCenter(rect.GetCurrent()), false);
+            rect.SetTargetValue(rect.Current.WithScaledSize(_expand_rect_on_release).WithCenter(rect.Current), false);
         }
 
         private void Update(object sender, EventArgs args) {
@@ -82,8 +82,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         }
 
         private void DrawRect(object sender, EventArgs args) {
-            RectangleF r = rect.GetCurrent();
-            Parent.SpriteBatch.DrawRoundedRect(r, Math.Min(r.Width, r.Height) * 0.5f * round_amount.GetCurrent(), rect_color.GetCurrent(), 4f);
+            RectangleF r = rect.Current;
+            Parent.SpriteBatch.DrawRoundedRect(r, Math.Min(r.Width, r.Height) * 0.5f * round_amount.Current, rect_color.Current, 4f);
         }
 
         public override object Clone() {

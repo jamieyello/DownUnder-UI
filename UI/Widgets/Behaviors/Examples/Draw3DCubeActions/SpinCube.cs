@@ -9,7 +9,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
     public class SpinCube : WidgetAction
     {
         public Vector3 Direction = new Vector3();
-        public InterpolationSettings Interpolation = new InterpolationSettings() { Interpolation = InterpolationType.inverse, TransitionSpeed = 0.6f };
+        public InterpolationSettings Interpolation = new InterpolationSettings() { Interpolation = InterpolationType.fake_sin, TransitionSpeed = 0.6f };
 
         ChangingValue<Vector3> _inirtia;
 
@@ -50,7 +50,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
         {
             var cube = Parent.Behaviors.GetFirst<Draw3DCube>();
             if (cube == null) return;
-            cube.Angle += _inirtia.GetCurrent();
+            cube.Angle += _inirtia.Current;
             _inirtia.Update(Parent.UpdateData.ElapsedSeconds);
             if (!_inirtia.IsTransitioning) EndAction();
         }

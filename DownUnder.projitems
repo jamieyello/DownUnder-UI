@@ -176,7 +176,4 @@
     <Content Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\WidgetBehaviorTemplate.txt" />
     <Content Include="$(MSBuildThisFileDirectory)Utilities\blurred_circle.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\" />
-  </ItemGroup>
 </Project>

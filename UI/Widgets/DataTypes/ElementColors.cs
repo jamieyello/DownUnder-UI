@@ -18,11 +18,11 @@ namespace DownUnder.UI.Widgets.DataTypes {
         public bool Hovered { get; set;}
 
         /// <summary> The type of interpolation to be used when shifting between colors. </summary>
-        public InterpolationType Interpolation { get => _changing_color.UsedInterpolation; set => _changing_color.UsedInterpolation = value; }
+        public InterpolationType Interpolation { get => _changing_color.Interpolation; set => _changing_color.Interpolation = value; }
         /// <summary> How fast colors should shift. (1 = immediate) </summary>
         public float TransitionSpeed { get => _changing_color.TransitionSpeed; set => _changing_color.TransitionSpeed = value; }
         /// <summary> The color that this element should display at this moment. </summary>
-        public Color CurrentColor { get => _changing_color.GetCurrent(); }
+        public Color CurrentColor { get => _changing_color.Current; }
         /// <summary> Returns true if this is in the middle of transitioning to a different color. </summary>
         public bool IsTransitioning { get => _changing_color.IsTransitioning; }
 
