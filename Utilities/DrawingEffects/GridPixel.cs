@@ -31,7 +31,7 @@ namespace DownUnder.Utilities.DrawingEffects
 
         public void Draw(SpriteBatch sprite_batch, Point2 offset)
         {
-            sprite_batch.DrawPoint(Position.X + offset.X, Position.Y + offset.Y, ChangingColor.GetCurrent(), Size);
+            sprite_batch.DrawPoint(Position.X + offset.X, Position.Y + offset.Y, ChangingColor.Current, Size);
         }
 
         #endregion

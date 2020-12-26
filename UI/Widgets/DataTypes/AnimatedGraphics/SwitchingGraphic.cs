@@ -37,7 +37,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 
         internal void Draw(WidgetDrawArgs args)
         {
-            float progress = Progress.GetCurrent();
+            float progress = Progress.Current;
 
             VertexPositionColor[] vert = new VertexPositionColor[StartingVertex.Length];
             for (int i = 0; i < vert.Length; i++) vert[i] = StartingVertex[i].Lerp(EndingVertex[i], progress);

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
-using System.Diagnostics;
 
 namespace DownUnder
 {
@@ -26,31 +25,46 @@ namespace DownUnder
 
     public static class Interpolation
     {
-        public static Func<object, object, float, object> GetLerpFunc<T>() => 
-            (typeof(T)) switch
-            {
-                Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => (io, to, p) => Color.Lerp((Color)io, (Color)to, p),
-                Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)) => (io, to, p) => ((RectangleF)io).Lerp((RectangleF)to, p),
-                Type _ when typeof(T).IsAssignableFrom(typeof(Point2)) => (io, to, p) => ((Point2)io).Lerp((Point2)to, p),
-                Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)) => (io, to, p) => Vector2.Lerp((Vector2)io, (Vector2)to, p),
-                Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)) => (io, to, p) => Vector3.Lerp((Vector3)io, (Vector3)to, p),
-                Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => (io, to, p) => ((VertexPositionColor)io).Lerp((VertexPositionColor)to, p),
-                _ => (io, to, p) => FloatLerp((float)io, (float)to, p),
-            };
-        
+        private static readonly Func<object, object, float, object> color_lerp = (io, to, p) => Color.Lerp((Color)io, (Color)to, p);
+        private static readonly Func<object, object, float, object> rectanglf_lerp = (io, to, p) => ((RectangleF)io).Lerp((RectangleF)to, p);
+        private static readonly Func<object, object, float, object> point2_lerp = (io, to, p) => ((Point2)io).Lerp((Point2)to, p);
+        private static readonly Func<object, object, float, object> vector2_lerp = (io, to, p) => Vector2.Lerp((Vector2)io, (Vector2)to, p);
+        private static readonly Func<object, object, float, object> vector3_lerp = (io, to, p) => Vector3.Lerp((Vector3)io, (Vector3)to, p);
+        private static readonly Func<object, object, float, object> vector_position_color_lerp = (io, to, p) => ((VertexPositionColor)io).Lerp((VertexPositionColor)to, p);
+        private static readonly Func<object, object, float, object> float_lerp = (io, to, p) => FloatLerp((float)io, (float)to, p);
+
+        private static readonly Func<float, float> linear_plot = x => x;
+        private static readonly Func<float, float> squared_plot = x => x * x;
+        private static readonly Func<float, float> cubed_plot = x => x * x * x;
+        private static readonly Func<float, float> exponential4_plot = x => x * x * x * x;
+        private static readonly Func<float, float> exponential5_plot = x => x * x * x * x * x;
+        private static readonly Func<float, float> exponential6_plot = x => x * x * x * x * x * x;
+        private static readonly Func<float, float> fake_sin_plot = x => (float)Math.Sin(x * Math.PI / 2);
 
         static float FloatLerp(float initial_object, float target_object, float progress) => initial_object + target_object - initial_object * progress;
+
+        public static Func<object, object, float, object> GetLerpFunc<T>() => 
+            typeof(T) switch
+            {
+                Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => color_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)) => rectanglf_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Point2)) => point2_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)) => vector2_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)) => vector3_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => vector_position_color_lerp,
+                _ => float_lerp,
+            };
 
         public static Func<float, float> GetPlotMethod(InterpolationType type) =>
             type switch
             {
-                InterpolationType.linear => x => x,
-                InterpolationType.squared => x => x * x,
-                InterpolationType.cubed => x => x * x * x,
-                InterpolationType.exponential4 => x => x * x * x * x,
-                InterpolationType.exponential5 => x => x * x * x * x * x,
-                InterpolationType.exponential6 => x => x * x * x * x * x * x,
-                InterpolationType.fake_sin => x => (float)Math.Sin(x * Math.PI / 2),
+                InterpolationType.linear => linear_plot,
+                InterpolationType.squared => squared_plot,
+                InterpolationType.cubed => cubed_plot,
+                InterpolationType.exponential4 => exponential4_plot,
+                InterpolationType.exponential5 => exponential5_plot,
+                InterpolationType.exponential6 => exponential6_plot,
+                InterpolationType.fake_sin => fake_sin_plot,
                 _ => throw new Exception($"{nameof(InterpolationType)}.{type} not supported."),
             };
     }
