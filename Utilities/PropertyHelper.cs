@@ -15,13 +15,11 @@ namespace DownUnder.Utilities
             {
                 body = ((LambdaExpression)body).Body;
             }
-            switch (body.NodeType)
+            return body.NodeType switch
             {
-                case ExpressionType.MemberAccess:
-                    return (PropertyInfo)((MemberExpression)body).Member;
-                default:
-                    throw new InvalidOperationException();
-            }
+                ExpressionType.MemberAccess => (PropertyInfo)((MemberExpression)body).Member,
+                _ => throw new InvalidOperationException(),
+            };
         }
     }
 }

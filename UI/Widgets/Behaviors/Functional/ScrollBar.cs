@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
+using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;

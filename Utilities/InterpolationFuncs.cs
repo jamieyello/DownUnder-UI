@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 
-namespace DownUnder
+namespace DownUnder.Utilities
 {
     public enum InterpolationType
     {
@@ -23,7 +23,7 @@ namespace DownUnder
         fake_sin
     }
 
-    public static class Interpolation
+    public static class InterpolationFuncs
     {
         private static readonly Func<object, object, float, object> color_lerp = (io, to, p) => Color.Lerp((Color)io, (Color)to, p);
         private static readonly Func<object, object, float, object> rectanglf_lerp = (io, to, p) => ((RectangleF)io).Lerp((RectangleF)to, p);
@@ -47,15 +47,16 @@ namespace DownUnder
             typeof(T) switch
             {
                 Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => color_lerp,
+                Type _ when typeof(T).IsPrimitive => float_lerp,
                 Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)) => rectanglf_lerp,
                 Type _ when typeof(T).IsAssignableFrom(typeof(Point2)) => point2_lerp,
                 Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)) => vector2_lerp,
                 Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)) => vector3_lerp,
                 Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => vector_position_color_lerp,
-                _ => float_lerp,
+                _ => throw new Exception($"{nameof(T)} interpolation is not supported."),
             };
 
-        public static Func<float, float> GetPlotMethod(InterpolationType type) =>
+        public static Func<float, float> GetPlotFunc(InterpolationType type) =>
             type switch
             {
                 InterpolationType.linear => linear_plot,

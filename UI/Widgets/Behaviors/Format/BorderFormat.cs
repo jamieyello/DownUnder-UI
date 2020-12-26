@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;

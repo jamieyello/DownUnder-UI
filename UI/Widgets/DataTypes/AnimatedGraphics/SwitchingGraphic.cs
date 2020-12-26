@@ -1,6 +1,4 @@
-﻿using DownUnder.Utilities;
-using DownUnder.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 

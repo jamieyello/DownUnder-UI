@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.Utilities;
+using System;
 using System.Collections.Generic;
 
 namespace DownUnder
@@ -7,7 +8,7 @@ namespace DownUnder
     public class ChangingValue<T> : ICloneable
     {
         InterpolationSettings interpolation_settings_backing;
-        static readonly Func<object, object, float, object> interpolation_method = DownUnder.Interpolation.GetLerpFunc<T>();
+        static readonly Func<object, object, float, object> interpolation_method = InterpolationFuncs.GetLerpFunc<T>();
         Func<float, float> plot_method;
 
         [NonSerialized] private T initial_value = (T)Activator.CreateInstance(typeof(T));
@@ -29,7 +30,7 @@ namespace DownUnder
             get => interpolation_settings_backing.Interpolation;
             set
             {
-                if (interpolation_settings_backing.Interpolation != value) plot_method = DownUnder.Interpolation.GetPlotMethod(value);
+                if (interpolation_settings_backing.Interpolation != value) plot_method = InterpolationFuncs.GetPlotFunc(value);
                 interpolation_settings_backing.Interpolation = value;
             }
         }
@@ -39,7 +40,7 @@ namespace DownUnder
         public InterpolationSettings InterpolationSettings {
             set {
                 interpolation_settings_backing = value;
-                plot_method = DownUnder.Interpolation.GetPlotMethod(value.Interpolation);
+                plot_method = InterpolationFuncs.GetPlotFunc(value.Interpolation);
             }
         }
 

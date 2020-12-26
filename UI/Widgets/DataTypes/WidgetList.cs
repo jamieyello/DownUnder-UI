@@ -1,8 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Collections;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.Utilities;
+using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder

@@ -1,11 +1,11 @@
 ﻿using DownUnder.Input;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
 //Todo: Trigger inputs shopuld not have set parameters
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace DownUnder.UI.Widgets.DataTypes
+{
     /// <summary> Used to communicate to widgets input. Can be updated or set manually. </summary>
     public class UIInputState {
         private Vector2 _previous_mouse_wheel_scroll = new Vector2(Mouse.GetState().HorizontalScrollWheelValue, Mouse.GetState().ScrollWheelValue);

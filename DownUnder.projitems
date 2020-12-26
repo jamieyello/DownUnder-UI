@@ -151,7 +151,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions\WidgetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\GenericDiagonalDirections2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\GenericDirections2D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\Interpolation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\InterpolationFuncs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\InterpolationSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OSInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PropertyHelper.cs" />

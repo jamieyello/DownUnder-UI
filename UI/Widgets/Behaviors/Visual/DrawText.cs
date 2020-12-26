@@ -1,9 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
-using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {

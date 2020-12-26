@@ -1,9 +1,5 @@
-﻿using DownUnder.Utility;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {

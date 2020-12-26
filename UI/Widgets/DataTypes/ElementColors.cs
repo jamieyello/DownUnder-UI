@@ -1,8 +1,9 @@
-﻿using DownUnder.Utility;
+﻿using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace DownUnder.UI.Widgets.DataTypes
+{
     /// <summary> The color settings of any UI element. </summary>
     [DataContract] public class ElementColors {
         [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 4f };

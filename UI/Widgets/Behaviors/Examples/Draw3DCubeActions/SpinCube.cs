@@ -1,6 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.Utilities;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using System;
 

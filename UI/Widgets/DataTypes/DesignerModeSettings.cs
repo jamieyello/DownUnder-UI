@@ -1,6 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
