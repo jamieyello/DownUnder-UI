@@ -28,6 +28,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DesktopWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetTransitionAnimation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\UINavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\Functional\ActionSequence.cs" />

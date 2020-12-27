@@ -24,5 +24,6 @@ namespace DownUnder.UI.Widgets.DataTypes
         public static BorderingSide OutsideBottom => new BorderingSide(Direction2D.down);
         public static BorderingSide OutsideLeft => new BorderingSide(Direction2D.left);
         public static BorderingSide OutsideRight => new BorderingSide(Direction2D.right);
+        public static BorderingSide Outside(Direction2D direction) => new BorderingSide(direction);
     }
 }

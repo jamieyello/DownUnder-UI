@@ -18,19 +18,26 @@ public class ReplaceWidget : WidgetAction
     public InterpolationSettings NewWidgetMovement { get; set; }
     public InterpolationSettings OldWidgetMovement { get; set; }
 
+    bool DisposeOld = true;
+
     public ReplaceWidget(
         Widget new_widget, 
         InnerWidgetLocation new_widget_start,
         InnerWidgetLocation old_widget_end,
         InterpolationSettings? new_widget_movement = null, 
-        InterpolationSettings? old_widget_movement = null)
+        InterpolationSettings? old_widget_movement = null,
+        bool dispose_old = true)
     {
         NewWidget = new_widget;
         NewWidgetStart = new_widget_start;
         OldWidgetEnd = old_widget_end;
         NewWidgetMovement = new_widget_movement ?? InterpolationSettings.Default;
         OldWidgetMovement = old_widget_movement ?? InterpolationSettings.Default;
+        DisposeOld = dispose_old;
     }
+
+    public ReplaceWidget(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true) 
+        : this(new_widget, animation.NewWidgetStart, animation.OldWidgetEnd, animation.NewWidgetMovement, animation.OldWidgetMovement, dispose_old) { }
 
     protected override void Initialize()
     {
@@ -78,6 +85,7 @@ public class ReplaceWidget : WidgetAction
         c.OldWidgetEnd = (InnerWidgetLocation)OldWidgetEnd?.Clone();
         c.NewWidgetMovement = NewWidgetMovement;
         c.OldWidgetMovement = OldWidgetMovement;
+        c.DisposeOld = DisposeOld;
         return c;
     }
 
@@ -89,6 +97,7 @@ public class ReplaceWidget : WidgetAction
     void Complete()
     {
         NewWidget.SnappingPolicy = _new_widget_snapping_policy_prev;
+        if (!DisposeOld) if (!Parent.ParentWidget.Remove(Parent)) throw new Exception();
         NewWidget.ReplaceContainer();
         EndAction();
     }

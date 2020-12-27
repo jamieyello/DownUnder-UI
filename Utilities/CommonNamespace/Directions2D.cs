@@ -239,5 +239,12 @@ namespace DownUnder
         public static Directions2D L => new Directions2D() { Left = true };
         public static Directions2D R => new Directions2D() { Right = true };
         public static Directions2D None => new Directions2D();
+
+        public static Direction2D GetOppositeSide(Direction2D direction) =>
+            direction == Direction2D.up ? Direction2D.down : 
+            direction == Direction2D.down ? Direction2D.up : 
+            direction == Direction2D.left ? Direction2D.right : 
+            Direction2D.left;
+        
     }
 }

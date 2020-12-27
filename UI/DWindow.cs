@@ -82,6 +82,7 @@ namespace DownUnder.UI
         public SpriteFont WindowFont { get; set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
+        public UINavigator Navigation { get; private set; }
 
         #endregion
 
@@ -225,7 +226,8 @@ namespace DownUnder.UI
             GraphicsManager = graphics;
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
-            
+            Navigation = new UINavigator(this);
+
             MainWidget = new Widget();
 
             if (parent != null) {
@@ -407,16 +409,6 @@ namespace DownUnder.UI
             window.OnClick += (s, a) => pop_in_out.Close();
 
             DisplayWidget.ParentWidget.Add(window);
-        }
-
-        public void ReplaceSlideRight(Widget new_layout, InterpolationSettings? movement = null)
-        {
-            ReplaceAnimated(new_layout, InnerWidgetLocation.OutsideLeft, InnerWidgetLocation.OutsideRight, movement, movement);
-        }
-
-        public void ReplaceAnimated(Widget new_layout, InnerWidgetLocation new_widget_start, InnerWidgetLocation old_widget_end, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null)
-        {
-            DisplayWidget.AnimatedReplace(new_layout, new_widget_start, old_widget_end, new_widget_movement, old_widget_movement);
         }
 
         #endregion Protected Methods

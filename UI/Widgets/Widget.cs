@@ -511,6 +511,7 @@ namespace DownUnder.UI.Widgets
             {
                 if (value is Widget widget) ParentWidget = widget;
                 else if (value is DWindow window) ParentDWindow = window;
+                //else if (value == null) ParentWidget = null;
             }
         }
 
@@ -1287,11 +1288,16 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public void AnimatedReplace(Widget new_widget, InnerWidgetLocation new_widget_start = null, InnerWidgetLocation old_widget_end = null, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null)
+        public void AnimatedReplace(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true)
+        {
+            AnimatedReplace(new_widget, animation.NewWidgetStart, animation.OldWidgetEnd, animation.NewWidgetMovement, animation.OldWidgetMovement, dispose_old);
+        }
+
+        public void AnimatedReplace(Widget new_widget, InnerWidgetLocation new_widget_start = null, InnerWidgetLocation old_widget_end = null, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null, bool dispose_old = true)
         {
             //new_widget.Size = Size;
             new_widget.SnappingPolicy = SnappingPolicy;
-            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideRight, old_widget_end ?? InnerWidgetLocation.OutsideLeft, new_widget_movement, old_widget_movement));
+            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideRight, old_widget_end ?? InnerWidgetLocation.OutsideLeft, new_widget_movement, old_widget_movement, dispose_old));
         }
 
         /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>

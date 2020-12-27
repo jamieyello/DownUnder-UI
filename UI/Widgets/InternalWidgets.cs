@@ -36,9 +36,16 @@ namespace DownUnder.UI.Widgets
             x_button.VisualSettings.DrawBackground = false;
             control_grid.VisualSettings.DrawBackground = false;
 
-            //bar.VisualSettings.
+            Widget back_button = CommonWidgets.Button("Back");
+            back_button.OnClick += (s, a) => 
+            {
+                back_button.ParentDWindow.Navigation.NavigateBack();
+            };
+            bar.Add(back_button);
+
             bar.Add(control_grid);
-            var text = new DrawText(handle.Window.Title ?? "DownUnderCrossPlatform");
+            var text = new DrawText(handle.Window.Title ?? $"{nameof(DownUnder)} Window");
+            handle.Window.ScreenDeviceNameChanged += (s, a) => text.Text = handle.Window.Title ?? $"{nameof(DownUnder)} Window";
             text.SideSpacing = 8f;
             text.YTextPositioning = DrawText.YTextPositioningPolicy.center;
             bar.Behaviors.Add(text);
