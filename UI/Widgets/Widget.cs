@@ -1281,6 +1281,8 @@ namespace DownUnder.UI.Widgets
         {
             Widget parent = ParentWidget;
             Widget result = new Widget();
+            result.VisualSettings.DrawBackground = false;
+            result.VisualSettings.DrawOutline = false;
             result.Area = Area;
             result.Add(this);
             Position = new Point2();

@@ -23,18 +23,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         public Point2 Spacing = new Point2();
 
-        public GridFormat(Point dimensions, Widget filler = null, Point2? spacing = null)
-        {
-            if (dimensions.X < 0 || dimensions.Y < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({dimensions})");
-            if (dimensions.X == 0 || dimensions.Y == 0) dimensions = new Point();
+        public GridFormat(Point dimensions, Widget filler = null, Point2? spacing = null) : this(dimensions.X, dimensions.Y, filler, spacing) { }
 
-            Width = dimensions.X;
-            Height = dimensions.Y;
-            Filler = (Widget)filler?.Clone();
-            if (spacing.HasValue) Spacing = spacing.Value;
-        }
-
-        public GridFormat(int width, int height, Widget filler = null, Point2? spacing = null)
+        public GridFormat(int width = 0, int height = 0, Widget filler = null, Point2? spacing = null)
         {
             if (width < 0 || height < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({width}, {height})");
             if (width == 0 || height == 0)
@@ -97,7 +88,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         private void SetSizeToContent()
         {
-            if (SizeToContent) Parent.Size = Parent.Children.AreaCoverage.Value.Size + Spacing + Spacing;
+            if (SizeToContent && Parent.Count > 0) Parent.Size = Parent.Children.AreaCoverage.Value.Size + Spacing + Spacing;
         }
 
         public WidgetList GetRow(int y_row) => GridReader.GetRow(Parent.Children, Width, y_row);
@@ -114,15 +105,18 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         }
         public Point IndexOf(Widget widget) => GridReader.IndexOf(Width, Parent.Children.IndexOf(widget));
 
+
         public void AddRow(IEnumerable<Widget> widgets = null)
         {
             InsertRow(Height, widgets);
         }
+        public void AddRow(Widget widget) => AddRow(new Widget[] { widget });
 
         public void AddColumn(IEnumerable<Widget> widgets = null)
         {
             InsertRow(Width, widgets);
         }
+        public void AddColumn(Widget widget) => AddColumn(new Widget[] { widget });
 
         public void InsertRow(int row, IEnumerable<Widget> widgets = null)
         {
@@ -143,6 +137,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
         }
+        public void InsertRow(int row, Widget widget) => InsertRow(row, new Widget[] { widget });
 
         public void InsertColumn(int column, IEnumerable<Widget> widgets = null)
         {
@@ -163,6 +158,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
         }
+        public void InsertColumn(int column, Widget widget) => InsertColumn(column, new Widget[] { widget });
 
         public void RemoveRow(int row)
         {
@@ -197,6 +193,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             // !-------------------------------------------------
 
             GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing);
+            SetSizeToContent();
             _enable_internal_align = p;
         }
 
