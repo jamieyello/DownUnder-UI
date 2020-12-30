@@ -135,7 +135,7 @@ namespace DownUnder.UI.Widgets
             };
 
             layout.Add(login_button);
-            layout.Behaviors.Add(new Neurons());
+            //layout.Behaviors.Add(new Neurons());
             layout.Behaviors.Add(ShadingBehavior.GlowingGreen);
 
             return layout;

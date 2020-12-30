@@ -110,13 +110,21 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         {
             InsertRow(Height, widgets);
         }
-        public void AddRow(Widget widget) => AddRow(new Widget[] { widget });
+        public void AddRow(Widget widget)
+        {
+            if (Dimensions.X > 1) throw new Exception($"Cannot add a single {nameof(Widget)} row to a grid with an X dimension greater than 1.");
+            AddRow(new Widget[] { widget }); 
+        }
 
         public void AddColumn(IEnumerable<Widget> widgets = null)
         {
             InsertRow(Width, widgets);
         }
-        public void AddColumn(Widget widget) => AddColumn(new Widget[] { widget });
+        public void AddColumn(Widget widget)
+        {
+            if (Dimensions.Y > 1) throw new Exception($"Cannot add a single {nameof(Widget)} column to a grid with a Y dimension greater than 1.");
+            AddColumn(new Widget[] { widget });
+        }
 
         public void InsertRow(int row, IEnumerable<Widget> widgets = null)
         {
@@ -137,7 +145,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
         }
-        public void InsertRow(int row, Widget widget) => InsertRow(row, new Widget[] { widget });
+        public void InsertRow(int row, Widget widget)
+        {
+            if (Dimensions.X > 1) throw new Exception($"Cannot insert a single {nameof(Widget)} row in a grid with a X dimension greater than 1.");
+            InsertRow(row, new Widget[] { widget });
+        }
 
         public void InsertColumn(int column, IEnumerable<Widget> widgets = null)
         {
@@ -158,7 +170,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
         }
-        public void InsertColumn(int column, Widget widget) => InsertColumn(column, new Widget[] { widget });
+        public void InsertColumn(int column, Widget widget)
+        {
+            if (Dimensions.Y > 1) throw new Exception($"Cannot insert a single {nameof(Widget)} column in a grid with a Y dimension greater than 1.");
+            InsertColumn(column, new Widget[] { widget });
+        }
 
         public void RemoveRow(int row)
         {
@@ -188,7 +204,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             _enable_internal_align = false;
 
             // !-------------------------------------------------
-            // !-------------------------------------------------
+            // !------------------------------------------------- // why is this here?
             // !-------------------------------------------------
             // !-------------------------------------------------
 

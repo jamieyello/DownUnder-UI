@@ -1143,6 +1143,7 @@ namespace DownUnder.UI.Widgets
             _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
             IsGraphicsInitialized = true;
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
+            UpdateRenderTargetSize(Size);
             return true;
         }
 
@@ -1407,10 +1408,10 @@ namespace DownUnder.UI.Widgets
 
         void UpdateRenderTargetSize(Point2 size)
         {
+            if (DrawingMode != DrawingModeType.use_render_target) return;
             if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
             {
-                if (DrawingMode == DrawingModeType.use_render_target && _render_target == null) _render_target = new RenderTarget2D(GraphicsDevice, MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
-                return;
+                size = new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE);
             }
 
             if (_render_target != null && (int)size.X == _render_target.Width && (int)size.Y == _render_target.Height) return;
