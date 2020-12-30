@@ -55,6 +55,7 @@ namespace DownUnder
             initial_value = value;
             current_value = value;
             target_value = value;
+            Progress = 1f;
             InterpolationSettings = new InterpolationSettings();
         }
 
@@ -80,7 +81,7 @@ namespace DownUnder
 
         public void SetTargetValue(T target_value, float transition_speed, bool instant = false) {
             TransitionSpeed = transition_speed;
-            SetTargetValue(target_value);
+            SetTargetValue(target_value, instant);
         }
 
         public void SetTargetValue(T target_value, bool instant = false) {
@@ -148,6 +149,6 @@ namespace DownUnder
             return c;
         }
 
-
+        public override string ToString() => Current.ToString();
     }
 }

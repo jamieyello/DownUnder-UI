@@ -33,11 +33,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         protected override void ConnectEvents()
         {
             Parent.OnUpdate += Update;
+            Parent.OnResize += HandleResize;
         }
 
         protected override void DisconnectEvents()
         {
-            Parent.OnUpdate += Update;
+            Parent.OnUpdate -= Update;
+            Parent.OnResize -= HandleResize;
         }
 
         public override object Clone()
@@ -60,6 +62,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             Offset.Update(Parent.UpdateData.ElapsedSeconds);
             Point2 movement = (Offset.Current - Offset.Previous);
             Parent.Scroll = Parent.Scroll.WithOffset(movement);
+            if (HardLock) HardLockScroll();
+        }
+
+        void HandleResize(object sender, EventArgs args)
+        {
             if (HardLock) HardLockScroll();
         }
 
