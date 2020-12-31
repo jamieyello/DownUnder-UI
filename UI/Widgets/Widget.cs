@@ -286,9 +286,9 @@ namespace DownUnder.UI.Widgets
                     foreach (Widget child in Children.OrEmptyIfNull()) child.InvokeOnParentResize(new RectangleFSetArgs(previous_area));
                     ParentWidget?.InvokeOnChildResized(new RectangleFSetArgs(previous_area));
                 }
-                if (EmbedChildren && Children != null)
+                if (EmbedChildren)
                 {
-                    foreach (var child in Children) child.EmbedIn(_area_backing);
+                    foreach (var child in Children.OrEmptyIfNull()) child.EmbedIn(_area_backing);
                 }
             }
         }
@@ -532,8 +532,8 @@ namespace DownUnder.UI.Widgets
                     //ConnectEvents(value);
                 }
 
-                foreach (Widget child in Children) child.ParentDWindow = value;
-
+                for (int i = 0; i < Children.Count; i++) Children[i].ParentDWindow = value;
+                
                 if (initialized) OnPostGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -764,7 +764,7 @@ namespace DownUnder.UI.Widgets
         void UpdateGroupHoverFocus()
         {
             if (_update_hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
-            foreach (Widget widget in Children) widget.UpdateGroupHoverFocus();
+            for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupHoverFocus();
         }
 
         void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input)
@@ -774,7 +774,7 @@ namespace DownUnder.UI.Widgets
             UpdateData.SpeedModifier = UpdateData.ElapsedSeconds * 60f;
             UpdateData.UIInputState = ui_input;
             _has_updated = true;
-            foreach (Widget widget in Children) widget.UpdateGroupUpdateData(game_time, ui_input);
+            for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupUpdateData(game_time, ui_input);
         }
 
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
@@ -877,7 +877,7 @@ namespace DownUnder.UI.Widgets
                 if (AllowCut && InputState.Cut) _post_update_flags.Cut = true;
             }
 
-            foreach (Widget widget in Children) widget.UpdateGroupInput();
+            for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupInput();
         }
 
         void UpdateGroupResizeGrab()
@@ -887,7 +887,8 @@ namespace DownUnder.UI.Widgets
                 && ParentDWindow.ResizeCursorGrabber != this
                 && !_IsBeingResized)
             {
-                foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
+                for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupResizeGrab();
+                
                 return;
             }
 
@@ -922,7 +923,7 @@ namespace DownUnder.UI.Widgets
                 Area = new_area;
             }
 
-            foreach (Widget widget in Children) widget.UpdateGroupResizeGrab();
+            for (int i1 = 0; i1 < Children.Count; i1++) Children[i1].UpdateGroupResizeGrab();
         }
 
         /// <summary> Update this <see cref="Widget"/> and all <see cref="Widget"/>s contained. </summary>
@@ -965,7 +966,8 @@ namespace DownUnder.UI.Widgets
                 OnFirstUpdate?.Invoke(this, EventArgs.Empty);
                 _trigger_first_update = false;
             }
-            foreach (Widget widget in new WidgetList(null, Children)) widget.UpdateGroupEvents(game_time);
+            WidgetList list = new WidgetList(null, Children);
+            for (int i = 0; i < list.Count; i++) list[i].UpdateGroupEvents(game_time);
         }
 
         void UpdateGroupPost(out bool deleted)
@@ -1128,7 +1130,7 @@ namespace DownUnder.UI.Widgets
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
             OnDrawNoClip?.Invoke(this, EventArgs.Empty);
             SpriteBatch.End();
-            foreach (Widget child in Children) child.DrawNoClip();
+            for (int i = 0; i < Children.Count; i++) Children[i].DrawNoClip();
         }
 
         #endregion
@@ -1402,8 +1404,8 @@ namespace DownUnder.UI.Widgets
         void UpdateRenderTargetSizes()
         {
             if (DrawingMode == DrawingModeType.use_render_target) UpdateRenderTargetSize(DrawingArea.Size);
-            
-            foreach (Widget child in Children) child.UpdateRenderTargetSizes();
+
+            for (int i = 0; i < Children.Count; i++) Children[i].UpdateRenderTargetSizes();
         }
 
         void UpdateRenderTargetSize(Point2 size)
