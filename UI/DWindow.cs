@@ -26,7 +26,7 @@ namespace DownUnder.UI
         /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
         private int _spawned_window_is_active = -1;
         /// <summary> Used to keep track of this <see cref="DWindow"/>'s thread. </summary>
-        private static int _thread_id;
+        private int _thread_id;
         private readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
         /// <summary> While true, event queues should not be modified. </summary>
         private bool _event_queue_is_processing = false;
@@ -73,7 +73,7 @@ namespace DownUnder.UI
         /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
         public bool WaitForCrossThreadCompletion { get; set; } = true;
         /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
-        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
+        public bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
         /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with <see cref="UICursorsEnabled"/>. </summary>
         internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
         /// <summary> Set to false to disable UI mouse cursor changes. </summary>

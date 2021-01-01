@@ -18,12 +18,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void ConnectEvents()
         {
-            Parent.OnDrawOverlay += Draw;
+            Parent.OnDraw += Draw;
         }
 
         protected override void DisconnectEvents()
         {
-            Parent.OnDrawOverlay -= Draw;
+            Parent.OnDraw -= Draw;
         }
 
         public override object Clone()
