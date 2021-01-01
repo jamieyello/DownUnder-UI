@@ -1,4 +1,4 @@
-﻿namespace DownUnder.Utilities
+﻿namespace DownUnder
 {
     public enum Direction2D
     {

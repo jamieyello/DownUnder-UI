@@ -1,5 +1,9 @@
 ﻿using MonoGame.Extended;
 using System.Collections.Generic;
+using DownUnder;
+using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -11,12 +15,14 @@ namespace DownUnder.UI.Widgets.DataTypes
             while (widget.Children.Count < width * height) widget.Add((Widget)filler.Clone());
         }
 
-        public static void Align(WidgetList widgets, int width, int height, RectangleF new_area, bool debug = false)
+        public static void Align(WidgetList widgets, int width, int height, RectangleF new_area, Point2? spacing = null, bool debug = false)
         {
             if (width == 0 || height == 0) return;
-            SetSize(widgets, width, height, new_area.Size, debug);
-            AutoSizeAllWidgets(widgets, width, height);
-            AutoSpaceAllWidgets(widgets, width, height, new_area.Position);
+
+            // I am trying to get away with this
+            SetSize(widgets, width, height, new_area.Size, debug, spacing); // expand
+            AutoSizeAllWidgets(widgets, width, height); // match follows
+            AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing);
         }
 
         public static void AddRow(WidgetList widgets, int width, int height, int row, IEnumerable<Widget> new_row)
@@ -48,7 +54,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public static void RemoveColumn(WidgetList widgets, int width, int height, int column)
         {
-            for (int i = height -1; i >= 0; i--)
+            for (int i = height - 1; i >= 0; i--)
             {
                 widgets.RemoveAt(column + i * width);
             }
@@ -61,8 +67,9 @@ namespace DownUnder.UI.Widgets.DataTypes
             for (int y = 0; y < height; y++) GridReader.GetRow(widgets, width, y).AutoSizeHeight();
         }
 
-        public static void AutoSpaceAllWidgets(WidgetList widgets, int width, int height, Point2 start)
+        public static void AutoSpaceAllWidgets(WidgetList widgets, int width, int height, Point2 start, Point2? spacing = null)
         {
+            if (spacing.HasValue) start = start.WithOffset(spacing.Value);
             Point2 position = start;
 
             for (int x = 0; x < width; x++)
@@ -73,17 +80,27 @@ namespace DownUnder.UI.Widgets.DataTypes
                     Widget widget = GridReader.Get(widgets, width, height, x, y);
                     widget.Position = position;
                     position.Y += widget.Height;
+                    if (spacing.HasValue) position.Y += spacing.Value.Y;
                 }
 
                 position.X += widgets[x].Width;
+                if (spacing.HasValue) position.X += spacing.Value.X;
             }
         }
 
-        private static void SetSize(WidgetList widgets, int width, int height, Point2 new_size, bool debug = false) {
+        private static void SetSize(WidgetList widgets, int width, int height, Point2 new_size, bool debug = false, Point2? spacing = null)
+        {
+            if (spacing.HasValue) new_size = new_size - TotalSpacingOffset(width, height, spacing.Value);
             Point2 original_size = new Point2(GridReader.GetRow(widgets, width, 0).CombinedWidth, GridReader.GetColumn(widgets, width, height, 0).CombinedHeight);
             Point2 fixed_size = GridReader.FixedContentSizeTotal(widgets, width, height);
-            Point2 modifier = new_size.DividedBy(original_size.WithOffset(fixed_size.Inverted()).WithMinValue(0.0001f));
+            Point2 modifier = new_size.DividedBy(original_size.WithOffset(fixed_size.Inverted().WithOffset(TotalSpacingOffset(width, height, spacing.Value))).WithMinValue(0.0001f));
             widgets.ExpandAll(modifier);
+        }
+
+        private static Size2 TotalSpacingOffset(float width, float height, Point2 spacing)
+        {
+            return new Size2(spacing.X * (width + 1), spacing.Y * (height + 1));
         }
     }
 }
+

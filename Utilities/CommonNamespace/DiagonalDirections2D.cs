@@ -1,7 +1,6 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 
-namespace DownUnder.Utility
+namespace DownUnder
 {
     public struct DiagonalDirections2D
     {

@@ -22,21 +22,30 @@ namespace DownUnder.UI.Widgets
             foreach (var policy in policies) _policies.Add((GroupBehaviorPolicy)policy.Clone());
         }
 
-        public static GroupBehaviorCollection Basic
+        public static GroupBehaviorCollection BasicDesktopFunctions
+        {
+            get 
+            {
+                var result = new GroupBehaviorCollection
+                {
+                    new GroupBehaviorPolicy { Behavior = new ApplyInputScrolling() }
+                };
+                return result;
+            }
+        }
+
+        public static GroupBehaviorCollection BasicVisuals
         {
             get
             {
                 var result = new GroupBehaviorCollection
                 {
-                    //new GroupBehaviorPolicy() { Behavior = new ScrollBar() },
                     new GroupBehaviorPolicy() { Behavior = new DrawBackground() },
                     new GroupBehaviorPolicy() { Behavior = new DrawOutline() },
                 };
                 return result;
             }
         }
-
-        public static GroupBehaviorCollection Plasma => Basic.WithOverrides(PlasmaOverrides);
 
         private static GroupBehaviorCollection PlasmaOverrides
         {
@@ -60,7 +69,9 @@ namespace DownUnder.UI.Widgets
                 return result;
             }
         }
-        
+
+        public static GroupBehaviorCollection PlasmaDesktop => BasicDesktopFunctions.WithOverrides(BasicVisuals.WithOverrides(PlasmaOverrides));
+
         public GroupBehaviorCollection WithOverrides(IEnumerable<GroupBehaviorPolicy> policies)
         {
             var result = new GroupBehaviorCollection(this);

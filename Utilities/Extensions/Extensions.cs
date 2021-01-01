@@ -203,7 +203,7 @@ namespace DownUnder
                     // If this is the line where the end trim is
                     if (line.Length + length_processed >= text.Length - rtrim)
                     {
-                        area.Width -= sprite_font.MeasureString(text.Substring(text.Length - rtrim).Split(new char[] { '\n' })[0]).X;
+                        area.Width -= sprite_font.MeasureString(text[^rtrim..].Split(new char[] { '\n' })[0]).X;
                         result.Add(area);
                         break;
                     }
@@ -331,6 +331,16 @@ namespace DownUnder
             return new Point2(p1.X + p2.X, p1.Y + p2.Y);
         }
 
+        public static Point2 WithXOffset(this Point2 p, float x)
+        {
+            return new Point2(p.X + x, p.Y);
+        }
+
+        public static Point2 WithYOffset(this Point2 p, float y)
+        {
+            return new Point2(p.X, p.Y + y);
+        }
+
         public enum NumericRelationship
         {
             GreaterThan = 1,
@@ -446,31 +456,23 @@ namespace DownUnder
         }
 
         //https://stackoverflow.com/questions/238555/how-do-i-get-the-value-of-memberinfo
-        public static object GetValue(this MemberInfo memberInfo, object forObject)
-        {
-            switch (memberInfo.MemberType)
+        public static object GetValue(this MemberInfo memberInfo, object forObject) =>
+            memberInfo.MemberType switch
             {
-                case MemberTypes.Field:
-                    return ((FieldInfo)memberInfo).GetValue(forObject);
-                case MemberTypes.Property:
-                    return ((PropertyInfo)memberInfo).GetValue(forObject);
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(forObject),
+                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(forObject),
+                _ => throw new NotImplementedException(),
+            };
+        
 
-        public static ParameterInfo[] GetParameters(this MemberInfo memberInfo)
-        {
-            switch (memberInfo.MemberType)
+        public static ParameterInfo[] GetParameters(this MemberInfo memberInfo) =>
+            memberInfo.MemberType switch
             {
-                case MemberTypes.Field:
-                    return new ParameterInfo[0];
-                case MemberTypes.Property:
-                    return ((PropertyInfo)memberInfo).GetIndexParameters();
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+                MemberTypes.Field => new ParameterInfo[0],
+                MemberTypes.Property => ((PropertyInfo)memberInfo).GetIndexParameters(),
+                _ => throw new NotImplementedException(),
+            };
+        
 
         public static IEnumerable<T> FastReverse<T>(this IList<T> items)
         {
@@ -489,5 +491,7 @@ namespace DownUnder
         {
             return new VertexPositionColor(Vector3.Lerp(vpc.Position, target.Position, amount), Color.Lerp(vpc.Color, target.Color, amount));
         }
+
+        public static Size2 ToSize2(this Point2 p) => new Size2(p.X, p.Y);
     }
 }

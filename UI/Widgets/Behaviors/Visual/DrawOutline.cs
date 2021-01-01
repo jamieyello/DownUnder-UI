@@ -1,14 +1,10 @@
-﻿using DownUnder.Utility;
-using Microsoft.Xna.Framework;
+﻿using DownUnder.Utilities;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    class DrawOutline : WidgetBehavior
+    public class DrawOutline : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
@@ -22,12 +18,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void ConnectEvents()
         {
-            Parent.OnDrawOverlay += Draw;
+            Parent.OnDraw += Draw;
         }
 
         protected override void DisconnectEvents()
         {
-            Parent.OnDrawOverlay -= Draw;
+            Parent.OnDraw -= Draw;
         }
 
         public override object Clone()

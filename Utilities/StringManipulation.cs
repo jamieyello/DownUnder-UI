@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DownUnder.Utility
+namespace DownUnder.Utilities
 {
     public static class StringManipulation
     {

@@ -1,11 +1,6 @@
-﻿using DownUnder.Utilities;
-using DownUnder.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
@@ -15,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         Texture2D _circle;
         Point _position = new Point(0, 0);
         bool _follow = false;
-        readonly ChangingValue<Color> _draw_color = new ChangingValue<Color>(Color.Transparent, Utilities.InterpolationSettings.Default);
+        readonly ChangingValue<Color> _draw_color = new ChangingValue<Color>(Color.Transparent, InterpolationSettings.Default);
 
         public enum MouseGlowActivationPolicy
         {
@@ -92,7 +87,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         void DrawImage(object sender, WidgetDrawArgs args)
         {
             if (_follow) _position = new Point((int)args.CursorPosition.X - Diameter / 2, (int)args.CursorPosition.Y - Diameter / 2);
-            if (_draw_color.GetCurrent() != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.GetCurrent());
+            if (_draw_color.Current != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.Current);
         }
 
         public static MouseGlow SubtleGray => new MouseGlow() { Diameter = 8192 * 2, Color = new Color(30, 30, 30, 30) };

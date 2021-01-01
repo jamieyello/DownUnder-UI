@@ -1,11 +1,17 @@
-﻿using DownUnder.Utility;
+﻿using DownUnder.Utilities;
+using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.Utilities
+namespace DownUnder
 {
     [DataContract] public struct InterpolationSettings
     {
-        [DataMember] public InterpolationType Interpolation { get; set; }
+        [DataMember] public InterpolationType Interpolation 
+        { 
+            get; 
+            set; 
+        }
+
         [DataMember] public float TransitionSpeed { get; set; }
 
         public InterpolationSettings(InterpolationType interpolation, float transition_speed)

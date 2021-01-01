@@ -2,42 +2,74 @@
 using System;
 using System.Collections.Generic;
 
-namespace DownUnder.Utility
+namespace DownUnder
 {
     /// <summary> Value designed to smoothly transition between two states. </summary>
     public class ChangingValue<T> : ICloneable
     {
+        InterpolationSettings interpolation_settings_backing;
+        static readonly Func<object, object, float, object> interpolation_method = InterpolationFuncs.GetLerpFunc<T>();
+        Func<float, float> plot_method;
+
         [NonSerialized] private T initial_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T current_value = (T)Activator.CreateInstance(typeof(T));
         [NonSerialized] private T target_value = (T)Activator.CreateInstance(typeof(T));
+        [NonSerialized] private T previous_value = (T)Activator.CreateInstance(typeof(T));
 
         public float Progress { get; private set; } = 0f; // From 0f to 1f
-        public float ProgressPlotted => Utility.Interpolation.Plot(Progress, Interpolation);
 
-        public InterpolationType Interpolation { get; set; } = InterpolationType.fake_sin;
         /// <summary> Speed modifier of the value. Default is 1f. </summary>
-        public float TransitionSpeed { get; set; } = 1f;
-        public bool IsTransitioning { get => Progress != 1f; }
-        public InterpolationSettings InterpolationSettings {
-            get => new InterpolationSettings(Interpolation, TransitionSpeed);
-            set {
-                Interpolation = value.Interpolation;
-                TransitionSpeed = value.TransitionSpeed;
+        public float TransitionSpeed 
+        { 
+            get => interpolation_settings_backing.TransitionSpeed; 
+            set => interpolation_settings_backing.TransitionSpeed = value;
+        }
+
+        public InterpolationType Interpolation
+        {
+            get => interpolation_settings_backing.Interpolation;
+            set
+            {
+                if (interpolation_settings_backing.Interpolation != value) plot_method = InterpolationFuncs.GetPlotFunc(value);
+                interpolation_settings_backing.Interpolation = value;
             }
         }
 
-        public ChangingValue() {}
+        public bool IsTransitioning { get => Progress != 1f; }
+
+        public InterpolationSettings InterpolationSettings {
+            set {
+                interpolation_settings_backing = value;
+                plot_method = InterpolationFuncs.GetPlotFunc(value.Interpolation);
+            }
+        }
+
+        public ChangingValue() =>
+            InterpolationSettings = new InterpolationSettings();
+        
+
+        public ChangingValue(InterpolationSettings interpolation) => 
+            InterpolationSettings = interpolation;
 
         public ChangingValue(T value) {
             initial_value = value;
             current_value = value;
             target_value = value;
+            Progress = 1f;
+            InterpolationSettings = new InterpolationSettings();
         }
 
         public ChangingValue(T initial_value, T target_value, InterpolationSettings interpolation)
         {
             this.initial_value = initial_value;
             current_value = initial_value;
+            this.target_value = target_value;
+            InterpolationSettings = interpolation;
+        }
+        public ChangingValue(T initial_value, T current_value, T target_value, InterpolationSettings interpolation)
+        {
+            this.initial_value = initial_value;
+            this.current_value = current_value;
             this.target_value = target_value;
             InterpolationSettings = interpolation;
         }
@@ -49,7 +81,7 @@ namespace DownUnder.Utility
 
         public void SetTargetValue(T target_value, float transition_speed, bool instant = false) {
             TransitionSpeed = transition_speed;
-            SetTargetValue(target_value);
+            SetTargetValue(target_value, instant);
         }
 
         public void SetTargetValue(T target_value, bool instant = false) {
@@ -87,22 +119,36 @@ namespace DownUnder.Utility
             }
 
             Progress += TransitionSpeed * step;
-            current_value = Utility.Interpolation.GetMiddle(initial_value, target_value, Progress, Interpolation);
+            previous_value = current_value;
+            current_value = (T)interpolation_method.Invoke(initial_value, target_value, plot_method.Invoke(Progress));
         }
 
-        public T GetCurrent() => current_value;
+        public T Initial => initial_value;
+        public T Current 
+        { 
+            get => current_value;
+            set => SetTargetValue(value, true);
+        }
+        public T Target
+        {
+            get => target_value;
+            set => SetTargetValue(value);
+        }
+        public T Previous => previous_value;
 
-        public object Clone() {
-            var c = new ChangingValue<T>();
-            c.Progress = Progress;
-            c.Interpolation = Interpolation;
-            c.TransitionSpeed = TransitionSpeed;
+        object ICloneable.Clone() => Clone();
+        public ChangingValue<T> Clone(bool reset_progress = false) {
+            var c = new ChangingValue<T>(initial_value, current_value, target_value, interpolation_settings_backing);
 
-            c.initial_value = initial_value;
-            c.current_value = current_value;
-            c.target_value = target_value;
+            if (!reset_progress) 
+            {
+                c.Progress = Progress;
+                c.previous_value = previous_value;
+            }
 
             return c;
         }
+
+        public override string ToString() => Current.ToString();
     }
 }

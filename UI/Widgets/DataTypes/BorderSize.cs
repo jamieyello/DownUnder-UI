@@ -1,6 +1,4 @@
-﻿using DownUnder.Utility;
-
-namespace DownUnder.UI.Widgets.DataTypes {
+﻿namespace DownUnder.UI.Widgets.DataTypes {
     public struct BorderSize {
         public float Top;
         public float Bottom;

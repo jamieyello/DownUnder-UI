@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Runtime.Serialization;
@@ -163,28 +162,28 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
             if (TopBorder != null)
             {
-                center_border.Top = TopBorder.Height * BorderOccupy.Up.GetCurrent();
+                center_border.Top = TopBorder.Height * BorderOccupy.Up.Current;
                 TopBorder.Position = new Point2();
                 TopBorder.Width = Parent.Width;
             }
 
             if (BottomBorder != null)
             {
-                center_border.Bottom = BottomBorder.Height * BorderOccupy.Down.GetCurrent();
+                center_border.Bottom = BottomBorder.Height * BorderOccupy.Down.Current;
                 BottomBorder.Position = new Point2(0, Parent.Height - BottomBorder.Height);
                 BottomBorder.Width = Parent.Width;
             }
 
             if (LeftBorder != null)
             {
-                center_border.Left = LeftBorder.Width * BorderOccupy.Left.GetCurrent();
+                center_border.Left = LeftBorder.Width * BorderOccupy.Left.Current;
                 LeftBorder.Position = new Point2(0, center_border.Top);
                 LeftBorder.Height = Parent.Height - center_border.Top - center_border.Bottom;
             }
 
             if (RightBorder != null)
             {
-                center_border.Right = RightBorder.Width * BorderOccupy.Right.GetCurrent();
+                center_border.Right = RightBorder.Width * BorderOccupy.Right.Current;
                 RightBorder.Position = new Point2(Parent.Width - RightBorder.Width, center_border.Top);
                 RightBorder.Height = Parent.Height - center_border.Top - center_border.Bottom;
             }

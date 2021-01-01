@@ -1,7 +1,6 @@
 ﻿using DownUnder.UI.DataTypes;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,9 +10,7 @@ using System.Text;
 using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets;
-using DownUnder.Utility;
-using Microsoft.Xna.Framework.Content;
-using System.Diagnostics;
+using DownUnder.UI.Widgets.Behaviors.Functional;
 
 namespace DownUnder.UI
 {
@@ -29,7 +26,7 @@ namespace DownUnder.UI
         /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
         private int _spawned_window_is_active = -1;
         /// <summary> Used to keep track of this <see cref="DWindow"/>'s thread. </summary>
-        private static int _thread_id;
+        private int _thread_id;
         private readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
         /// <summary> While true, event queues should not be modified. </summary>
         private bool _event_queue_is_processing = false;
@@ -76,7 +73,7 @@ namespace DownUnder.UI
         /// <summary> Whether or not this window will wait until the next update to continue when calling certain methods. (Currently only Area.Set) Set to true by default, set to false for faster but delayed multithreading, or if Update() is not being called. </summary>
         public bool WaitForCrossThreadCompletion { get; set; } = true;
         /// <summary> True if the thread accessing this window is the the one this window is running on. </summary>
-        private static bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
+        public bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _thread_id;
         /// <summary> Used by the UI to set the mouse cursor. Resets every frame. Disable with <see cref="UICursorsEnabled"/>. </summary>
         internal MouseCursor UICursor { get; set; } = MouseCursor.Arrow;
         /// <summary> Set to false to disable UI mouse cursor changes. </summary>
@@ -85,6 +82,7 @@ namespace DownUnder.UI
         public SpriteFont WindowFont { get; set; }
         public DownUnderEffects EffectCollection = new DownUnderEffects();
         Point2 IParent.PositionInRender => new Point2();
+        public UINavigator Navigation { get; private set; }
 
         #endregion
 
@@ -228,7 +226,8 @@ namespace DownUnder.UI
             GraphicsManager = graphics;
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
-            
+            Navigation = new UINavigator(this);
+
             MainWidget = new Widget();
 
             if (parent != null) {
@@ -254,6 +253,10 @@ namespace DownUnder.UI
             double time = (1000d / 144) * 10000d;
             ParentGame.TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
+
+            parent.Exiting += (s, a) => {
+                foreach (Widget widget in MainWidget.AllContainedWidgets) widget.InvokeOnWindowClose();
+            };
 
             LoadDWindow(graphics.GraphicsDevice);
         }
@@ -340,7 +343,7 @@ namespace DownUnder.UI
             } while (_spawned_window_is_active != 1);
             Console.WriteLine($"{GetType().Name}: Waiting done");
 
-            return Children[Children.Count - 1];
+            return Children[^1];
         }
 
         public void LoadDWindow(GraphicsDevice graphics) {
@@ -391,6 +394,21 @@ namespace DownUnder.UI
             GraphicsManager.HardwareModeSwitch = false;
             GraphicsManager.ToggleFullScreen();
             OnToggleFullscreen?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ShowPopUpMessage(string message)
+        {
+            Widget window = new Widget { Size = new Point2(400, 300) };
+
+            window.Behaviors.Add(new CenterContent());
+            window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
+            window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster }, out var pop_in_out);
+            window.Add(CommonWidgets.Label(message), out var label);
+
+            label.PassthroughMouse = true;
+            window.OnClick += (s, a) => pop_in_out.Close();
+
+            DisplayWidget.ParentWidget.Add(window);
         }
 
         #endregion Protected Methods

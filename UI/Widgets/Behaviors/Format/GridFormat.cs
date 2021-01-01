@@ -1,5 +1,4 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
@@ -8,13 +7,12 @@ using System.Linq;
 
 namespace DownUnder.UI.Widgets.Behaviors.Format
 {
-    /// <summary> A behavior that keeps children in a grid formation. </summary>
     public class GridFormat : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
         private bool _enable_internal_align = true;
-        
+
         public int Width { get; private set; }
         public int Height { get; private set; }
         public Point Dimensions => new Point(Width, Height);
@@ -23,26 +21,15 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         public bool DisposeOldOnSet { get; set; } = true;
         public bool SizeToContent { get; set; } = true;
 
-        public GridFormat()
-        {
-            Width = 0;
-            Height = 0;
-        }
+        public Point2 Spacing = new Point2();
 
-        public GridFormat(Point dimensions, Widget filler = null)
-        {
-            if (dimensions.X < 0 || dimensions.Y < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({dimensions})");
-            if (dimensions.X == 0 || dimensions.Y == 0) dimensions = new Point();
-            
-            Width = dimensions.X;
-            Height = dimensions.Y;
-            Filler = (Widget)filler?.Clone();
-        }
+        public GridFormat(Point dimensions, Widget filler = null, Point2? spacing = null) : this(dimensions.X, dimensions.Y, filler, spacing) { }
 
-        public GridFormat(int width, int height, Widget filler = null)
+        public GridFormat(int width = 0, int height = 0, Widget filler = null, Point2? spacing = null)
         {
             if (width < 0 || height < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({width}, {height})");
-            if (width == 0 || height == 0) {
+            if (width == 0 || height == 0)
+            {
                 width = 0;
                 height = 0;
             }
@@ -50,6 +37,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             Width = width;
             Height = height;
             Filler = (Widget)filler?.Clone();
+            if (spacing.HasValue) Spacing = spacing.Value;
         }
 
         protected override void Initialize()
@@ -82,6 +70,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             c.Filler = (Widget)Filler.Clone();
             c.DisposeOldOnSet = DisposeOldOnSet;
             c.SizeToContent = SizeToContent;
+            c.Spacing = Spacing;
 
             return c;
         }
@@ -93,17 +82,19 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                 FitToContentArea = true,
                 SnappingPolicy = DiagonalDirections2D.None
             };
-            result.VisualSettings.OutlineSides = Directions2D.DR;
+            if (Spacing == new Point2()) result.VisualSettings.OutlineSides = Directions2D.DR;
             return result;
         }
 
-        private void SetSizeToContent() {
-            if (SizeToContent) Parent.Size = Parent.Children.AreaCoverage.Value.Size;
+        private void SetSizeToContent()
+        {
+            if (SizeToContent && Parent.Count > 0) Parent.Size = Parent.Children.AreaCoverage.Value.Size + Spacing + Spacing;
         }
 
         public WidgetList GetRow(int y_row) => GridReader.GetRow(Parent.Children, Width, y_row);
         public WidgetList GetColumn(int x_column) => GridReader.GetColumn(Parent.Children, Width, Height, x_column);
-        public Widget this[int x, int y] {
+        public Widget this[int x, int y]
+        {
             get => Parent.Children[y * Width + x];
             set
             {
@@ -114,14 +105,25 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         }
         public Point IndexOf(Widget widget) => GridReader.IndexOf(Width, Parent.Children.IndexOf(widget));
 
+
         public void AddRow(IEnumerable<Widget> widgets = null)
         {
             InsertRow(Height, widgets);
+        }
+        public void AddRow(Widget widget)
+        {
+            if (Dimensions.X > 1) throw new Exception($"Cannot add a single {nameof(Widget)} row to a grid with an X dimension greater than 1.");
+            AddRow(new Widget[] { widget }); 
         }
 
         public void AddColumn(IEnumerable<Widget> widgets = null)
         {
             InsertRow(Width, widgets);
+        }
+        public void AddColumn(Widget widget)
+        {
+            if (Dimensions.Y > 1) throw new Exception($"Cannot add a single {nameof(Widget)} column to a grid with a Y dimension greater than 1.");
+            AddColumn(new Widget[] { widget });
         }
 
         public void InsertRow(int row, IEnumerable<Widget> widgets = null)
@@ -136,12 +138,17 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                 widgets = new_widget_list;
             }
             if (widgets.Count() != Width) throw new Exception("Row count width mismatch.");
-            
+
             bool p = _enable_internal_align;
             _enable_internal_align = false;
             GridWriter.AddRow(Parent.Children, Width, Height++, row, widgets);
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
+        }
+        public void InsertRow(int row, Widget widget)
+        {
+            if (Dimensions.X > 1) throw new Exception($"Cannot insert a single {nameof(Widget)} row in a grid with a X dimension greater than 1.");
+            InsertRow(row, new Widget[] { widget });
         }
 
         public void InsertColumn(int column, IEnumerable<Widget> widgets = null)
@@ -162,6 +169,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             GridWriter.AddColumn(Parent.Children, Width++, Height, column, widgets);
             _enable_internal_align = p;
             Align(this, EventArgs.Empty);
+        }
+        public void InsertColumn(int column, Widget widget)
+        {
+            if (Dimensions.Y > 1) throw new Exception($"Cannot insert a single {nameof(Widget)} column in a grid with a Y dimension greater than 1.");
+            InsertColumn(column, new Widget[] { widget });
         }
 
         public void RemoveRow(int row)
@@ -190,20 +202,29 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         {
             bool p = _enable_internal_align;
             _enable_internal_align = false;
-            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly());
+
+            // !-------------------------------------------------
+            // !------------------------------------------------- // why is this here?
+            // !-------------------------------------------------
+            // !-------------------------------------------------
+
+            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing);
+            SetSizeToContent();
             _enable_internal_align = p;
         }
 
         // Adds and removes InternalAlign to/from child widgets
-        private void AddInternalAlign(object sender, EventArgs args) {
+        private void AddInternalAlign(object sender, EventArgs args)
+        {
             ((Widget)sender).LastAddedWidget.OnAreaChangePriority -= InternalAlign;
             ((Widget)sender).LastAddedWidget.OnAreaChangePriority += InternalAlign;
         }
-        private void RemoveInternalAlign(object sender, EventArgs args) {
+
+        private void RemoveInternalAlign(object sender, EventArgs args)
+        {
             ((Widget)sender).LastRemovedWidget.OnAreaChangePriority -= InternalAlign;
         }
 
-        /// <summary> Respond to an inner <see cref="Widget"/>'s resizing by resizing the surrounding rows and columns. </summary>
         private void InternalAlign(object sender, RectangleFSetOverrideArgs args)
         {
             if (!_enable_internal_align) return;
@@ -221,7 +242,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             WidgetList current_column = GetColumn(index.X);
             Point2 current_column_minimum_size = current_column.MinimumWidgetSize;
 
-            if (difference.Top != 0) { // Resizing a widget's top
+            if (difference.Top != 0)
+            { // Resizing a widget's top
                 if (index.Y == 0)
                 {
                     //args.Override = args.Override.Value.ResizedBy(difference.Top, Directions2D.U);
@@ -260,7 +282,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                 }
             }
 
-            if (difference.Right != 0) {
+            if (difference.Right != 0)
+            {
                 if (index.X == Width - 1)
                 {
                     //args.Override = args.Override.Value.ResizedBy(difference.Right, Directions2D.R);
@@ -276,7 +299,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                         if (widget_ != widget) widget_.Area = widget_.Area.ResizedBy(-(widget_.Area.Right - next_column_left), Directions2D.R, current_column_minimum_size);
 
                     }
-                    
+
                     args.Override = args.Override.Value.ResizedBy(-(args.Override.Value.Right - next_column_left), Directions2D.R, current_column_minimum_size);
                 }
             }

@@ -1,8 +1,9 @@
-﻿using DownUnder.Utility;
+﻿using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace DownUnder.UI.Widgets.DataTypes
+{
     /// <summary> The color settings of any UI element. </summary>
     [DataContract] public class ElementColors {
         [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 4f };
@@ -22,7 +23,7 @@ namespace DownUnder.UI.Widgets.DataTypes {
         /// <summary> How fast colors should shift. (1 = immediate) </summary>
         public float TransitionSpeed { get => _changing_color.TransitionSpeed; set => _changing_color.TransitionSpeed = value; }
         /// <summary> The color that this element should display at this moment. </summary>
-        public Color CurrentColor { get => _changing_color.GetCurrent(); }
+        public Color CurrentColor { get => _changing_color.Current; }
         /// <summary> Returns true if this is in the middle of transitioning to a different color. </summary>
         public bool IsTransitioning { get => _changing_color.IsTransitioning; }
 

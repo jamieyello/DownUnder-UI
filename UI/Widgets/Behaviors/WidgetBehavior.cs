@@ -133,9 +133,9 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         /// <summary> Creates a <see cref="Widget"/> and adds this <see cref="WidgetBehavior"/>. </summary>
-        public Widget CreateWidget()
+        public Widget CreateWidget(RectangleF? area = null)
         {
-            return new Widget().WithAddedBehavior(this);
+            return new Widget(area).WithAddedBehavior(this);
         }
     }
 }

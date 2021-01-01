@@ -1,8 +1,6 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Actions.Functional;
 using DownUnder.UI.Widgets.Interfaces;
-using DownUnder.Utilities;
-using DownUnder.Utility;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -287,16 +285,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public static implicit operator List<Widget>(WidgetList v) => new List<Widget>(v);
         public static implicit operator Widget[](WidgetList v) => v._widgets.ToArray();
-
-        public void Add(Widget widget) {
-            if (IsReadOnly) ThrowReadOnlyException();
-            if (_parent != null) widget.Parent = _parent;
-            _widgets.Add(widget);
-            LastAddedWidget = widget;
-            OnAdd();
-            OnListChange();
-            Count = _widgets.Count;
-        }
+        public void Add(Widget widget) => Insert(Count, widget);
 
         public void Clear() {
             if (IsReadOnly) ThrowReadOnlyException();

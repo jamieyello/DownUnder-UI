@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utility;
+using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -130,8 +130,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             BottomBarHeight.Update(Parent.UpdateData.ElapsedSeconds);
 
             // Calculate size of bars.
-            _outer_bar_bottom_area.Height = BottomBarHeight.GetCurrent();
-            _outer_side_bar_area.Width = SideBarWidth.GetCurrent();
+            _outer_bar_bottom_area.Height = BottomBarHeight.Current;
+            _outer_side_bar_area.Width = SideBarWidth.Current;
             _inner_bottom_bar_area.Height = _outer_bar_bottom_area.Height - InnerBarSpacing * 2;
             _inner_side_bar_area.Width = _outer_side_bar_area.Width - InnerBarSpacing * 2;
 
@@ -167,8 +167,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             _outer_side_bar_area.X = drawing_area.Right - _outer_side_bar_area.Width;
 
             _inner_side_bar_area.X = _outer_side_bar_area.X + InnerBarSpacing;
-            _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + Y.GetCurrent() * modifier.Y;
-            _inner_bottom_bar_area.X = _outer_bar_bottom_area.X + InnerBarSpacing + X.GetCurrent() * modifier.X;
+            _inner_side_bar_area.Y = _outer_side_bar_area.Y + InnerBarSpacing + Y.Current * modifier.Y;
+            _inner_bottom_bar_area.X = _outer_bar_bottom_area.X + InnerBarSpacing + X.Current * modifier.X;
             _inner_bottom_bar_area.Y = _outer_bar_bottom_area.Y + InnerBarSpacing;
 
             #endregion Position
@@ -215,7 +215,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
                 {
                     _bottom_bar_held = true;
                     _bottom_bar_cursor_initial_x_value = Parent.UpdateData.UIInputState.CursorPosition.X;
-                    _bottom_bar_initial_x_value = X.GetCurrent();
+                    _bottom_bar_initial_x_value = X.Current;
                 }
             }
             else BottomInnerBarPalette.SpecialColorEnabled = false;
@@ -227,7 +227,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
                 {
                     _side_bar_held = true;
                     _side_bar_cursor_initial_y_value = Parent.UpdateData.UIInputState.CursorPosition.Y;
-                    _side_bar_initial_y_value = Y.GetCurrent();
+                    _side_bar_initial_y_value = Y.Current;
                 }
             }
             else SideInnerBarPalette.SpecialColorEnabled = false;
@@ -251,14 +251,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             #endregion Grabbing and dragging the bars
 
             // Don't let the scrollbars go out of bounds.
-            if (X.GetCurrent() < 0f) X.SetTargetValue(0f, true);
-            if (Y.GetCurrent() < 0f) Y.SetTargetValue(0f, true);
-            if (X.GetCurrent() > widget_content_area.Width - widget_area.Width)
+            if (X.Current < 0f) X.SetTargetValue(0f, true);
+            if (Y.Current < 0f) Y.SetTargetValue(0f, true);
+            if (X.Current > widget_content_area.Width - widget_area.Width)
                 X.SetTargetValue(widget_content_area.Width - widget_area.Width, true);
-            if (Y.GetCurrent() > widget_content_area.Height - widget_area.Height)
+            if (Y.Current > widget_content_area.Height - widget_area.Height)
                 Y.SetTargetValue(widget_content_area.Height - widget_area.Height, true);
 
-            Parent.Scroll = new Point2(-X.GetCurrent(), -Y.GetCurrent());
+            Parent.Scroll = new Point2(-X.Current, -Y.Current);
         }
     }
 }
