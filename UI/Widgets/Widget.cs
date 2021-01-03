@@ -1,8 +1,8 @@
-﻿using DownUnder.UI.Widgets.Actions;
+﻿using DownUnder.Content.Utilities.Serialization;
+using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.Interfaces;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -32,10 +32,11 @@ using System.Threading;
 namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
-    [DataContract]
+    [DataContract(IsReference = true)]
     public sealed class Widget :
-        IParent, IDisposable, ICloneable, IList<Widget>
+        IParent, IDisposable, ICloneable//, IEnumerable<Widget>
     {
+        [DataMember]
         public bool debug_output = false;
 
         #region Fields/Delegates/Enums
@@ -178,6 +179,7 @@ namespace DownUnder.UI.Widgets
         /// <summary> When set to false this <see cref="Widget"/> will throw an <see cref="Exception"/> if <see cref="Clone"/> is called. Should be set to false if <see cref="Clone"/> cannot recreate this <see cref="Widget"/> effectively. </summary>
         [DataMember]
         public bool IsCloningSupported { get; set; } = true;
+        [DataMember]
         public GeneralVisualSettings VisualSettings = new GeneralVisualSettings();
 
         [DataMember]
@@ -703,8 +705,8 @@ namespace DownUnder.UI.Widgets
             Size = new Point2(10, 10);
             //Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
-            Behaviors = new BehaviorManager(this);
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
+            Behaviors = new BehaviorManager(this);
             Actions = new ActionManager(this);
             Children = new WidgetList(this);
             OnAddChild += (s, a) =>
@@ -723,8 +725,9 @@ namespace DownUnder.UI.Widgets
             _graphics_in_use = false;
             _dragging_in = false;
             _dragging_off = false;
-            _post_update_flags = new WidgetUpdateFlags();
             _has_updated = false;
+
+            _post_update_flags = new WidgetUpdateFlags();
 
             Actions = new ActionManager(this);
             UpdateData = new UpdateData();
@@ -1173,6 +1176,17 @@ namespace DownUnder.UI.Widgets
             Children.Remove(widget);
         }
 
+        public void SaveToXML(string path)
+        {
+            XmlHelper.ToXmlFile(this, path);
+        }
+
+        public static Widget LoadFromXML(string path)
+        {
+            Widget loaded = XmlHelper.FromXmlFile<Widget>(path);
+            return loaded;
+        }
+
         #endregion
 
         #region EventsHandlers
@@ -1563,7 +1577,6 @@ namespace DownUnder.UI.Widgets
         public void CopyTo(Widget[] array, int arrayIndex) => Children.CopyTo(array, arrayIndex);
         public bool Remove(Widget item) => Children.Remove(item);
         public IEnumerator<Widget> GetEnumerator() => Children.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => Children.GetEnumerator();
         public int Count => Children.Count;
         public bool IsReadOnly => Children.IsReadOnly;
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }

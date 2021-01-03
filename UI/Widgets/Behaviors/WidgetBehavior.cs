@@ -2,7 +2,6 @@
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
-using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;

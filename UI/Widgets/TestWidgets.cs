@@ -1,4 +1,5 @@
 ﻿using DownUnder;
+using DownUnder.Content.Utilities.Serialization;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
@@ -7,6 +8,8 @@ using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
 using MonoGame.Extended;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DownUnder.UI.Widgets
 {
@@ -216,6 +219,39 @@ namespace DownUnder.UI.Widgets
             result.Behaviors.Add(new DrawText { Text = "Click me", XTextPositioning = DrawText.XTextPositioningPolicy.center, YTextPositioning = DrawText.YTextPositioningPolicy.center });
             result.Behaviors.Add(new Neurons());
             return result;
+        }
+
+        public static Widget SerializeTest()
+        {
+            Widget result = new Widget();
+
+            result.Add(CommonWidgets.Button("serialize", new RectangleF(10,10,100,40)), out var button);
+            button.OnClick += (s, a) =>
+            {
+                //XmlHelper.ToXmlFile(new TestSerializeClass() { NameProperty = "property name", name_field = "name field" }, @"C:\Users\jamie\Desktop\New folder\test.xml");
+                Widget unserialized = new Widget(50, 50, 40, 40);
+                unserialized.Add(new Widget());
+                XmlHelper.ToXmlFile(unserialized, @"C:\Users\jamie\Desktop\New folder\test.xml");
+                Widget desrialized = XmlHelper.FromXmlFile<Widget>(@"C:\Users\jamie\Desktop\New folder\test.xml");
+                if (desrialized.IsGraphicsInitialized) throw new Exception();
+                result.Add(desrialized);
+                result.Add(unserialized);
+                desrialized.Position = new Point2(50, 100);
+            };
+
+            return result;
+        }
+    }
+
+    public class TestSerializeClass
+    {
+        public string NameProperty { get; set; }
+        public string name_field;
+        public List<string> string_list = new List<string>();
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            return ((IEnumerable<string>)string_list).GetEnumerator();
         }
     }
 }

@@ -131,9 +131,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DropDownEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\INeedsWidgetParent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IParent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Interfaces\IWidgetChild.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\IParent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Widget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AutoDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\ChangingValue.cs" />
@@ -158,7 +156,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\InterpolationSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PropertyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\RectanglePart.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\XmlHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringManipulation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\TestWidgets.cs" />

@@ -1,14 +1,10 @@
-﻿using DownUnder.UI.Widgets.Interfaces;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
+﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
-using static DownUnder.UI.Widgets.Widget;
 
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace DownUnder.UI.Widgets.DataTypes
+{
     [DataContract] public class BaseColorScheme : ICloneable {
         /// <summary> A reference to the widget that owns this palette. </summary>
         [DataMember] public ElementColors[] BackGroundColors { get; set; }

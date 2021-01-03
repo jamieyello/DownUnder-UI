@@ -1,16 +1,14 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.Interfaces;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors
 {
-    [DataContract] public class GroupBehaviorManager : IIsWidgetChild
+    [DataContract] public class GroupBehaviorManager
     {
         [DataMember] private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
         [DataMember] private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
-
-        Widget Parent { get; set; }
+        [DataMember] Widget Parent { get; set; }
         
         public GroupBehaviorAcceptancePolicy AcceptancePolicy
         {
@@ -84,7 +82,5 @@ namespace DownUnder.UI.Widgets.Behaviors
                 return result;
             }
         }
-
-        Widget IIsWidgetChild.Parent { get => Parent; set => Parent = value; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Interfaces;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -11,11 +10,11 @@ namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     [DataContract] 
-    public class WidgetList : IList<Widget>, IIsWidgetChild
+    public class WidgetList : IList<Widget>
     {
         Widget _parent;
 
-        [DataMember] private List<Widget> _widgets = new List<Widget>();
+        private List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
@@ -39,6 +38,12 @@ namespace DownUnder.UI.Widgets.DataTypes
             IsReadOnly = is_read_only;
 
             Count = _widgets.Count;
+        }
+
+        [OnDeserializing]
+        void OnDeserialize(StreamingContext context)
+        {
+            _widgets = new List<Widget>();
         }
 
         private void OnRemove() { Parent?.InvokeOnRemove(); }

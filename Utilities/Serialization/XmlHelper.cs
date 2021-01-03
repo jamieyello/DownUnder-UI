@@ -1,5 +1,4 @@
-﻿using DownUnder.Utilities.Serialization.DataContractResolvers;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -21,7 +20,7 @@ namespace DownUnder.Content.Utilities.Serialization
         /// <summary> Deserializes an object from an XML file. </summary>
         public static T FromXmlFile<T>(string fileName)
         {
-            DataContractSerializerSettings s = new DataContractSerializerSettings() { DataContractResolver = new DownUnderResolver() };
+            DataContractSerializerSettings s = new DataContractSerializerSettings() { PreserveObjectReferences = true };
             s.SerializeReadOnlyTypes = true;
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
             {
