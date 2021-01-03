@@ -24,11 +24,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             primary_hovered
         }
 
-        public Color Color = new Color(100,100,100, 255);
+        public Color Color = new Color(70, 70, 70, 255);
         public int Diameter { get; set; } = 1024;
         public InterpolationSettings ShineSpeed = InterpolationSettings.Faster;
         public InterpolationSettings ShineOffSpeed = InterpolationSettings.Default;
         public MouseGlowActivationPolicy ActivationPolicy = MouseGlowActivationPolicy.primary_hovered;
+        public bool ScaleWithSize = true;
 
         protected override void Initialize()
         {
@@ -57,6 +58,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             c.ShineSpeed = ShineSpeed;
             c.ShineOffSpeed = ShineOffSpeed;
             c.ActivationPolicy = ActivationPolicy;
+            c.ScaleWithSize = ScaleWithSize;
             return c;
         }
 
@@ -86,10 +88,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         void DrawImage(object sender, WidgetDrawArgs args)
         {
-            if (_follow) _position = new Point((int)args.CursorPosition.X - Diameter / 2, (int)args.CursorPosition.Y - Diameter / 2);
-            if (_draw_color.Current != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, Diameter, Diameter), _draw_color.Current);
+            int diameter = ScaleWithSize ? (int)(Diameter * (Parent.Size.MaxFloat()) / 140) : Diameter;
+            if (_follow) _position = new Point((int)args.CursorPosition.X - diameter / 2, (int)args.CursorPosition.Y - diameter / 2);
+            if (_draw_color.Current != Color.Transparent) args.SpriteBatch.Draw(_circle, new Rectangle(_position.X, _position.Y, diameter, diameter), _draw_color.Current);
         }
 
-        public static MouseGlow SubtleGray => new MouseGlow() { Diameter = 8192 * 2, Color = new Color(30, 30, 30, 30) };
+        public static MouseGlow SubtleGray => new MouseGlow() { Diameter = 6000, Color = new Color(30, 30, 30, 30) };
     }
 }

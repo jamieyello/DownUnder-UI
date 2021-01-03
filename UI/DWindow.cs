@@ -11,6 +11,7 @@ using System.Threading;
 using MonoGame.Extended;
 using DownUnder.UI.Widgets;
 using DownUnder.UI.Widgets.Behaviors.Functional;
+using System.Diagnostics;
 
 namespace DownUnder.UI
 {
@@ -45,6 +46,8 @@ namespace DownUnder.UI
 
         RenderTarget2D[] _back_buffer = new RenderTarget2D[2];
         int _current_back_buffer = 0;
+
+        public readonly IOSInterface OS;
 
         #region Properties
         #region Auto Properties
@@ -222,11 +225,12 @@ namespace DownUnder.UI
 
         #region Constructors
 
-        public DWindow(GraphicsDeviceManager graphics, Game parent) {
+        public DWindow(GraphicsDeviceManager graphics, Game parent, IOSInterface os_interface) {
             GraphicsManager = graphics;
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
             Navigation = new UINavigator(this);
+            OS = os_interface;
 
             MainWidget = new Widget();
 
@@ -293,6 +297,7 @@ namespace DownUnder.UI
         #region Events
 
         private void ProcessKeys(object sender, TextInputEventArgs e) {
+            Debug.WriteLine("DWINDOW ProcessKeys1");
             if (e.Character == 8) InputState.BackSpace = true;
             else if (e.Character == 10 || e.Character == 13) {
                 InputText.Append('\n');
@@ -300,7 +305,13 @@ namespace DownUnder.UI
             } 
             else {
                 KeyboardState state = Keyboard.GetState();
-                if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl)) CommandText.Append(e.Character);
+                Debug.WriteLine("DWINDOW ProcessKeys2" + state.IsKeyDown(Keys.LeftControl));
+
+                if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl))
+                {
+                    CommandText.Append(e.Character);
+                    Debug.WriteLine("DWINDOW ProcessKeys");
+                }
                 else InputText.Append(e.Character);
             }
         }
@@ -399,13 +410,18 @@ namespace DownUnder.UI
         public void ShowPopUpMessage(string message)
         {
             Widget window = new Widget { Size = new Point2(400, 300) };
+            window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
 
-            window.Behaviors.Add(new CenterContent());
+            //window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster }, out var pop_in_out);
             window.Add(CommonWidgets.Label(message), out var label);
 
             label.PassthroughMouse = true;
+            label.Behaviors.Common.DrawText.YTextPositioning = Widgets.Behaviors.Visual.DrawText.YTextPositioningPolicy.center;
+            label.Behaviors.Common.DrawText.XTextPositioning = Widgets.Behaviors.Visual.DrawText.XTextPositioningPolicy.center;
+            label.SnappingPolicy = DiagonalDirections2D.All;
+
             window.OnClick += (s, a) => pop_in_out.Close();
 
             DisplayWidget.ParentWidget.Add(window);

@@ -1507,7 +1507,7 @@ namespace DownUnder.UI.Widgets
 
             c.Name = Name;
             c.VisualSettings = (GeneralVisualSettings)VisualSettings.Clone();
-            
+
             c.EnterConfirms = EnterConfirms;
             c.MinimumSize = MinimumSize;
             c.SnappingPolicy = SnappingPolicy;

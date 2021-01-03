@@ -32,10 +32,22 @@ namespace DownUnder
             return new Point2(MathHelper.Max(p.X, p2.X), MathHelper.Max(p.Y, p2.Y));
         }
 
+        /// <summary> Returns the higher X or Y value. </summary>
+        public static float MaxFloat(this Point2 p)
+        {
+            return MathHelper.Max(p.X, p.Y);
+        }
+
         /// <summary> Returns a new <see cref="Point2"/> with the lowest X and Y values of both given Points. </summary>
         public static Point2 Min(this Point2 p, Point2 p2)
         {
             return new Point2(MathHelper.Min(p.X, p2.X), MathHelper.Min(p.Y, p2.Y));
+        }
+
+        /// <summary> Returns the lower X or Y value. </summary>
+        public static float MinFloat(this Point2 p)
+        {
+            return MathHelper.Min(p.X, p.Y);
         }
 
         public static Point2 MultipliedBy(this Point2 p, float scale)

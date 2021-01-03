@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using System.Diagnostics;
 
 //Todo: Trigger inputs shopuld not have set parameters
 namespace DownUnder.UI.Widgets.DataTypes
@@ -129,6 +130,8 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (c == 14) New = true;
                 if (c == 26) Undo = true;
                 if (c == 25) Redo = true;
+
+                Debug.WriteLine("UpdateKeyboardInput UpdateInputstate");
             }
 
             _previous_insert_key_down = _insert_key_down;

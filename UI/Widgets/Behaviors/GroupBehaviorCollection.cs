@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
 
 namespace DownUnder.UI.Widgets
 {
@@ -59,11 +60,12 @@ namespace DownUnder.UI.Widgets
                 blue.GradientVisibility = new Point2(0.2f, 0.2f);
 
                 var result = new GroupBehaviorCollection {
-                new GroupBehaviorPolicy() { Behavior = new MouseGlow(), NecessaryVisualRole = DataTypes.GeneralVisualSettings.VisualRoleType.button },
-                new GroupBehaviorPolicy() { Behavior = new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) }, NecessaryVisualRole = DataTypes.GeneralVisualSettings.VisualRoleType.text_edit_widget },
-                new GroupBehaviorPolicy() { Behavior = new BlurBackground(), NecessaryVisualRole = DataTypes.GeneralVisualSettings.VisualRoleType.pop_up },
-                new GroupBehaviorPolicy() { Behavior = glow, NecessaryVisualRole = DataTypes.GeneralVisualSettings.VisualRoleType.pop_up },
-                new GroupBehaviorPolicy() { Behavior = blue, NecessaryVisualRole = DataTypes.GeneralVisualSettings.VisualRoleType.pop_up },
+                new GroupBehaviorPolicy() { Behavior = new MouseGlow(), NecessaryVisualRole = VisualRoleType.button },
+                new GroupBehaviorPolicy() { Behavior = new ShadingBehavior { ShadeColor = Color.White, BorderWidth = 10, BorderVisibility = 0.05f, GradientVisibility = new Point2(0.05f, 0.03f) }, NecessaryVisualRole = VisualRoleType.text_edit_widget },
+                new GroupBehaviorPolicy() { Behavior = new BlurBackground(), NecessaryVisualRole = VisualRoleType.pop_up },
+                new GroupBehaviorPolicy() { Behavior = glow, NecessaryVisualRole = VisualRoleType.pop_up },
+                new GroupBehaviorPolicy() { Behavior = blue, NecessaryVisualRole = VisualRoleType.pop_up },
+                new GroupBehaviorPolicy() { Behavior = new Neurons(), NecessaryVisualRole = VisualRoleType.flashy_background },
             };
 
                 return result;

@@ -37,8 +37,10 @@ namespace DownUnder.UI
         public ChangingValue<float> GetTopBorderAnimation() => _border_format.BorderOccupy.Up;
 
         /// <summary> A <see cref="DWindow"/> suited for desktop environments. </summary>
-        public DesktopWindow(GraphicsDeviceManager graphics, Game game, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game)
+        public DesktopWindow(GraphicsDeviceManager graphics, Game game, IOSInterface os_interface, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game, os_interface)
         {
+            //throw new System.Exception();
+
             MainWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;

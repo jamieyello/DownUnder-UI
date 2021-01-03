@@ -1,6 +1,9 @@
 ﻿using DownUnder.UI.Widgets.Behaviors.Functional;
 using MonoGame.Extended;
 using System;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
@@ -38,6 +41,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         public string Text { get => _text_backing;
             set
             {
+                byte[] bytes = Encoding.ASCII.GetBytes(value);
+                char[] chars = Encoding.ASCII.GetChars(bytes);
+                value = new string(chars);
                 if (value == _text_backing) return;
                 _text_backing = value;
                 SetMinimumSize(this, EventArgs.Empty);

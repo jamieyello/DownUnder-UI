@@ -116,6 +116,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         protected override void Initialize()
         {
+            Parent.VisualSettings.DrawBackground = false;
             Parent.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
             _center.FindIn(Parent.Children);
             _top_border.FindIn(Parent.Children);

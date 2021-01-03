@@ -68,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetSignal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IOSInterface.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
@@ -155,7 +156,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\GenericDirections2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\InterpolationFuncs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\InterpolationSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\OSInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PropertyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\RectanglePart.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\DataContractResolvers\DownUnderResolver.cs" />

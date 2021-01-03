@@ -43,6 +43,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         protected override void Initialize()
         {
             Parent.EmbedChildren = false;
+            Parent.VisualSettings.DrawBackground = false;
+            Parent.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.simple_background;
             if (Filler == null) Filler = DefaultCell();
             GridWriter.InsertFiller(Parent, Width, Height, Filler);
             Align(this, EventArgs.Empty);
