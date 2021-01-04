@@ -25,6 +25,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         public GridFormat(Point dimensions, Widget filler = null, Point2? spacing = null) : this(dimensions.X, dimensions.Y, filler, spacing) { }
 
+        public GridFormat() : this(0) { }
         public GridFormat(int width = 0, int height = 0, Widget filler = null, Point2? spacing = null)
         {
             if (width < 0 || height < 0) throw new Exception($"Invalid {nameof(GridFormat)} dimensions. ({width}, {height})");

@@ -3,21 +3,23 @@ using MonoGame.Extended;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
+    [DataContract]
     public class DrawText : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
         /// <summary> Used by inheriting Behaviors to enable/disable normal text drawing. </summary>
-        public bool EnableDefaultDraw = true;
+        [DataMember] public bool EnableDefaultDraw = true;
 
-        private string _text_backing = "";
-        private Point2 _text_position_backing = new Point2();
-        private XTextPositioningPolicy _x_position_policy = XTextPositioningPolicy.left;
-        private YTextPositioningPolicy _y_position_policy = YTextPositioningPolicy.top;
+        [DataMember] private string _text_backing = "";
+        [DataMember] private Point2 _text_position_backing = new Point2();
+        [DataMember] private XTextPositioningPolicy _x_position_policy = XTextPositioningPolicy.left;
+        [DataMember] private YTextPositioningPolicy _y_position_policy = YTextPositioningPolicy.top;
         
         public DrawText() { }
         public DrawText(string text)
@@ -84,9 +86,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             }
         }
 
-        public float SideSpacing { get; set; } = 3f;
-        public bool ConstrainAreaToText { get; set; } = true;
-        public bool Visible { get; set; } = true;
+        [DataMember] public float SideSpacing { get; set; } = 3f;
+        [DataMember] public bool ConstrainAreaToText { get; set; } = true;
+        [DataMember] public bool Visible { get; set; } = true;
 
         protected override void Initialize()
         {

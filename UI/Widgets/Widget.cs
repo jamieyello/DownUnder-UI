@@ -33,8 +33,7 @@ namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract(IsReference = true)]
-    public sealed class Widget :
-        IParent, IDisposable, ICloneable//, IEnumerable<Widget>
+    public sealed class Widget : IParent, IDisposable, ICloneable, IEnumerable<Widget>
     {
         [DataMember]
         public bool debug_output = false;
@@ -99,7 +98,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] RectangleF _area_backing;
         [DataMember] float _double_click_timing_backing;
         [DataMember] Point2 _minimum_size_backing;
-        WidgetList _children_backing;
+        [DataMember] WidgetList _children_backing;
         SpriteFont _sprite_font_backing;
         GraphicsDevice _graphics_backing;
         bool _is_hovered_over_backing;
@@ -111,8 +110,8 @@ namespace DownUnder.UI.Widgets
         bool _allow_delete_backing;
         bool _allow_copy_backing;
         bool _allow_cut_backing;
-        UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
-        UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
+        [DataMember] UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
+        [DataMember] UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         bool _accepts_drops_backing;
         List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
         BehaviorManager _behaviors_backing;
@@ -216,7 +215,7 @@ namespace DownUnder.UI.Widgets
         public bool IsDeleted { get; private set; } = false;
 
         /// <summary> All <see cref="Widget"/>s this <see cref="Widget"/> owns. </summary>
-        [DataMember]
+        //[DataMember] Serialized backing field
         public WidgetList Children
         {
             get => _children_backing;
@@ -541,6 +540,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Widget"/> that owns this <see cref="Widget"/>. (if one exists) </summary>
+        [DataMember]
         public Widget ParentWidget
         {
             get => _parent_widget_backing;
@@ -687,9 +687,15 @@ namespace DownUnder.UI.Widgets
         public Widget(Point2 location, Point2 size) : this(new RectangleF(location, size)) { }
 
         [OnDeserializing]
-        void OnDeserialize(StreamingContext context)
+        void OnDeserializing(StreamingContext context)
         {
             SetNonSerialized();
+        }
+
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            //ParentWidget?.Children.Add(this);
         }
 
         public void SetDefaults()
@@ -708,12 +714,7 @@ namespace DownUnder.UI.Widgets
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
             Behaviors = new BehaviorManager(this);
             Actions = new ActionManager(this);
-            Children = new WidgetList(this);
-            OnAddChild += (s, a) =>
-            {
-                LastAddedWidget.EmbedIn(this);
-                Behaviors.GroupBehaviors.ImplementPolicies();
-            };
+            Children.Parent = this;
         }
 
         void SetNonSerialized()
@@ -729,10 +730,16 @@ namespace DownUnder.UI.Widgets
 
             _post_update_flags = new WidgetUpdateFlags();
 
+            Children = new WidgetList(this);
             Actions = new ActionManager(this);
             UpdateData = new UpdateData();
             DesignerObjects = new DesignerModeSettings();
             DesignerObjects.Parent = this;
+            OnAddChild += (s, a) =>
+            {
+                LastAddedWidget.EmbedIn(this);
+                Behaviors.GroupBehaviors.ImplementPolicies();
+            };
         }
 
         ~Widget() => Dispose(true);
@@ -1178,12 +1185,12 @@ namespace DownUnder.UI.Widgets
 
         public void SaveToXML(string path)
         {
-            XmlHelper.ToXmlFile(this, path);
+            XmlHelper.ToXmlFile(this, path, WidgetBehavior.KnownTypes);
         }
 
         public static Widget LoadFromXML(string path)
         {
-            Widget loaded = XmlHelper.FromXmlFile<Widget>(path);
+            Widget loaded = XmlHelper.FromXmlFile<Widget>(path, WidgetBehavior.KnownTypes);
             return loaded;
         }
 
@@ -1577,6 +1584,12 @@ namespace DownUnder.UI.Widgets
         public void CopyTo(Widget[] array, int arrayIndex) => Children.CopyTo(array, arrayIndex);
         public bool Remove(Widget item) => Children.Remove(item);
         public IEnumerator<Widget> GetEnumerator() => Children.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Children).GetEnumerator();
+        }
+
         public int Count => Children.Count;
         public bool IsReadOnly => Children.IsReadOnly;
         public Widget this[int index] { get => Children[index]; set => Children[index] = value; }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
-    class DrawBackground : WidgetBehavior
+    public class DrawBackground : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 

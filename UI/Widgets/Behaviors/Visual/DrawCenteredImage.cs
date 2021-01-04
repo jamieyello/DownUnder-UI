@@ -2,14 +2,16 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
+    [DataContract]
     public class DrawCenteredImage : WidgetBehavior
     {
-        string image;
+        [DataMember] string image;
         Texture2D texture;
-        public float SizeModifier { get; set; }
+        [DataMember] public float SizeModifier { get; set; }
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 

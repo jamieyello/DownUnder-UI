@@ -26,6 +26,12 @@ namespace DownUnder.UI.Widgets.Behaviors
             GroupBehaviors = new GroupBehaviorManager(parent);
         }
 
+        [OnDeserialized]
+        void Deserialize(StreamingContext context)
+        {
+            foreach (var b in _behaviors) b.Parent = Parent;
+        }
+
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => throw new NotImplementedException(); }
 
         public bool HasBehaviorOfType(Type type) {
@@ -42,6 +48,13 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
 
             return default;
+        }
+
+        public List<Type> GetTypes()
+        {
+            List<Type> result = new List<Type>();
+            foreach (WidgetBehavior b in _behaviors) result.Add(b.GetType());
+            return result;
         }
 
         public int Count => _behaviors.Count;

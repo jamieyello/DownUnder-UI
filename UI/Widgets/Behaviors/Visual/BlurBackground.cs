@@ -2,15 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Visual
 {
+    [DataContract]
     public class BlurBackground : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
         Effect effect;
+
+        public BlurBackground()
+        {
+
+        }
 
         protected override void Initialize()
         {

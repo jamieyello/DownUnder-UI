@@ -12,6 +12,8 @@ namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
     [KnownType(typeof(ScrollBar)), DataContract] public abstract class WidgetBehavior : /*IIsWidgetChild,*/ ICloneable {
+        internal static List<Type> KnownTypes = new List<Type>();
+        
         Widget _parent_backing;
 
         public abstract string[] BehaviorIDs { get; protected set; }
@@ -26,8 +28,11 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public Widget Parent {
             get => _parent_backing;
-            internal set {
-                    if (_parent_backing != null) {
+            internal set
+            {
+                if (!KnownTypes.Contains(GetType())) KnownTypes.Add(GetType());
+                if (_parent_backing != null)
+                {
                     if (_parent_backing == value) return;
                     throw new Exception($"{nameof(WidgetBehavior)}s cannot be reused. Use {nameof(Clone)} to create a copy first.");
                 }

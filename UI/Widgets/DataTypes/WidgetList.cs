@@ -10,15 +10,17 @@ namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     [DataContract] 
-    public class WidgetList : IList<Widget>
+    public class WidgetList : IEnumerable<Widget>
     {
         Widget _parent;
 
+        [DataMember] 
         private List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
 
+        [DataMember]
         public Widget Parent 
         { 
             get => _parent;
@@ -36,8 +38,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             _parent = parent;
             foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
             IsReadOnly = is_read_only;
-
-            Count = _widgets.Count;
         }
 
         [OnDeserializing]
@@ -284,7 +284,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             }
         }
 
-        public int Count { get; private set; } = 0;
+        public int Count => _widgets.Count;
 
         public bool IsReadOnly { get; }
 
@@ -306,7 +306,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (IsReadOnly) ThrowReadOnlyException();
             if (_parent != null) widget.Parent = _parent;
             _widgets.Insert(index, widget);
-            Count = _widgets.Count;
             LastAddedWidget = widget;
             OnAdd();
             OnListChange();
@@ -316,7 +315,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (IsReadOnly) ThrowReadOnlyException();
             if (_widgets.Remove(widget)) {
                 if (_parent != null) widget.Parent = null;
-                Count = _widgets.Count;
                 LastRemovedWidget = widget;
                 OnRemove();
                 OnListChange();
@@ -330,7 +328,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             LastRemovedWidget = _widgets[index];
             if (_parent != null) _widgets[index].Parent = null;
             _widgets.RemoveAt(index);
-            Count = _widgets.Count;
             OnRemove();
             OnListChange();
         }

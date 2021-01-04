@@ -228,15 +228,20 @@ namespace DownUnder.UI.Widgets
             result.Add(CommonWidgets.Button("serialize", new RectangleF(10,10,100,40)), out var button);
             button.OnClick += (s, a) =>
             {
-                //XmlHelper.ToXmlFile(new TestSerializeClass() { NameProperty = "property name", name_field = "name field" }, @"C:\Users\jamie\Desktop\New folder\test.xml");
-                Widget unserialized = new Widget(50, 50, 40, 40);
-                unserialized.Add(new Widget());
-                XmlHelper.ToXmlFile(unserialized, @"C:\Users\jamie\Desktop\New folder\test.xml");
-                Widget desrialized = XmlHelper.FromXmlFile<Widget>(@"C:\Users\jamie\Desktop\New folder\test.xml");
-                if (desrialized.IsGraphicsInitialized) throw new Exception();
-                result.Add(desrialized);
+                //var test = new TestSerializeClass() { NameProperty = "property name", name_field = "name field" };
+                //test.w_list.Add(new Widget());
+                //XmlHelper.ToXmlFile(test, @"C:\Users\jamie\Desktop\New folder\test.xml");
+                Widget unserialized = new Widget(50, 50, 140, 140);
+                unserialized.Add(new Widget(10,10,10,10));
+                unserialized.Behaviors.Add(new DrawText("Test"));
+                unserialized.SaveToXML(@"C:\Users\jamie\Desktop\New folder\test.xml");
+                Widget deserialized = Widget.LoadFromXML(@"C:\Users\jamie\Desktop\New folder\test.xml");
+                if (deserialized.IsGraphicsInitialized) throw new Exception();
+                if (deserialized.Children.Count == 0) throw new Exception();
+                if (deserialized.Behaviors.Count == 0) throw new Exception();
+                result.Add(deserialized);
                 result.Add(unserialized);
-                desrialized.Position = new Point2(50, 100);
+                deserialized.Position = new Point2(50, 200);
             };
 
             return result;
@@ -248,6 +253,8 @@ namespace DownUnder.UI.Widgets
         public string NameProperty { get; set; }
         public string name_field;
         public List<string> string_list = new List<string>();
+
+        public WidgetList w_list = new WidgetList();
 
         public IEnumerator<string> GetEnumerator()
         {
