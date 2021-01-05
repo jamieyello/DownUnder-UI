@@ -103,7 +103,7 @@ namespace DownUnder.UI.Widgets
         GraphicsDevice _graphics_backing;
         bool _is_hovered_over_backing;
         bool _previous_is_hovered_over_backing;
-        Widget _parent_widget_backing;
+        [DataMember] Widget _parent_widget_backing;
         DWindow _parent_window_backing;
         bool _allow_highlight_backing = false;
         [DataMember] Directions2D _allowed_resizing_directions_backing;
@@ -114,7 +114,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
         bool _accepts_drops_backing;
         List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
-        BehaviorManager _behaviors_backing;
+        [DataMember] BehaviorManager _behaviors_backing;
         ActionManager _actions_backing;
         bool _fit_to_content_area_backing = false;
 
@@ -180,8 +180,9 @@ namespace DownUnder.UI.Widgets
         public bool IsCloningSupported { get; set; } = true;
         [DataMember]
         public GeneralVisualSettings VisualSettings = new GeneralVisualSettings();
+        [DataMember] 
+        public bool EmbedChildren { get; set; } = true;
 
-        [DataMember]
         public BehaviorManager Behaviors
         {
             get => _behaviors_backing;
@@ -376,18 +377,6 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        [DataMember] public bool EmbedChildren { get; set; } = true;
-
-        public RectangleF ContentArea
-        {
-            get
-            {
-                RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
-                if (result == null) return Area.WithOffset(Scroll);
-                return result.Value.WithOffset(Scroll);
-            }
-        }
-
         #endregion
 
         #region Non-serialized properties
@@ -462,6 +451,16 @@ namespace DownUnder.UI.Widgets
                 if (DrawingMode == DrawingModeType.use_render_target) return Scroll;
                 if (ParentWidget == null || DrawingMode == DrawingModeType.use_render_target) return Position.WithOffset(Scroll);
                 return Position.WithOffset(ParentWidget.PositionInRender).WithOffset(Scroll);
+            }
+        }
+
+        public RectangleF ContentArea
+        {
+            get
+            {
+                RectangleF? result = Children.AreaCoverage?.Union(Area.SizeOnly());
+                if (result == null) return Area.WithOffset(Scroll);
+                return result.Value.WithOffset(Scroll);
             }
         }
 
@@ -540,7 +539,6 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> The <see cref="Widget"/> that owns this <see cref="Widget"/>. (if one exists) </summary>
-        [DataMember]
         public Widget ParentWidget
         {
             get => _parent_widget_backing;
@@ -695,7 +693,7 @@ namespace DownUnder.UI.Widgets
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
-            //ParentWidget?.Children.Add(this);
+            ///foreach (var b in Behaviors) b.Parent = this;
         }
 
         public void SetDefaults()
@@ -1190,8 +1188,14 @@ namespace DownUnder.UI.Widgets
 
         public static Widget LoadFromXML(string path)
         {
-            Widget loaded = XmlHelper.FromXmlFile<Widget>(path, WidgetBehavior.KnownTypes);
-            return loaded;
+            Widget result = XmlHelper.FromXmlFile<Widget>(path, WidgetBehavior.KnownTypes);
+            //throw new Exception();
+            
+            foreach (Widget w in result.AllContainedWidgets)
+            {
+                foreach (var b in w.Behaviors) b.Parent = w;
+            }
+            return result;
         }
 
         #endregion

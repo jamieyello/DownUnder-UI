@@ -29,7 +29,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         [OnDeserialized]
         void Deserialize(StreamingContext context)
         {
-            foreach (var b in _behaviors) b.Parent = Parent;
+            Common = new BehaviorFinder(this);
         }
 
         public WidgetBehavior this[int index] { get => _behaviors[index]; set => throw new NotImplementedException(); }

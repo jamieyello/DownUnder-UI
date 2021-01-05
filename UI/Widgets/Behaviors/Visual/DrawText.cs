@@ -15,7 +15,6 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         /// <summary> Used by inheriting Behaviors to enable/disable normal text drawing. </summary>
         [DataMember] public bool EnableDefaultDraw = true;
-
         [DataMember] private string _text_backing = "";
         [DataMember] private Point2 _text_position_backing = new Point2();
         [DataMember] private XTextPositioningPolicy _x_position_policy = XTextPositioningPolicy.left;
@@ -151,13 +150,13 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void SetMinimumSize(object sender, EventArgs args)
         {
-            if (ConstrainAreaToText && Parent != null) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
+            //if (ConstrainAreaToText && Parent != null) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 
         private void OverrideMinimumSize(object sender, Point2SetOverrideArgs args)
         {
-            if (!Parent.IsGraphicsInitialized) return;
-            if (ConstrainAreaToText) args.Override = Parent.MinimumSize.Max(GetTextMinimumArea());
+            //if (!Parent.IsGraphicsInitialized) return;
+            //if (ConstrainAreaToText) args.Override = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 
         public Point2 GetTextMinimumArea()

@@ -41,12 +41,12 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public static Widget Label(string text, RectangleF? area = null)
+        public static Widget Label(string text, RectangleF? area = null, XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left, YTextPositioningPolicy y_positioning = YTextPositioningPolicy.center)
         {
             Widget result = new Widget(area);
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
-            result.Behaviors.Add(new DrawText { Text = text, YTextPositioning = YTextPositioningPolicy.center });
+            result.Behaviors.Add(new DrawText { Text = text, XTextPositioning = x_positioning, YTextPositioning = y_positioning });
             result.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
 
             return result;

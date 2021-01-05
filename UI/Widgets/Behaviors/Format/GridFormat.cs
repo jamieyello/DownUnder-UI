@@ -4,24 +4,26 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.Behaviors.Format
 {
+    [DataContract]
     public class GridFormat : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
         private bool _enable_internal_align = true;
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        [DataMember] public int Width { get; private set; }
+        [DataMember] public int Height { get; private set; }
         public Point Dimensions => new Point(Width, Height);
 
-        public Widget Filler { get; set; }
-        public bool DisposeOldOnSet { get; set; } = true;
-        public bool SizeToContent { get; set; } = true;
+        [DataMember] public Widget Filler { get; set; }
+        [DataMember] public bool DisposeOldOnSet { get; set; } = true;
+        [DataMember] public bool SizeToContent { get; set; } = true;
 
-        public Point2 Spacing = new Point2();
+        [DataMember] public Point2 Spacing = new Point2();
 
         public GridFormat(Point dimensions, Widget filler = null, Point2? spacing = null) : this(dimensions.X, dimensions.Y, filler, spacing) { }
 

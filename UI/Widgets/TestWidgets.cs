@@ -226,22 +226,25 @@ namespace DownUnder.UI.Widgets
             Widget result = new Widget();
 
             result.Add(CommonWidgets.Button("serialize", new RectangleF(10,10,100,40)), out var button);
+            result.Add(CommonWidgets.Label("Native:", new RectangleF(20,70,200,200), DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.top));
+            result.Add(CommonWidgets.Label("Loaded from XML:", new RectangleF(20, 220, 200, 200), DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.top));
+            
             button.OnClick += (s, a) =>
             {
                 //var test = new TestSerializeClass() { NameProperty = "property name", name_field = "name field" };
                 //test.w_list.Add(new Widget());
                 //XmlHelper.ToXmlFile(test, @"C:\Users\jamie\Desktop\New folder\test.xml");
-                Widget unserialized = new Widget(50, 50, 140, 140);
-                unserialized.Add(new Widget(10,10,10,10));
-                unserialized.Behaviors.Add(new DrawText("Test"));
+                Widget unserialized = new Widget(170, 70, 140, 140);
+                unserialized.Add(new Widget(40,40,100,40), out var added_widget);
+                added_widget.UserResizePolicy = Widget.UserResizePolicyType.allow;
+                added_widget.Behaviors.Add(new GridFormat(2, 2), out var grid);
+                grid[0, 1].Behaviors.Add(new DrawText("stuff"));
+                unserialized.Behaviors.Add(new DrawText("Serialize this"));
                 unserialized.SaveToXML(@"C:\Users\jamie\Desktop\New folder\test.xml");
                 Widget deserialized = Widget.LoadFromXML(@"C:\Users\jamie\Desktop\New folder\test.xml");
-                if (deserialized.IsGraphicsInitialized) throw new Exception();
-                if (deserialized.Children.Count == 0) throw new Exception();
-                if (deserialized.Behaviors.Count == 0) throw new Exception();
                 result.Add(deserialized);
                 result.Add(unserialized);
-                deserialized.Position = new Point2(50, 200);
+                deserialized.Position = new Point2(170, 220);
             };
 
             return result;
