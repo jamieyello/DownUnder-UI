@@ -1,5 +1,8 @@
-﻿namespace DownUnder.UI.Widgets.DataTypes {
-    public class WidgetUpdateFlags {
+﻿using DownUnder.UI.Widgets.DataTypes;
+
+namespace DownUnder.UI.Widgets {
+    public class WidgetPostUpdateFlags
+    {
         bool _send_to_back;
         bool _send_to_front;
         

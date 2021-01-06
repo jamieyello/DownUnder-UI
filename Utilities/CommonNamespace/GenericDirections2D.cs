@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DownUnder {
-    [DataContract] public class GenericDirections2D <T> : ICloneable
+    [DataContract] public class GenericDirections2D <T> : ICloneable, IEnumerable<T>
     {
         T up_backing;
         T down_backing;
@@ -145,6 +146,25 @@ namespace DownUnder {
             }
 
             throw new Exception($"Cannot clone {typeof(T)} because it is not a {nameof(ValueType)} and does not implement {nameof(ICloneable)}.");
+        }
+
+        public List<T> GetSelected(Directions2D directions)
+        {
+            List<T> result = new List<T>();
+            if (directions.Up) result.Add(Up);
+            if (directions.Down) result.Add(Down);
+            if (directions.Left) result.Add(Left);
+            if (directions.Right) result.Add(Right);
+            return result;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            yield return up_backing;
+            yield return down_backing;
+            yield return left_backing;
+            yield return right_backing;
         }
     }
 }

@@ -17,12 +17,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         protected override void ConnectEvents()
         {
-            BaseBehavior.OnPreUpdate += Update;
+            BaseBehavior.OnUpdate += Update;
         }
 
         protected override void DisconnectEvents()
         {
-            BaseBehavior.OnPreUpdate -= Update;
+            BaseBehavior.OnUpdate -= Update;
         }
 
         public override object Clone()
@@ -37,7 +37,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
             if (Parent.UpdateData.UIInputState.Scroll != Vector2.Zero)
             {
-                scroll_base.AddOffset(Parent.UpdateData.UIInputState.Scroll);
+                if (Parent.UpdateData.UIInputState.Scroll.Y > 0f && Parent.ParentDWindow.ScrollableWidgetFocus.Up.Primary == Parent) scroll_base.AddOffset(Parent.UpdateData.UIInputState.Scroll.YOnly());
+                if (Parent.UpdateData.UIInputState.Scroll.Y < 0f && Parent.ParentDWindow.ScrollableWidgetFocus.Down.Primary == Parent) scroll_base.AddOffset(Parent.UpdateData.UIInputState.Scroll.YOnly());
+                if (Parent.UpdateData.UIInputState.Scroll.X > 0f && Parent.ParentDWindow.ScrollableWidgetFocus.Left.Primary == Parent) scroll_base.AddOffset(Parent.UpdateData.UIInputState.Scroll.XOnly());
+                if (Parent.UpdateData.UIInputState.Scroll.X < 0f && Parent.ParentDWindow.ScrollableWidgetFocus.Right.Primary == Parent) scroll_base.AddOffset(Parent.UpdateData.UIInputState.Scroll.XOnly());
             }
         }
     }

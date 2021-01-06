@@ -66,10 +66,10 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public static Widget PropertyGrid(object obj)
+        public static Widget PropertyGrid(object obj, float row_height = 30f)
         {
-            Widget property_edit_widget = new Widget() { SnappingPolicy = DiagonalDirections2D.TL_TR_BL_BR };
-            property_edit_widget.Behaviors.Add(new Behaviors.Format.GridFormatBehaviors.MemberViewer(obj));
+            Widget property_edit_widget = new Widget { SnappingPolicy = DiagonalDirections2D.TL_TR_BL_BR };
+            property_edit_widget.Behaviors.Add(new Behaviors.Format.GridFormatBehaviors.MemberViewer(obj, row_height));
             return property_edit_widget;
         }
 

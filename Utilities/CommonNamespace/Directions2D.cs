@@ -132,7 +132,11 @@ namespace DownUnder
             return result;
         }
 
-
+        public bool GetDirection(Direction2D direction) =>
+                direction == Direction2D.up ? up :
+                direction == Direction2D.down ? down :
+                direction == Direction2D.left ? left :
+                right;
 
         public static bool operator ==(Directions2D d1, Directions2D d2)
         {

@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DesktopWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\PreUpdateArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetTransitionAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\UINavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
@@ -68,6 +69,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetSignal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
+    <Compile Include="..\..\DownUnder-UI\UI\Widgets\WidgetPostUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IOSInterface.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
@@ -128,7 +131,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\UIInputState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\UpdateData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetUpdateFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetPostUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DropDownEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\IParent.cs" />

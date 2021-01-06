@@ -1,4 +1,5 @@
-﻿using DownUnder.Utilities;
+﻿using DownUnder.UI.Widgets.DataTypes;
+using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
@@ -9,19 +10,25 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
     public class ScrollBase : WidgetBehavior
     {
-        private ChangingValue<Point2> Offset = new ChangingValue<Point2>(new InterpolationSettings(Utilities.InterpolationType.fake_sin, 3f));
+        private ChangingValue<Point2> _offset = new ChangingValue<Point2>(new InterpolationSettings(Utilities.InterpolationType.fake_sin, 3f));
+        Point2 _scroll_range;
+        public Directions2D AvailableScrollDirections { get; private set; }
+
+
+        /// <summary> Invoked before updating any limiting logic. </summary>
+        public event EventHandler OnUpdate;
         public bool HardLock = true;
         /// <summary> Modifier for the range of a single scroll. Default is 0.4f. </summary>
         public float ScrollStep = 0.4f;
         public float ScrollSpeed
         {
-            get => Offset.TransitionSpeed;
-            set => Offset.TransitionSpeed = value;
+            get => _offset.TransitionSpeed;
+            set => _offset.TransitionSpeed = value;
         }
         public InterpolationType Interpolation
         {
-            get => Offset.Interpolation;
-            set => Offset.Interpolation = value;
+            get => _offset.Interpolation;
+            set => _offset.Interpolation = value;
         }
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.SCROLL_FUNCTION };
@@ -34,33 +41,54 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         {
             Parent.OnUpdate += Update;
             Parent.OnResize += HandleResize;
+            Parent.OnPreUpdate += PreUpdate;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnUpdate -= Update;
             Parent.OnResize -= HandleResize;
+            Parent.OnPreUpdate += PreUpdate;
         }
 
         public override object Clone()
         {
             ScrollBase c = new ScrollBase();
-            c.Offset = Offset.Clone();
+            c._offset = _offset.Clone();
             c.HardLock = HardLock;
             c.ScrollStep = ScrollStep;
             return c;
         }
 
-        /// <summary> Invoked before updating any limiting logic. </summary>
-        public event EventHandler OnPreUpdate;
+        void PreUpdate(object sender, PreUpdateArgs args)
+        {
+            UpdateScrollRange();
+            UpdateAvailableScrollDirections();
+            if (!args.Flags._update_hovered_over) return;
+            foreach (Focus f in Parent.ParentDWindow.ScrollableWidgetFocus.GetSelected(AvailableScrollDirections)) f.AddFocus(Parent);
+        }
+
+        /// <summary> Called by <see cref="Widget"/> to update only once per frame. </summary>
+        public void UpdateScrollRange()
+        {
+            RectangleF? area_coverage = Parent.Children.AreaCoverage;
+            if (area_coverage == null)
+            {
+                _scroll_range = new Point2();
+                return;
+            }
+            
+            RectangleF coverage = area_coverage.Value.Union(Parent.Area.SizeOnly());
+            _scroll_range = new Point2(coverage.Width - Parent.Area.Width, coverage.Height - Parent.Area.Height).Inverted();
+        }
 
         void Update(object sender, EventArgs args)
         {
-            OnPreUpdate?.Invoke(this, EventArgs.Empty);
-            if (!Offset.IsTransitioning) return;
+            OnUpdate?.Invoke(this, EventArgs.Empty);
+            if (!_offset.IsTransitioning) return;
 
-            Offset.Update(Parent.UpdateData.ElapsedSeconds);
-            Point2 movement = (Offset.Current - Offset.Previous);
+            _offset.Update(Parent.UpdateData.ElapsedSeconds);
+            Point2 movement = (_offset.Current - _offset.Previous);
             Parent.Scroll = Parent.Scroll.WithOffset(movement);
             if (HardLock) HardLockScroll();
         }
@@ -72,24 +100,26 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         public void AddOffset(Point2 offset)
         {
-            Offset.SetTargetValue(Offset.Target.WithOffset(offset * new Vector2(ScrollStep, ScrollStep)));
+            _offset.SetTargetValue(_offset.Target.WithOffset(offset * new Vector2(ScrollStep, ScrollStep)));
         }
 
         void HardLockScroll()
         {
             if (Parent.Scroll.X > 0f) Parent.Scroll.X = 0f;
             if (Parent.Scroll.Y > 0f) Parent.Scroll.Y = 0f;
-            Point2 scroll_range = GetScrollRange().Inverted();
-            if (Parent.Scroll.X < scroll_range.X) Parent.Scroll.X = scroll_range.X;
-            if (Parent.Scroll.Y < scroll_range.Y) Parent.Scroll.Y = scroll_range.Y;
+            if (Parent.Scroll.X < _scroll_range.X) Parent.Scroll.X = _scroll_range.X;
+            if (Parent.Scroll.Y < _scroll_range.Y) Parent.Scroll.Y = _scroll_range.Y;
         }
 
-        Point2 GetScrollRange()
+        void UpdateAvailableScrollDirections()
         {
-            RectangleF? area_coverage = Parent.Children.AreaCoverage;
-            if (area_coverage == null) return new Point2();
-            RectangleF coverage = area_coverage.Value.Union(Parent.Area.SizeOnly());
-            return new Point2(coverage.Width - Parent.Area.Width, coverage.Height - Parent.Area.Height);
+            AvailableScrollDirections = new Directions2D()
+            {
+                Up = Parent.Scroll.Y < 0f,
+                Down = Parent.Scroll.Y > _scroll_range.Y,
+                Left = Parent.Scroll.X < 0f,
+                Right = Parent.Scroll.X > _scroll_range.X
+            };
         }
     }
 }

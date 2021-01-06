@@ -2,6 +2,7 @@
 using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
@@ -65,11 +66,13 @@ namespace DownUnder.UI.Widgets
         Directions2D _resizing_direction;
         /// <summary> The initial position of the cursor before the user started resizing. (If the user is resizing) </summary>
         Point2 _repositioning_origin;
-        internal WidgetUpdateFlags _post_update_flags;
+        internal WidgetPostUpdateFlags _post_update_flags;
         /// <summary> Used to prevent <see cref="Widget"/>s added mid-update from updating throughout the rest of the update cycle. </summary>
         bool _has_updated;
         /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
         bool _trigger_first_update = true;
+        /// <summary> The following are used by Update()/UpdatePriority(). They are set to true or false in UpdatePriority(), and Update() invokes events by reading them. </summary>
+        WidgetUpdateFlags _update_flags = new WidgetUpdateFlags();
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         public static int MAXIMUM_WIDGET_SIZE = 2048;
@@ -79,19 +82,6 @@ namespace DownUnder.UI.Widgets
         const int _MAX_WAIT_TIME = 100;
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
         const float _USER_RESIZE_BOUNDS_SIZE = 20f;
-
-        // The following are used by Update()/UpdatePriority().
-        // They are set to true or false in UpdatePriority(), and Update() invokes events
-        // by reading them.
-        bool _update_clicked_on;
-        bool _update_clicked_off;
-        bool _update_double_clicked;
-        bool _update_triple_clicked;
-        bool _update_added_to_focused;
-        bool _update_set_as_focused;
-        bool _update_hovered_over;
-        bool _update_drag;
-        bool _update_drop;
 
         // Various property backing fields.
         [DataMember] string _name_backing;
@@ -726,7 +716,7 @@ namespace DownUnder.UI.Widgets
             _dragging_off = false;
             _has_updated = false;
 
-            _post_update_flags = new WidgetUpdateFlags();
+            _post_update_flags = new WidgetPostUpdateFlags();
 
             Children = new WidgetList(this);
             Actions = new ActionManager(this);
@@ -765,14 +755,21 @@ namespace DownUnder.UI.Widgets
             UpdateGroupInput();
             UpdateGroupResizeGrab();
             UpdateGroupHoverFocus();
+            UpdateGroupPreUpdate();
             UpdateGroupEvents(game_time);
             UpdateGroupPost(out _);
         }
 
         void UpdateGroupHoverFocus()
         {
-            if (_update_hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
+            if (_update_flags._update_hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
             for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupHoverFocus();
+        }
+
+        void UpdateGroupPreUpdate()
+        {
+            OnPreUpdate?.Invoke(this, new PreUpdateArgs(_update_flags));
+            for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupPreUpdate();
         }
 
         void UpdateGroupUpdateData(GameTime game_time, UIInputState ui_input)
@@ -788,15 +785,7 @@ namespace DownUnder.UI.Widgets
         // Nothing should be invoked here. This chunk of code is meant to set values to be processed later.
         void UpdateGroupInput()
         {
-            _update_clicked_on = false;
-            _update_double_clicked = false;
-            _update_triple_clicked = false;
-            _update_added_to_focused = false;
-            _update_set_as_focused = false;
-            _update_hovered_over = false;
-            _update_drag = false;
-            _update_drop = false;
-            _update_clicked_off = false;
+            _update_flags.Reset();
 
             if (!UpdateData.UIInputState.PrimaryClick)
             {
@@ -804,7 +793,7 @@ namespace DownUnder.UI.Widgets
                 if (_dragging_off)
                 {
                     _dragging_off = false;
-                    _update_drop = true;
+                    _update_flags._update_drop = true;
                 }
             }
 
@@ -818,25 +807,25 @@ namespace DownUnder.UI.Widgets
 
             if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
             {
-                _update_hovered_over = true;
-                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
+                _update_flags._update_hovered_over = true;
+                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags._update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
-                if (_update_clicked_on)
+                if (_update_flags._update_clicked_on)
                 {
                     _dragging_in = true;
-                    if (UpdateData.UIInputState.Control) _update_added_to_focused = true;
-                    else _update_set_as_focused = true;
+                    if (UpdateData.UIInputState.Control) _update_flags._update_added_to_focused = true;
+                    else _update_flags._update_set_as_focused = true;
                     if (_triple_click_countdown > 0)
                     {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
-                        _update_triple_clicked = true;
+                        _update_flags._update_triple_clicked = true;
                     }
                     if (_double_click_countdown > 0)
                     {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
-                        _update_double_clicked = true;
+                        _update_flags._update_double_clicked = true;
                         _triple_click_countdown = _double_click_timing_backing;
                     }
                     _double_click_countdown = _double_click_timing_backing;
@@ -844,11 +833,11 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_clicked_off = true;
+                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags._update_clicked_off = true;
                 if (_dragging_in && !_dragging_off)
                 {
                     _dragging_off = true;
-                    _update_drag = true;
+                    _update_flags._update_drag = true;
                 }
             }
 
@@ -945,25 +934,25 @@ namespace DownUnder.UI.Widgets
             {
                 if (IsPrimaryHovered)
                 {
-                    if (_update_added_to_focused) AddToFocused();
-                    if (_update_set_as_focused) SetAsFocused();
-                    if (_update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
-                    if (_update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
-                    if (_update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags._update_added_to_focused) AddToFocused();
+                    if (_update_flags._update_set_as_focused) SetAsFocused();
+                    if (_update_flags._update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags._update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags._update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (_update_drag) OnDrag?.Invoke(this, EventArgs.Empty);
+                if (_update_flags._update_drag) OnDrag?.Invoke(this, EventArgs.Empty);
 
-                IsHoveredOver = _update_hovered_over;
+                IsHoveredOver = _update_flags._update_hovered_over;
             }
 
-            if (_update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
-            if (_update_clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
-            if (_update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
-            if (_update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
+            if (_update_flags._update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+            if (_update_flags._update_clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
+            if (_update_flags._update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
+            if (_update_flags._update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
             if (_IsBeingResized) SetAsFocused();
-            if (_update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
+            if (_update_flags._update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
 
             VisualSettings.Update(game_time.GetElapsedSeconds(), IsPrimaryHovered);
@@ -1010,7 +999,7 @@ namespace DownUnder.UI.Widgets
             }
             _post_update_flags._updated = true;
 
-            WidgetUpdateFlags.SetUpdatedFlagsToFalse(Children);
+            WidgetPostUpdateFlags.SetUpdatedFlagsToFalse(Children);
             do
             {
                 for (int i = 0; i < Children.Count; i++)
@@ -1022,7 +1011,7 @@ namespace DownUnder.UI.Widgets
                         i--;
                     }
                 }
-            } while (!WidgetUpdateFlags.UpdatedFlagsAreTrue(Children)); // This is to account for widgets re-ordering themselves, potentially skipping an update.
+            } while (!WidgetPostUpdateFlags.UpdatedFlagsAreTrue(Children)); // This is to account for widgets re-ordering themselves, potentially skipping an update.
 
             deleted = false;
         }
@@ -1234,6 +1223,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<WidgetDrawArgs> OnDrawBackground;
         /// <summary> Invoked when this <see cref="Widget"/> draws content outside of its area. </summary>
         public event EventHandler OnDrawNoClip;
+        /// <summary> Invoked (through all <see cref="Widget"/>s recursively) before <see cref="OnUpdate"/>. </summary>
+        public event EventHandler<PreUpdateArgs> OnPreUpdate;
         /// <summary> Invoked after this <see cref="Widget"/> updates.</summary>
         public event EventHandler OnUpdate;
         /// <summary> Invoked when this <see cref="Widget"/> is first updated. </summary>

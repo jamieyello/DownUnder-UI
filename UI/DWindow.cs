@@ -67,6 +67,7 @@ namespace DownUnder.UI
         public Focus SelectedWidgets { get; } = new Focus(FocusType.selection);
         /// <summary> A reference to all widgets that hovered over by a cursor in this DWindow. </summary>
         public Focus HoveredWidgets { get; } = new Focus(FocusType.hover);
+        public GenericDirections2D<Focus> ScrollableWidgetFocus = new GenericDirections2D<Focus>(new Focus(FocusType.hover));
         /// <summary> The <see cref="Widget"/> that has the user resize cursor focus. </summary>
         internal Widget ResizeCursorGrabber { get; set; }
         internal Directions2D ResizingDirections { get; set; }
@@ -341,7 +342,7 @@ namespace DownUnder.UI
 
         #endregion Event Handlers
 
-        #region Protected Methods
+        #region Public Methods
 
         public DWindow CreateWindow(Type window_type) {
             _spawned_window_is_active = 0;
@@ -371,6 +372,7 @@ namespace DownUnder.UI
             }
             ProcessQueuedEvents();
             HoveredWidgets.Reset();
+            foreach (Focus f in ScrollableWidgetFocus) f.Reset();
             ResizeCursorGrabber = null;
             if (!InputState.PrimaryClick) DraggingObject = null;
             InputState.UpdateAll(this, game_time);

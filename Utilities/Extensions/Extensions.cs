@@ -95,6 +95,11 @@ namespace DownUnder
             return MathHelper.Max(p.X, p.Y);
         }
 
+        public static Point2 XOnly(this Point2 p) => new Point2(p.X, 0f);
+        public static Point2 YOnly(this Point2 p) => new Point2(0f, p.Y);
+        public static Point2 XOnly(this Vector2 p) => new Vector2(p.X, 0f);
+        public static Point2 YOnly(this Vector2 p) => new Vector2(0f, p.Y);
+
         /// <summary> Performs linear interpolation of <see cref="Point2"/>. </summary>
         /// <param name="progress">Value between 0f and 1f to represent the progress between the two <see cref="Point2"/>s</param>
         public static Point2 Lerp(this Point2 p1, Point2 p2, float progress)
