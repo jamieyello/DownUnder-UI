@@ -11,6 +11,37 @@ namespace DownUnder {
         T left_backing;
         T right_backing;
 
+        public T GetDirection(Direction2D direction) => this[direction];
+        public void SetDirection(Direction2D direction, T value) => this[direction] = value;
+        public T this[Direction2D direction]
+        {
+            get => direction == Direction2D.up ? up_backing :
+                    direction == Direction2D.down ? down_backing :
+                    direction == Direction2D.left ? left_backing :
+                    right_backing;
+            set
+            {
+                if (direction == Direction2D.up) Up = value;
+                if (direction == Direction2D.down) Down = value;
+                if (direction == Direction2D.left) Left = value;
+                if (direction == Direction2D.right) Right = value;
+            }
+        }
+
+        public List<T> GetDirections(Directions2D directions) => this[directions];
+        public List<T> this[Directions2D directions]
+        {
+            get
+            {
+                List<T> result = new List<T>();
+                if (directions.Up) result.Add(Up);
+                if (directions.Down) result.Add(Down);
+                if (directions.Left) result.Add(Left);
+                if (directions.Right) result.Add(Right);
+                return result;
+            }
+        }
+
         [DataMember]
         public T Up
         {
@@ -146,16 +177,6 @@ namespace DownUnder {
             }
 
             throw new Exception($"Cannot clone {typeof(T)} because it is not a {nameof(ValueType)} and does not implement {nameof(ICloneable)}.");
-        }
-
-        public List<T> GetSelected(Directions2D directions)
-        {
-            List<T> result = new List<T>();
-            if (directions.Up) result.Add(Up);
-            if (directions.Down) result.Add(Down);
-            if (directions.Left) result.Add(Left);
-            if (directions.Right) result.Add(Right);
-            return result;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

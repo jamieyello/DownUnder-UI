@@ -2,7 +2,6 @@
 using DownUnder.UI.Widgets.Actions;
 using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
@@ -189,7 +188,7 @@ namespace DownUnder.UI.Widgets
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll = new Point2();
-
+        
         public ActionManager Actions
         {
             get => _actions_backing;
@@ -717,6 +716,7 @@ namespace DownUnder.UI.Widgets
             _has_updated = false;
 
             _post_update_flags = new WidgetPostUpdateFlags();
+            _update_flags = new WidgetUpdateFlags();
 
             Children = new WidgetList(this);
             Actions = new ActionManager(this);
@@ -1296,13 +1296,13 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer()
+        public Widget SendToContainer(bool preserve_area = true)
         {
             Widget parent = ParentWidget;
             Widget result = new Widget();
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
-            result.Area = Area;
+            if (preserve_area) result.Area = Area;
             result.Add(this);
             Position = new Point2();
             parent?.Add(result);

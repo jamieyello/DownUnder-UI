@@ -1,11 +1,13 @@
 ﻿using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
+using System;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> The color settings of any UI element. </summary>
-    [DataContract] public class ElementColors {
+    [DataContract] public class ElementColors : ICloneable
+    {
         [DataMember] private ChangingValue<Color> _changing_color = new ChangingValue<Color>() { TransitionSpeed = 4f };
         private bool _special_color_enabled_backing = false;
 
@@ -73,9 +75,10 @@ namespace DownUnder.UI.Widgets.DataTypes
             HoveredColor = color;
         }
 
-        public object Clone() {
+        object ICloneable.Clone() => Clone();
+        public ElementColors Clone() {
             ElementColors result = new ElementColors();
-            result._changing_color = (ChangingValue<Color>)_changing_color.Clone();
+            result._changing_color = _changing_color.Clone();
             result.DefaultColor = DefaultColor;
             result.HoveredColor = HoveredColor;
             result.SpecialColor = SpecialColor;

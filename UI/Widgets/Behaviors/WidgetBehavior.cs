@@ -15,18 +15,16 @@ namespace DownUnder.UI.Widgets.Behaviors
     public abstract class WidgetBehavior : ICloneable 
     {
         internal static List<Type> KnownTypes = new List<Type>();
-        
+        private static readonly string _nameof_isub_widget_behavior = nameof(ISubWidgetBehavior<WidgetBehavior>) + "`1";
         Widget _parent_backing;
 
+        public bool IsConnected { get; private set; } = false;
         public abstract string[] BehaviorIDs { get; protected set; }
 
         public bool HasParent => Parent != null;
-
-        public bool IsSubBehavior => GetType().GetInterface("ISubWidgetBehavior`1") != null;
-
+        public bool IsSubBehavior => GetType().GetInterface(_nameof_isub_widget_behavior) != null;
         public ISubWidgetBehavior<WidgetBehavior> AsSubBehavior => (ISubWidgetBehavior<WidgetBehavior>)this;
-
-        public Type BaseBehaviorType => GetType().GetInterface("ISubWidgetBehavior`1").GetGenericArguments()[0];
+        public Type BaseBehaviorType => GetType().GetInterface(_nameof_isub_widget_behavior).GetGenericArguments()[0];
 
         public Widget Parent {
             get => _parent_backing;
@@ -41,12 +39,14 @@ namespace DownUnder.UI.Widgets.Behaviors
                 _parent_backing = value;
                 Initialize();
                 ConnectEvents();
+                IsConnected = true;
             }
         }
 
         internal void Disconnect()
         {
             DisconnectEvents();
+            IsConnected = false;
         }
 
         protected abstract void Initialize();

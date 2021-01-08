@@ -10,6 +10,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DownUnder.UI.Widgets
 {
@@ -248,6 +249,23 @@ namespace DownUnder.UI.Widgets
             };
 
             return result;
+        }
+
+        public static Widget ConnectCodeTest()
+        {
+            Widget result = new Widget();
+            result.Add(CommonWidgets.Button("test", new RectangleF(40, 40, 100, 40)), out var button);
+            button.Name = "MyWidget";
+
+            return result;
+        }
+    }
+
+    public class TestCode : WidgetCode
+    {
+        void MyWidget_OnClick(object sender, EventArgs args)
+        {
+            Debug.WriteLine("Button clicked");
         }
     }
 

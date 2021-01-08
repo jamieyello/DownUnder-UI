@@ -13,10 +13,14 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         private ChangingValue<Point2> _offset = new ChangingValue<Point2>(new InterpolationSettings(Utilities.InterpolationType.fake_sin, 3f));
         Point2 _scroll_range;
         public Directions2D AvailableScrollDirections { get; private set; }
-
+        public Point2 OverScroll { get; private set; } = new Point2();
 
         /// <summary> Invoked before updating any limiting logic. </summary>
         public event EventHandler OnUpdate;
+
+        /// <summary> Invoked ofter updating limitting logic. </summary>
+        public event EventHandler OnPostUpdate;
+
         public bool HardLock = true;
         /// <summary> Modifier for the range of a single scroll. Default is 0.4f. </summary>
         public float ScrollStep = 0.4f;
@@ -65,7 +69,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             UpdateScrollRange();
             UpdateAvailableScrollDirections();
             if (!args.Flags._update_hovered_over) return;
-            foreach (Focus f in Parent.ParentDWindow.ScrollableWidgetFocus.GetSelected(AvailableScrollDirections)) f.AddFocus(Parent);
+            foreach (Focus f in Parent.ParentDWindow.ScrollableWidgetFocus[AvailableScrollDirections]) f.AddFocus(Parent);
         }
 
         /// <summary> Called by <see cref="Widget"/> to update only once per frame. </summary>
@@ -84,6 +88,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         void Update(object sender, EventArgs args)
         {
+            OverScroll = new Point2();
             OnUpdate?.Invoke(this, EventArgs.Empty);
             if (!_offset.IsTransitioning) return;
 
@@ -91,6 +96,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
             Point2 movement = (_offset.Current - _offset.Previous);
             Parent.Scroll = Parent.Scroll.WithOffset(movement);
             if (HardLock) HardLockScroll();
+            OnPostUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         void HandleResize(object sender, EventArgs args)
@@ -105,10 +111,26 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         void HardLockScroll()
         {
-            if (Parent.Scroll.X > 0f) Parent.Scroll.X = 0f;
-            if (Parent.Scroll.Y > 0f) Parent.Scroll.Y = 0f;
-            if (Parent.Scroll.X < _scroll_range.X) Parent.Scroll.X = _scroll_range.X;
-            if (Parent.Scroll.Y < _scroll_range.Y) Parent.Scroll.Y = _scroll_range.Y;
+            if (Parent.Scroll.X > 0f)
+            {
+                OverScroll = OverScroll.WithX(Parent.Scroll.X);
+                Parent.Scroll.X = 0f;
+            }
+            if (Parent.Scroll.Y > 0f)
+            {
+                OverScroll = OverScroll.WithY(Parent.Scroll.Y);
+                Parent.Scroll.Y = 0f;
+            }
+            if (Parent.Scroll.X < _scroll_range.X)
+            {
+                OverScroll = OverScroll.WithX(Parent.Scroll.X - _scroll_range.X);
+                Parent.Scroll.X = _scroll_range.X;
+            }
+            if (Parent.Scroll.Y < _scroll_range.Y)
+            {
+                OverScroll = OverScroll.WithY(Parent.Scroll.Y - _scroll_range.Y);
+                Parent.Scroll.Y = _scroll_range.Y;
+            }
         }
 
         void UpdateAvailableScrollDirections()

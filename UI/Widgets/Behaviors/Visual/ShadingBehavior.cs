@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
 
         Effect shading_effect;
-
+        [DataMember] bool _draw_as_background = true;
         [DataMember] public float ShadeVisibility = 1f;
         [DataMember] public Color ShadeColor { get; set; } = Color.Black;
         [DataMember] public float BorderWidth = 40f;
@@ -20,20 +20,43 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         [DataMember] public Point2 GradientExponential = new Point2(1f, 1f);
         [DataMember] public bool UseWidgetOutlineColor = false;
 
-        protected override void Initialize() {
-            //Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
+        public bool DrawAsBackGround 
+        {
+            get => _draw_as_background;
+            set 
+            {
+                if (value == _draw_as_background) return;
+                _draw_as_background = value;
+                if (IsConnected)
+                {
+                    if (value)
+                    {
+                        Parent.OnDraw -= DrawEffect;
+                        Parent.OnDrawBackground += DrawEffect;
+                    }
+                    else
+                    {
+                        Parent.OnDraw += DrawEffect;
+                        Parent.OnDrawBackground -= DrawEffect;
+                    }
+                }
+            }
         }
+
+        protected override void Initialize() { }
 
         protected override void ConnectEvents() {
             if (Parent.IsGraphicsInitialized) InitializeEffect(this, EventArgs.Empty);
             else Parent.OnGraphicsInitialized += InitializeEffect;
-            Parent.OnDrawBackground += DrawEffect;
+            if (DrawAsBackGround) Parent.OnDrawBackground += DrawEffect;
+            else Parent.OnDraw += DrawEffect;
             Parent.OnDispose += Dispose;
         }
 
         protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= InitializeEffect;
-            Parent.OnDrawBackground -= DrawEffect;
+            if (DrawAsBackGround) Parent.OnDrawBackground -= DrawEffect;
+            else Parent.OnDraw -= DrawEffect;
             Parent.OnDispose -= Dispose;
             Dispose(this, EventArgs.Empty);
         }
@@ -70,6 +93,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             c.GradientVisibility = GradientVisibility;
             c.GradientExponential = GradientExponential;
             c.UseWidgetOutlineColor = false;
+            c.DrawAsBackGround = DrawAsBackGround;
 
             return c;
         }
