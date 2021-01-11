@@ -1,14 +1,11 @@
 ﻿using DownUnder.UI.Widgets.Behaviors;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.WidgetCoding;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
 
 namespace DownUnder.UI.Widgets

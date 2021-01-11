@@ -226,23 +226,23 @@ namespace DownUnder
             };
         
 
-        public static Directions2D All => new Directions2D() { Up = true, Down = true, Left = true, Right = true };
-        public static Directions2D UDLR => new Directions2D() { Up = true, Down = true, Left = true, Right = true };
-        public static Directions2D UDL => new Directions2D() { Up = true, Down = true, Left = true };
-        public static Directions2D UDR => new Directions2D() { Up = true, Down = true, Right = true };
-        public static Directions2D ULR => new Directions2D() { Up = true, Left = true, Right = true };
-        public static Directions2D DLR => new Directions2D() { Down = true, Left = true, Right = true };
-        public static Directions2D UD => new Directions2D() { Up = true, Down = true };
-        public static Directions2D UL => new Directions2D() { Up = true, Left = true };
-        public static Directions2D UR => new Directions2D() { Up = true, Right = true };
-        public static Directions2D DL => new Directions2D() { Down = true, Left = true };
-        public static Directions2D DR => new Directions2D() { Down = true, Right = true };
-        public static Directions2D LR => new Directions2D() { Left = true, Right = true };
-        public static Directions2D U => new Directions2D() { Up = true };
-        public static Directions2D D => new Directions2D() { Down = true };
-        public static Directions2D L => new Directions2D() { Left = true };
-        public static Directions2D R => new Directions2D() { Right = true };
-        public static Directions2D None => new Directions2D();
+        public static readonly Directions2D All = new Directions2D() { Up = true, Down = true, Left = true, Right = true };
+        public static readonly Directions2D UDLR = new Directions2D() { Up = true, Down = true, Left = true, Right = true };
+        public static readonly Directions2D UDL = new Directions2D() { Up = true, Down = true, Left = true };
+        public static readonly Directions2D UDR = new Directions2D() { Up = true, Down = true, Right = true };
+        public static readonly Directions2D ULR = new Directions2D() { Up = true, Left = true, Right = true };
+        public static readonly Directions2D DLR = new Directions2D() { Down = true, Left = true, Right = true };
+        public static readonly Directions2D UD = new Directions2D() { Up = true, Down = true };
+        public static readonly Directions2D UL = new Directions2D() { Up = true, Left = true };
+        public static readonly Directions2D UR = new Directions2D() { Up = true, Right = true };
+        public static readonly Directions2D DL = new Directions2D() { Down = true, Left = true };
+        public static readonly Directions2D DR = new Directions2D() { Down = true, Right = true };
+        public static readonly Directions2D LR = new Directions2D() { Left = true, Right = true };
+        public static readonly Directions2D U = new Directions2D() { Up = true };
+        public static readonly Directions2D D = new Directions2D() { Down = true };
+        public static readonly Directions2D L = new Directions2D() { Left = true };
+        public static readonly Directions2D R = new Directions2D() { Right = true };
+        public static readonly Directions2D None = new Directions2D();
 
         public static Direction2D GetOppositeSide(Direction2D direction) =>
             direction == Direction2D.up ? Direction2D.down : 

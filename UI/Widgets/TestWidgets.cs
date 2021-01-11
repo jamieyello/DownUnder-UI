@@ -6,6 +6,7 @@ using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
+using DownUnder.UI.Widgets.WidgetCoding;
 using MonoGame.Extended;
 using System;
 using System.Collections;
@@ -258,14 +259,6 @@ namespace DownUnder.UI.Widgets
             button.Name = "MyWidget";
 
             return result;
-        }
-    }
-
-    public class TestCode : WidgetCode
-    {
-        void MyWidget_OnClick(object sender, EventArgs args)
-        {
-            Debug.WriteLine("Button clicked");
         }
     }
 

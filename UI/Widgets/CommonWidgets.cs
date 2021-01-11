@@ -68,29 +68,26 @@ namespace DownUnder.UI.Widgets
 
         public static Widget PropertyGrid(object obj, float row_height = 30f)
         {
-            Widget property_edit_widget = new Widget { SnappingPolicy = DiagonalDirections2D.TL_TR_BL_BR };
-            property_edit_widget.Behaviors.Add(new Behaviors.Format.GridFormatBehaviors.MemberViewer(obj, row_height));
-            return property_edit_widget;
+            return new Widget().WithAddedBehavior(new Behaviors.Format.GridFormatBehaviors.MemberViewer(obj, row_height));
         }
 
         public static Widget FileBar(AutoDictionary<string, AutoDictionary<string, DropDownEntry>> entries)
         {
             Widget file_bar = new Widget
             {
-                Height = 30,
+                Height = 40f,
             };
 
             file_bar.VisualSettings.ChangeColorOnMouseOver = false;
             file_bar.VisualSettings.VisualRole = VisualRoleType.header_widget;
             file_bar.FitToContentArea = true;
-            file_bar.Height = 40f;
 
             //file_bar.Behaviors.Add(new ShadingBehavior() { UseWidgetOutlineColor = true });
             file_bar.Behaviors.Add(new SpacedListFormat() { ListSpacing = 0f });
 
             foreach (var entry in entries)
             {
-                Widget w_entry = Button(entry.Key);
+                Widget w_entry = Button(entry.Key, new RectangleF(0, 0, 50, 40));
                 w_entry.Behaviors.GetFirst<DrawText>().SideSpacing = 25f;
                 w_entry.VisualSettings.DrawOutline = false;
                 w_entry.VisualSettings.DrawBackground = false;

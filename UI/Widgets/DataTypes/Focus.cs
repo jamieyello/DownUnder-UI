@@ -14,7 +14,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         private WidgetList _focused_widgets = new WidgetList();
         private readonly FocusType _focus_type;
 
-        public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[^1] : null;
+        public Widget Primary => _focused_widgets.Count > 0 ? _focused_widgets[_focused_widgets.Count - 1] : null;
 
         public Focus(FocusType focus_type) => _focus_type = focus_type;
 

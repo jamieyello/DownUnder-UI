@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\UseCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\PreUpdateArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetTransitionAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\UINavigator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Actions\ActionManager.cs" />
@@ -70,7 +71,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetSignal.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\ConnectionEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\TestCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\TestCode.UIEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\WidgetCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\WidgetPostUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IOSInterface.cs" />

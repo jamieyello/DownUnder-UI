@@ -89,6 +89,18 @@ namespace DownUnder.UI
 
         #endregion
 
+        public Widget this[string widget_name]
+        {
+            get
+            {
+                foreach (Widget widget in MainWidget.AllContainedWidgets)
+                {
+                    if (widget.Name == widget_name) return widget;
+                }
+                return null;
+            }
+        }
+
         /// <summary> True if The user is currently resizing a <see cref="Widget"/> with the cursor. </summary>
         internal bool UserResizeModeEnable {
             get => _is_user_resizing_backing;
@@ -354,7 +366,7 @@ namespace DownUnder.UI
             } while (_spawned_window_is_active != 1);
             Console.WriteLine($"{GetType().Name}: Waiting done");
 
-            return Children[^1];
+            return Children[Children.Count - 1];
         }
 
         public void LoadDWindow(GraphicsDevice graphics) {

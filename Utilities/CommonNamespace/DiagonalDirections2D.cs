@@ -81,22 +81,22 @@ namespace DownUnder
                 BottomRight = d1.BottomRight && d2.BottomRight
             };
 
-        public static DiagonalDirections2D All => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
-        public static DiagonalDirections2D TL_TR_BL_BR => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
-        public static DiagonalDirections2D TL_TR_BL => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true };
-        public static DiagonalDirections2D TR_BL_BR => new DiagonalDirections2D { TopRight = true, BottomLeft = true, BottomRight = true };
-        public static DiagonalDirections2D TL_TR_BR => new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomRight = true };
-        public static DiagonalDirections2D TL_BL_BR => new DiagonalDirections2D { TopLeft = true, BottomLeft = true, BottomRight = true };
-        public static DiagonalDirections2D TR_BL => new DiagonalDirections2D { TopRight = true, BottomLeft = true };
-        public static DiagonalDirections2D TL_TR => new DiagonalDirections2D { TopLeft = true, TopRight = true };
-        public static DiagonalDirections2D TR_BR => new DiagonalDirections2D { TopRight = true, BottomRight = true };
-        public static DiagonalDirections2D TL_BL => new DiagonalDirections2D { TopLeft = true, BottomLeft = true };
-        public static DiagonalDirections2D BL_BR => new DiagonalDirections2D { BottomLeft = true,BottomRight = true };
-        public static DiagonalDirections2D TL_BR => new DiagonalDirections2D { TopLeft = true, BottomRight = true };
-        public static DiagonalDirections2D TR => new DiagonalDirections2D { TopRight = true };
-        public static DiagonalDirections2D BL => new DiagonalDirections2D { BottomLeft = true };
-        public static DiagonalDirections2D TL => new DiagonalDirections2D { TopLeft = true };
-        public static DiagonalDirections2D BR => new DiagonalDirections2D { BottomRight = true };
-        public static DiagonalDirections2D None => new DiagonalDirections2D();
+        public static readonly DiagonalDirections2D All = new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TL_TR_BL_BR = new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TL_TR_BL = new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomLeft = true };
+        public static readonly DiagonalDirections2D TR_BL_BR = new DiagonalDirections2D { TopRight = true, BottomLeft = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TL_TR_BR = new DiagonalDirections2D { TopLeft = true, TopRight = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TL_BL_BR = new DiagonalDirections2D { TopLeft = true, BottomLeft = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TR_BL = new DiagonalDirections2D { TopRight = true, BottomLeft = true };
+        public static readonly DiagonalDirections2D TL_TR = new DiagonalDirections2D { TopLeft = true, TopRight = true };
+        public static readonly DiagonalDirections2D TR_BR = new DiagonalDirections2D { TopRight = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TL_BL = new DiagonalDirections2D { TopLeft = true, BottomLeft = true };
+        public static readonly DiagonalDirections2D BL_BR = new DiagonalDirections2D { BottomLeft = true,BottomRight = true };
+        public static readonly DiagonalDirections2D TL_BR = new DiagonalDirections2D { TopLeft = true, BottomRight = true };
+        public static readonly DiagonalDirections2D TR = new DiagonalDirections2D { TopRight = true };
+        public static readonly DiagonalDirections2D BL = new DiagonalDirections2D { BottomLeft = true };
+        public static readonly DiagonalDirections2D TL = new DiagonalDirections2D { TopLeft = true };
+        public static readonly DiagonalDirections2D BR = new DiagonalDirections2D { BottomRight = true };
+        public static readonly DiagonalDirections2D None = new DiagonalDirections2D();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownUnder.UI.Widgets.WidgetCoding;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
@@ -26,12 +27,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
 
         protected override void ConnectEvents()
         {
-            Code.ConnectMatches(Parent);
+            Code.Connect(Parent);
         }
 
         protected override void DisconnectEvents()
         {
-            throw new NotImplementedException();
+            Code.Disconnect(Parent);
         }
 
         public override object Clone()

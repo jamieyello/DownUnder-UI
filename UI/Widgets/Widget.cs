@@ -1249,6 +1249,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<RectangleFSetOverrideArgs> OnAreaChangePriority;
         /// <summary> Invoked when a <see cref="Widget"/> is added to this one. (See added <see cref="Widget"/> in <see cref="LastAddedWidget"/>.) </summary>
         public event EventHandler OnAddChild;
+        /// <summary> Invoked when a <see cref="Widget"/> is added to this <see cref="Widget"/> or any of it's children. </summary>
+        public event EventHandler<WidgetArgs> OnAddChildAny;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
         /// <summary> Invoked when a child is added or removed from this <see cref="Widget"/>. </summary>
@@ -1276,11 +1278,27 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when the parent <see cref="DWindow"/> is closed. </summary>
         public event EventHandler OnWindowClose;
 
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnWindowClose() => OnWindowClose?.Invoke(this, EventArgs.Empty);
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeSelectOffEvent() => OnSelectOff?.Invoke(this, EventArgs.Empty);
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeSelectEvent() => OnSelection?.Invoke(this, EventArgs.Empty);
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnAdd() => OnAddChild?.Invoke(this, EventArgs.Empty);
+        /// <summary> Internal invoke method. Avoid calling. </summary>
+        internal void InvokeOnAddAny(WidgetArgs args)
+        {
+            if (OnAddChildAny != null)
+            {
+                foreach (Widget widget in args.Widget.AllContainedWidgets) OnAddChildAny.Invoke(this, new WidgetArgs(widget));
+            }
+
+            ParentWidget?.InvokeOnAddAny(args);
+        }
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnRemove() => OnRemoveChild?.Invoke(this, EventArgs.Empty);
+        /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnListChange() => OnListChange?.Invoke(this, EventArgs.Empty);
         void InvokeOnParentResize(RectangleFSetArgs args) => OnParentResize?.Invoke(this, args);
         void InvokeOnChildResized(RectangleFSetArgs args) => OnChildResize?.Invoke(this, args);
@@ -1296,13 +1314,14 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer(bool preserve_area = true)
+        public Widget SendToContainer(bool preserve_area = true, bool snap_to_container = false)
         {
             Widget parent = ParentWidget;
             Widget result = new Widget();
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
             if (preserve_area) result.Area = Area;
+            if (snap_to_container) SnappingPolicy = DiagonalDirections2D.All;
             result.Add(this);
             Position = new Point2();
             parent?.Add(result);

@@ -47,7 +47,11 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         private void OnRemove() { Parent?.InvokeOnRemove(); }
-        private void OnAdd() { Parent?.InvokeOnAdd(); }
+        private void OnAdd(Widget added) 
+        { 
+            Parent?.InvokeOnAdd();
+            Parent?.InvokeOnAddAny(new WidgetArgs(added));
+        }
         private void OnListChange() { Parent?.InvokeOnListChange(); }
 
         public List<RectangleF> GetHorizontalWrapAreas(float width, float spacing)
@@ -267,7 +271,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 LastAddedWidget = value;
                 _widgets[index] = value;
                 OnRemove();
-                OnAdd();
+                OnAdd(value);
                 OnListChange();
             }
         }
@@ -307,7 +311,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (_parent != null) widget.Parent = _parent;
             _widgets.Insert(index, widget);
             LastAddedWidget = widget;
-            OnAdd();
+            OnAdd(widget);
             OnListChange();
         }
 

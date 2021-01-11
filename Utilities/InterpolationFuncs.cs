@@ -43,8 +43,9 @@ namespace DownUnder.Utilities
 
         static float FloatLerp(float initial_object, float target_object, float progress) => initial_object + target_object - initial_object * progress;
 
-        public static Func<object, object, float, object> GetLerpFunc<T>() => 
-            typeof(T) switch
+        public static Func<object, object, float, object> GetLerpFunc<T>()
+        {
+            return typeof(T) switch
             {
                 Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => color_lerp,
                 Type _ when typeof(T).IsPrimitive => float_lerp,
@@ -55,6 +56,7 @@ namespace DownUnder.Utilities
                 Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => vector_position_color_lerp,
                 _ => throw new Exception($"{nameof(T)} interpolation is not supported."),
             };
+        }
 
         public static Func<float, float> GetPlotFunc(InterpolationType type) =>
             type switch

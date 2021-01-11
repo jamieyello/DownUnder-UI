@@ -4,35 +4,49 @@ using System.Reflection;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Widgets.WidgetCoding
 {
     [DataContract(IsReference = true)]
     public abstract class WidgetCode
     {
         private static readonly EventInfo[] events = typeof(Widget).GetEvents();
         private MethodInfo[] methods;
+        private List<ConnectionEntry> connections = new List<ConnectionEntry>();
 
         public WidgetCode()
         {
-            methods = GetType().GetRuntimeMethods().ToArray();
+            SetNonSerialized();
         }
 
         [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
+        void SetNonSerialized(StreamingContext context) => SetNonSerialized();
+        void SetNonSerialized()
         {
             methods = GetType().GetRuntimeMethods().ToArray();
+            connections = new List<ConnectionEntry>();
         }
 
-        public void ConnectMatches(Widget widget)
+        public void Connect(Widget widget)
         {
             foreach (var match in GetMatches(widget))
             {
-                var delegate_ = Delegate.CreateDelegate(match.Key.EventHandlerType, this, match.Value);
-                match.Key.GetAddMethod().Invoke(widget, new object[] { delegate_ });
+                ConnectionEntry connection = new ConnectionEntry(this, widget, match.Key, match.Value);
+                connection.Connect();
+                connections.Add(connection);
             }
         }
 
-        public Dictionary<EventInfo, MethodInfo> GetMatches(Widget widget)
+        public void Disconnect(Widget widget)
+        {
+            var list = new List<ConnectionEntry>(from c in connections where c.Widget == widget select c);
+            foreach (var connection in list)
+            {
+                connection.Disconnect();
+                connections.Remove(connection);
+            }
+        }
+
+        Dictionary<EventInfo, MethodInfo> GetMatches(Widget widget)
         {
             Dictionary<EventInfo, MethodInfo> matches = new Dictionary<EventInfo, MethodInfo>();
 
