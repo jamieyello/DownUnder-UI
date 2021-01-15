@@ -45,16 +45,16 @@ namespace DownUnder.Utilities
 
         public static Func<object, object, float, object> GetLerpFunc<T>()
         {
-            return typeof(T) switch
+            switch (typeof(T))
             {
-                Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => color_lerp,
-                Type _ when typeof(T).IsPrimitive => float_lerp,
-                Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)) => rectanglf_lerp,
-                Type _ when typeof(T).IsAssignableFrom(typeof(Point2)) => point2_lerp,
-                Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)) => vector2_lerp,
-                Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)) => vector3_lerp,
-                Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => vector_position_color_lerp,
-                _ => throw new Exception($"{nameof(T)} interpolation is not supported."),
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Color)): return color_lerp;
+                case Type _ when typeof(T).IsPrimitive: return float_lerp;
+                case Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)): return rectanglf_lerp;
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Point2)): return point2_lerp;
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)): return vector2_lerp;
+                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)): return vector3_lerp;
+                case Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)): return vector_position_color_lerp;
+                default: throw new Exception($"{nameof(T)} interpolation is not supported.");
             };
         }
 

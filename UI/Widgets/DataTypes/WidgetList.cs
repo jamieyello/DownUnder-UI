@@ -46,7 +46,11 @@ namespace DownUnder.UI.Widgets.DataTypes
             _widgets = new List<Widget>();
         }
 
-        private void OnRemove() { Parent?.InvokeOnRemove(); }
+        private void OnRemove(Widget removed)
+        {
+            Parent?.InvokeOnRemove();
+            Parent?.InvokeOnRemoveAny(new WidgetArgs(removed));
+        }
         private void OnAdd(Widget added) 
         { 
             Parent?.InvokeOnAdd();
@@ -270,7 +274,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 LastRemovedWidget = _widgets[index];
                 LastAddedWidget = value;
                 _widgets[index] = value;
-                OnRemove();
+                OnRemove(LastRemovedWidget);
                 OnAdd(value);
                 OnListChange();
             }
@@ -320,7 +324,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (_widgets.Remove(widget)) {
                 if (_parent != null) widget.Parent = null;
                 LastRemovedWidget = widget;
-                OnRemove();
+                OnRemove(widget);
                 OnListChange();
                 return true;
             }
@@ -332,7 +336,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             LastRemovedWidget = _widgets[index];
             if (_parent != null) _widgets[index].Parent = null;
             _widgets.RemoveAt(index);
-            OnRemove();
+            OnRemove(LastRemovedWidget);
             OnListChange();
         }
 

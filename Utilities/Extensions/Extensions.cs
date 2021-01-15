@@ -473,13 +473,17 @@ namespace DownUnder
         }
 
         //https://stackoverflow.com/questions/238555/how-do-i-get-the-value-of-memberinfo
-        public static object GetValue(this MemberInfo memberInfo, object forObject) =>
-            memberInfo.MemberType switch
+        public static object GetValue(this MemberInfo memberInfo, object forObject)
+        {
+            switch (memberInfo.MemberType)
             {
-                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(forObject),
-                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(forObject),
-                _ => throw new NotImplementedException(),
-            };
+                case MemberTypes.Field:
+                    return ((FieldInfo)memberInfo).GetValue(forObject);
+                case MemberTypes.Property:
+                    return ((PropertyInfo)memberInfo).GetValue(forObject);
+                default: throw new NotImplementedException();
+            }
+        }
         
 
         public static ParameterInfo[] GetParameters(this MemberInfo memberInfo) =>

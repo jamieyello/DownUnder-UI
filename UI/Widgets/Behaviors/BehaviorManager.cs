@@ -78,7 +78,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             if (Contains(behavior.GetType()))
             {
-                added_behavior = default;
+                added_behavior = null;
                 return false;
             }
             if (behavior.IsSubBehavior

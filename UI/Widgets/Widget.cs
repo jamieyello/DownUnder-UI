@@ -228,8 +228,11 @@ namespace DownUnder.UI.Widgets
             set
             {
                 if (_name_backing == value) return;
+                string old_name = _name_backing;
                 _name_backing = value;
-                OnRename?.Invoke(this, EventArgs.Empty);
+                RenameArgs args = new RenameArgs(this, old_name, value);
+                OnRename?.Invoke(this, args);
+                InvokeOnRenameAny(args);
             }
         }
 
@@ -1192,7 +1195,9 @@ namespace DownUnder.UI.Widgets
         #region EventsHandlers
 
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Name"/> changes. </summary>
-        public event EventHandler OnRename;
+        public event EventHandler<RenameArgs> OnRename;
+        /// <summary> Invoked when this <see cref="Widget"/>'s or any of its children <see cref="Name"/> changes. </summary>
+        public event EventHandler<RenameArgs> OnRenameAny;
         /// <summary> Invoked when this <see cref="Widget"/> is clicked on. </summary>
         public event EventHandler OnClick;
         /// <summary> Invoked when this <see cref="Widget"/> is double clicked. </summary>
@@ -1253,6 +1258,7 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<WidgetArgs> OnAddChildAny;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
+        public event EventHandler<WidgetArgs> OnRemoveChildAny;
         /// <summary> Invoked when a child is added or removed from this <see cref="Widget"/>. </summary>
         public event EventHandler OnListChange;
         /// <summary> Invoked when this <see cref="Widget"/> is disposed. </summary>
@@ -1298,6 +1304,15 @@ namespace DownUnder.UI.Widgets
         }
         /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnRemove() => OnRemoveChild?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnRemoveAny(WidgetArgs args)
+        {
+            if (OnAddChildAny != null)
+            {
+                foreach (Widget widget in args.Widget.AllContainedWidgets) OnRemoveChildAny.Invoke(this, new WidgetArgs(widget));
+            }
+
+            ParentWidget?.InvokeOnRemoveAny(args);
+        }
         /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnListChange() => OnListChange?.Invoke(this, EventArgs.Empty);
         void InvokeOnParentResize(RectangleFSetArgs args) => OnParentResize?.Invoke(this, args);
@@ -1307,6 +1322,11 @@ namespace DownUnder.UI.Widgets
         void InvokeDrawOverlay(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
         void InvokeDrawBG(WidgetDrawArgs args) => OnDrawBackground?.Invoke(this, args);
         void InvokeDrawOverlayEffects(WidgetDrawArgs args) => OnDrawOverlay?.Invoke(this, args);
+        void InvokeOnRenameAny(RenameArgs args)
+        {
+            OnRenameAny?.Invoke(this, args);
+            ParentWidget?.InvokeOnRenameAny(args);
+        }
 
         #endregion
 

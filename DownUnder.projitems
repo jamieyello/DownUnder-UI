@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\UseCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\PreUpdateArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RenameArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetTransitionAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\UINavigator.cs" />
