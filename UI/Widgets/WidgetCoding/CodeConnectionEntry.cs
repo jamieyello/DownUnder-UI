@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DownUnder.UIEditor;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
 namespace DownUnder.UI.Widgets.WidgetCoding
 {
-    class ConnectionEntry
+    public class CodeConnectionEntry
     {
         public Widget Widget { get; private set; }
         EventInfo _event;
@@ -15,7 +16,7 @@ namespace DownUnder.UI.Widgets.WidgetCoding
 
         public bool Connected { get; private set; }
 
-        public ConnectionEntry(WidgetCode code, Widget widget, EventInfo @event, MethodInfo method)
+        public CodeConnectionEntry(WidgetCode code, Widget widget, EventInfo @event, MethodInfo method)
         {
             Widget = widget;
             _event = @event;

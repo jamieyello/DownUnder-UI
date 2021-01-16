@@ -72,9 +72,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetSignal.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\ConnectionEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\TestCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\TestCode.UIEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\CodeConnectionEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\CodeGen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\WidgetCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\WidgetPostUpdateFlags.cs" />
