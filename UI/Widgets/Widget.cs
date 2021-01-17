@@ -33,7 +33,7 @@ namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract(IsReference = true)]
-    public sealed class Widget : IParent, IDisposable, ICloneable, IEnumerable<Widget>
+    public sealed partial class Widget : IParent, IDisposable, ICloneable, IEnumerable<Widget>
     {
         [DataMember]
         public bool debug_output = false;
@@ -233,6 +233,7 @@ namespace DownUnder.UI.Widgets
                 RenameArgs args = new RenameArgs(this, old_name, value);
                 OnRename?.Invoke(this, args);
                 InvokeOnRenameAny(args);
+                if (args.QuietRename != null) _name_backing = args.QuietRename;
             }
         }
 

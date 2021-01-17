@@ -10,6 +10,8 @@ namespace DownUnder.UI.Widgets
         public readonly Widget Widget;
         public readonly string OldName;
         public readonly string NewName;
+        /// <summary> Set this to force the name without invoking any additional logic. This may break things, and will be removed in the future. </summary>
+        public string QuietRename = null;
 
         public RenameArgs(Widget widget, string old, string new_)
         {
