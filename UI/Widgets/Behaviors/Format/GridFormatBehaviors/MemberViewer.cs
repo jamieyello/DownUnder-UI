@@ -7,7 +7,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors
     public class MemberViewer : WidgetBehavior, ISubWidgetBehavior<GridFormat>
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
-        public GridFormat BaseBehavior => Parent.Behaviors.GetFirst<GridFormat>();
+        public GridFormat BaseBehavior => Parent.Behaviors.Get<GridFormat>();
 
         private MemberInfo[] _members;
         private float _row_height;

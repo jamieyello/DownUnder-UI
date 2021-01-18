@@ -91,7 +91,7 @@ namespace DownUnder.UI
             _border_format.BorderOccupy.Up.SetTargetValue(1f);
             _border_format.TopBorder.VisualSettings.DrawOutline = true;
             _border_format.TopBorder.VisualSettings.DrawBackground = true;
-            _border_format.TopBorder.Behaviors.GetFirst<DrawText>().Visible = true;
+            _border_format.TopBorder.Behaviors.Get<DrawText>().Visible = true;
             _border_format.TopBorder.PassthroughMouse = false;
             MainWidget.VisualSettings.DrawOutline = true;
         }
@@ -102,7 +102,7 @@ namespace DownUnder.UI
             _border_format.BorderOccupy.Up.SetTargetValue(0f);
             _border_format.TopBorder.VisualSettings.DrawOutline = false;
             _border_format.TopBorder.VisualSettings.DrawBackground = false;
-            _border_format.TopBorder.Behaviors.GetFirst<DrawText>().Visible = false;
+            _border_format.TopBorder.Behaviors.Get<DrawText>().Visible = false;
             _border_format.TopBorder.PassthroughMouse = true;
             MainWidget.VisualSettings.DrawOutline = false;
         }

@@ -47,7 +47,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
 
         private void Update(object sender, EventArgs args)
         {
-            var cube = Parent.Behaviors.GetFirst<Draw3DCube>();
+            var cube = Parent.Behaviors.Get<Draw3DCube>();
             if (cube == null) return;
             cube.Angle += _inirtia.Current;
             _inirtia.Update(Parent.UpdateData.ElapsedSeconds);

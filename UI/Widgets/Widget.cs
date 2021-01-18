@@ -813,8 +813,10 @@ namespace DownUnder.UI.Widgets
             {
                 _update_flags._update_hovered_over = true;
                 if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags._update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
+                if (UpdateData.UIInputState.SecondaryClickTriggered) _update_flags._update_right_clicked_on = true;
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
+                if (_update_flags._update_right_clicked_on) _update_flags._update_set_as_focused = true;
                 if (_update_flags._update_clicked_on)
                 {
                     _dragging_in = true;
@@ -837,7 +839,7 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags._update_clicked_off = true;
+                if (UpdateData.UIInputState.PrimaryClickTriggered || UpdateData.UIInputState.SecondaryClickTriggered) _update_flags._update_clicked_off = true;
                 if (_dragging_in && !_dragging_off)
                 {
                     _dragging_off = true;
@@ -941,6 +943,7 @@ namespace DownUnder.UI.Widgets
                     if (_update_flags._update_added_to_focused) AddToFocused();
                     if (_update_flags._update_set_as_focused) SetAsFocused();
                     if (_update_flags._update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags._update_right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
                     if (_update_flags._update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
                     if (_update_flags._update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
                 }
@@ -1205,6 +1208,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnDoubleClick;
         /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. </summary>
         public event EventHandler OnTripleClick;
+        /// <summary> Invoked when this <see cref="Widget"/> is triple clicked. </summary>
+        public event EventHandler OnRightClick;
         /// <summary> Invoked when this <see cref="Widget"/> is clicked on. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
         public event EventHandler OnPassthroughClick;
         /// <summary> Invoked when this <see cref="Widget"/> is double clicked. Triggers even if it's not the primary <see cref="Widget"/>. </summary>
@@ -1632,13 +1637,13 @@ namespace DownUnder.UI.Widgets
         {
             get
             {
-                GridFormat grid = Behaviors.GetFirst<GridFormat>();
+                GridFormat grid = Behaviors.Get<GridFormat>();
                 if (grid == null) throw new Exception($"This {nameof(Widget)} does not have a {nameof(GridFormat)} behavior.");
                 return grid[x, y];
             }
             set
             {
-                GridFormat grid = Behaviors.GetFirst<GridFormat>();
+                GridFormat grid = Behaviors.Get<GridFormat>();
                 if (grid == null) throw new Exception($"This {nameof(Widget)} does not have a {nameof(GridFormat)} behavior.");
                 grid[x, y] = value;
             }

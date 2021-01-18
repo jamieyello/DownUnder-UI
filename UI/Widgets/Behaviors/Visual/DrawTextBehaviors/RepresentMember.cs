@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
-        public DrawText BaseBehavior => Parent.Behaviors.GetFirst<DrawText>();
+        public DrawText BaseBehavior => Parent.Behaviors.Get<DrawText>();
 
         private MemberInfo _member;
 

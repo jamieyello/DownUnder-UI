@@ -42,7 +42,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             return false;
         }
 
-        public T GetFirst<T>() where T : WidgetBehavior {
+        public T Get<T>() where T : WidgetBehavior {
             foreach (WidgetBehavior behavior in this) {
                 if (behavior.GetType() == typeof(T)) return (T)behavior;
             }

@@ -12,6 +12,8 @@ namespace DownUnder.Utilities
         [DataMember] Dictionary<TKey, TValue> _tags = new Dictionary<TKey, TValue>();
         private readonly Func<TValue> _create_default_value;
 
+        public int Count => _tags.Count;
+
         public AutoDictionary() { }
         public AutoDictionary(Func<TValue> create_default_value) {
             _create_default_value = create_default_value;
@@ -46,7 +48,10 @@ namespace DownUnder.Utilities
             }
         }
 
-        public object Clone()
+        public bool Remove(TKey key) => _tags.Remove(key);
+
+        object ICloneable.Clone() => Clone();
+        public AutoDictionary<TKey, TValue> Clone()
         {
             AutoDictionary<TKey, TValue> c = new AutoDictionary<TKey, TValue>(_create_default_value);
             c._tags = new Dictionary<TKey, TValue>(_tags);

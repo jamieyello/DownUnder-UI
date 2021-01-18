@@ -9,7 +9,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
-        public Draw3DCube BaseBehavior => Parent.Behaviors.GetFirst<Draw3DCube>();
+        public Draw3DCube BaseBehavior => Parent.Behaviors.Get<Draw3DCube>();
 
         public override object Clone()
         {

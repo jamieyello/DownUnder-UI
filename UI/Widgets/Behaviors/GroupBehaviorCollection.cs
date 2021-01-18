@@ -26,7 +26,8 @@ namespace DownUnder.UI.Widgets
             {
                 var result = new GroupBehaviorCollection
                 {
-                    new GroupBehaviorPolicy { Behavior = new ApplyInputScrolling() }
+                    new GroupBehaviorPolicy { Behavior = new ApplyInputScrolling() },
+                    new GroupBehaviorPolicy { Behavior = new SpawnRightClickDropDown() },
                 };
                 return result;
             }

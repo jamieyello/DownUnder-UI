@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 
         public Type BaseWidgetBehavior { get; private set; } = typeof(Draw3DCube);
 
-        public Draw3DCube BaseBehavior => Parent.Behaviors.GetFirst<Draw3DCube>();
+        public Draw3DCube BaseBehavior => Parent.Behaviors.Get<Draw3DCube>();
 
         public SpinCube Spin = new SpinCube() 
         { 

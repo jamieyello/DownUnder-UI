@@ -124,7 +124,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         public override Widget EditorWidgetRepresentation()
         {
             Widget result = base.EditorWidgetRepresentation();
-            ((DrawText)result.Behaviors.GetFirst<DragAndDropSource>().DragObject).Text = "New DrawText";
+            ((DrawText)result.Behaviors.Get<DragAndDropSource>().DragObject).Text = "New DrawText";
             return result;
         }
 

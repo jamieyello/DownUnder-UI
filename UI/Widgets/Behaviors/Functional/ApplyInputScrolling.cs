@@ -9,7 +9,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.SCROLL_FUNCTION };
 
-        public ScrollBase BaseBehavior => Parent.Behaviors.GetFirst<ScrollBase>();
+        public ScrollBase BaseBehavior => Parent.Behaviors.Get<ScrollBase>();
 
         protected override void Initialize()
         {

@@ -57,7 +57,7 @@ namespace DownUnder.UI.Widgets
             Widget result = new Widget(area);
             result.VisualSettings.VisualRole = VisualRoleType.text_edit_widget;
             result.Behaviors.Add(new DrawEditableText { });
-            var draw_text = result.Behaviors.GetFirst<DrawText>();
+            var draw_text = result.Behaviors.Get<DrawText>();
             draw_text.Text = text;
             draw_text.XTextPositioning = x_positioning;
             draw_text.YTextPositioning = y_positioning;
@@ -88,22 +88,11 @@ namespace DownUnder.UI.Widgets
             foreach (var entry in entries)
             {
                 Widget w_entry = Button(entry.Key, new RectangleF(0, 0, 50, 40));
-                w_entry.Behaviors.GetFirst<DrawText>().SideSpacing = 25f;
+                w_entry.Behaviors.Get<DrawText>().SideSpacing = 25f;
                 w_entry.VisualSettings.DrawOutline = false;
                 w_entry.VisualSettings.DrawBackground = false;
                 
-                WidgetList items = new WidgetList();
-                foreach (var item in entry.Value)
-                {
-                    Widget new_entry = Button(item.Key);
-                    new_entry.VisualSettings.DrawOutline = false;
-                    new_entry.VisualSettings.DrawBackground = false;
-                    new_entry.Behaviors.GetFirst<DrawText>().XTextPositioning = XTextPositioningPolicy.left;
-                    if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
-                    items.Add(new_entry);
-                }
-
-                Widget dropdown = DropDown(items);
+                Widget dropdown = DropDown(entry.Value);
 
                 w_entry.Behaviors.Add(
                     new TriggerWidgetAction(
@@ -119,12 +108,27 @@ namespace DownUnder.UI.Widgets
             return file_bar;
         }
 
-        public static Widget DropDown(IEnumerable<string> items, PopInOut pop_in_out_behavior = null)
+        public static Widget DropDown(AutoDictionary<string, DropDownEntry> entries, PopInOut pop_in_out_behavior = null)
         {
-            WidgetList widgets = new WidgetList();
-            foreach (string item in items) widgets.Add(new Widget().WithAddedBehavior(new DrawText() { Text = item, ConstrainAreaToText = true }));
-            return DropDown(widgets, pop_in_out_behavior);
+            WidgetList items = new WidgetList();
+            foreach (var item in entries)
+            {
+                Widget new_entry = Button(item.Key);
+                new_entry.VisualSettings.DrawOutline = false;
+                new_entry.VisualSettings.DrawBackground = false;
+                new_entry.Behaviors.Get<DrawText>().XTextPositioning = XTextPositioningPolicy.left;
+                if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
+                items.Add(new_entry);
+            }
+            return DropDown(items, pop_in_out_behavior);
         }
+
+        //public static Widget DropDown(IEnumerable<string> items, PopInOut pop_in_out_behavior = null)
+        //{
+        //    WidgetList widgets = new WidgetList();
+        //    foreach (string item in items) widgets.Add(new Widget().WithAddedBehavior(new DrawText() { Text = item, ConstrainAreaToText = true }));
+        //    return DropDown(widgets, pop_in_out_behavior);
+        //}
 
         public static Widget DropDown(IEnumerable<Widget> widgets, PopInOut pop_in_out_behavior = null)
         {
@@ -136,7 +140,6 @@ namespace DownUnder.UI.Widgets
             dropdown.Behaviors.Add(new GridFormat(1, widgets.Count()));
             if (pop_in_out_behavior == null) dropdown.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.95f, Directions2D.DLR), RectanglePart.Uniform(0f, Directions2D.D, 1f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Faster });
             else dropdown.Behaviors.Add(pop_in_out_behavior);
-
 
             return dropdown;
         }

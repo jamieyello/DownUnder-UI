@@ -7,6 +7,7 @@ namespace DownUnder.UI.Widgets
     public class WidgetUpdateFlags
     {
         public bool _update_clicked_on;
+        public bool _update_right_clicked_on;
         public bool _update_clicked_off;
         public bool _update_double_clicked;
         public bool _update_triple_clicked;
@@ -19,6 +20,7 @@ namespace DownUnder.UI.Widgets
         public void Reset()
         {
             _update_clicked_on = false;
+            _update_right_clicked_on = false;
             _update_double_clicked = false;
             _update_triple_clicked = false;
             _update_added_to_focused = false;

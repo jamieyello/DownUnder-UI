@@ -18,39 +18,39 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         // Visual
-        public DrawText DrawText => _behaviors.GetFirst<DrawText>();
-        public BlurBackground BlurBackground => _behaviors.GetFirst<BlurBackground>();
-        public DragOffOutline DragOffOutline => _behaviors.GetFirst<DragOffOutline>();
-        public DrawCenteredImage DrawCenteredImage => _behaviors.GetFirst<DrawCenteredImage>();
-        public DrawSwitchGraphic DrawSwitchGraphic => _behaviors.GetFirst<DrawSwitchGraphic>();
-        public DrawOutline DrawOutline => _behaviors.GetFirst<DrawOutline>();
-        public MakeMousePointer MakeMousePointer => _behaviors.GetFirst<MakeMousePointer>();
-        public MouseGlow MouseGlow => _behaviors.GetFirst<MouseGlow>();
-        public Neurons Neurons => _behaviors.GetFirst<Neurons>();
-        public ShadingBehavior ShadingBehavior => _behaviors.GetFirst<ShadingBehavior>();
+        public DrawText DrawText => _behaviors.Get<DrawText>();
+        public BlurBackground BlurBackground => _behaviors.Get<BlurBackground>();
+        public DragOffOutline DragOffOutline => _behaviors.Get<DragOffOutline>();
+        public DrawCenteredImage DrawCenteredImage => _behaviors.Get<DrawCenteredImage>();
+        public DrawSwitchGraphic DrawSwitchGraphic => _behaviors.Get<DrawSwitchGraphic>();
+        public DrawOutline DrawOutline => _behaviors.Get<DrawOutline>();
+        public MakeMousePointer MakeMousePointer => _behaviors.Get<MakeMousePointer>();
+        public MouseGlow MouseGlow => _behaviors.Get<MouseGlow>();
+        public Neurons Neurons => _behaviors.Get<Neurons>();
+        public ShadingBehavior ShadingBehavior => _behaviors.Get<ShadingBehavior>();
 
         // Functional
-        public CenterContent CenterContent => _behaviors.GetFirst<CenterContent>();
-        public DragAndDropSource DragAndDropSource => _behaviors.GetFirst<DragAndDropSource>();
-        public PinWidget PinWidget => _behaviors.GetFirst<PinWidget>();
-        public PopInOut PopInOut => _behaviors.GetFirst<PopInOut>();
-        public ScrollBar ScrollBar => _behaviors.GetFirst<ScrollBar>();
-        public TriggerAction TriggerAction => _behaviors.GetFirst<TriggerAction>();
-        public TriggerWidgetAction TriggerWidgetAction => _behaviors.GetFirst<TriggerWidgetAction>();
+        public CenterContent CenterContent => _behaviors.Get<CenterContent>();
+        public DragAndDropSource DragAndDropSource => _behaviors.Get<DragAndDropSource>();
+        public PinWidget PinWidget => _behaviors.Get<PinWidget>();
+        public PopInOut PopInOut => _behaviors.Get<PopInOut>();
+        public ScrollBar ScrollBar => _behaviors.Get<ScrollBar>();
+        public TriggerAction TriggerAction => _behaviors.Get<TriggerAction>();
+        public TriggerWidgetAction TriggerWidgetAction => _behaviors.Get<TriggerWidgetAction>();
         
         // Format
-        public BorderFormat BorderFormat => _behaviors.GetFirst<BorderFormat>();
-        public GridFormat GridFormat => _behaviors.GetFirst<GridFormat>();
-        public SpacedListFormat SpacedListFormat => _behaviors.GetFirst<SpacedListFormat>();
+        public BorderFormat BorderFormat => _behaviors.Get<BorderFormat>();
+        public GridFormat GridFormat => _behaviors.Get<GridFormat>();
+        public SpacedListFormat SpacedListFormat => _behaviors.Get<SpacedListFormat>();
        
         // Examples
-        public Draw3DCube Draw3DCube => _behaviors.GetFirst<Draw3DCube>();
+        public Draw3DCube Draw3DCube => _behaviors.Get<Draw3DCube>();
         
         // Sub-behaviors
-        public DrawEditableText DrawEditableText => _behaviors.GetFirst<DrawEditableText>();
-        public RepresentMember RepresentMember => _behaviors.GetFirst<RepresentMember>();
-        public MemberViewer MemberViewer => _behaviors.GetFirst<MemberViewer>();
-        public CubeRotation CubeRotation => _behaviors.GetFirst<CubeRotation>();
-        public SpinOnHoverOnOff SpinOnHoverOnOff => _behaviors.GetFirst<SpinOnHoverOnOff>();
+        public DrawEditableText DrawEditableText => _behaviors.Get<DrawEditableText>();
+        public RepresentMember RepresentMember => _behaviors.Get<RepresentMember>();
+        public MemberViewer MemberViewer => _behaviors.Get<MemberViewer>();
+        public CubeRotation CubeRotation => _behaviors.Get<CubeRotation>();
+        public SpinOnHoverOnOff SpinOnHoverOnOff => _behaviors.Get<SpinOnHoverOnOff>();
     }
 }
