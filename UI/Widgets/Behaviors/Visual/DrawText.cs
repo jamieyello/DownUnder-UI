@@ -150,7 +150,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         private void SetMinimumSize(object sender, EventArgs args)
         {
-            //if (ConstrainAreaToText && Parent != null) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
+            if (ConstrainAreaToText && Parent != null) Parent.MinimumSize = Parent.MinimumSize.Max(GetTextMinimumArea());
         }
 
         private void OverrideMinimumSize(object sender, Point2SetOverrideArgs args)
@@ -162,7 +162,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         public Point2 GetTextMinimumArea()
         {
             if (!Parent.IsGraphicsInitialized) return new Point2(10, 10);
-            RectangleF area = Parent.WindowFont.MeasureString(Text).ToPoint2().AsRectangleSize(TextPosition).ResizedBy(SideSpacing, Directions2D.All);
+            RectangleF area = Parent.WindowFont.MeasureString(Text).ToPoint2().AsRectangleSize().ResizedBy(SideSpacing * 2, Directions2D.All);
             return new Point2(area.Right, area.Bottom);
         }
 
