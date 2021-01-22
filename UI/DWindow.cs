@@ -36,8 +36,6 @@ namespace DownUnder.UI
         private const int _WAIT_TIME = 5;
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         private const int _WAIT_TIME_WARNING_THRESOLD = 100;
-        // A cache used by Area.
-        private RectangleF _area_cache = new RectangleF();
 
         private Widget _widget_backing;
         private Point2 _minimum_size_backing;
@@ -46,7 +44,7 @@ namespace DownUnder.UI
         RenderTarget2D[] _back_buffer = new RenderTarget2D[2];
         int _current_back_buffer = 0;
 
-        public readonly IOSInterface OS;
+        public static IOSInterface OS;
 
         #region Properties
         #region Auto Properties
@@ -168,8 +166,6 @@ namespace DownUnder.UI
             get {
                 if (!ParentGame.IsActive) return new RectangleF();
                 return ParentGame.Window.ClientBounds;
-                //if (IsMainThread) return System.Windows.Forms.Control.FromHandle(Window.Handle).DisplayRectangle.ToMonoRectangleF();
-                return _area_cache;
             }
             set {
                 if (IsMainThread) AreaSet(value);
@@ -274,7 +270,7 @@ namespace DownUnder.UI
                 foreach (Widget widget in MainWidget.AllContainedWidgets) widget.InvokeOnWindowClose();
             };
 
-            LoadDWindow(graphics.GraphicsDevice);
+            LoadDWindow();
         }
 
         internal void ResetBuffers(object sender, EventArgs args)
@@ -369,13 +365,12 @@ namespace DownUnder.UI
             return Children[Children.Count - 1];
         }
 
-        public void LoadDWindow(GraphicsDevice graphics) {
+        public void LoadDWindow() {
             EffectCollection.ShadingEffect = ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Gradient");
             WindowFont = ParentGame.Content.Load<SpriteFont>("DownUnder Native Content/SpriteFonts/Default Font");
         }
 
         public void Update(GameTime game_time) {
-            _area_cache = Area;
             OnUpdate?.Invoke(this, EventArgs.Empty);
             if (!_first_update)
             {
@@ -409,7 +404,7 @@ namespace DownUnder.UI
             InputState.Enter = false;
         }
 
-        public void Draw(SpriteBatch sprite_batch, GameTime game_time) {
+        public void Draw(SpriteBatch sprite_batch) {
             MainWidget.Draw(sprite_batch);
         }
 

@@ -150,7 +150,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 
         protected override void Initialize()
         {
-            Parent.OnParentWindowSet += (s, a) => caret_blink_time = Parent.ParentDWindow.OS.CaretBlinkTime;
+            Parent.OnParentWindowSet += (s, a) => caret_blink_time = DWindow.OS.CaretBlinkTime;
         }
 
         protected override void ConnectEvents()
@@ -267,12 +267,12 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                 {
                     char[] t = new char[_HighlightLength];
                     edit_text.CopyTo(_HighlightPosition, t, 0, _HighlightLength);
-                    Parent.ParentDWindow.OS.CopyTextToClipBoard(new string(t));
+                    DWindow.OS.CopyTextToClipBoard(new string(t));
                 }
                 if (inp.Cut) text_changed |= DeleteHighlightedText();
             }
 
-            if (inp.Paste) text_changed |= InsertText(Parent.ParentDWindow.OS.GetTextFromClipboard(), caret_position, true);
+            if (inp.Paste) text_changed |= InsertText(DWindow.OS.GetTextFromClipboard(), caret_position, true);
             
             // Insert typed text
             text_changed |= InsertText(Parent.UpdateData.UIInputState.Text, caret_position, true);

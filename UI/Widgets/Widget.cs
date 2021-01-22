@@ -921,8 +921,7 @@ namespace DownUnder.UI.Widgets
                     if (_resizing_direction & Directions2D.U) new_area = new_area.ResizedBy(-amount.Y, Directions2D.U, MinimumSize);
                     if (_resizing_direction & Directions2D.L) new_area = new_area.ResizedBy(-amount.X, Directions2D.L, MinimumSize);
                 }
-                RectangleF new_area2 = new_area;
-                //if (ParentWidget != null) new_area2 = 
+
                 Area = new_area;
             }
 
@@ -1093,7 +1092,7 @@ namespace DownUnder.UI.Widgets
                 Rectangle previous_scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
                 SpriteBatch.GraphicsDevice.ScissorRectangle = widget.VisibleArea.ToRectangle();
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, ParentDWindow.RasterizerState);
-                DrawOverlay(widget, widget.AreaInWindow, SpriteBatch, InputState.CursorPosition);
+                DrawOverlay(widget, widget.AreaInWindow, SpriteBatch);
                 SpriteBatch.End();
                 SpriteBatch.GraphicsDevice.ScissorRectangle = previous_scissor_area;
             }
@@ -1115,7 +1114,7 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Draw anything that should be drawn on top of the content in this <see cref="Widget"/> without altering render target or spritebatch. </summary>
-        static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch, Point2 cursor_position)
+        static void DrawOverlay(Widget widget, RectangleF drawing_area, SpriteBatch sprite_batch)
         {
             Rectangle previous_scissor_area = new Rectangle();
             if (widget.DrawingMode == DrawingModeType.direct)

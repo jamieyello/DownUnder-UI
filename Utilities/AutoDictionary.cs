@@ -48,6 +48,17 @@ namespace DownUnder.Utilities
             }
         }
 
+        public void Add(KeyValuePair<TKey, TValue> pair, bool replace = false)
+        {
+            if (replace) this[pair.Key] = pair.Value;
+            else if (_tags.ContainsKey(pair.Key)) _tags.Add(pair.Key, pair.Value);
+        }
+
+        public void Add(IEnumerable<KeyValuePair<TKey, TValue>> pairs, bool replace = false)
+        {
+            foreach (var pair in pairs) Add(pair, replace);
+        }
+
         public bool Remove(TKey key) => _tags.Remove(key);
 
         object ICloneable.Clone() => Clone();
