@@ -2,7 +2,7 @@
 
 namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
 {
-    class CoverParentOverlay : OverlayWidgetLocation
+    public class CoverParentOverlay : OverlayWidgetLocation
     {
         int ParentUp { get; set; } = 0;
 

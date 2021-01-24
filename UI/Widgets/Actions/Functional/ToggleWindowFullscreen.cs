@@ -1,6 +1,6 @@
 ﻿namespace DownUnder.UI.Widgets.Actions.Functional
 {
-    class ToggleWindowFullscreen : WidgetAction
+    public class ToggleWindowFullscreen : WidgetAction
     {
         protected override void ConnectEvents()
         {

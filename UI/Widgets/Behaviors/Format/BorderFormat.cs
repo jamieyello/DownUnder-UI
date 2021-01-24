@@ -99,11 +99,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         ~BorderFormat()
         {
-            _center.Forget();
-            _top_border.Forget();
-            _bottom_border.Forget();
-            _left_border.Forget();
-            _right_border.Forget();
+            _center?.Forget();
+            _top_border?.Forget();
+            _bottom_border?.Forget();
+            _left_border?.Forget();
+            _right_border?.Forget();
         }
 
         public override object Clone()

@@ -1,7 +1,10 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Format;
+﻿using DownUnder.UI.Widgets.Actions.Functional;
+using DownUnder.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations;
 using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
+using DownUnder.UIEditor.Behaviors;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -14,7 +17,22 @@ namespace DownUnder.UI.Widgets.Behaviors
     [DataContract] 
     public abstract class WidgetBehavior : ICloneable 
     {
-        internal static List<Type> KnownTypes = new List<Type>();
+        internal static List<Type> KnownTypes = new List<Type>() 
+        {
+            typeof(BlurBackground),
+            typeof(Neurons),
+            typeof(AddMainWidget),
+            typeof(CoverParentOverlay),
+            typeof(CenterContent),
+            typeof(SideOfParent),
+            typeof(DirectAction),
+            typeof(ToggleWindowFullscreen),
+            typeof(CorneredLocation),
+            typeof(ShadingBehavior),
+            typeof(FormatAllNames),
+            typeof(SpacedListFormat),
+
+        };
         private static readonly string _nameof_isub_widget_behavior = nameof(ISubWidgetBehavior<WidgetBehavior>) + "`1";
         Widget _parent_backing;
 

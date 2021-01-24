@@ -2,9 +2,11 @@
 using DownUnder.Utilities;
 using MonoGame.Extended;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
+    [DataContract]
     public abstract class InnerWidgetLocation : ICloneable
     {
         public abstract RectangleF GetLocation(Widget spawner, Widget widget);

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
-    class SpawnRightClickDropDown : WidgetBehavior, ISubWidgetBehavior<DropDownBase>
+    public class SpawnRightClickDropDown : WidgetBehavior, ISubWidgetBehavior<DropDownBase>
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 

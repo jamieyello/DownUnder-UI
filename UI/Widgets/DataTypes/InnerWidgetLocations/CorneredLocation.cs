@@ -1,12 +1,17 @@
 ﻿using MonoGame.Extended;
 using System;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
 {
     public class CorneredLocation : InnerWidgetLocation
     {
-        DiagonalDirection2D Corner;
+        public DiagonalDirection2D Corner;
 
+        public CorneredLocation()
+        {
+            Corner = DiagonalDirection2D.top_left;
+        }
         public CorneredLocation(DiagonalDirection2D corner)
         {
             Corner = corner;
@@ -19,7 +24,8 @@ namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
         
         public override object Clone()
         {
-            throw new NotImplementedException();
+            CorneredLocation c = new CorneredLocation(Corner);
+            return c;
         }
     }
 }

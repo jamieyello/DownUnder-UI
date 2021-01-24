@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace DownUnder.UI.Widgets.Actions.Functional
 {
+    [DataContract]
     class DirectAction : WidgetAction
     {
+        //[DataMember] 
         public Action Action;
 
         public DirectAction() { }
