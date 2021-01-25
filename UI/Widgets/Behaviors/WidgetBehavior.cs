@@ -1,7 +1,11 @@
 ﻿using DownUnder.UI.Widgets.Actions.Functional;
+using DownUnder.UI.Widgets.Behaviors.Examples;
+using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors;
 using DownUnder.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 using DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations;
 using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
 using DownUnder.UIEditor.Behaviors;
@@ -31,8 +35,16 @@ namespace DownUnder.UI.Widgets.Behaviors
             typeof(ShadingBehavior),
             typeof(FormatAllNames),
             typeof(SpacedListFormat),
-
+            typeof(DragAndDropSource),
+            typeof(Draw3DCube),
+            typeof(DragOffOutline),
+            typeof(CubeRotation),
+            typeof(MemberViewer),
+            typeof(RepresentMember),
+            typeof(SpinOnHoverOnOff),
+            typeof(PopInOut),
         };
+
         private static readonly string _nameof_isub_widget_behavior = nameof(ISubWidgetBehavior<WidgetBehavior>) + "`1";
         Widget _parent_backing;
 

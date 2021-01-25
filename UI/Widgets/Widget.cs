@@ -1178,7 +1178,10 @@ namespace DownUnder.UI.Widgets
 
         public void SaveToXML(string path)
         {
+            Widget parent_widget = _parent_widget_backing;
+            _parent_widget_backing = null;
             XmlHelper.ToXmlFile(this, path, WidgetBehavior.KnownTypes);
+            _parent_widget_backing = parent_widget;
         }
 
         public static Widget LoadFromXML(string path)
