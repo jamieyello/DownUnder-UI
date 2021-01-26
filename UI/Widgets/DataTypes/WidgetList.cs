@@ -268,15 +268,10 @@ namespace DownUnder.UI.Widgets.DataTypes
         #region IList Implementation
 
         public Widget this[int index] {
-            get => ((IList<Widget>)_widgets)[index];
+            get => _widgets[index];
             set {
-                if (IsReadOnly) ThrowReadOnlyException();
-                LastRemovedWidget = _widgets[index];
-                LastAddedWidget = value;
-                _widgets[index] = value;
-                OnRemove(LastRemovedWidget);
-                OnAdd(value);
-                OnListChange();
+                RemoveAt(index);
+                Insert(index, value);
             }
         }
 

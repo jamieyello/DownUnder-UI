@@ -755,6 +755,7 @@ namespace DownUnder.UI.Widgets
 
         public void Update(GameTime game_time, UIInputState input_state)
         {
+            if (!IsGraphicsInitialized) throw new Exception($"Cannot update a {nameof(Widget)} that's not been graphically initialized.");
             UpdateGroupUpdateData(game_time, input_state);
             UpdateGroupInput();
             UpdateGroupResizeGrab();
@@ -1291,6 +1292,10 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<RectangleFSetArgs> OnChildReposition;
         /// <summary> Invoked when the parent <see cref="DWindow"/> is closed. </summary>
         public event EventHandler OnWindowClose;
+        /// <summary> Invoked when a <see cref="WidgetBehavior"/> is added to this <see cref="Widget"/>. </summary>
+        public event EventHandler<WidgetBehaviorArgs> OnAddBehavior;
+        /// <summary> Invoked when a <see cref="WidgetBehavior"/> is removed from this <see cref="Widget"/>. </summary>
+        public event EventHandler<WidgetBehaviorArgs> OnRemoveBehavior;
 
         /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnWindowClose() => OnWindowClose?.Invoke(this, EventArgs.Empty);
@@ -1323,6 +1328,8 @@ namespace DownUnder.UI.Widgets
         }
         /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnListChange() => OnListChange?.Invoke(this, EventArgs.Empty);
+        internal void InvokeOnAddBehavior(WidgetBehaviorArgs args) => OnAddBehavior?.Invoke(this, args);
+        internal void InvokeOnRemoveBehavior(WidgetBehaviorArgs args) => OnRemoveBehavior?.Invoke(this, args);
         void InvokeOnParentResize(RectangleFSetArgs args) => OnParentResize?.Invoke(this, args);
         void InvokeOnChildResized(RectangleFSetArgs args) => OnChildResize?.Invoke(this, args);
         void InvokeOnChildAreaChange(RectangleFSetArgs args) => OnChildAreaChange?.Invoke(this, args);
@@ -1335,7 +1342,7 @@ namespace DownUnder.UI.Widgets
             OnRenameAny?.Invoke(this, args);
             ParentWidget?.InvokeOnRenameAny(args);
         }
-
+        
         #endregion
 
         #region Methods

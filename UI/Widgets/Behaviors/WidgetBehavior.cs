@@ -49,6 +49,8 @@ namespace DownUnder.UI.Widgets.Behaviors
         Widget _parent_backing;
 
         public bool IsConnected { get; private set; } = false;
+        
+        [DataMember(EmitDefaultValue = false)]
         public abstract string[] BehaviorIDs { get; protected set; }
 
         public bool HasParent => Parent != null;

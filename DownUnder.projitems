@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\PreUpdateArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RenameArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetBehaviorArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\FileBarEntries.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\WidgetTransitionAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\UINavigator.cs" />

@@ -62,19 +62,39 @@ namespace DownUnder.UI.Widgets.Behaviors
         public bool IsReadOnly => ((IList<WidgetBehavior>)_behaviors).IsReadOnly;
 
         public void Add(WidgetBehavior behavior) {
-            if (!TryAdd(behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
+            if (!TryAdd(behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
         }        
         
         public void Add<T>(T behavior, out T added_behavior) where T : WidgetBehavior {
-            if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add duplicate {nameof(WidgetBehavior)}s. This {nameof(BehaviorManager)} already contains a {behavior.GetType().Name}.");
+            if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
+        }
+
+        public void Insert(int index, WidgetBehavior behavior)
+        {
+            if (!TryInsert(index, behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
+        }
+
+        public void Insert<T>(int index, T behavior, out T added_behavior) where T : WidgetBehavior
+        {
+            if (!TryInsert(index, behavior, out added_behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
         }
 
         public bool TryAdd(WidgetBehavior behavior)
         {
-            return TryAdd(behavior, out var _);
+            return TryInsert(_behaviors.Count, behavior, out var _);
         }
 
         public bool TryAdd<T>(T behavior, out T added_behavior) where T : WidgetBehavior
+        {
+            return TryInsert(_behaviors.Count, behavior, out added_behavior);
+        }
+
+        public bool TryInsert(int index, WidgetBehavior behavior)
+        {
+            return TryInsert(index, behavior, out var _);
+        }
+
+        public bool TryInsert<T>(int index, T behavior, out T added_behavior) where T : WidgetBehavior
         {
             if (Contains(behavior.GetType()))
             {
@@ -85,9 +105,10 @@ namespace DownUnder.UI.Widgets.Behaviors
                 && !Contains(behavior.BaseBehaviorType)) {
                 TryAdd((WidgetBehavior)Activator.CreateInstance(behavior.BaseBehaviorType));
             }
-            _behaviors.Add(behavior);
+            _behaviors.Insert(index, behavior);
             behavior.Parent = Parent;
             added_behavior = behavior;
+            Parent?.InvokeOnAddBehavior(new WidgetBehaviorArgs(added_behavior));
             return true;
         }
 
@@ -111,15 +132,20 @@ namespace DownUnder.UI.Widgets.Behaviors
         public void CopyTo(WidgetBehavior[] array, int arrayIndex) => _behaviors.CopyTo(array, arrayIndex);
         public IEnumerator<WidgetBehavior> GetEnumerator() => _behaviors.GetEnumerator();
         public int IndexOf(WidgetBehavior behavior) => _behaviors.IndexOf(behavior);
-        
-        public void Insert(int index, WidgetBehavior behavior) {
-            behavior.Parent = Parent;
-            ((IList<WidgetBehavior>)_behaviors).Insert(index, behavior);
+
+        public void RemoveAt(int index)
+        {
+            WidgetBehavior removed = _behaviors[index];
+            removed.Disconnect();
+            _behaviors.RemoveAt(index);
+            Parent?.InvokeOnRemoveBehavior(new WidgetBehaviorArgs(removed));
         }
 
         public bool Remove(WidgetBehavior behavior) {
-            if (_behaviors.Remove(behavior)) {
+            if (_behaviors.Contains(behavior)) {
                 behavior.Disconnect();
+                _behaviors.Remove(behavior);
+                Parent?.InvokeOnRemoveBehavior(new WidgetBehaviorArgs(behavior));
                 return true;
             }
             return false;
@@ -156,11 +182,6 @@ namespace DownUnder.UI.Widgets.Behaviors
             var removed = new List<WidgetBehavior>();
             foreach (string behavior_id in behavior_ids) removed.AddRange(RemoveIDed(behavior_id));
             return removed;
-        }
-
-        public void RemoveAt(int index) {
-            _behaviors[index].Disconnect();
-            _behaviors.RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => _behaviors.GetEnumerator();
