@@ -33,7 +33,7 @@ namespace DownUnder.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract(IsReference = true)]
-    public sealed partial class Widget : IParent, IDisposable, ICloneable, IEnumerable<Widget>
+    public sealed partial class Widget : IParent, IDisposable, ICloneable, IEnumerable<Widget>, IWidget
     {
         [DataMember]
         public bool debug_output = false;
@@ -660,6 +660,8 @@ namespace DownUnder.UI.Widgets
                 return result;
             }
         }
+
+        Widget IWidget.Widget => this;
 
         #endregion
 

@@ -83,15 +83,6 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        //public GroupBehaviorCollection WithCode(WidgetCode code)
-        //{
-        //    var result = new GroupBehaviorCollection(this)
-        //    {
-        //        new GroupBehaviorPolicy() { Behavior = new UseCode(code) }
-        //    };
-        //    return result;
-        //}
-
         public int HasConflictWith(GroupBehaviorPolicy policy)
         {
             for (int i = 0; i < _policies.Count; i++)

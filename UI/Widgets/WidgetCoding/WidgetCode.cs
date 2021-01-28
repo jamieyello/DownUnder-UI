@@ -9,24 +9,19 @@ using DownUnder.UI.Widgets.WidgetCoding;
 namespace DownUnder.UI.Widgets
 {
     [DataContract(IsReference = true)]
-    public abstract class WidgetCode
+    public abstract class WidgetCode : IWidget
     {
         [DataMember] public readonly Widget Base;
         private static readonly EventInfo[] events = typeof(Widget).GetEvents();
         private MethodInfo[] methods;
         private List<CodeConnectionEntry> connections = new List<CodeConnectionEntry>();
 
+        Widget IWidget.Widget => Base;
+
         public WidgetCode()
         {
             if (!Internal.TryGetWidgetXMLLocation(GetType(), out string xml_path)) throw new Exception($"No matching xml file was found for this {nameof(WidgetCode)}. Running the Widget Editor tool on the .duwd file can update references.");
             Base = Widget.LoadFromXML(xml_path);
-            SetNonSerialized();
-            Connect(Base);
-        }
-
-        public WidgetCode(Widget @base)
-        {
-            Base = @base;
             SetNonSerialized();
             Connect(Base);
         }
