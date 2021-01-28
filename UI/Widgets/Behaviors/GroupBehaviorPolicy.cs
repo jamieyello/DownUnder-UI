@@ -17,7 +17,7 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         [DataMember] public WidgetBehavior Behavior;
         [DataMember] public BehaviorInheritancePolicy InheritancePolicy = BehaviorInheritancePolicy.all_children;
-        public GeneralVisualSettings.VisualRoleType? NecessaryVisualRole;
+        [DataMember] public GeneralVisualSettings.VisualRoleType? NecessaryVisualRole;
 
         public object Clone()
         {

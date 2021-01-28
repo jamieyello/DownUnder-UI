@@ -19,15 +19,15 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         ProxListPosition cursor;
         List<ProxListPosition> neighbors = new List<ProxListPosition>();
         ConcurrentDictionary<RectangleF, float> lines = new ConcurrentDictionary<RectangleF, float>();
-        int circle_count = 900;
+        int circle_count = 400;
 
-        public float Proximity = 150f;
+        public float Proximity = 250f;
         public bool DrawCircles = false;
         public bool UseSingleThread = false;
         public float LineThickness = 2f;
         public Color LineColor = Color.LimeGreen.ShiftBrightness(0.3f);
         public Point2 Offset = new Point2(-200f,-200f);
-        public float circle_speed = 0.015f;
+        public float circle_speed = 0.01f;
 
         protected override void Initialize()
         {

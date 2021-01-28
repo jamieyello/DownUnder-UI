@@ -21,6 +21,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
 
         [DataMember] public Widget Filler { get; set; }
         [DataMember] public bool DisposeOldOnSet { get; set; } = true;
+        // Should be removed
         [DataMember] public bool SizeToContent { get; set; } = true;
 
         [DataMember] public Point2 Spacing = new Point2();

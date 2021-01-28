@@ -94,5 +94,11 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         }
 
         public static MouseGlow SubtleGray => new MouseGlow() { Diameter = 6000, Color = new Color(30, 30, 30, 30) };
+
+        public override Widget EditorWidgetRepresentation()
+        {
+            Widget result = base.EditorWidgetRepresentation();
+            return result;
+        }
     }
 }
