@@ -108,7 +108,7 @@ namespace DownUnder.UI.Widgets
             return file_bar;
         }
 
-        public static Widget DropDown(AutoDictionary<string, DropDownEntry> entries, PopInOut pop_in_out_behavior = null)
+        public static Widget DropDown(IAutoDictionary<string, DropDownEntry> entries, PopInOut pop_in_out_behavior = null)
         {
             WidgetList items = new WidgetList();
             foreach (var item in entries)

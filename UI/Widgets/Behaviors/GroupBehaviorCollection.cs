@@ -4,6 +4,7 @@ using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.WidgetCoding;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
@@ -91,6 +92,16 @@ namespace DownUnder.UI.Widgets
             }
 
             return -1;
+        }
+
+        public List<Type> GetBehaviorTypes()
+        {
+            List<Type> result = new List<Type>();
+            for (int i = 0; i < _policies.Count; i++)
+            {
+                result.Add(_policies[i].Behavior.GetType());
+            }
+            return result;
         }
 
         #region IList

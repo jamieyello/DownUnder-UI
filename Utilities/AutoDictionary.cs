@@ -7,7 +7,8 @@ using System.Runtime.Serialization;
 namespace DownUnder.Utilities
 {
     /// <summary> A <see cref="Dictionary{TKey, TValue}"/> that automatically creates new entries on reading nonexistent ones. </summary>
-    [DataContract] public class AutoDictionary<TKey, TValue> : ICloneable, IEnumerable<KeyValuePair<TKey, TValue>>
+    [DataContract] public class AutoDictionary<TKey, TValue> 
+        : ICloneable, IAutoDictionary<TKey, TValue>
     {
         [DataMember] Dictionary<TKey, TValue> _tags = new Dictionary<TKey, TValue>();
         private readonly Func<TValue> _create_default_value;
@@ -16,6 +17,11 @@ namespace DownUnder.Utilities
 
         public AutoDictionary() { }
         public AutoDictionary(Func<TValue> create_default_value) {
+            _create_default_value = create_default_value;
+        }
+        public AutoDictionary(IEnumerable<KeyValuePair<TKey, TValue>> entries, Func<TValue> create_default_value = null)
+        {
+            _tags = new Dictionary<TKey, TValue>(entries);
             _create_default_value = create_default_value;
         }
 
@@ -48,6 +54,12 @@ namespace DownUnder.Utilities
             }
         }
 
+        public void Add(TKey key, TValue value, bool replace = false)
+        {
+            KeyValuePair<TKey, TValue> entry = new KeyValuePair<TKey, TValue>(key, value);
+            Add(entry, replace);
+        }
+
         public void Add(KeyValuePair<TKey, TValue> pair, bool replace = false)
         {
             if (replace) this[pair.Key] = pair.Value;
@@ -69,14 +81,7 @@ namespace DownUnder.Utilities
             return c;
         }
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return ((IEnumerable<KeyValuePair<TKey, TValue>>)_tags).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_tags).GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _tags.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _tags.GetEnumerator();
     }
 }

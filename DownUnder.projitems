@@ -27,9 +27,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\SetGetEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DataTypes\UIImages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DesktopWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\DropDownEntryList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\DWindow.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\DropDownBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Functional\SpawnRightClickDropDown.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\GetDropDownEntriesArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\PreUpdateArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\RenameArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\CustomEventArgs\WidgetArgs.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\WidgetCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IAutoDictionary.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\WidgetPostUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IOSInterface.cs" />
     <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />

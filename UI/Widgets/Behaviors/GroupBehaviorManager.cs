@@ -1,4 +1,5 @@
 ﻿using DownUnder.UI.Widgets.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -26,6 +27,16 @@ namespace DownUnder.UI.Widgets.Behaviors
             Parent = parent;
         }
 
+        /// <summary> Returns a matching policy if the given <see cref="GroupBehaviorPolicy"/> has a matching <see cref="GroupBehaviorPolicy.Behavior"/> <see cref="Type"/> and <see cref="GroupBehaviorPolicy.InheritancePolicy"/> pair. </summary>
+        public GroupBehaviorPolicy GetMatchingPolicy(GroupBehaviorPolicy policy)
+        {
+            foreach (var _policy in _behavior_policies)
+            {
+                if (_policy.Behavior.GetType() == policy.GetType() && _policy.NecessaryVisualRole == policy.NecessaryVisualRole) return _policy;
+            }
+            return null;
+        }
+
         public void AddPolicy(GroupBehaviorPolicy policy)
         {
             foreach (var policy_ in _behavior_policies)
@@ -36,11 +47,35 @@ namespace DownUnder.UI.Widgets.Behaviors
             ImplementPolicy(policy);
         }
 
+        public void RemovePolicy(IEnumerable<GroupBehaviorPolicy> policies, bool remove_behavior = true, bool recursive = true)
+        {
+            foreach (var policy in policies) RemovePolicy(policy, remove_behavior, recursive);
+        }
+
+        /// <summary> Removes the matching policy without disabling the behavior. Does not match by reference, but through <see cref="GetMatchingPolicy(GroupBehaviorPolicy)"/>. </summary>
+        /// <param name="policy"> The <see cref="GroupBehaviorPolicy"/> to search for. </param>
+        /// <param name="remove_behavior"> When set to true, the matching <see cref="WidgetBehavior"/>s will be removed as well. </param>
+        /// <param name="recursive"> If true, iterate through all contained <see cref="Widget"/>s to do the same. </param>
+        public void RemovePolicy(GroupBehaviorPolicy policy, bool remove_behavior = true, bool recursive = true)
+        {
+            if (Parent.ParentWidget?.Behaviors.GroupBehaviors.GetMatchingPolicy(policy) != null) throw new Exception($"Cannot remove a policy that originates from a parent {nameof(Widget)}.");
+            GroupBehaviorPolicy _policy = GetMatchingPolicy(policy);
+            if (_policy == null) return;
+
+            if (!_behavior_policies.Remove(_policy)) throw new Exception($"Unexpected behavior in {nameof(GroupBehaviorManager)}.{nameof(GroupBehaviorManager.RemovePolicy)}.");
+            if (remove_behavior && !Parent.Behaviors.RemoveType(_policy.Behavior.GetType())) throw new Exception($"Unexpected behavior in {nameof(GroupBehaviorManager)}.{nameof(GroupBehaviorManager.RemovePolicy)}.");
+            if (recursive)
+            {
+                foreach (Widget widget in Parent.Children) widget.Behaviors.GroupBehaviors.RemovePolicy(policy, remove_behavior, recursive);
+            }
+        }
+
         public void AddPolicy(IEnumerable<GroupBehaviorPolicy> policies)
         {
             foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
         }
 
+        /// <summary> Internal method. Avoid calling. </summary>
         internal void ImplementPolicies()
         {
             foreach (GroupBehaviorPolicy policy in _behavior_policies) ImplementPolicy(policy);

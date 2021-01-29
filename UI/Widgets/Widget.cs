@@ -685,12 +685,6 @@ namespace DownUnder.UI.Widgets
             SetNonSerialized();
         }
 
-        [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
-        {
-            ///foreach (var b in Behaviors) b.Parent = this;
-        }
-
         public void SetDefaults()
         {
             SetNonSerialized();
@@ -936,10 +930,8 @@ namespace DownUnder.UI.Widgets
         {
             if (!_has_updated) return;
             // Skip some normal behavior if the user has the resize cursor over this widget
-            if (!ParentDWindow.UserResizeModeEnable
-                && ParentDWindow.ResizeCursorGrabber != this
-                && !_IsBeingResized)
-            {
+            //if (!ParentDWindow.UserResizeModeEnable && ParentDWindow.ResizeCursorGrabber != this && !_IsBeingResized)
+            //{
                 if (IsPrimaryHovered)
                 {
                     if (_update_flags._update_added_to_focused) AddToFocused();
@@ -953,7 +945,7 @@ namespace DownUnder.UI.Widgets
                 if (_update_flags._update_drag) OnDrag?.Invoke(this, EventArgs.Empty);
 
                 IsHoveredOver = _update_flags._update_hovered_over;
-            }
+            //}
 
             if (_update_flags._update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
             if (_update_flags._update_clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
@@ -1298,7 +1290,30 @@ namespace DownUnder.UI.Widgets
         public event EventHandler<WidgetBehaviorArgs> OnAddBehavior;
         /// <summary> Invoked when a <see cref="WidgetBehavior"/> is removed from this <see cref="Widget"/>. </summary>
         public event EventHandler<WidgetBehaviorArgs> OnRemoveBehavior;
+        /// <summary> Invoked when this <see cref="Widget"/> is gathering <see cref="DropDownEntry"/>s for the dropdown menu. (The right-click menu) </summary>
+        public event EventHandler<GetDropDownEntriesArgs> OnGetDropDownEntries;
 
+        /// <summary> Method that will get a list of dropdowns to display. Intended to be called by <see cref="WidgetBehavior"/>s that implement a visual drop down menu. </summary>
+        public DropDownEntryList InvokeOnGetDropDownEntries()
+        {
+            if (OnGetDropDownEntries == null) return new DropDownEntryList();
+
+            List<GetDropDownEntriesArgs> responses = new List<GetDropDownEntriesArgs>();
+            foreach (var @event in OnGetDropDownEntries.GetInvocationList())
+            {
+                GetDropDownEntriesArgs args = new GetDropDownEntriesArgs();
+                @event.DynamicInvoke(new object[] { this, args });
+                responses.Add(args);
+            }
+
+            DropDownEntryList result = new DropDownEntryList();
+            foreach (var response in responses)
+            {
+                if (response.DropDowns != null) result.Add(response.DropDowns, true);
+            }
+
+            return result;
+        }
         /// <summary> Internal invoke method. Avoid calling. </summary>
         internal void InvokeOnWindowClose() => OnWindowClose?.Invoke(this, EventArgs.Empty);
         /// <summary> Internal invoke method. Avoid calling. </summary>
@@ -1592,7 +1607,7 @@ namespace DownUnder.UI.Widgets
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
-            c.BehaviorTags = (AutoDictionary<SerializableType, AutoDictionary<string, string>>)BehaviorTags.Clone();
+            c.BehaviorTags = BehaviorTags.Clone();
             c._accepts_drops_backing = _accepts_drops_backing;
             c._user_resize_policy_backing = _user_resize_policy_backing;
             c._user_reposition_policy_backing = _user_reposition_policy_backing;
