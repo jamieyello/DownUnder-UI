@@ -79,6 +79,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Signals\WidgetSignal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\CodeConnectionEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetCoding\WidgetCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetHoverTimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IAutoDictionary.cs" />

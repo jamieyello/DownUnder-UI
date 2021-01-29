@@ -9,12 +9,13 @@ namespace DownUnder.UI.Widgets.Actions.Functional
         [DataMember] public Widget Widget { get; set; }
         [DataMember] public bool CloneWidgetOnAdd { get; set; } = true;
         [DataMember] public bool CloneWidgetInClone { get; set; } = true;
-        [DataMember] public OverlayWidgetLocation LocationOptions { get; set; }
+        [DataMember] public OverlayWidgetLocation Location { get; set; }
 
         public AddMainWidget() { }
-        public AddMainWidget(Widget widget)
+        public AddMainWidget(Widget widget, OverlayWidgetLocation location)
         {
             Widget = widget;
+            Location = location;
         }
 
         protected override void Initialize() 
@@ -39,7 +40,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             Widget widget;
             if (CloneWidgetOnAdd) widget = (Widget)Widget.Clone();
             else widget = Widget;
-            LocationOptions?.ApplyLocation(Parent, widget);
+            Location?.ApplyLocation(Parent, widget);
             Parent.ParentDWindow.MainWidget.Add(widget);
             EndAction();
         }
@@ -51,7 +52,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             else c.Widget = Widget;
             c.CloneWidgetOnAdd = CloneWidgetOnAdd;
             c.CloneWidgetInClone = CloneWidgetInClone;
-            c.LocationOptions = (OverlayWidgetLocation)LocationOptions.Clone();
+            c.Location = (OverlayWidgetLocation)Location.Clone();
             return c;
         }
 

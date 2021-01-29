@@ -68,7 +68,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
         {
             UpdateScrollRange();
             UpdateAvailableScrollDirections();
-            if (!args.Flags._update_hovered_over) return;
+            if (!args.Flags.hovered_over) return;
             foreach (Focus f in Parent.ParentDWindow.ScrollableWidgetFocus[AvailableScrollDirections]) f.AddFocus(Parent);
         }
 

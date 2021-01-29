@@ -129,7 +129,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                     nameof(Widget.OnDoubleClick),
                     new Actions.Functional.AddMainWidget()
                     {
-                        LocationOptions = new CoverParentOverlay(1),
+                        Location = new CoverParentOverlay(1),
                         Widget = new Widget()
                         //Widget = BehaviorDisplay(b_this.BaseBehaviorPreviews).WithAddedBehavior(
                         //    new PopInOut() 

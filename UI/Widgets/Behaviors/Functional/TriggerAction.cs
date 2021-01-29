@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace DownUnder.UI.Widgets.Behaviors.Functional
 {
-    /// <summary> Used to "connect" <see cref="WidgetAction"/>s to widget event handlers. Used to trigger actions from user input. </summary>
+    /// <summary> Used to "connect" <see cref="Action"/>s to widget event handlers. Used to trigger actions from user input. </summary>
     public class TriggerAction : WidgetBehavior
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };

@@ -67,11 +67,6 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (drop is Widget w_drop)
             {
                 w_drop.Area = GetAddWidgetArea(w_drop);
-                w_drop.OnRightClick += (o, a) => Debug.WriteLine("DMSHD Right clicked on a drop");
-                w_drop.OnClick += (o, a) => Debug.WriteLine("DMSHD clicked on a drop");
-                w_drop.OnHover += (o, a) => Debug.WriteLine("DMSHD hovered on a drop");
-                w_drop.OnResize += (o, a) => Debug.WriteLine("DMSHD resized a drop");
-
                 Parent.Add(w_drop);
             }
             if (drop is WidgetBehavior b_drop)

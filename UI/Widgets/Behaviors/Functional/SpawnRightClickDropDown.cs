@@ -9,33 +9,22 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 
-        protected override void Initialize()
-        {
-            //Parent.DropDownEntries["Copy"].ClickAction = null;
-            //Parent.DropDownEntries["Paste"].ClickAction = null;
-        }
+        protected override void Initialize() { }
 
         protected override void ConnectEvents()
         {
             Parent.OnRightClick += SpawnDropDown;
-            Parent.OnGetDropDownEntries += GetDropDown;
         }
 
         protected override void DisconnectEvents()
         {
             Parent.OnRightClick -= SpawnDropDown;
-            Parent.OnGetDropDownEntries -= GetDropDown;
         }
 
         public override object Clone()
         {
             SpawnRightClickDropDown c = new SpawnRightClickDropDown();
             return c;
-        }
-
-        void GetDropDown(object sender, GetDropDownEntriesArgs args)
-        {
-            args.DropDowns["Copy"].ClickAction = null;
         }
 
         void SpawnDropDown(object sender, EventArgs args)

@@ -1,10 +1,12 @@
 ﻿using MonoGame.Extended;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
 {
+    [DataContract]
     public class CoverParentOverlay : OverlayWidgetLocation
     {
-        int ParentUp { get; set; } = 0;
+        [DataMember] int ParentUp { get; set; } = 0;
 
         public CoverParentOverlay() { }
         public CoverParentOverlay(int parent_up)

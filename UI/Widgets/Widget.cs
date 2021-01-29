@@ -71,7 +71,9 @@ namespace DownUnder.UI.Widgets
         /// <summary> Will help <see cref="OnFirstUpdate"/> trigger. </summary>
         bool _trigger_first_update = true;
         /// <summary> The following are used by Update()/UpdatePriority(). They are set to true or false in UpdatePriority(), and Update() invokes events by reading them. </summary>
-        WidgetUpdateFlags _update_flags = new WidgetUpdateFlags();
+        WidgetUpdateFlags _update_flags;
+        /// <summary> Used to time long-hover events. </summary>
+        WidgetHoverTimer _long_hover_timer;
 
         /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
         public static int MAXIMUM_WIDGET_SIZE = 2048;
@@ -81,6 +83,8 @@ namespace DownUnder.UI.Widgets
         const int _MAX_WAIT_TIME = 100;
         /// <summary> How far off the cursor can be from the edge of a <see cref="Widget"/> before it's set as a resize cursor. 20f is about the Windows default. </summary>
         const float _USER_RESIZE_BOUNDS_SIZE = 20f;
+        /// <summary> How long (in seconds) the user will have to hover over a <see cref="Widget"/> before long-hover events are triggered. </summary>
+        const float _LONG_HOVER_WAIT_TIME = 0.1f;
 
         // Various property backing fields.
         [DataMember] string _name_backing;
@@ -717,6 +721,7 @@ namespace DownUnder.UI.Widgets
 
             _post_update_flags = new WidgetPostUpdateFlags();
             _update_flags = new WidgetUpdateFlags();
+            _long_hover_timer = new WidgetHoverTimer(_LONG_HOVER_WAIT_TIME);
 
             Children = new WidgetList(this);
             Actions = new ActionManager(this);
@@ -763,7 +768,7 @@ namespace DownUnder.UI.Widgets
 
         void UpdateGroupHoverFocus()
         {
-            if (_update_flags._update_hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
+            if (_update_flags.hovered_over) ParentDWindow?.HoveredWidgets.AddFocus(this);
             for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupHoverFocus();
         }
 
@@ -787,6 +792,8 @@ namespace DownUnder.UI.Widgets
         void UpdateGroupInput()
         {
             _update_flags.Reset();
+            
+            RectangleF visible_area = VisibleArea;
 
             if (!UpdateData.UIInputState.PrimaryClick)
             {
@@ -794,7 +801,7 @@ namespace DownUnder.UI.Widgets
                 if (_dragging_off)
                 {
                     _dragging_off = false;
-                    _update_flags._update_drop = true;
+                    _update_flags.drop = true;
                 }
             }
 
@@ -802,33 +809,41 @@ namespace DownUnder.UI.Widgets
             {
                 _double_click_countdown = 0f; // Do not allow double clicks where the cursor has been moved in-between clicks.
                 _triple_click_countdown = 0f;
+                _long_hover_timer.SoftReset();
             }
 
             if (_double_click_countdown > 0f) _double_click_countdown -= UpdateData.ElapsedSeconds;
-
-            if (VisibleArea.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
+            _long_hover_timer.Update(UpdateData.ElapsedSeconds);
+            if (_long_hover_timer.IsTriggered)
             {
-                _update_flags._update_hovered_over = true;
-                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags._update_clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
-                if (UpdateData.UIInputState.SecondaryClickTriggered) _update_flags._update_right_clicked_on = true;
+                _long_hover_timer.Silence();
+                _update_flags.long_hover = true;
+            }
+
+
+            if (visible_area.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
+            {
+                _update_flags.hovered_over = true;
+                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags.clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
+                if (UpdateData.UIInputState.SecondaryClickTriggered) _update_flags.right_clicked_on = true;
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
-                if (_update_flags._update_right_clicked_on) _update_flags._update_set_as_focused = true;
-                if (_update_flags._update_clicked_on)
+                if (_update_flags.right_clicked_on) _update_flags.set_as_focused = true;
+                if (_update_flags.clicked_on)
                 {
                     _dragging_in = true;
-                    if (UpdateData.UIInputState.Control) _update_flags._update_added_to_focused = true;
-                    else _update_flags._update_set_as_focused = true;
+                    if (UpdateData.UIInputState.Control) _update_flags.added_to_focused = true;
+                    else _update_flags.set_as_focused = true;
                     if (_triple_click_countdown > 0)
                     {
                         _double_click_countdown = 0f;
                         _triple_click_countdown = 0f; // Do not allow consecutive triple clicks.
-                        _update_flags._update_triple_clicked = true;
+                        _update_flags.triple_clicked = true;
                     }
                     if (_double_click_countdown > 0)
                     {
                         _double_click_countdown = 0f; // Do not allow consecutive double clicks.
-                        _update_flags._update_double_clicked = true;
+                        _update_flags.double_clicked = true;
                         _triple_click_countdown = _double_click_timing_backing;
                     }
                     _double_click_countdown = _double_click_timing_backing;
@@ -836,11 +851,11 @@ namespace DownUnder.UI.Widgets
             }
             else
             {
-                if (UpdateData.UIInputState.PrimaryClickTriggered || UpdateData.UIInputState.SecondaryClickTriggered) _update_flags._update_clicked_off = true;
+                if (UpdateData.UIInputState.PrimaryClickTriggered || UpdateData.UIInputState.SecondaryClickTriggered) _update_flags.clicked_off = true;
                 if (_dragging_in && !_dragging_off)
                 {
                     _dragging_off = true;
-                    _update_flags._update_drag = true;
+                    _update_flags.drag = true;
                 }
             }
 
@@ -862,12 +877,22 @@ namespace DownUnder.UI.Widgets
                     }
                 }
             }
+
             if ((UserRepositionPolicy == UserResizePolicyType.allow
                 || (UserRepositionPolicy == UserResizePolicyType.require_highlight && IsHighlighted))
-                && VisibleArea.Contains(InputState.CursorPosition))
+                && visible_area.Contains(InputState.CursorPosition))
             {
                 ParentDWindow.ResizeCursorGrabber = this;
                 ParentDWindow.ResizingDirections = Directions2D.UDLR;
+            }
+
+            if (ParentDWindow.ResizeCursorGrabber != null
+                && ParentDWindow.ResizeCursorGrabber != this
+                && ParentDWindow.ResizeCursorGrabber.ParentWidget != this
+                && visible_area.Contains(InputState.CursorPosition))
+            {
+                ParentDWindow.ResizeCursorGrabber = null;
+                ParentDWindow.ResizingDirections = Directions2D.None;
             }
 
             if (IsHighlighted)
@@ -929,31 +954,33 @@ namespace DownUnder.UI.Widgets
         void UpdateGroupEvents(GameTime game_time)
         {
             if (!_has_updated) return;
-            // Skip some normal behavior if the user has the resize cursor over this widget
-            //if (!ParentDWindow.UserResizeModeEnable && ParentDWindow.ResizeCursorGrabber != this && !_IsBeingResized)
-            //{
-                if (IsPrimaryHovered)
-                {
-                    if (_update_flags._update_added_to_focused) AddToFocused();
-                    if (_update_flags._update_set_as_focused) SetAsFocused();
-                    if (_update_flags._update_clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
-                    if (_update_flags._update_right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
-                    if (_update_flags._update_double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
-                    if (_update_flags._update_triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
-                }
 
-                if (_update_flags._update_drag) OnDrag?.Invoke(this, EventArgs.Empty);
+            if (IsPrimaryHovered)
+            {
+                if (_update_flags.added_to_focused) AddToFocused();
+                if (_update_flags.set_as_focused) SetAsFocused();
+                if (_update_flags.clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
+                if (_update_flags.right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
+                if (_update_flags.double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                if (_update_flags.triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                if (_update_flags.long_hover) OnLongHover?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                _long_hover_timer.HardReset();
+            }
 
-                IsHoveredOver = _update_flags._update_hovered_over;
-            //}
+            if (_update_flags.drag) OnDrag?.Invoke(this, EventArgs.Empty);
 
-            if (_update_flags._update_clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
-            if (_update_flags._update_clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
-            if (_update_flags._update_double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
-            if (_update_flags._update_triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
+            IsHoveredOver = _update_flags.hovered_over;
+
+            if (_update_flags.clicked_on) OnPassthroughClick?.Invoke(this, EventArgs.Empty);
+            if (_update_flags.clicked_off) OnClickOff?.Invoke(this, EventArgs.Empty);
+            if (_update_flags.double_clicked) OnPassthroughDoubleClick?.Invoke(this, EventArgs.Empty);
+            if (_update_flags.triple_clicked) OnPassthroughTripleClick?.Invoke(this, EventArgs.Empty);
 
             if (_IsBeingResized) SetAsFocused();
-            if (_update_flags._update_drop) OnDrop?.Invoke(this, EventArgs.Empty);
+            if (_update_flags.drop) OnDrop?.Invoke(this, EventArgs.Empty);
             if (InputState.Enter && IsPrimarySelected && EnterConfirms) OnConfirm?.Invoke(this, EventArgs.Empty);
 
             VisualSettings.Update(game_time.GetElapsedSeconds(), IsPrimaryHovered);
@@ -1219,6 +1246,8 @@ namespace DownUnder.UI.Widgets
         public event EventHandler OnHover;
         /// <summary> Invoked when the mouse hovers off this <see cref="Widget"/>. </summary>
         public event EventHandler OnHoverOff;
+        /// <summary> Invoked once when the mouse hovers over this <see cref="Widget"/> without moving for a short time. </summary>
+        public event EventHandler OnLongHover;
         /// <summary> Invoked after graphics have been initialized and are ready to use. </summary>
         public event EventHandler OnGraphicsInitialized;
         /// <summary> Invoked after the this <see cref="Widget"/> and its children have been initialized. </summary>

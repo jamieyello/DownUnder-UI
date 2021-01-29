@@ -97,10 +97,7 @@ namespace DownUnder.UI.Widgets
                 w_entry.Behaviors.Add(
                     new TriggerWidgetAction(
                         nameof(Widget.OnClick), 
-                        new AddMainWidget(dropdown) 
-                        { 
-                            LocationOptions = new SideOfParent() { ParentSide = Direction2D.down, ParentUp = 1 } 
-                        }));
+                        new AddMainWidget(dropdown, new SideOfParent() { ParentSide = Direction2D.down, ParentUp = 1 })));
 
                 file_bar.Add(w_entry);
             }
@@ -108,19 +105,28 @@ namespace DownUnder.UI.Widgets
             return file_bar;
         }
 
-        public static Widget DropDown(IAutoDictionary<string, DropDownEntry> entries, PopInOut pop_in_out_behavior = null)
+        public static Widget DropDown(IEnumerable<KeyValuePair<string, DropDownEntry>> entries, PopInOut pop_in_out_behavior = null)
         {
             WidgetList items = new WidgetList();
             foreach (var item in entries)
             {
-                Widget new_entry = Button(item.Key);
-                new_entry.VisualSettings.DrawOutline = false;
-                new_entry.VisualSettings.DrawBackground = false;
-                new_entry.Behaviors.Get<DrawText>().XTextPositioning = XTextPositioningPolicy.left;
-                if (item.Value.ClickAction != null) new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), (WidgetAction)item.Value.ClickAction.InitialClone()));
-                items.Add(new_entry);
+                items.Add(DropDownEntry(item.Key, item.Value));
             }
             return DropDown(items, pop_in_out_behavior);
+        }
+
+        public static Widget DropDownEntry(string text, DropDownEntry entry)
+        {
+            Widget new_entry = Button(text);
+            new_entry.VisualSettings.DrawOutline = false;
+            new_entry.VisualSettings.DrawBackground = false;
+            new_entry.Behaviors.Get<DrawText>().XTextPositioning = XTextPositioningPolicy.left;
+            if (entry.ClickAction != null && entry.SideDropDown == null) new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), (WidgetAction)entry.ClickAction.InitialClone()));
+            if (entry.SideDropDown != null)
+            {
+                new_entry.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnLongHover), new AddMainWidget(DropDown(entry.SideDropDown), OverlayWidgetLocation.SideOfParent(1, Direction2D.right))));
+            }
+            return new_entry;
         }
 
         //public static Widget DropDown(IEnumerable<string> items, PopInOut pop_in_out_behavior = null)
