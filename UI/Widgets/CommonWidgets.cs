@@ -169,5 +169,34 @@ namespace DownUnder.UI.Widgets
 
             return result;
         }
+
+        public static Widget Explorer(string path) => Explorer(ExplorerEntry.FromFolder(path));
+        public static Widget Explorer(ExplorerEntry explorer)
+        {
+            WidgetList widgets = new WidgetList(); // Gridformat is broken, cannot use
+
+            foreach (var entry in explorer.GetDirectories())
+            {
+                Widget label = Label(entry.Key);
+                Widget spacer = new Widget();
+                spacer.Width = 30;
+                spacer.IsFixedWidth = true;
+                Widget widget = new Widget().WithAddedBehavior(new GridFormat(2, 1));
+                widget[0, 0] = spacer;
+                widget[1, 0] = label;
+                widgets.Add(widget);
+            }
+
+            foreach (var entry in explorer.GetFiles())
+            {
+                Widget widget = Label(entry.Key);
+                widgets.Add(widget);
+            }
+
+            Widget result = new Widget();
+            result.AddRange(widgets);
+            result.Behaviors.Add(new GridFormat(1, widgets.Count));
+            return result;
+        }
     }
 }

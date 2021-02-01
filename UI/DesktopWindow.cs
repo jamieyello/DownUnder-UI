@@ -39,8 +39,6 @@ namespace DownUnder.UI
         /// <summary> A <see cref="DWindow"/> suited for desktop environments. </summary>
         public DesktopWindow(GraphicsDeviceManager graphics, Game game, IOSInterface os_interface, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game, os_interface)
         {
-            //throw new System.Exception();
-
             MainWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
@@ -60,7 +58,7 @@ namespace DownUnder.UI
             DisplayWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             TopBarPolicy = TopBarPolicyType.disable;
             _border_format.BorderOccupy.Up.ForceComplete();
-            if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.AddPolicy(group_behaviors);
+            if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.ImplementPolicy(group_behaviors);
         }
 
         public override Widget DisplayWidget
@@ -68,11 +66,7 @@ namespace DownUnder.UI
             get => _border_format.Center.Children.Count == 0 ? null : _border_format.Center.Children[0];
             set
             {
-                if (_border_format.Center.Children.Count != 0)
-                {
-                    _border_format.Center.RemoveAt(0);
-                }
-
+                if (_border_format.Center.Children.Count != 0) _border_format.Center.RemoveAt(0);
                 value.SnappingPolicy = DiagonalDirections2D.All;
                 _border_format.Center.Add(value);
             }

@@ -731,7 +731,7 @@ namespace DownUnder.UI.Widgets
             OnAddChild += (s, a) =>
             {
                 LastAddedWidget.EmbedIn(this);
-                Behaviors.GroupBehaviors.ImplementPolicies();
+                Behaviors.GroupBehaviors.UpdatePolicies();
             };
         }
 
@@ -1636,7 +1636,7 @@ namespace DownUnder.UI.Widgets
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
-            c.BehaviorTags = BehaviorTags.Clone();
+            c.BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>(BehaviorTags);
             c._accepts_drops_backing = _accepts_drops_backing;
             c._user_resize_policy_backing = _user_resize_policy_backing;
             c._user_reposition_policy_backing = _user_reposition_policy_backing;

@@ -251,28 +251,13 @@ namespace DownUnder.UI.Widgets
 
             return result;
         }
-
-        public static Widget ConnectCodeTest()
+        
+        public static Widget ExplorerTest()
         {
             Widget result = new Widget();
-            result.Add(CommonWidgets.Button("test", new RectangleF(40, 40, 100, 40)), out var button);
-            button.Name = "MyWidget";
-
+            result.Add(CommonWidgets.Explorer(@"C:\Users\jamie\Desktop\ii"), out var explorer);
+            explorer.Position = new Point2(50, 50);
             return result;
-        }
-    }
-
-    public class TestSerializeClass
-    {
-        public string NameProperty { get; set; }
-        public string name_field;
-        public List<string> string_list = new List<string>();
-
-        public WidgetList w_list = new WidgetList();
-
-        public IEnumerator<string> GetEnumerator()
-        {
-            return ((IEnumerable<string>)string_list).GetEnumerator();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public FileBarEntries Clone()
         {
             FileBarEntries c = new FileBarEntries();
-            c.file_bar_entries = (AutoDictionary<string, AutoDictionary<string, DropDownEntry>>)file_bar_entries.Clone();
+            c.file_bar_entries =  new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>(file_bar_entries);
             return c;
         }
 

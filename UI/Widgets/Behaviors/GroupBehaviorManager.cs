@@ -32,20 +32,22 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             foreach (var _policy in _behavior_policies)
             {
-                if (_policy.Behavior.GetType() == policy.GetType() && _policy.NecessaryVisualRole == policy.NecessaryVisualRole) return _policy;
+                if (_policy.Behavior.GetType() == policy.Behavior.GetType() && _policy.NecessaryVisualRole == policy.NecessaryVisualRole) return _policy;
             }
             return null;
         }
 
-        public void AddPolicy(GroupBehaviorPolicy policy)
-        {
-            foreach (var policy_ in _behavior_policies)
-            {
-                if (policy_.Behavior.GetType() == policy.Behavior.GetType() && policy_.NecessaryVisualRole == policy.NecessaryVisualRole) return; // throw new System.Exception($"This {nameof(GroupBehaviorManager)} already contains a {nameof(WidgetBehavior)} of type {policy.Behavior.GetType().Name}");
-            }
-            _behavior_policies.Add(policy);
-            ImplementPolicy(policy);
-        }
+        //public void AddPolicy(IEnumerable<GroupBehaviorPolicy> policies)
+        //{
+        //    foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
+        //}
+
+        //public void AddPolicy(GroupBehaviorPolicy policy)
+        //{
+        //    //if (GetMatchingPolicy(policy) != null) return;
+        //    //_behavior_policies.Add(policy);
+        //    ImplementPolicy(policy);
+        //}
 
         public void RemovePolicy(IEnumerable<GroupBehaviorPolicy> policies, bool remove_behavior = true, bool recursive = true)
         {
@@ -70,29 +72,35 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
         }
 
-        public void AddPolicy(IEnumerable<GroupBehaviorPolicy> policies)
-        {
-            foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
-        }
-
         /// <summary> Internal method. Avoid calling. </summary>
-        internal void ImplementPolicies()
+        internal void UpdatePolicies()
         {
-            foreach (GroupBehaviorPolicy policy in _behavior_policies) ImplementPolicy(policy);
+            ImplementPolicy(_behavior_policies);
         }
 
-        private void ImplementPolicy(GroupBehaviorPolicy policy)
+        public void ImplementPolicy(IEnumerable<GroupBehaviorPolicy> policies)
         {
-            WidgetList widgets;
+            foreach (GroupBehaviorPolicy policy in policies) ImplementPolicy(policy);
+        }
 
-            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widgets = Parent.AllContainedWidgets;
-            else widgets = Parent.Children;
-
-            foreach (Widget widget in widgets)
+        public void ImplementPolicy(GroupBehaviorPolicy policy)
+        {
+            if (GetMatchingPolicy(policy) == null) _behavior_policies.Add(policy);
+            TryAddBehavior(policy);
+            
+            if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children)
             {
-                if (widget.Behaviors.GroupBehaviors.AcceptancePolicy.IsBehaviorAllowed(widget, policy)) widget.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
-                if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children) widget.Behaviors.GroupBehaviors.AddPolicy((GroupBehaviorPolicy)policy.Clone());
+                foreach (Widget widget in Parent.Children) widget.Behaviors.GroupBehaviors.ImplementPolicy(policy);
             }
+            else if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.direct_children)
+            {
+                foreach (Widget widget in Parent.Children) widget.Behaviors.GroupBehaviors.TryAddBehavior(policy);
+            }
+        }
+
+        void TryAddBehavior(GroupBehaviorPolicy policy)
+        {
+            if (AcceptancePolicy.IsBehaviorAllowed(Parent, policy)) Parent.Behaviors.TryAdd((WidgetBehavior)policy.Behavior.Clone());
         }
 
         internal List<GroupBehaviorPolicy> InheritedPolicies

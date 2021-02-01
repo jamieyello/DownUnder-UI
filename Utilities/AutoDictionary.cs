@@ -8,7 +8,7 @@ namespace DownUnder.Utilities
 {
     /// <summary> A <see cref="Dictionary{TKey, TValue}"/> that automatically creates new entries on reading nonexistent ones. </summary>
     [DataContract] public class AutoDictionary<TKey, TValue> 
-        : ICloneable, IAutoDictionary<TKey, TValue>
+        : IAutoDictionary<TKey, TValue>
     {
         [DataMember] Dictionary<TKey, TValue> _tags = new Dictionary<TKey, TValue>();
         private readonly Func<TValue> _create_default_value;
@@ -72,14 +72,6 @@ namespace DownUnder.Utilities
         }
 
         public bool Remove(TKey key) => _tags.Remove(key);
-
-        object ICloneable.Clone() => Clone();
-        public AutoDictionary<TKey, TValue> Clone()
-        {
-            AutoDictionary<TKey, TValue> c = new AutoDictionary<TKey, TValue>(_create_default_value);
-            c._tags = new Dictionary<TKey, TValue>(_tags);
-            return c;
-        }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _tags.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _tags.GetEnumerator();
