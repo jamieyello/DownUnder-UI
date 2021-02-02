@@ -209,13 +209,9 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
             bool p = _enable_internal_align;
             _enable_internal_align = false;
 
-            // !-------------------------------------------------
-            // !------------------------------------------------- // why is this here?
-            // !-------------------------------------------------
-            // !-------------------------------------------------
-
-            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing);
+            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing, Parent?.debug_output ?? false);
             SetSizeToContent();
+
             _enable_internal_align = p;
         }
 
@@ -331,6 +327,8 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
                     args.Override = args.Override.Value.ResizedBy(-(args.Override.Value.Bottom - next_row_top), Directions2D.D, current_row_minimum_size);
                 }
             }
+
+            if (Parent.debug_output && args.Override.Value.Width > 100) throw new Exception();
 
             SetSizeToContent();
             _enable_internal_align = p;

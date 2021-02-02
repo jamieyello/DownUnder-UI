@@ -180,7 +180,7 @@ namespace DownUnder.UI.Widgets
                 Widget label = Label(entry.Key);
                 Widget spacer = new Widget();
                 spacer.Width = 30;
-                spacer.IsFixedWidth = true;
+                //spacer.IsFixedWidth = true;
                 Widget widget = new Widget().WithAddedBehavior(new GridFormat(2, 1));
                 widget[0, 0] = spacer;
                 widget[1, 0] = label;

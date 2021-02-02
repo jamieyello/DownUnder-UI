@@ -259,5 +259,20 @@ namespace DownUnder.UI.Widgets
             explorer.Position = new Point2(50, 50);
             return result;
         }
+
+        public static Widget BrokenStuff()
+        {
+            Widget result = new Widget();
+            Widget inner = new Widget();
+            inner.Position = new Point2(50, 50);
+            inner.Add(CommonWidgets.Label("Testgfd"));
+            inner.Add(CommonWidgets.Label("Testfdasfdsa"));
+            inner.Add(CommonWidgets.Label("Test"));
+            inner.Add(CommonWidgets.Label("Test"));
+            //inner.Add(CommonWidgets.Label("Test"));
+            inner.Behaviors.Add(new GridFormat(1, inner.Count));
+            result.Add(inner);
+            return result;
+        }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using MonoGame.Extended;
 using System.Collections.Generic;
-using DownUnder;
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
@@ -19,9 +15,8 @@ namespace DownUnder.UI.Widgets.DataTypes
         {
             if (width == 0 || height == 0) return;
 
-            // I am trying to get away with this
+            AutoSizeAllWidgets(widgets, width, height);
             SetSize(widgets, width, height, new_area.Size, debug, spacing); // expand
-            AutoSizeAllWidgets(widgets, width, height); // match follows
             AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing);
         }
 
