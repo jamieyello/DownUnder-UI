@@ -274,5 +274,24 @@ namespace DownUnder.UI.Widgets
             result.Add(inner);
             return result;
         }
+
+        public static Widget BrokenFixedSize()
+        {
+            Widget result = new Widget();
+            Widget inner = new Widget();
+            inner.Position = new Point2(50, 50);
+            inner.Add(new Widget() { IsFixedWidth = true });
+            inner.Add(new Widget());
+
+            inner.Behaviors.Add(new GridFormat(2, 1));
+
+            Debug.WriteLine("Setting width");
+            inner.Width = 100;
+
+            //throw new Exception();
+
+            result.Add(inner);
+            return result;
+        }
     }
 }
