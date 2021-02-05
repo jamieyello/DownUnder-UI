@@ -85,10 +85,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\WidgetUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IAutoDictionary.cs" />
-    <Compile Include="..\..\DownUnder-UI\UI\Widgets\WidgetPostUpdateFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonNamespace\IOSInterface.cs" />
-    <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\AnimatedGraphics\SwitchingGraphic.cs" />
-    <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Functional\TriggerWidgetAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorAcceptancePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\GroupBehaviorPolicy.cs" />
@@ -108,10 +105,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\GeneralVisualSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\BorderingSide.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
-    <Compile Include="..\..\DownUnder-UI\UI\Widgets\DataTypes\InnerWidgetLocations\CorneredLocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxListPosition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\DataTypes\ProxList.cs" />
-    <Compile Include="..\..\DownUnder-UI\UI\Widgets\Behaviors\Visual\BlurBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DragOffOutline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawCenteredImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Widgets\Behaviors\Visual\DrawText.cs" />
