@@ -1,56 +1,63 @@
-﻿using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.Input
-{
-    /// <summary>
-    /// Not to be confused with "the other" DInput, this Direct Input accesses input directly.
-    /// </summary>
-    public static class DirectInput
-    {
-        public static PseudoButton GetPressedButton(Controller controller, int button_index, InputState input_state)
-        {
-            switch (controller.type)
-            {
+namespace DownUnder.Input {
+    /// <summary> Not to be confused with "the other" DInput, this Direct Input accesses input directly. </summary>
+    public static class DirectInput {
+        public static PseudoButton GetPressedButton(
+            Controller controller,
+            int button_index,
+            InputState input_state
+        ) {
+            switch (controller.Type) {
                 case ControllerType.keyboard:
+                    var keys = (Keys)button_index;
+                    var was_key_down = input_state.previous_keyboard_state.IsKeyDown(keys);
+                    var is_key_down = input_state.keyboard_state.IsKeyDown(keys);
+                    var key_was_just_pressed = is_key_down && !was_key_down;
+
                     return new PseudoButton(
-                        input_state.keyboard_state.IsKeyDown((Keys)button_index),                                                                       // bool value from a key press
-                        (float)System.Convert.ToDouble((input_state.keyboard_state).IsKeyDown((Keys)button_index)),                                     // float value from a key press
-                        input_state.keyboard_state.IsKeyDown((Keys)button_index) && !input_state.previous_keyboard_state.IsKeyDown((Keys)button_index)  // triggered value for the first frame
-                        );
+                        is_key_down,                          // bool value from a key press
+                        System.Convert.ToSingle(is_key_down), // float value from a key press
+                        key_was_just_pressed
+                    );
 
                 case ControllerType.xbox:
+                    var buttons = (Buttons)button_index;
+                    var was_button_down = input_state.previous_game_pad_state[controller.Index].IsButtonDown(buttons);
+                    var game_pad_State = input_state.game_pad_state[controller.Index];
+                    var is_button_down = game_pad_State.IsButtonDown(buttons);
+                    var button_was_just_pressed = is_button_down && !was_button_down;
+
                     return new PseudoButton(
-                        input_state.game_pad_state[controller.index].IsButtonDown((Buttons)button_index),                      // bool value from a key press
-                        GetXboxAnalog(button_index, input_state.game_pad_state[controller.index]),                                // float value from a key press
-                        input_state.game_pad_state[controller.index].IsButtonDown((Buttons)button_index) && !input_state.previous_game_pad_state[controller.index].IsButtonDown((Buttons)button_index)
-                        );
+                        is_button_down,                              // bool value from a button press
+                        GetXboxAnalog(button_index, game_pad_State), // float value from a button press
+                        button_was_just_pressed
+                    );
 
                 case ControllerType.mouse:
-                    double mouse_button = GetMouseButton(button_index, input_state, out bool triggered);
+                    var mouse_button = GetMouseButton(button_index, input_state, out var triggered);
+
                     return new PseudoButton(
                         mouse_button >= 1,
                         (float)mouse_button,
                         triggered
-                        );
+                    );
             }
 
-            Debug.WriteLine("Button Action.GetPressedButton: ControllerType." + controller.type.ToString() + " is not supported.");
+            Debug.WriteLine("Button Action.GetPressedButton: ControllerType." + controller.Type + " is not supported.");
             return new PseudoButton();
         }
 
-        private static double GetMouseButton(int button_index, InputState input_state, out bool triggered)
-        {
-            switch ((MouseButtons)button_index)
-            {
+        static double GetMouseButton(
+            int button_index,
+            InputState input_state,
+            out bool triggered
+        ) {
+            switch ((MouseButtons)button_index) {
                 case MouseButtons.left_button:
-                    if (input_state.mouse_state.LeftButton == ButtonState.Pressed)
-                    {
-                        triggered = false;
-                        if (input_state.previous_mouse_state.LeftButton != ButtonState.Pressed)
-                        {
-                            triggered = true;
-                        }
+                    if (input_state.mouse_state.LeftButton == ButtonState.Pressed) {
+                        triggered = input_state.previous_mouse_state.LeftButton != ButtonState.Pressed;
                         return 1;
                     }
                     triggered = false;
@@ -59,11 +66,7 @@ namespace DownUnder.Input
                 case MouseButtons.right_button:
                     if (input_state.mouse_state.RightButton == ButtonState.Pressed)
                     {
-                        triggered = false;
-                        if (input_state.previous_mouse_state.RightButton != ButtonState.Pressed)
-                        {
-                            triggered = true;
-                        }
+                        triggered = input_state.previous_mouse_state.RightButton != ButtonState.Pressed;
                         return 1;
                     }
                     triggered = false;
@@ -84,54 +87,30 @@ namespace DownUnder.Input
             }
         }
 
-        private static float GetXboxAnalog(int button_index, GamePadState game_pad_state)
-        {
-            switch ((Buttons)button_index)
-            {
-                case Buttons.LeftThumbstickLeft:
-                    if (game_pad_state.ThumbSticks.Left.X > 0) { return 0f; }
-                    return -game_pad_state.ThumbSticks.Left.X;
+        static float GetXboxAnalog(
+            int button_index,
+            GamePadState game_pad_state
+        ) {
+            var left = game_pad_state.ThumbSticks.Left;
+            var right = game_pad_state.ThumbSticks.Right;
 
-                case Buttons.LeftThumbstickRight:
-                    if (game_pad_state.ThumbSticks.Left.X < 0) { return 0f; }
-                    return game_pad_state.ThumbSticks.Left.X;
+            switch ((Buttons)button_index) {
+                case Buttons.LeftThumbstickLeft: return left.X > 0 ? 0 : -left.X;
+                case Buttons.LeftThumbstickRight: return left.X < 0 ? 0 : left.X;
 
-                case Buttons.LeftThumbstickUp:
-                    if (game_pad_state.ThumbSticks.Left.Y < 0) { return 0f; }
-                    return game_pad_state.ThumbSticks.Left.Y;
+                case Buttons.LeftThumbstickUp: return left.Y < 0 ? 0 : left.Y;
+                case Buttons.LeftThumbstickDown: return left.Y > 0 ? 0 : -left.Y;
 
-                case Buttons.LeftThumbstickDown:
-                    if (game_pad_state.ThumbSticks.Left.Y > 0) { return 0f; }
-                    return -game_pad_state.ThumbSticks.Left.Y;
+                case Buttons.RightThumbstickLeft: return right.X > 0 ? 0 : -right.X;
+                case Buttons.RightThumbstickRight: return right.X < 0 ? 0f : right.X;
 
-                case Buttons.RightThumbstickLeft:
-                    if (game_pad_state.ThumbSticks.Right.X > 0) { return 0f; }
-                    return -game_pad_state.ThumbSticks.Right.X;
+                case Buttons.RightThumbstickUp: return right.Y < 0 ? 0f : right.Y;
+                case Buttons.RightThumbstickDown: return right.Y > 0 ? 0f : -right.Y;
 
-                case Buttons.RightThumbstickRight:
-                    if (game_pad_state.ThumbSticks.Right.X < 0) { return 0f; }
-                    return game_pad_state.ThumbSticks.Right.X;
+                case Buttons.RightTrigger: return game_pad_state.Triggers.Right;
+                case Buttons.LeftTrigger: return game_pad_state.Triggers.Left;
 
-                case Buttons.RightThumbstickUp:
-                    if (game_pad_state.ThumbSticks.Right.Y < 0) { return 0f; }
-                    return game_pad_state.ThumbSticks.Right.Y;
-
-                case Buttons.RightThumbstickDown:
-                    if (game_pad_state.ThumbSticks.Right.Y > 0) { return 0f; }
-                    return -game_pad_state.ThumbSticks.Right.Y;
-
-                case Buttons.RightTrigger:
-                    return game_pad_state.Triggers.Right;
-
-                case Buttons.LeftTrigger:
-                    return game_pad_state.Triggers.Left;
-
-                default:
-                    if (game_pad_state.IsButtonDown((Buttons)button_index))
-                    {
-                        return 1f;
-                    }
-                    return 0f;
+                default: return game_pad_state.IsButtonDown((Buttons)button_index) ? 1f : 0f;
             }
         }
     }

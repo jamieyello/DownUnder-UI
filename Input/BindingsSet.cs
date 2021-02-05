@@ -30,7 +30,7 @@ namespace DownUnder.Input {
             Controller controller,
             ActionType action_type
         ) =>
-            _bindings_set[(int)controller.type][(int)action_type];
+            _bindings_set[(int)controller.Type][(int)action_type];
 
         public void SetBinding(
             ControllerType controller_type,

@@ -5,40 +5,42 @@ using DownUnder.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.Widgets.DataTypes;
 using DownUnder.Utilities;
 using Microsoft.Xna.Framework;
+using static DownUnder.UI.DesktopWindow.TopBarPolicyType;
 
-namespace DownUnder.UI
-{
-    public class DesktopWindow : DWindow
-    {
-        BorderFormat _border_format = new BorderFormat();
+namespace DownUnder.UI {
+    public sealed class DesktopWindow : DWindow {
+        readonly BorderFormat _border_format = new BorderFormat();
         TopBarPolicyType _top_bar_policy;
-        bool _initialized = false;
+        readonly bool _initialized;
 
-        public enum TopBarPolicyType
-        {
+        public enum TopBarPolicyType {
             enable,
             disable,
             fullscreen_toggle
         }
 
-        public TopBarPolicyType TopBarPolicy
-        {
+        public TopBarPolicyType TopBarPolicy {
             get => _top_bar_policy;
-            set
-            {
+            set {
                 _top_bar_policy = value;
-                if (value == TopBarPolicyType.disable) DisableTopBar();
-                if (value == TopBarPolicyType.enable) EnableTopBar();
-                if (value == TopBarPolicyType.fullscreen_toggle) ToggleTopBarWithFullscreen();
+                if (value == disable) DisableTopBar();
+                else if (value == enable) EnableTopBar();
+                else if (value == fullscreen_toggle) ToggleTopBarWithFullscreen();
             }
         }
 
         /// <summary> Get the <see cref="ChangingValue{float}"/> animation value of the top border expanding/retracting. </summary>
-        public ChangingValue<float> GetTopBorderAnimation() => _border_format.BorderOccupy.Up;
+        public ChangingValue<float> GetTopBorderAnimation() =>
+            _border_format.BorderOccupy.Up;
 
         /// <summary> A <see cref="DWindow"/> suited for desktop environments. </summary>
-        public DesktopWindow(GraphicsDeviceManager graphics, Game game, IOSInterface os_interface, Widget display_widget = null, GroupBehaviorCollection group_behaviors = null) : base(graphics, game, os_interface)
-        {
+        public DesktopWindow(
+            GraphicsDeviceManager graphics,
+            Game game,
+            IOSInterface os_interface,
+            Widget display_widget = null,
+            GroupBehaviorCollection group_behaviors = null
+        ) : base(graphics, game, os_interface) {
             MainWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             MainWidget.Behaviors.Add(_border_format);
             MainWidget.VisualSettings.DrawBackground = false;
@@ -56,7 +58,7 @@ namespace DownUnder.UI
 
             DisplayWidget = display_widget ?? new Widget { };
             DisplayWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
-            TopBarPolicy = TopBarPolicyType.disable;
+            TopBarPolicy = disable;
             _border_format.BorderOccupy.Up.ForceComplete();
             if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.ImplementPolicy(group_behaviors);
         }

@@ -1,10 +1,6 @@
-﻿namespace DownUnder.Input
-{
-    /// <summary>
-    /// User defined actions. Used to request input.
-    /// </summary>
-    public enum ActionType
-    {
+﻿namespace DownUnder.Input {
+    /// <summary> User defined actions. Used to request input. </summary>
+    public enum ActionType {
         error,
         menu_select,
         menu_back,

@@ -1,35 +1,33 @@
 ﻿using System;
 
-namespace DownUnder.Input
-{
-    [Serializable()]
-    internal class PlayerProfile
-    {
-        public String name = "";
-        public Controller current_controller = new Controller();
-        public BindingsSet bindings_set = new BindingsSet();
+namespace DownUnder.Input {
+    [Serializable]
+    sealed class PlayerProfile {
+        readonly string _name;
+        public Controller _current_controller;
+        public BindingsSet _bindings_set = new BindingsSet();
 
-        public PlayerProfile(Controller current_controller_, int index)
-        {
-            current_controller = (Controller)current_controller_.Clone();
-            name = "Player " + index.ToString();
+        public PlayerProfile(
+            Controller current_controller,
+            string name = ""
+        ) {
+            _current_controller = current_controller.Clone();
+            _name = name;
         }
 
-        public PlayerProfile(Controller current_controller_, string name_)
-        {
-            current_controller = (Controller)current_controller_.Clone();
-            name = name_;
+        public PlayerProfile(
+            Controller current_controller,
+            int index
+        ) : this(
+            current_controller,
+            $"Player {index}"
+        ) {
         }
 
-        public PlayerProfile(Controller current_controller_)
-        {
-            current_controller = (Controller)current_controller_.Clone();
-            name = "";
-        }
-
-        public PseudoButton GetActionButton(InputState input_state, ActionType action_type)
-        {
-            return bindings_set.GetAction(input_state, current_controller, action_type);
-        }
+        public PseudoButton GetActionButton(
+            InputState input_state,
+            ActionType action_type
+        ) =>
+            _bindings_set.GetAction(input_state, _current_controller, action_type);
     }
 }
