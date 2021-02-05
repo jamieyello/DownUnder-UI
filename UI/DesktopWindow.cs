@@ -21,7 +21,7 @@ namespace DownUnder.UI
             fullscreen_toggle
         }
 
-        public TopBarPolicyType TopBarPolicy 
+        public TopBarPolicyType TopBarPolicy
         {
             get => _top_bar_policy;
             set
@@ -47,7 +47,7 @@ namespace DownUnder.UI
 
             _border_format.TopBorder = InternalWidgets.WindowHandle(MainWidget);
             _border_format.TopBorder.ParentDWindow.OnToggleFullscreen += (s, a) => ToggleTopBarWithFullscreen();
-            
+
             _border_format.Center = new Widget { };
             _border_format.Center.VisualSettings = GeneralVisualSettings.Invisible;
             _border_format.Center.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);

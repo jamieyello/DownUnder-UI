@@ -7,8 +7,8 @@ namespace DownUnder.UI.Widgets.Actions
     {
         readonly List<WidgetAction> actions;
 
-        public ActionSet() 
-        { 
+        public ActionSet()
+        {
             actions = new List<WidgetAction>();
         }
         public ActionSet(IEnumerable<WidgetAction> actions)

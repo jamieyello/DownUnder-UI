@@ -17,7 +17,7 @@ namespace DownUnder.UI.DataTypes
 
         /// <summary> Iconed to represent an open folder. </summary>
         public Texture2D OpenedFolder { get; }
-        
+
         public UIImages(GraphicsDevice graphics)
         {
             FileStream af_fs = new FileStream("UI/Images/add folder.png", FileMode.Open);

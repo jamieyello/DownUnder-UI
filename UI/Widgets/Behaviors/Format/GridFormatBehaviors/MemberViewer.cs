@@ -15,7 +15,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors
         public object RepresentedObject;
 
         public MemberViewer() { }
-        public MemberViewer(object represented_object, float row_height = 30f) 
+        public MemberViewer(object represented_object, float row_height = 30f)
         {
             RepresentedObject = represented_object;
             _row_height = row_height;

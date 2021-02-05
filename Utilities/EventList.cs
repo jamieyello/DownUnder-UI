@@ -12,7 +12,7 @@ namespace DownUnder.Utilities
 
         private List<T> _list = new List<T>();
 
-        public T this[int index] { 
+        public T this[int index] {
             get => ((IList<T>)_list)[index];
             set {
                 T removed = _list[index];
@@ -37,13 +37,13 @@ namespace DownUnder.Utilities
         }
 
         public bool Contains(T item) => _list.Contains(item);
-        
+
         public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
-        
+
         public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-        
+
         public int IndexOf(T item) => _list.IndexOf(item);
-        
+
         public void Insert(int index, T item) {
             _list.Insert(index, item);
             OnAdd.Invoke(this, new AddItemArgs<T>(item));

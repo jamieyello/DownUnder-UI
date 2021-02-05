@@ -12,10 +12,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 
         public Draw3DCube BaseBehavior => Parent.Behaviors.Get<Draw3DCube>();
 
-        public SpinCube Spin = new SpinCube() 
-        { 
-            DuplicatePolicy = Actions.WidgetAction.DuplicatePolicyType.parallel, 
-            Direction = new Vector3(0.1f, 0f,0f) 
+        public SpinCube Spin = new SpinCube()
+        {
+            DuplicatePolicy = Actions.WidgetAction.DuplicatePolicyType.parallel,
+            Direction = new Vector3(0.1f, 0f,0f)
         };
 
         protected override void Initialize()

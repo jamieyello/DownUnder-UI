@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional {
 
         protected override void Initialize()
         {
-            
+
         }
 
         protected override void ConnectEvents() {

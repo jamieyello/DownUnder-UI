@@ -19,7 +19,7 @@ namespace DownUnder.Utilities.DrawingEffects
             DefaultPixel = new GridPixel();
             DefaultPixel.ChangingColor.SetTargetValue(InitialColor);
         }
-        
+
         public Color InitialColor { get; set; } = Color.Red;
 
         public GridPixel DefaultPixel { get; set; }
@@ -35,7 +35,7 @@ namespace DownUnder.Utilities.DrawingEffects
                 UpdateGridDimensions();
             }
         }
-        
+
         public Point2 Size
         {
             get => _size_backing;
@@ -69,7 +69,7 @@ namespace DownUnder.Utilities.DrawingEffects
                 }
             }
         }
-        
+
         public List<GridPixel> GetAllPixels()
         {
             List<GridPixel> result = new List<GridPixel>();
@@ -81,7 +81,7 @@ namespace DownUnder.Utilities.DrawingEffects
 
             return result;
         }
-        
+
         public void UpdateGridDimensions()
         {
             if (Spacing != _last_spacing) _pixel_grid.Clear();

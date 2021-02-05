@@ -49,7 +49,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 }
             }
         }
-        
+
         public Widget.UserResizePolicyType UserResizingPolicy { get; set; } = Widget.UserResizePolicyType.require_highlight;
         public Widget.UserResizePolicyType UserRepositionPolicy { get; set; } = Widget.UserResizePolicyType.allow;
         public Directions2D AllowedResizingDirections { get; set; } = Directions2D.UDLR;
@@ -74,7 +74,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 Parent.Behaviors.TryAdd(b_drop);
             }
         }
-        
+
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>
         /// <param name="dragging_widget">The <see cref="Widget"/> to be added to this one.</param>
         /// <param name="center">The *center* position of the new <see cref="Widget"/> to be added. Uses this.Parent.CursorPosition by default.</param>

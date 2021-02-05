@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using static DownUnder.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.Widgets.Actions {
-    [DataContract] public class ActionManager 
+    [DataContract] public class ActionManager
     {
         public Widget Parent { get; set; }
         [DataMember] private readonly List<WidgetAction> _actions = new List<WidgetAction>();
@@ -62,7 +62,7 @@ namespace DownUnder.UI.Widgets.Actions {
 
             _actions.Add(action);
             action.Parent = Parent;
-            
+
             return;
         }
 

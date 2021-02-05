@@ -57,7 +57,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         }
 
         public void Forget() => Widget = null;
-        
+
         public void AddPersistentEvent(string nameof_event, Action<object, EventArgs> action)
         {
             if (_persistent_events.TryGetValue(nameof_event, out EventHandler handler)) handler += new EventHandler(action);

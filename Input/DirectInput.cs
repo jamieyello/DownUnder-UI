@@ -38,7 +38,7 @@ namespace DownUnder.Input
             Debug.WriteLine("Button Action.GetPressedButton: ControllerType." + controller.type.ToString() + " is not supported.");
             return new PseudoButton();
         }
-        
+
         private static double GetMouseButton(int button_index, InputState input_state, out bool triggered)
         {
             switch ((MouseButtons)button_index)

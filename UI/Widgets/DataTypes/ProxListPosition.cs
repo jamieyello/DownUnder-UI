@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             box = parent.AddToArray(this, position);
         }
 
-        public Point2 Position 
+        public Point2 Position
         {
             get => position_backing;
             set

@@ -18,14 +18,14 @@ namespace DownUnder.UI.Widgets.Actions.Functional
             Location = location;
         }
 
-        protected override void Initialize() 
+        protected override void Initialize()
         {
             if (Parent.ParentDWindow != null) AddWidget(this, EventArgs.Empty);
             else Parent.OnParentWindowSet += AddWidget;
         }
 
         protected override void ConnectEvents() { }
-        protected override void DisconnectEvents() 
+        protected override void DisconnectEvents()
         {
             Parent.OnParentWindowSet -= AddWidget;
         }

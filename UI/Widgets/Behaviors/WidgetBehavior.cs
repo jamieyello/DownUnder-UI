@@ -18,10 +18,10 @@ using System.Text;
 namespace DownUnder.UI.Widgets.Behaviors
 {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
-    [DataContract] 
-    public abstract class WidgetBehavior : ICloneable 
+    [DataContract]
+    public abstract class WidgetBehavior : ICloneable
     {
-        internal static List<Type> KnownTypes = new List<Type>() 
+        internal static List<Type> KnownTypes = new List<Type>()
         {
             typeof(BlurBackground),
             typeof(Neurons),
@@ -49,7 +49,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         Widget _parent_backing;
 
         public bool IsConnected { get; private set; } = false;
-        
+
         [DataMember(EmitDefaultValue = false)]
         public abstract string[] BehaviorIDs { get; protected set; }
 
@@ -110,7 +110,7 @@ namespace DownUnder.UI.Widgets.Behaviors
                 {
                     Size = new Point2(100, 100)
                 };
-                
+
                 DrawText text = new DrawText()
                 {
                     XTextPositioning = DrawText.XTextPositioningPolicy.center,
@@ -132,8 +132,8 @@ namespace DownUnder.UI.Widgets.Behaviors
                         Location = new CoverParentOverlay(1),
                         Widget = new Widget()
                         //Widget = BehaviorDisplay(b_this.BaseBehaviorPreviews).WithAddedBehavior(
-                        //    new PopInOut() 
-                        //    { 
+                        //    new PopInOut()
+                        //    {
                         //        CloseOnClickOff = true,
                         //    })
                     }

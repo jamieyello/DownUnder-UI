@@ -65,7 +65,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
                 if (Parent.ParentDWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
                     // Set to new Widget area
                     rect.SetTargetValue(
-                        victim.DesignerObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow), 
+                        victim.DesignerObjects.GetAddWidgetArea(dragging_widget).WithOffset(victim.PositionInWindow),
                         snap_rect_to_mouse);
                     _expand_rect_on_release = 1f;
                     round_amount.SetTargetValue(.5f);

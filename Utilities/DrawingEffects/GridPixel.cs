@@ -8,7 +8,7 @@ namespace DownUnder.Utilities.DrawingEffects
     public class GridPixel : ICloneable
     {
         #region Private Fields
-        
+
         #endregion
 
         #region Public Properties

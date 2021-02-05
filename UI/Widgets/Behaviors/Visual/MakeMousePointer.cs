@@ -26,7 +26,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            
+
         }
 
         void Update(object sender, EventArgs args)

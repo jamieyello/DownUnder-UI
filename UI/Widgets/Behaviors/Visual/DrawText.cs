@@ -19,7 +19,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         [DataMember] private Point2 _text_position_backing = new Point2();
         [DataMember] private XTextPositioningPolicy _x_position_policy = XTextPositioningPolicy.left;
         [DataMember] private YTextPositioningPolicy _y_position_policy = YTextPositioningPolicy.top;
-        
+
         public DrawText() { }
         public DrawText(string text)
         {
@@ -52,7 +52,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
             }
         }
 
-        public Point2 TextPosition { get => _text_position_backing; 
+        public Point2 TextPosition { get => _text_position_backing;
             set
             {
                 if (value == _text_position_backing) return;

@@ -11,7 +11,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
     [DataContract] public class PropertyTransitionAction<T> : WidgetAction {
         private ChangingValue<T> _changing_value;
         private PropertyInfo _property_info;
-        
+
         [DataMember] public string PropertyName;
         [DataMember] public InterpolationSettings Interpolation = InterpolationSettings.Default;
         [DataMember] public T TargetValue;

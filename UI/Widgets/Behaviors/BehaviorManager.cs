@@ -63,8 +63,8 @@ namespace DownUnder.UI.Widgets.Behaviors
 
         public void Add(WidgetBehavior behavior) {
             if (!TryAdd(behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
-        }        
-        
+        }
+
         public void Add<T>(T behavior, out T added_behavior) where T : WidgetBehavior {
             if (!TryAdd(behavior, out added_behavior)) throw new Exception($"Cannot add {nameof(WidgetBehavior)}s to this {nameof(WidgetBehavior)}.");
         }
@@ -115,7 +115,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         public void AddRange(IEnumerable<WidgetBehavior> behaviors) {
             foreach (WidgetBehavior behavior in behaviors) Add(behavior);
         }
-        
+
         public void Clear() {
             foreach (WidgetBehavior behavior in _behaviors) behavior.Disconnect();
             _behaviors.Clear();

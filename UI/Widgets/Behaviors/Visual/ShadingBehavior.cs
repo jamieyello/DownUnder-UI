@@ -20,10 +20,10 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
         [DataMember] public Point2 GradientExponential = new Point2(1f, 1f);
         [DataMember] public bool UseWidgetOutlineColor = false;
 
-        public bool DrawAsBackGround 
+        public bool DrawAsBackGround
         {
             get => _draw_as_background;
-            set 
+            set
             {
                 if (value == _draw_as_background) return;
                 _draw_as_background = value;

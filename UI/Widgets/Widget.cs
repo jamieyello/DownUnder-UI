@@ -173,7 +173,7 @@ namespace DownUnder.UI.Widgets
         public bool IsCloningSupported { get; set; } = true;
         [DataMember]
         public GeneralVisualSettings VisualSettings = new GeneralVisualSettings();
-        [DataMember] 
+        [DataMember]
         public bool EmbedChildren { get; set; } = true;
 
         public BehaviorManager Behaviors
@@ -192,7 +192,7 @@ namespace DownUnder.UI.Widgets
         public SpriteBatch SpriteBatch { get => DrawingMode == DrawingModeType.direct ? _passed_sprite_batch : _local_sprite_batch; }
         public DesignerModeSettings DesignerObjects { get; set; }
         public Point2 Scroll = new Point2();
-        
+
         public ActionManager Actions
         {
             get => _actions_backing;
@@ -400,7 +400,7 @@ namespace DownUnder.UI.Widgets
         public Point2 TopRight => Area.TopRight;
         public Point2 BottomLeft => Area.BottomLeft;
         public Point2 BottomRight => Area.BottomRight;
-        
+
         /// <summary> Minimum height allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
         public float MinimumHeight { get => MinimumSize.Y; set => MinimumSize = MinimumSize.WithY(value); }
         /// <summary> Minimum width allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
@@ -530,7 +530,7 @@ namespace DownUnder.UI.Widgets
                 }
 
                 for (int i = 0; i < Children.Count; i++) Children[i].ParentDWindow = value;
-                
+
                 if (initialized) OnPostGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -792,7 +792,7 @@ namespace DownUnder.UI.Widgets
         void UpdateGroupInput()
         {
             _update_flags.Reset();
-            
+
             RectangleF visible_area = VisibleArea;
 
             if (!UpdateData.UIInputState.PrimaryClick)
@@ -913,7 +913,7 @@ namespace DownUnder.UI.Widgets
                 && !_IsBeingResized)
             {
                 for (int i = 0; i < Children.Count; i++) Children[i].UpdateGroupResizeGrab();
-                
+
                 return;
             }
 
@@ -1210,7 +1210,7 @@ namespace DownUnder.UI.Widgets
         {
             Widget result = XmlHelper.FromXmlFile<Widget>(path, WidgetBehavior.KnownTypes);
             //throw new Exception();
-            
+
             foreach (Widget w in result.AllContainedWidgets)
             {
                 foreach (var b in w.Behaviors) b.Parent = w;
@@ -1388,7 +1388,7 @@ namespace DownUnder.UI.Widgets
             OnRenameAny?.Invoke(this, args);
             ParentWidget?.InvokeOnRenameAny(args);
         }
-        
+
         #endregion
 
         #region Methods
@@ -1493,9 +1493,9 @@ namespace DownUnder.UI.Widgets
             Directions2D snapping = SnappingPolicy.ToPerpendicular();
 
             if (snapping.Left && !snapping.Right) new_area.X = encompassing_area.X + Spacing.Width; // left
-            if (!snapping.Left && snapping.Right) new_area.X = encompassing_area.X + encompassing_area.Width - new_area.Width - Spacing.Width; // right 
+            if (!snapping.Left && snapping.Right) new_area.X = encompassing_area.X + encompassing_area.Width - new_area.Width - Spacing.Width; // right
             if (snapping.Left && snapping.Right)
-            { // left and right 
+            { // left and right
                 new_area.X = encompassing_area.X + Spacing.Width;
                 new_area.Width = encompassing_area.Width - Spacing.Width * 2;
             }
@@ -1704,7 +1704,7 @@ namespace DownUnder.UI.Widgets
             }
         }
         public Widget this[string child_name] => Children[child_name];
-        
+
         public Widget LastAddedWidget => Children.LastAddedWidget;
         public Widget LastRemovedWidget => Children.LastRemovedWidget;
 

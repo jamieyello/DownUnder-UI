@@ -65,10 +65,10 @@ namespace DownUnder.UI.Widgets.DataTypes
                 if (Hovered) _changing_color.SetTargetValue(HoveredColor);
                 else _changing_color.SetTargetValue(DefaultColor);
             }
-            
+
             _changing_color.Update(step);
         }
-        
+
         /// <summary> Set the default and the hovered color to one solid color. </summary>
         public void SetSolidColor(Color color) {
             DefaultColor = color;

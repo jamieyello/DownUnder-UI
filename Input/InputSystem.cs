@@ -31,7 +31,7 @@ namespace DownUnder.Input
                 return _mouse_owner;
             }
             set => _mouse_owner = value;
-        } 
+        }
 
         public InputSystem()
         {

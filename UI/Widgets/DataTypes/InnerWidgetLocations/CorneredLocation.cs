@@ -21,7 +21,7 @@ namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
         {
             return widget.Area.BorderingInside(spawner.Area, new DiagonalDirections2D(Corner));
         }
-        
+
         public override object Clone()
         {
             CorneredLocation c = new CorneredLocation(Corner);

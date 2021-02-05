@@ -10,7 +10,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         [DataMember] private GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
         [DataMember] private List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
         [DataMember] Widget Parent { get; set; }
-        
+
         public GroupBehaviorAcceptancePolicy AcceptancePolicy
         {
             get => _common_behavior_rules_backing;
@@ -87,7 +87,7 @@ namespace DownUnder.UI.Widgets.Behaviors
         {
             if (GetMatchingPolicy(policy) == null) _behavior_policies.Add(policy);
             TryAddBehavior(policy);
-            
+
             if (policy.InheritancePolicy == GroupBehaviorPolicy.BehaviorInheritancePolicy.all_children)
             {
                 foreach (Widget widget in Parent.Children) widget.Behaviors.GroupBehaviors.ImplementPolicy(policy);

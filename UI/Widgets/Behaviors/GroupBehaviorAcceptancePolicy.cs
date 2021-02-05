@@ -15,7 +15,7 @@ namespace DownUnder.UI.Widgets.Behaviors
             }
 
             if (policy.NecessaryVisualRole != null && policy.NecessaryVisualRole.Value != widget.VisualSettings.VisualRole) return false;
-            
+
             return true;
         }
 

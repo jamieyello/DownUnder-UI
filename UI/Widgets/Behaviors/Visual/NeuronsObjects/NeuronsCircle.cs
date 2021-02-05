@@ -12,7 +12,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects
     {
         ProxList list;
         public ProxListPosition circle_position;
-        
+
         Point2 circle_size = new Point2(10f, 10f);
         Vector2 circle_offset = new Point2(20,35);
         Vector2 circle_momentum = new Point2();

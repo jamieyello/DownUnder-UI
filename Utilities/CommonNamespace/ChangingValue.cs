@@ -19,9 +19,9 @@ namespace DownUnder
         public float Progress { get; private set; } = 0f; // From 0f to 1f
 
         /// <summary> Speed modifier of the value. Default is 1f. </summary>
-        public float TransitionSpeed 
-        { 
-            get => interpolation_settings_backing.TransitionSpeed; 
+        public float TransitionSpeed
+        {
+            get => interpolation_settings_backing.TransitionSpeed;
             set => interpolation_settings_backing.TransitionSpeed = value;
         }
 
@@ -46,9 +46,9 @@ namespace DownUnder
 
         public ChangingValue() =>
             InterpolationSettings = new InterpolationSettings();
-        
 
-        public ChangingValue(InterpolationSettings interpolation) => 
+
+        public ChangingValue(InterpolationSettings interpolation) =>
             InterpolationSettings = interpolation;
 
         public ChangingValue(T value) {
@@ -104,7 +104,7 @@ namespace DownUnder
         }
 
         public void ForceComplete() => Update(1f);
-        
+
         public void Update(float step)
         {
             if (Progress >= 1f) {
@@ -124,8 +124,8 @@ namespace DownUnder
         }
 
         public T Initial => initial_value;
-        public T Current 
-        { 
+        public T Current
+        {
             get => current_value;
             set => SetTargetValue(value, true);
         }
@@ -140,7 +140,7 @@ namespace DownUnder
         public ChangingValue<T> Clone(bool reset_progress = false) {
             var c = new ChangingValue<T>(initial_value, current_value, target_value, interpolation_settings_backing);
 
-            if (!reset_progress) 
+            if (!reset_progress)
             {
                 c.Progress = Progress;
                 c.previous_value = previous_value;

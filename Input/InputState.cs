@@ -43,7 +43,7 @@ namespace DownUnder.Input
             {
                 mouse_state = Mouse.GetState(window);
             }
-            
+
             for (int i = 0; i < 4; i++)
             {
                 previous_game_pad_state[i] = game_pad_state[i];

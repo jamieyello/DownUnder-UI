@@ -119,7 +119,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Format
         public void AddRow(Widget widget)
         {
             if (Dimensions.X > 1) throw new Exception($"Cannot add a single {nameof(Widget)} row to a grid with an X dimension greater than 1.");
-            AddRow(new Widget[] { widget }); 
+            AddRow(new Widget[] { widget });
         }
 
         public void AddColumn(IEnumerable<Widget> widgets = null)

@@ -14,11 +14,11 @@
         }
 
         public static RectanglePart Uniform(float indent) => new RectanglePart(indent, indent, indent, indent);
-        public static RectanglePart Uniform(float indent, Directions2D directions) => 
+        public static RectanglePart Uniform(float indent, Directions2D directions) =>
             new RectanglePart(
                 directions.Up ? indent : 1f,
-                directions.Down ? indent : 1f, 
-                directions.Left ? indent : 1f, 
+                directions.Down ? indent : 1f,
+                directions.Left ? indent : 1f,
                 directions.Right ? indent : 1f);
         public static RectanglePart Uniform(float indent, Directions2D directions, float others) =>
             new RectanglePart(

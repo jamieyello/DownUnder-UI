@@ -5,15 +5,15 @@
         public float Left;
         public float Right;
 
-        public BorderSize(float top, float bottom, float left, float right) 
+        public BorderSize(float top, float bottom, float left, float right)
         { Top = top; Bottom = bottom; Left = left; Right = right; }
-        public BorderSize(float size) 
+        public BorderSize(float size)
         { Top = size; Bottom = size; Left = size; Right = size; }
         public BorderSize(float amount, Directions2D directions) {
-            if (directions.Up) Top = amount; else Top = 0f; 
-            if (directions.Down) Bottom = amount; else Bottom = 0f; 
-            if (directions.Left) Left = amount; else Left = 0f; 
-            if (directions.Right) Right = amount; else Right = 0f; 
+            if (directions.Up) Top = amount; else Top = 0f;
+            if (directions.Down) Bottom = amount; else Bottom = 0f;
+            if (directions.Left) Left = amount; else Left = 0f;
+            if (directions.Right) Right = amount; else Right = 0f;
         }
 
         public static BorderSize operator -(BorderSize b) => new BorderSize(-b.Top, -b.Bottom, -b.Left, -b.Right);

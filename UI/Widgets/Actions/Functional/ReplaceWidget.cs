@@ -21,10 +21,10 @@ public class ReplaceWidget : WidgetAction
     bool DisposeOld = true;
 
     public ReplaceWidget(
-        Widget new_widget, 
+        Widget new_widget,
         InnerWidgetLocation new_widget_start,
         InnerWidgetLocation old_widget_end,
-        InterpolationSettings? new_widget_movement = null, 
+        InterpolationSettings? new_widget_movement = null,
         InterpolationSettings? old_widget_movement = null,
         bool dispose_old = true)
     {
@@ -36,7 +36,7 @@ public class ReplaceWidget : WidgetAction
         DisposeOld = dispose_old;
     }
 
-    public ReplaceWidget(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true) 
+    public ReplaceWidget(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true)
         : this(new_widget, animation.NewWidgetStart, animation.OldWidgetEnd, animation.NewWidgetMovement, animation.OldWidgetMovement, dispose_old) { }
 
     protected override void Initialize()

@@ -21,8 +21,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             if (x >= width || y >= height) throw new Exception("Index out of bounds.");
             return widgets[y * width + x];
         }
-        
-        public static Point IndexOf(int width, int index) => 
+
+        public static Point IndexOf(int width, int index) =>
             new Point(index % width, index / width);
 
         /// <summary> The total height/width of contained widgets that won't resize. </summary>
