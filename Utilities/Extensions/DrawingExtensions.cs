@@ -37,8 +37,8 @@ namespace DownUnder
 
         public static void DrawCircleQuarters
             (
-                this SpriteBatch spriteBatch, 
-                Point2 center, 
+                this SpriteBatch spriteBatch,
+                Point2 center,
                 float radius,
                 DiagonalDirections2D directions,
                 Color color,

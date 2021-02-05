@@ -145,7 +145,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
         }
 
         public DrawEditableText() : base() {
-            
+
         }
 
         protected override void Initialize()
@@ -189,7 +189,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             UIInputState inp = Parent.UpdateData.UIInputState;
 
             if (clicking) MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
-            
+
             // Movement of the caret
             if (inp.TextCursorMovement.Left && caret_position != 0) MoveCaretTo(caret_position - 1);
             if (inp.TextCursorMovement.Right && caret_position != edit_text.Length) MoveCaretTo(caret_position + 1);
@@ -260,7 +260,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             }
 
             if (inp.SelectAll) HighlightRange(0, edit_text.Length);
-            
+
             if (inp.Copy || inp.Cut)
             {
                 if (_HighlightLength > 0)
@@ -273,7 +273,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             }
 
             if (inp.Paste) text_changed |= InsertText(DWindow.OS.GetTextFromClipboard(), caret_position, true);
-            
+
             // Insert typed text
             text_changed |= InsertText(Parent.UpdateData.UIInputState.Text, caret_position, true);
 

@@ -89,7 +89,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         private Point GetBox(Point2 position)
         {
             return new Point(
-                (int)(position.X / InteractDiameter), 
+                (int)(position.X / InteractDiameter),
                 (int)(position.Y / InteractDiameter));
         }
     }

@@ -21,9 +21,9 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public static WidgetTransitionAnimation Slide(Direction2D direction, InterpolationSettings? interpolation = null) =>
             new WidgetTransitionAnimation(
-                InnerWidgetLocation.Outside(Directions2D.GetOppositeSide(direction)), 
-                InnerWidgetLocation.Outside(direction), 
-                interpolation ?? InterpolationSettings.Fast, 
+                InnerWidgetLocation.Outside(Directions2D.GetOppositeSide(direction)),
+                InnerWidgetLocation.Outside(direction),
+                interpolation ?? InterpolationSettings.Fast,
                 interpolation ?? InterpolationSettings.Fast);
     }
 }

@@ -110,7 +110,7 @@ namespace DownUnder.UI.Widgets.DataTypes
             Tab = buffered_keyboard.IsKeyTriggered(Keys.Tab);
             CapsLock = _keyboard_state.CapsLock;
             NumLock = _keyboard_state.NumLock;
-            
+
             Text = dwindow.InputText.ToString();
             SelectAll = false;
             Copy = false;

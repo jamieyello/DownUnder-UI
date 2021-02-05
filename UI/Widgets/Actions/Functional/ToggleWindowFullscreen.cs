@@ -4,12 +4,12 @@
     {
         protected override void ConnectEvents()
         {
-            
+
         }
 
         protected override void DisconnectEvents()
         {
-            
+
         }
 
         protected override void Initialize()

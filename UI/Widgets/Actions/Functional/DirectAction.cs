@@ -8,7 +8,7 @@ namespace DownUnder.UI.Widgets.Actions.Functional
     [DataContract]
     class DirectAction : WidgetAction
     {
-        //[DataMember] 
+        //[DataMember]
         public Action Action;
 
         public DirectAction() { }
@@ -25,12 +25,12 @@ namespace DownUnder.UI.Widgets.Actions.Functional
 
         protected override void ConnectEvents()
         {
-            
+
         }
 
         protected override void DisconnectEvents()
         {
-            
+
         }
 
         protected override bool InterferesWith(WidgetAction action)

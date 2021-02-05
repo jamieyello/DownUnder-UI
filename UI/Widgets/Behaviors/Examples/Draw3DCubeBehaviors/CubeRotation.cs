@@ -30,7 +30,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 
         protected override void Initialize()
         {
-            
+
         }
 
         private void Update(object sender, EventArgs args)

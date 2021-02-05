@@ -37,7 +37,7 @@ namespace DownUnder.UI.Widgets
             control_grid.VisualSettings.DrawBackground = false;
 
             Widget back_button = CommonWidgets.Button("Back");
-            back_button.OnClick += (s, a) => 
+            back_button.OnClick += (s, a) =>
             {
                 back_button.ParentDWindow.Navigation.NavigateBack();
             };

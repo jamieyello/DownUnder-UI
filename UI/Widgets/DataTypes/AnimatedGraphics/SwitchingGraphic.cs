@@ -39,7 +39,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
 
             VertexPositionColor[] vert = new VertexPositionColor[StartingVertex.Length];
             for (int i = 0; i < vert.Length; i++) vert[i] = StartingVertex[i].Lerp(EndingVertex[i], progress);
-            
+
             basicEffect.Projection = args.GetStretchedProjection();
 
             args.RestartImmediate();
@@ -119,7 +119,7 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
             vert[9].Position = new Vector3(1f, -1f, 0f);
 
             for (int i = 0; i < vert.Length; i++) vert[i].Color = color ?? Color.White;
-            
+
             return vert;
         }
 
@@ -135,10 +135,10 @@ namespace DownUnder.UI.Widgets.DataTypes.AnimatedGraphics
         {
             VertexPositionColor[] starting_vertex_c = new VertexPositionColor[StartingVertex.Length];
             for (int i = 0; i < StartingVertex.Length; i++) starting_vertex_c[i] = StartingVertex[i];
-            
+
             VertexPositionColor[] ending_vertex_c = new VertexPositionColor[EndingVertex.Length];
             for (int i = 0; i < EndingVertex.Length; i++) ending_vertex_c[i] = EndingVertex[i];
-            
+
             SwitchingGraphic result = new SwitchingGraphic(starting_vertex_c, ending_vertex_c);
             result.color = color.Clone(true);
             result.Progress = Progress.Clone(true);

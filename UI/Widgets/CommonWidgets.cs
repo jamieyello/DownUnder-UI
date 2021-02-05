@@ -91,12 +91,12 @@ namespace DownUnder.UI.Widgets
                 w_entry.Behaviors.Get<DrawText>().SideSpacing = 25f;
                 w_entry.VisualSettings.DrawOutline = false;
                 w_entry.VisualSettings.DrawBackground = false;
-                
+
                 Widget dropdown = DropDown(entry.Value);
 
                 w_entry.Behaviors.Add(
                     new TriggerWidgetAction(
-                        nameof(Widget.OnClick), 
+                        nameof(Widget.OnClick),
                         new AddMainWidget(dropdown, new SideOfParent() { ParentSide = Direction2D.down, ParentUp = 1 })));
 
                 file_bar.Add(w_entry);

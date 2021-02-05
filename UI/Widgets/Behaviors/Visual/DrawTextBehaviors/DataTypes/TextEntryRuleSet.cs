@@ -62,7 +62,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             AllowLeadingZeros = false,
             EmptyResultBecomesZero = true
         };
-        
+
         public static TextEntryRuleSet Double => new TextEntryRuleSet() {
             AllowNonNumbers = false,
             AllowDecimal = true,

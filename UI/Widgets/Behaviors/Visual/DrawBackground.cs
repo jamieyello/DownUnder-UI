@@ -12,7 +12,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
 
         protected override void Initialize()
         {
-            
+
         }
 
         protected override void ConnectEvents()

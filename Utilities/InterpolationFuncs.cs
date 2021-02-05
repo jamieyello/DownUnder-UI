@@ -55,7 +55,7 @@ namespace DownUnder.Utilities
                 case Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)): return vector3_lerp;
                 case Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)): return vector_position_color_lerp;
                 default: throw new Exception($"{nameof(T)} interpolation is not supported.");
-            };
+            }
         }
 
         public static Func<float, float> GetPlotFunc(InterpolationType type) =>

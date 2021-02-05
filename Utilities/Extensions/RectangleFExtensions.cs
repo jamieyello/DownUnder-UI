@@ -8,7 +8,7 @@ namespace DownUnder
     public static class RectangleFExtensions {
         public static Rectangle ToRectangle(this RectangleF r, bool round) =>
             !round ? r.ToRectangle() : new Rectangle(r.X.Rounded(), r.Y.Rounded(), r.Width.Rounded(), r.Height.Rounded());
-        
+
         public static RectangleF BorderingInside(this RectangleF inner, RectangleF outer, DiagonalDirections2D sides) {
             inner.Position = outer.Position.WithOffset(inner.Position);
 
@@ -39,9 +39,9 @@ namespace DownUnder
         public static RectangleF WithCenter(this RectangleF r, Point2 center) =>
             r.WithPosition(center.WithOffset(r.Size.ToPoint2().MultipliedBy(-0.5f)));
 
-        public static RectangleF WithCenter(this RectangleF r, RectangleF r2) => 
+        public static RectangleF WithCenter(this RectangleF r, RectangleF r2) =>
             r.WithCenter(r2.Center);
-        
+
         /// <summary> Returns a new <see cref="RectangleF"/> positioned inside a given <see cref="RectangleF"/> with aspect ratio preserved. </summary>
         public static RectangleF FittedIn(this RectangleF r, RectangleF r2, float min_spacing = 0f) {
             float max_size = Math.Min(
@@ -83,7 +83,7 @@ namespace DownUnder
                 );
         }
 
-        
+
         public static RectangleF ResizedBy(this RectangleF r, float amount, Directions2D? directions = null, Point2? minimum_size = null) =>
             r.ResizedBy(new BorderSize(amount, directions ?? Directions2D.All), minimum_size);
 
@@ -97,7 +97,7 @@ namespace DownUnder
             return r.ResizedBy(resize);
 
         }
-        
+
         /// <summary> Returns a new RectangleF without the position values. </summary>
         public static RectangleF SizeOnly(this RectangleF r) => new RectangleF(new Point2(), r.Size);
         public static RectangleF WithX(this RectangleF r, float x) => new RectangleF(x, r.Y, r.Width, r.Height);
@@ -136,9 +136,9 @@ namespace DownUnder
 
         // temp extensions until MonoGame.Extended adds these missing properties
         public static Point2 TopRight(this RectangleF r) => new Point2(r.X + r.Width, r.Y);
-        
+
         public static Point2 BottomLeft(this RectangleF r) => new Point2(r.X, r.Y + r.Height);
-        
+
         public static Directions2D GetCursorHoverOnBorders(this RectangleF r, Point2 p, float border_thickness) {
             RectangleF[] areas = GetBorderArea(r, border_thickness);
             Directions2D result = new Directions2D();
@@ -182,13 +182,13 @@ namespace DownUnder
                 ((int)((r.Width + accuracy / 2) / accuracy) * accuracy),
                 ((int)((r.Height + accuracy / 2) / accuracy) * accuracy)
                 );
-        
+
         public static float GetSide(this RectangleF r, Direction2D direction)
         {
             if (direction == Direction2D.up) return r.Top;
             if (direction == Direction2D.down) return r.Bottom;
             if (direction == Direction2D.left) return r.Left;
-            if (direction == Direction2D.right) return r.Right; 
+            if (direction == Direction2D.right) return r.Right;
             throw new Exception($"Invalid {nameof(Direction2D)} given.");
         }
 

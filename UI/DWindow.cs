@@ -178,7 +178,7 @@ namespace DownUnder.UI
                         int i = 0;
                         while (!_area_set_events[Thread.CurrentThread.ManagedThreadId].Completed || _event_queue_is_processing) {
                             if (i < 10000000) i += _WAIT_TIME;
-                            if (i > _WAIT_TIME_WARNING_THRESOLD) Console.WriteLine($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this."); 
+                            if (i > _WAIT_TIME_WARNING_THRESOLD) Console.WriteLine($"Hanging in area set, setting WaitForCrossThreadCompletion to false may prevent this.");
                             if (IsMainThread) ProcessQueuedEvents();
                             Thread.Sleep(_WAIT_TIME);
                         }
@@ -189,7 +189,7 @@ namespace DownUnder.UI
                 }
             }
         }
-        
+
         /// <summary> The width of this <see cref="DWindow"/>. (relative to pizels on a 1080p monitor) </summary>
         public float Width {
             get => Area.Width;
@@ -212,7 +212,7 @@ namespace DownUnder.UI
 
         internal RenderTarget2D DrawTargetBuffer => _back_buffer[_current_back_buffer];
         internal RenderTarget2D OtherBuffer => _back_buffer[_current_back_buffer == 0 ? 1 : 0];
-        
+
         /// <summary> Swap buffers. The contents of the old buffer will be drawn to the new one. The purpose of this is to create a RenderTarget2D that can be used to draw its own contents to itself. </summary>
         internal void SwapBackBuffer(GraphicsDevice graphics, SpriteBatch sprite_batch)
         {
@@ -260,7 +260,7 @@ namespace DownUnder.UI
             //GraphicsManager = ParentGame.Components.;
             ParentGame.Window.AllowUserResizing = true;
             ParentGame.IsMouseVisible = true;
-            
+
             MinimumSize = new Point2(100, 100);
             double time = (1000d / 144) * 10000d;
             ParentGame.TargetElapsedTime = new TimeSpan((long)time);
@@ -310,7 +310,7 @@ namespace DownUnder.UI
             else if (e.Character == 10 || e.Character == 13) {
                 InputText.Append('\n');
                 InputState.Enter = true;
-            } 
+            }
             else {
                 KeyboardState state = Keyboard.GetState();
                 Debug.WriteLine("DWINDOW ProcessKeys2" + state.IsKeyDown(Keys.LeftControl));
@@ -325,7 +325,7 @@ namespace DownUnder.UI
         }
 
         /// <summary> Closes all child <see cref="DWindow"/>s and removes own reference from parent on exiting. </summary>
-        private void ExitAll(object sender, EventArgs args) { 
+        private void ExitAll(object sender, EventArgs args) {
             foreach (DWindow child in Children) child.ParentGame.Exit(); // Kill each of the children
             //Parent?.Children.Remove(this);
         }

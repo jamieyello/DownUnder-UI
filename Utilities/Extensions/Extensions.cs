@@ -137,7 +137,7 @@ namespace DownUnder
             }
         }
 
-        public static Color WithR(this Color c, byte r) 
+        public static Color WithR(this Color c, byte r)
         {
             Color result = c;
             c.R = r;
@@ -237,7 +237,7 @@ namespace DownUnder
 
 
         /// <summary>
-        /// Returns the area of a single substring. A method used above. 
+        /// Returns the area of a single substring. A method used above.
         /// </summary>
         /// <param name="sprite_font"></param>
         /// <param name="text"></param>
@@ -245,9 +245,9 @@ namespace DownUnder
         private static RectangleF MeasureSingleLineSubString(SpriteFont sprite_font, string line, int index, int length)
         {
             return new RectangleF(
-                sprite_font.MeasureString(line.Substring(0, index)).X, 
-                0f, 
-                sprite_font.MeasureString(line.Substring(index, length)).X, 
+                sprite_font.MeasureString(line.Substring(0, index)).X,
+                0f,
+                sprite_font.MeasureString(line.Substring(index, length)).X,
                 sprite_font.MeasureString("|").Y
                 );
         }
@@ -292,7 +292,7 @@ namespace DownUnder
                 {
                     if (point.X + char_length < counted_length) break;
                 }
-                
+
                 line_x++;
             }
 
@@ -458,7 +458,7 @@ namespace DownUnder
         }
 
         public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
-        
+
         public static BorderSize Difference(this RectangleF r1, RectangleF r2) {
             return new BorderSize(r1.Y - r2.Y, r1.Bottom - r2.Bottom, r1.X - r2.X, r1.Right - r2.Right);
         }
@@ -484,7 +484,7 @@ namespace DownUnder
                 default: throw new NotImplementedException();
             }
         }
-        
+
 
         public static ParameterInfo[] GetParameters(this MemberInfo memberInfo) =>
             memberInfo.MemberType switch
@@ -493,7 +493,7 @@ namespace DownUnder
                 MemberTypes.Property => ((PropertyInfo)memberInfo).GetIndexParameters(),
                 _ => throw new NotImplementedException(),
             };
-        
+
 
         public static IEnumerable<T> FastReverse<T>(this IList<T> items)
         {

@@ -28,13 +28,13 @@ namespace DownUnder.UI.Widgets.DataTypes
         public BaseColorScheme ColorScheme { get; set; } = BaseColorScheme.Dark;
 
         /// <summary> If set to true, colors will shift to their hovered colors on mouse-over. </summary>
-        [DataMember] 
+        [DataMember]
         public bool ChangeColorOnMouseOver { get; set; } = true;
-        
+
         /// <summary> If set to false, the background color will not be drawn. </summary>
-        [DataMember] 
+        [DataMember]
         public bool DrawBackground { get; set; } = true;
-        
+
         /// <summary> If set to true, an outline will be draw. (What sides are drawn is determined by OutlineSides) </summary>
         [DataMember]
         public bool DrawOutline { get; set; } = true;

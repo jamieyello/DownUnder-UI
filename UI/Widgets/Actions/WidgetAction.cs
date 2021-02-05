@@ -65,7 +65,7 @@ namespace DownUnder.UI.Widgets.Actions
         protected abstract bool Matches(WidgetAction action);
 
         object ICloneable.Clone() => InitialClone();
-        public virtual object InitialClone() 
+        public virtual object InitialClone()
         {
             WidgetAction c = (WidgetAction)Activator.CreateInstance(GetType());
             c.DuplicatePolicy = DuplicatePolicy;

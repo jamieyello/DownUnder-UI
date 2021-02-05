@@ -5,19 +5,19 @@ namespace DownUnder.UI.Widgets {
     {
         bool _send_to_back;
         bool _send_to_front;
-        
+
         internal bool _updated { get; set; }
         public bool Delete { get; set; }
         public bool Cut { get; set; }
         public bool Copy { get; set; }
-        public bool SendToBack 
-        { 
+        public bool SendToBack
+        {
             get => _send_to_back;
             set
             {
                 _send_to_back = value;
                 if (value) _send_to_front = false;
-            } 
+            }
         }
         public bool SendToFront
         {

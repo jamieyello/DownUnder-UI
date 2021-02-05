@@ -13,7 +13,7 @@ namespace DownUnder
         private bool right;
 
         [DataMember] public bool DisallowOpposites;
-        
+
         [DataMember] public bool Up
         {
             get => up;
@@ -65,7 +65,7 @@ namespace DownUnder
             if (Right) result.X += value;
             return result;
         }
-        
+
         public Point2 ValueInDirection(Size2 value)
         {
             Point2 result = new Point2();
@@ -120,7 +120,7 @@ namespace DownUnder
             result.DisallowOpposites = DisallowOpposites;
             return result;
         }
-        
+
         public Directions2D FlippedY()
         {
             Directions2D result = new Directions2D();
@@ -217,14 +217,14 @@ namespace DownUnder
         }
 
         public static Directions2D FromDirection2D(Direction2D direction) =>
-            new Directions2D() 
+            new Directions2D()
             {
                 Up = direction == Direction2D.up,
                 Down = direction == Direction2D.down,
                 Left = direction == Direction2D.left,
                 Right = direction == Direction2D.right
             };
-        
+
 
         public static readonly Directions2D All = new Directions2D() { Up = true, Down = true, Left = true, Right = true };
         public static readonly Directions2D UDLR = new Directions2D() { Up = true, Down = true, Left = true, Right = true };
@@ -245,10 +245,10 @@ namespace DownUnder
         public static readonly Directions2D None = new Directions2D();
 
         public static Direction2D GetOppositeSide(Direction2D direction) =>
-            direction == Direction2D.up ? Direction2D.down : 
-            direction == Direction2D.down ? Direction2D.up : 
-            direction == Direction2D.left ? Direction2D.right : 
+            direction == Direction2D.up ? Direction2D.down :
+            direction == Direction2D.down ? Direction2D.up :
+            direction == Direction2D.left ? Direction2D.right :
             Direction2D.left;
-        
+
     }
 }

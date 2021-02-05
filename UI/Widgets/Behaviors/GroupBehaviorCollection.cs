@@ -23,7 +23,7 @@ namespace DownUnder.UI.Widgets
 
         public static GroupBehaviorCollection BasicDesktopFunctions
         {
-            get 
+            get
             {
                 var result = new GroupBehaviorCollection
                 {

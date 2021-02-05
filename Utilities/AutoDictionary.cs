@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace DownUnder.Utilities
 {
     /// <summary> A <see cref="Dictionary{TKey, TValue}"/> that automatically creates new entries on reading nonexistent ones. </summary>
-    [DataContract] public class AutoDictionary<TKey, TValue> 
+    [DataContract] public class AutoDictionary<TKey, TValue>
         : IAutoDictionary<TKey, TValue>
     {
         [DataMember] Dictionary<TKey, TValue> _tags = new Dictionary<TKey, TValue>();

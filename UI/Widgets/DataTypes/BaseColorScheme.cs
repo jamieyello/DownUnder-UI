@@ -9,14 +9,14 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary> A reference to the widget that owns this palette. </summary>
         [DataMember] public ElementColors[] BackGroundColors { get; set; }
         [DataMember] public ElementColors[] TextColors { get; set; }
-        [DataMember] public ElementColors[] OutlineColors { get; set; } 
+        [DataMember] public ElementColors[] OutlineColors { get; set; }
         [DataMember] public ElementColors SideInnerScrollBar { get; set; }
         [DataMember] public ElementColors SideOuterScrollBar { get; set; }
         [DataMember] public ElementColors BottomInnerScrollBar { get; set; }
         [DataMember] public ElementColors BottomOuterScrollBar { get; set; }
 
         public BaseColorScheme()=> SetDefaults();
-        
+
         private void SetDefaults() {
             int length = Enum.GetValues(typeof(VisualRoleType)).Length;
 
@@ -28,7 +28,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         public ElementColors GetBackground(VisualRoleType category) => BackGroundColors[(int)category];
         public ElementColors GetText(VisualRoleType category) => TextColors[(int)category];
         public ElementColors GetOutline(VisualRoleType category) => OutlineColors[(int)category];
-         
+
         public void Update(VisualRoleType profile, float step, bool change_color_on_hover, bool is_hovered) {
             GetBackground(profile).Update(step);
             GetText(profile).Update(step);
@@ -118,11 +118,11 @@ namespace DownUnder.UI.Widgets.DataTypes
                 r.GetText(VisualRoleType.header_widget).DefaultColor = Color.White.ShiftBrightness(0.8f);
                 r.GetText(VisualRoleType.header_widget).SpecialColor = Color.White;
                 r.GetText(VisualRoleType.header_widget).HoveredColor = Color.White;
-                
+
                 return r;
             }
         }
-        
+
         /// <summary> A black theme. </summary>
         public static BaseColorScheme Dark {
             get {
@@ -155,7 +155,7 @@ namespace DownUnder.UI.Widgets.DataTypes
                 r.BottomOuterScrollBar = (ElementColors)r.SideOuterScrollBar.Clone();
 
                 r.SetEmptyElementColors(VisualRoleType.default_widget);
-                
+
                 return r;
             }
         }

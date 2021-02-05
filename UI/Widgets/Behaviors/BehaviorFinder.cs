@@ -37,15 +37,15 @@ namespace DownUnder.UI.Widgets.Behaviors
         public ScrollBar ScrollBar => _behaviors.Get<ScrollBar>();
         public TriggerAction TriggerAction => _behaviors.Get<TriggerAction>();
         public TriggerWidgetAction TriggerWidgetAction => _behaviors.Get<TriggerWidgetAction>();
-        
+
         // Format
         public BorderFormat BorderFormat => _behaviors.Get<BorderFormat>();
         public GridFormat GridFormat => _behaviors.Get<GridFormat>();
         public SpacedListFormat SpacedListFormat => _behaviors.Get<SpacedListFormat>();
-       
+
         // Examples
         public Draw3DCube Draw3DCube => _behaviors.Get<Draw3DCube>();
-        
+
         // Sub-behaviors
         public DrawEditableText DrawEditableText => _behaviors.Get<DrawEditableText>();
         public RepresentMember RepresentMember => _behaviors.Get<RepresentMember>();

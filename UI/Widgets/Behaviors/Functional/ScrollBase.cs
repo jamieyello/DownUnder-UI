@@ -81,7 +81,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Functional
                 _scroll_range = new Point2();
                 return;
             }
-            
+
             RectangleF coverage = area_coverage.Value.Union(Parent.Area.SizeOnly());
             _scroll_range = new Point2(coverage.Width - Parent.Area.Width, coverage.Height - Parent.Area.Height).Inverted();
         }

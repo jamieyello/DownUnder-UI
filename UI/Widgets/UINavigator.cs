@@ -15,7 +15,7 @@ namespace DownUnder.UI.Widgets
         public WidgetTransitionAnimation DefaultTransition = WidgetTransitionAnimation.Slide(Direction2D.left);
         public WidgetTransitionAnimation DefaultBackTransition = WidgetTransitionAnimation.Slide(Direction2D.right);
 
-        public UINavigator(DWindow parent) 
+        public UINavigator(DWindow parent)
         {
             this.parent = parent;
         }

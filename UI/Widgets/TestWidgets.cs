@@ -152,14 +152,14 @@ namespace DownUnder.UI.Widgets
 
             Widget window = new Widget { Size = new Point2(400, 300), Name = "Login Window" };
             window.VisualSettings.VisualRole = GeneralVisualSettings.VisualRoleType.pop_up;
-            
+
             window.Behaviors.Add(new CenterContent());
             window.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.Centered });
             window.Behaviors.Add(new PopInOut(RectanglePart.Uniform(0.975f), RectanglePart.Uniform(0.5f)) { OpeningMotion = InterpolationSettings.Fast, ClosingMotion = InterpolationSettings.Fast });
 
             Widget username_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
             Widget password_entry = CommonWidgets.SingleLineTextEntry("", DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.center, 8f);
-            
+
             username_entry.Area = new RectangleF(100, 0, 150, 40);
             password_entry.Area = new RectangleF(100, 60, 150, 40);
 
@@ -188,7 +188,7 @@ namespace DownUnder.UI.Widgets
             {
                 confirm_handle.Invoke(new LoginSignal(
                     username_entry.Behaviors.Common.DrawText.Text,
-                    password_entry.Behaviors.Common.DrawText.Text, 
+                    password_entry.Behaviors.Common.DrawText.Text,
                     HandleResponse));
             };
 
@@ -197,7 +197,7 @@ namespace DownUnder.UI.Widgets
                 Widget create_account_button = CommonWidgets.Button("Create Account");
                 create_account_button.Area = new RectangleF(0, 120, 125 - login_create_spacing, 40);
 
-                void HandleCreationResponse(WidgetResponse r) 
+                void HandleCreationResponse(WidgetResponse r)
                 {
                     if (r.Reply == WidgetResponse.ResponseType.reject) window.ParentDWindow.ShowPopUpMessage("Error creating account: " + r.Message);
                 }
@@ -230,7 +230,7 @@ namespace DownUnder.UI.Widgets
             result.Add(CommonWidgets.Button("serialize", new RectangleF(10,10,100,40)), out var button);
             result.Add(CommonWidgets.Label("Native:", new RectangleF(20,70,200,200), DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.top));
             result.Add(CommonWidgets.Label("Loaded from XML:", new RectangleF(20, 220, 200, 200), DrawText.XTextPositioningPolicy.left, DrawText.YTextPositioningPolicy.top));
-            
+
             button.OnClick += (s, a) =>
             {
                 //var test = new TestSerializeClass() { NameProperty = "property name", name_field = "name field" };
@@ -251,7 +251,7 @@ namespace DownUnder.UI.Widgets
 
             return result;
         }
-        
+
         public static Widget ExplorerTest()
         {
             Widget result = new Widget();

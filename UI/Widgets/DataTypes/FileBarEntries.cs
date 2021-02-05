@@ -9,7 +9,7 @@ namespace DownUnder.UI.Widgets.DataTypes
     public class FileBarEntries : ICloneable, IEnumerable<AutoDictionary<string, DropDownEntry>>
     {
         AutoDictionary<string, AutoDictionary<string, DropDownEntry>> file_bar_entries = new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>();
-        
+
         public AutoDictionary<string, DropDownEntry> this[string entry]
             => file_bar_entries[entry];
 

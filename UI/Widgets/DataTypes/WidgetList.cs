@@ -9,26 +9,26 @@ using System.Runtime.Serialization;
 namespace DownUnder.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
-    [DataContract] 
+    [DataContract]
     public class WidgetList : IEnumerable<Widget>
     {
         Widget _parent;
 
-        [DataMember] 
+        [DataMember]
         private List<Widget> _widgets = new List<Widget>();
 
         public Widget LastAddedWidget;
         public Widget LastRemovedWidget;
 
         [DataMember]
-        public Widget Parent 
-        { 
+        public Widget Parent
+        {
             get => _parent;
             set
             {
                 _parent = value;
                 foreach (Widget widget in _widgets) widget.Parent = _parent;
-            } 
+            }
         }
 
         public WidgetList() { IsReadOnly = false; }
@@ -51,8 +51,8 @@ namespace DownUnder.UI.Widgets.DataTypes
             Parent?.InvokeOnRemove();
             Parent?.InvokeOnRemoveAny(new WidgetArgs(removed));
         }
-        private void OnAdd(Widget added) 
-        { 
+        private void OnAdd(Widget added)
+        {
             Parent?.InvokeOnAdd();
             Parent?.InvokeOnAddAny(new WidgetArgs(added));
         }
@@ -95,9 +95,9 @@ namespace DownUnder.UI.Widgets.DataTypes
                 for (int i = 0; i < areas.Count; i++) _widgets[i].Area = areas[i];
             }
             else {
-                for (int i = 0; i < areas.Count; i++) _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation) 
-                { 
-                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override 
+                for (int i = 0; i < areas.Count; i++) _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation)
+                {
+                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override
                     , DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
                 });
             }
@@ -214,7 +214,7 @@ namespace DownUnder.UI.Widgets.DataTypes
         /// <summary> Set all the widget's width values to match each other. </summary>
         public void AutoSizeWidth() {
             float new_width = SizeMax.X;
-            
+
             foreach (Widget widget in _widgets) {
                 if (widget.IsFixedWidth) {
                     new_width = widget.Width;
@@ -277,7 +277,7 @@ namespace DownUnder.UI.Widgets.DataTypes
 
         public Widget this[string name]
         {
-            get 
+            get
             {
                 for (int i = 0; i < _widgets[i].Count; i++)
                 {
