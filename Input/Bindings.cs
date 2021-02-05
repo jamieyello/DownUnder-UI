@@ -9,11 +9,12 @@ namespace DownUnder.Input {
     /// <summary> A list of "Binding"s, one for each action. </summary>
     [Serializable]
     public sealed class Bindings : IEnumerable<Binding> {
-        readonly List<Binding> _bindings = new List<Binding>();
+        readonly List<Binding> _bindings;
 
         public Binding this[int index] { get => _bindings[index]; set => _bindings[index] = value; }
 
         public Bindings() {
+            _bindings = new List<Binding>();
             var numActions = Enum.GetNames(typeof(ActionType)).Length;
             for (var i = 0; i < numActions; i++)
                 _bindings.Add(new Binding());

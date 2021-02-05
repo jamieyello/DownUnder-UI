@@ -6,13 +6,15 @@ namespace DownUnder.Input {
     /// <summary> A single binding, contains all buttons an action is bound to. </summary>
     [Serializable]
     public sealed class Binding {
-        readonly List<int> _buttons_combo = new List<int>();
-        readonly List<int> _buttons = new List<int>();
+        readonly List<int> _buttons_combo;
+        readonly List<int> _buttons;
 
         public int NumButtons => _buttons.Count;
         public int NumCombos => _buttons_combo.Count;
 
         public Binding() {
+            _buttons_combo = new List<int>();
+            _buttons = new List<int>();
         }
 
         Binding(Binding source) {
