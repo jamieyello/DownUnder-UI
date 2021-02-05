@@ -1395,10 +1395,12 @@ namespace DownUnder.UI.Widgets
 
         /// <summary> Insert this <see cref="Widget"/> in a new <see cref="Widget"/> and return the container. </summary>
         /// <returns> The containing <see cref="Widget"/>. </returns>
-        public Widget SendToContainer(bool preserve_area = true, bool snap_to_container = false)
-        {
-            Widget parent = ParentWidget;
-            Widget result = new Widget();
+        public Widget SendToContainer(
+            bool preserve_area = true,
+            bool snap_to_container = false
+        ) {
+            var parent = ParentWidget;
+            var result = new Widget();
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
             if (preserve_area) result.Area = Area;
@@ -1409,24 +1411,48 @@ namespace DownUnder.UI.Widgets
             return result;
         }
 
-        public void AnimatedReplace(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true)
-        {
-            AnimatedReplace(new_widget, animation.NewWidgetStart, animation.OldWidgetEnd, animation.NewWidgetMovement, animation.OldWidgetMovement, dispose_old);
-        }
+        public void AnimatedReplace(
+            Widget new_widget,
+            WidgetTransitionAnimation animation,
+            bool dispose_old = true
+        ) =>
+            AnimatedReplace(
+                new_widget,
+                animation.NewWidgetStart,
+                animation.OldWidgetEnd,
+                animation.NewWidgetMovement,
+                animation.OldWidgetMovement,
+                dispose_old
+            );
 
-        public void AnimatedReplace(Widget new_widget, InnerWidgetLocation new_widget_start = null, InnerWidgetLocation old_widget_end = null, InterpolationSettings? new_widget_movement = null, InterpolationSettings? old_widget_movement = null, bool dispose_old = true)
-        {
+        public void AnimatedReplace(
+            Widget new_widget,
+            InnerWidgetLocation new_widget_start = null,
+            InnerWidgetLocation old_widget_end = null,
+            InterpolationSettings? new_widget_movement = null,
+            InterpolationSettings? old_widget_movement = null,
+            bool dispose_old = true
+        ) {
             //new_widget.Size = Size;
             new_widget.SnappingPolicy = SnappingPolicy;
-            Actions.Add(new ReplaceWidget(new_widget, new_widget_start ?? InnerWidgetLocation.OutsideRight, old_widget_end ?? InnerWidgetLocation.OutsideLeft, new_widget_movement, old_widget_movement, dispose_old));
+            Actions.Add(new ReplaceWidget(
+                new_widget,
+                new_widget_start ?? InnerWidgetLocation.OutsideRight,
+                old_widget_end ?? InnerWidgetLocation.OutsideLeft,
+                new_widget_movement,
+                old_widget_movement,
+                dispose_old
+            ));
         }
 
         /// <summary> Deletes this <see cref="Widget"/>'s <see cref="ParentWidget"/> and adds this to the parent above. </summary>
         /// <returns> The deleted parent <see cref="Widget"/>. </returns>
-        public Widget ReplaceContainer(bool replace_position = true, bool replace_size = false)
-        {
-            Widget old_parent = ParentWidget;
-            Widget new_parent = ParentWidget.ParentWidget;
+        public Widget ReplaceContainer(
+            bool replace_position = true,
+            bool replace_size = false
+        ) {
+            var old_parent = ParentWidget;
+            var new_parent = ParentWidget.ParentWidget;
 
             if (replace_position && !replace_size) Position = old_parent.Position;
             if (!replace_position && replace_size) Size = old_parent.Size;
@@ -1437,72 +1463,75 @@ namespace DownUnder.UI.Widgets
             return old_parent;
         }
 
-        public Widget WithAddedBehavior(WidgetBehavior behavior)
-        {
+        public Widget WithAddedBehavior(WidgetBehavior behavior) {
             Behaviors.Add(behavior);
             return this;
         }
 
-        public Widget WithAddedBehavior<T>(T behavior, out T added_behavior)
-        {
-            if (!(behavior is WidgetBehavior behavior_)) throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
+        public Widget WithAddedBehavior<T>(T behavior, out T added_behavior) {
+            if (!(behavior is WidgetBehavior behavior_))
+                throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
+
             Behaviors.Add(behavior_);
             added_behavior = behavior;
             return this;
         }
 
-        public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors)
-        {
+        public Widget WithAddedBehavior(IEnumerable<WidgetBehavior> behaviors) {
             Behaviors.AddRange(behaviors);
             return this;
         }
 
-        public Widget WithAddedAction(WidgetAction action)
-        {
+        public Widget WithAddedAction(WidgetAction action) {
             Actions.Add(action);
             return this;
         }
 
-        public Widget WithAddedAction<T>(T action, out T added_action)
-        {
+        public Widget WithAddedAction<T>(T action, out T added_action) {
             if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a {nameof(WidgetAction)}.");
             Actions.Add(action_);
             added_action = action;
             return this;
         }
 
-        public Widget WithAddedAction(IEnumerable<WidgetAction> actions)
-        {
+        public Widget WithAddedAction(IEnumerable<WidgetAction> actions) {
             Actions.AddRange(actions);
             return this;
         }
 
-        public void EmbedIn(IParent parent)
-        {
+        public void EmbedIn(IParent parent) {
             if (parent == null) return;
             EmbedIn(parent.Area);
         }
 
         /// <summary> Embeds this <see cref="Widget"/> in the given area. Takes <see cref="SnappingPolicy"/> and <see cref="Spacing"/> into account. </summary>
-        internal void EmbedIn(RectangleF encompassing_area)
-        {
+        void EmbedIn(RectangleF encompassing_area) {
             encompassing_area = encompassing_area.SizeOnly();
-            RectangleF new_area = Area;
+            var new_area = Area;
 
             // Convert the corners into up/down left/right to determine which walls the new area should stick to
-            Directions2D snapping = SnappingPolicy.ToPerpendicular();
+            var snapping = SnappingPolicy.ToPerpendicular();
 
-            if (snapping.Left && !snapping.Right) new_area.X = encompassing_area.X + Spacing.Width; // left
-            if (!snapping.Left && snapping.Right) new_area.X = encompassing_area.X + encompassing_area.Width - new_area.Width - Spacing.Width; // right
-            if (snapping.Left && snapping.Right)
-            { // left and right
+            if (snapping.Left && !snapping.Right)
+                new_area.X = encompassing_area.X + Spacing.Width; // left
+
+            if (!snapping.Left && snapping.Right)
+                new_area.X = encompassing_area.X + encompassing_area.Width - new_area.Width - Spacing.Width; // right
+
+            if (snapping.Left && snapping.Right) {
+                // left and right
                 new_area.X = encompassing_area.X + Spacing.Width;
                 new_area.Width = encompassing_area.Width - Spacing.Width * 2;
             }
-            if (snapping.Up && !snapping.Down) new_area.Y = encompassing_area.Y + Spacing.Height; // up
-            if (!snapping.Up && snapping.Down) new_area.Y = encompassing_area.Y + encompassing_area.Height - new_area.Height - Spacing.Height;// down
-            if (snapping.Up && snapping.Down)
-            { // up and down
+
+            if (snapping.Up && !snapping.Down)
+                new_area.Y = encompassing_area.Y + Spacing.Height; // up
+
+            if (!snapping.Up && snapping.Down)
+                new_area.Y = encompassing_area.Y + encompassing_area.Height - new_area.Height - Spacing.Height;// down
+
+            if (snapping.Up && snapping.Down) {
+                // up and down
                 new_area.Y = encompassing_area.Y + Spacing.Height;
                 new_area.Height = encompassing_area.Height - Spacing.Height * 2;
             }
@@ -1511,40 +1540,44 @@ namespace DownUnder.UI.Widgets
         }
 
         /// <summary> Set this <see cref="Widget"/> as the only focused <see cref="Widget"/>. </summary>
-        void SetAsFocused() => ParentDWindow?.SelectedWidgets.SetFocus(this);
+        void SetAsFocused() =>
+            ParentDWindow?.SelectedWidgets.SetFocus(this);
 
         /// <summary> Add this <see cref="Widget"/> to the group of selected <see cref="Widget"/>s. </summary>
-        void AddToFocused() => ParentDWindow?.SelectedWidgets.AddFocus(this);
+        void AddToFocused() =>
+            ParentDWindow?.SelectedWidgets.AddFocus(this);
 
         /// <summary> Resize the <see cref="RenderTarget2D"/> to match the current area. </summary>
-        void UpdateRenderTargetSizes()
-        {
-            if (DrawingMode == DrawingModeType.use_render_target) UpdateRenderTargetSize(DrawingArea.Size);
+        void UpdateRenderTargetSizes() {
+            if (DrawingMode == DrawingModeType.use_render_target)
+                UpdateRenderTargetSize(DrawingArea.Size);
 
-            for (int i = 0; i < Children.Count; i++) Children[i].UpdateRenderTargetSizes();
+            for (var i = 0; i < Children.Count; i++)
+                Children[i].UpdateRenderTargetSizes();
         }
 
-        void UpdateRenderTargetSize(Point2 size)
-        {
-            if (DrawingMode != DrawingModeType.use_render_target) return;
-            if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
-            {
-                size = new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE);
-            }
+        void UpdateRenderTargetSize(Point2 size) {
+            if (DrawingMode != DrawingModeType.use_render_target)
+                return;
 
-            if (_render_target != null && (int)size.X == _render_target.Width && (int)size.Y == _render_target.Height) return;
+            if (RenderTargetResizeMode == RenderTargetResizeModeType.maximum_size)
+                size = new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE);
+
+            if (
+                _render_target is { }
+                && (int)size.X == _render_target.Width
+                && (int)size.Y == _render_target.Height
+            )
+                return;
+
             _graphics_updating = true;
 
-            if (_graphics_in_use)
-            {
-                int i = 0;
-                while (_graphics_in_use)
-                {
+            if (_graphics_in_use) {
+                var i = 0;
+                while (_graphics_in_use) {
                     i += _WAIT_TIME;
                     if (i > _MAX_WAIT_TIME)
-                    {
-                        Console.WriteLine($"Hanging in UpdateRenderTarget waiting for graphics to not be in use.");
-                    }
+                        Console.WriteLine("Hanging in UpdateRenderTarget waiting for graphics to not be in use.");
                     Thread.Sleep(_WAIT_TIME);
                 }
             }
@@ -1552,16 +1585,12 @@ namespace DownUnder.UI.Widgets
             if (size.X < 1) size.X = 1;
             if (size.Y < 1) size.Y = 1;
 
-            if (Math.Max((int)size.X, (int)size.Y) > MAXIMUM_WIDGET_SIZE)
-            {
+            if (Math.Max((int)size.X, (int)size.Y) > MAXIMUM_WIDGET_SIZE) {
                 size = size.Min(new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE));
                 Console.WriteLine($"DownUnder WARNING: Maximum Widget dimensions reached (maximum size is {MAXIMUM_WIDGET_SIZE}, given dimensions are {size}). This may cause rendering issues.");
             }
 
-            if (_render_target != null)
-            {
-                _render_target.Dispose();
-            }
+            _render_target?.Dispose();
 
             _render_target = new RenderTarget2D(
                 GraphicsDevice,
@@ -1571,54 +1600,56 @@ namespace DownUnder.UI.Widgets
                 SurfaceFormat.Vector4,
                 DepthFormat.Depth24,
                 0,
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.DiscardContents
+            );
 
             _graphics_updating = false;
         }
 
-        public void SendToBack(bool immediate = false)
-        {
-            if (immediate) ParentWidget?.Children.SendWidgetToBack(this);
-            else _post_update_flags.SendToBack = true;
+        public void SendToBack(bool immediate = false) {
+            if (immediate)
+                ParentWidget?.Children.SendWidgetToBack(this);
+            else
+                _post_update_flags.SendToBack = true;
         }
 
-        public void SendToFront(bool immediate = false)
-        {
-            if (immediate) ParentWidget?.Children.SendWidgetToFront(this);
-            else _post_update_flags.SendToFront = true;
+        public void SendToFront(bool immediate = false) {
+            if (immediate)
+                ParentWidget?.Children.SendWidgetToFront(this);
+            else
+                _post_update_flags.SendToFront = true;
         }
 
         #endregion
 
-        public void HandleDrop(object drop)
-        {
-            if (DesignerObjects.IsEditModeEnabled)
-            {
-                DesignerObjects.HandleDrop(drop);
+        public void HandleDrop(object drop) {
+            if (!DesignerObjects.IsEditModeEnabled)
                 return;
-            }
+
+            DesignerObjects.HandleDrop(drop);
         }
 
-        public bool IsDropAcceptable(object drop)
-        {
-            if (!AcceptsDrops) return false;
+        public bool IsDropAcceptable(object drop) {
+            if (!AcceptsDrops)
+                return false;
+
             foreach (Type type in AcceptedDropTypes)
-            {
                 if (type.IsAssignableFrom(drop?.GetType()))
-                {
                     return true;
-                }
-            }
+
             return false;
         }
 
         #region ICloneable Implementation
 
-        public object Clone()
-        {
-            if (!IsCloningSupported) throw new Exception($"Cloning was flagged as unsupported with this {nameof(Widget)}. ({nameof(IsCloningSupported)} == false)");
-            Widget c = new Widget();
-            for (int i = 0; i < Children.Count; i++) c.Children.Add((Widget)Children[i].Clone());
+        public object Clone() {
+            if (!IsCloningSupported)
+                throw new Exception($"Cloning was flagged as unsupported with this {nameof(Widget)}. ({nameof(IsCloningSupported)} == false)");
+
+            var c = new Widget();
+            for (var i = 0; i < Children.Count; i++)
+                c.Children.Add((Widget)Children[i].Clone());
+
             c.FitToContentArea = FitToContentArea;
 
             c.Name = Name;
@@ -1646,9 +1677,14 @@ namespace DownUnder.UI.Widgets
             c._allow_copy_backing = _allow_copy_backing;
             c._allow_cut_backing = _allow_cut_backing;
 
-            foreach (Type type in _accepted_drop_types_backing) c._accepted_drop_types_backing.Add(type);
-            foreach (WidgetBehavior behavior in Behaviors) c.Behaviors.Add((WidgetBehavior)behavior.Clone());
-            foreach (WidgetAction action in ClosingActions) c.Actions.Add((WidgetAction)action.InitialClone());
+            foreach (Type type in _accepted_drop_types_backing)
+                c._accepted_drop_types_backing.Add(type);
+
+            foreach (var behavior in Behaviors)
+                c.Behaviors.Add((WidgetBehavior)behavior.Clone());
+
+            foreach (var action in ClosingActions)
+                c.Actions.Add((WidgetAction)action.InitialClone());
 
             return c;
         }
