@@ -1,32 +1,29 @@
 ﻿// More or less sloppy/unnecessary than a tuple<ControllerType, int>
-namespace DownUnder.Input
-{
-    public class Controller
-    {
-        public ControllerType type = ControllerType.null_;
-        public int index = 0;
+namespace DownUnder.Input {
+    public sealed class Controller {
+        public ControllerType Type { get; } = ControllerType.null_;
+        public int Index { get; }
 
-        public Controller()
-        {
+        public Controller() {
         }
 
-        public Controller(ControllerType type_, int index_)
-        {
-            type = type_;
-            index = index_;
+        public Controller(Controller source) {
+            Type = source.Type;
+            Index = source.Index;
         }
 
-        public bool Equals(Controller controller)
-        {
-            return (type == controller.type) && (index == controller.index);
+        public Controller(
+            ControllerType type,
+            int index
+        ) {
+            Type = type;
+            Index = index;
         }
 
-        public object Clone()
-        {
-            Controller clone = new Controller();
-            clone.type = type;
-            clone.index = index;
-            return clone;
-        }
+        public bool Equals(Controller controller) =>
+            Type == controller.Type && Index == controller.Index;
+
+        public Controller Clone() =>
+            new Controller(this);
     }
 }

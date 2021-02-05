@@ -266,9 +266,11 @@ namespace DownUnder.UI
             ParentGame.TargetElapsedTime = new TimeSpan((long)time);
             //Window.IsBorderless = true;
 
-            parent.Exiting += (s, a) => {
-                foreach (Widget widget in MainWidget.AllContainedWidgets) widget.InvokeOnWindowClose();
-            };
+            if (parent is { })
+                parent.Exiting += (s, e) => {
+                    foreach (var widget in MainWidget.AllContainedWidgets)
+                        widget.InvokeOnWindowClose();
+                };
 
             LoadDWindow();
         }
