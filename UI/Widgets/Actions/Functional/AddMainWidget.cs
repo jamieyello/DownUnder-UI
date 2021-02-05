@@ -2,44 +2,41 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Actions.Functional
-{
-    [DataContract] public class AddMainWidget : WidgetAction
-    {
+namespace DownUnder.UI.Widgets.Actions.Functional {
+    [DataContract] public sealed class AddMainWidget : WidgetAction {
         [DataMember] public Widget Widget { get; set; }
         [DataMember] public bool CloneWidgetOnAdd { get; set; } = true;
         [DataMember] public bool CloneWidgetInClone { get; set; } = true;
         [DataMember] public OverlayWidgetLocation Location { get; set; }
 
-        public AddMainWidget() { }
-        public AddMainWidget(Widget widget, OverlayWidgetLocation location)
-        {
+        public AddMainWidget() {
+        }
+
+        public AddMainWidget(
+            Widget widget,
+            OverlayWidgetLocation location
+        ) {
             Widget = widget;
             Location = location;
         }
 
-        protected override void Initialize()
-        {
-            if (Parent.ParentDWindow != null) AddWidget(this, EventArgs.Empty);
+        protected override void Initialize() {
+            if (Parent.ParentDWindow is { })
+                AddWidget(this, EventArgs.Empty);
             else Parent.OnParentWindowSet += AddWidget;
         }
 
-        protected override void ConnectEvents() { }
-        protected override void DisconnectEvents()
-        {
+        protected override void ConnectEvents() {
+        }
+
+        protected override void DisconnectEvents() =>
             Parent.OnParentWindowSet -= AddWidget;
-        }
 
-        protected override bool InterferesWith(WidgetAction action)
-        {
-            return false;
-        }
+        protected override bool InterferesWith(WidgetAction action) =>
+            false;
 
-        public void AddWidget(object sender, EventArgs args)
-        {
-            Widget widget;
-            if (CloneWidgetOnAdd) widget = (Widget)Widget.Clone();
-            else widget = Widget;
+        public void AddWidget(object sender, EventArgs args) {
+            var widget = CloneWidgetOnAdd ? (Widget)Widget.Clone() : Widget;
             Location?.ApplyLocation(Parent, widget);
             Parent.ParentDWindow.MainWidget.Add(widget);
             EndAction();
