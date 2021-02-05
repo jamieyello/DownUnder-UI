@@ -1,43 +1,40 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.Utilities;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
+using DownUnder.UI.Widgets;
+using DownUnder.Utilities;
 
-namespace DownUnder.UI
-{
+namespace DownUnder.UI {
     [DataContract]
-    public class DropDownEntryList : ICloneable, IAutoDictionary<string, DropDownEntry>
-    {
-        [DataMember] AutoDictionary<string, DropDownEntry> entries = new AutoDictionary<string, DropDownEntry>();
+    public sealed class DropDownEntryList : IAutoDictionary<string, DropDownEntry> {
+        [DataMember] readonly IAutoDictionary<string, DropDownEntry> _entries;
 
-        public DropDownEntry this[string key] { get => ((IAutoDictionary<string, DropDownEntry>)entries)[key]; set => ((IAutoDictionary<string, DropDownEntry>)entries)[key] = value; }
-
-        public DropDownEntryList() { }
-        public DropDownEntryList(IEnumerable<KeyValuePair<string, DropDownEntry>> entries)
-        {
-            entries = new AutoDictionary<string, DropDownEntry>(entries);
+        public DropDownEntry this[string key] {
+            get => _entries[key];
+            set => _entries[key] = value;
         }
 
-        object ICloneable.Clone() => Clone();
-        public DropDownEntryList Clone()
-        {
-            DropDownEntryList c = new DropDownEntryList();
-            foreach (var entry in entries) c.entries.Add(entry.Key, entry.Value.Clone());
-            return c;
-        }
+        public DropDownEntryList() =>
+            _entries = new AutoDictionary<string, DropDownEntry>();
+
+        public DropDownEntryList(
+            IEnumerable<KeyValuePair<string, DropDownEntry>> entries
+        ) =>
+            _entries = new AutoDictionary<string, DropDownEntry>(entries);
+
+        public DropDownEntryList Clone() =>
+            new DropDownEntryList(this);
 
         #region IAutoDictionary
 
-        public void Add(string key, DropDownEntry value, bool replace = false) => entries.Add(key, value, replace);
-        public void Add(KeyValuePair<string, DropDownEntry> pair, bool replace = false) => entries.Add(pair, replace);
-        public void Add(IEnumerable<KeyValuePair<string, DropDownEntry>> pairs, bool replace = false) => entries.Add(pairs, replace);
-        public bool Remove(string key) => entries.Remove(key);
-        public IEnumerator<KeyValuePair<string, DropDownEntry>> GetEnumerator() => entries.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => entries.GetEnumerator();
-        public int Count => entries.Count;
+        public void Add(string key, DropDownEntry value, bool replace = false) => _entries.Add(key, value, replace);
+        public void Add(KeyValuePair<string, DropDownEntry> pair, bool replace = false) => _entries.Add(pair, replace);
+        public void Add(IEnumerable<KeyValuePair<string, DropDownEntry>> pairs, bool replace = false) => _entries.Add(pairs, replace);
+        public bool Remove(string key) => _entries.Remove(key);
+        public IEnumerator<KeyValuePair<string, DropDownEntry>> GetEnumerator() => _entries.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _entries.GetEnumerator();
+        public int Count => _entries.Count;
+
         #endregion
     }
 }

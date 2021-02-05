@@ -1,14 +1,12 @@
-﻿namespace DownUnder.UI.DataTypes
-{
-    class SetGetEvent<T>
-    {
-        public SetGetEvent() { }
-        public SetGetEvent(T value)
-        {
-            Value = value;
+﻿namespace DownUnder.UI.DataTypes {
+    sealed class SetGetEvent<T> {
+        public bool Completed { get; set; }
+        public T Value { get; }
+
+        public SetGetEvent() {
         }
 
-        public bool Completed { get; set; } = false;
-        public T Value { get; set; }
+        public SetGetEvent(T value) =>
+            Value = value;
     }
 }
