@@ -11,6 +11,8 @@ Currently functional and supporting design by code. A visual editor and better d
 ## Documentation/How to Use
 __IMPORTANT__: The workflow for this library is still being worked on. DownUnder.UI is not user-friendly in its current state.
 
+__Warning:__ The following is outdated information.
+
 This project is a shared project library, meaning it does not compile without your project. It can be added as a shared project reference directly. Read the [Wiki](https://github.com/jamieyello/DownUnder-UI/wiki) for documentation, and the [getting started guide](https://github.com/jamieyello/DownUnder-UI/wiki/Using-the-Library:-Part-1,-Setting-Up) for a short introduction.
 
 ## Community
