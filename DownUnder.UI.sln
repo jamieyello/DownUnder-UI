@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownUnder.UI", "DownUnder.UI\DownUnder.UI.csproj", "{E2522C95-FF0B-462C-A96C-C301014088F4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DownUnder.UI.Content", "DownUnder.UI.Content\DownUnder.UI.Content.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownUnder.UI.Editor", "DownUnder.UI.Editor\DownUnder.UI.Editor.csproj", "{3950F878-1DA2-4734-8DAF-BF964187DDF2}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		DownUnder.UI.Content\DownUnder.UI.Content.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2522C95-FF0B-462C-A96C-C301014088F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2522C95-FF0B-462C-A96C-C301014088F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2522C95-FF0B-462C-A96C-C301014088F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2522C95-FF0B-462C-A96C-C301014088F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3950F878-1DA2-4734-8DAF-BF964187DDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3950F878-1DA2-4734-8DAF-BF964187DDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3950F878-1DA2-4734-8DAF-BF964187DDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3950F878-1DA2-4734-8DAF-BF964187DDF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81273CF6-4540-42B4-B719-2ACCF3670EA9}
+	EndGlobalSection
+EndGlobal

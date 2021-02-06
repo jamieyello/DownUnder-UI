@@ -1,0 +1,12 @@
+// This is generated code. Modifications will be overwritten.
+using DownUnder.UI.Widgets;
+
+namespace DownUnder.UIEditor.CodeGeneration
+{
+    public partial class MyWidgetCode : WidgetCode
+    {
+        /// <summary> Auto generated accessor for Widget. </summary>
+        public Widget Widget => Base["Widget"];
+
+    }
+}
