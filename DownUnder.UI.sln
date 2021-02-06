@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownUnder.UI.Editor", "Down
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		DownUnder.UI.Content\DownUnder.UI.Content.projitems*{3950f878-1da2-4734-8daf-bf964187ddf2}*SharedItemsImports = 5
 		DownUnder.UI.Content\DownUnder.UI.Content.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

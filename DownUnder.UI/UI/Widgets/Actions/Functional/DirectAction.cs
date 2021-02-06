@@ -6,7 +6,7 @@ using System.Text;
 namespace DownUnder.UI.Widgets.Actions.Functional
 {
     [DataContract]
-    class DirectAction : WidgetAction
+    public class DirectAction : WidgetAction
     {
         //[DataMember]
         public Action Action;

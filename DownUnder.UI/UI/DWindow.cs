@@ -277,7 +277,7 @@ namespace DownUnder.UI {
             OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
 
             ParentGame.Window.ClientSizeChanged += ResetBuffers;
-            ParentGame.Window.TextInput += ProcessKeys;
+            //ParentGame.Window.TextInput += ProcessKeys;
             ParentGame.Exiting += ExitAll;
 
             //GraphicsManager = ParentGame.Components.;
@@ -328,24 +328,24 @@ namespace DownUnder.UI {
 
         #region Events
 
-        void ProcessKeys(object s, TextInputEventArgs a) {
-            Debug.WriteLine("DWINDOW ProcessKeys1");
-            if (a.Character == 8)
-                InputState.BackSpace = true;
-            else if (a.Character == 10 || a.Character == 13) {
-                InputText.Append('\n');
-                InputState.Enter = true;
-            } else {
-                var state = Keyboard.GetState();
-                Debug.WriteLine("DWINDOW ProcessKeys2" + state.IsKeyDown(Keys.LeftControl));
+        //void ProcessKeys(object s, TextInputEventArgs a) {
+        //    Debug.WriteLine("DWINDOW ProcessKeys1");
+        //    if (a.Character == 8)
+        //        InputState.BackSpace = true;
+        //    else if (a.Character == 10 || a.Character == 13) {
+        //        InputText.Append('\n');
+        //        InputState.Enter = true;
+        //    } else {
+        //        var state = Keyboard.GetState();
+        //        Debug.WriteLine("DWINDOW ProcessKeys2" + state.IsKeyDown(Keys.LeftControl));
 
-                if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl)) {
-                    CommandText.Append(a.Character);
-                    Debug.WriteLine("DWINDOW ProcessKeys");
-                } else
-                    InputText.Append(a.Character);
-            }
-        }
+        //        if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl)) {
+        //            CommandText.Append(a.Character);
+        //            Debug.WriteLine("DWINDOW ProcessKeys");
+        //        } else
+        //            InputText.Append(a.Character);
+        //    }
+        //}
 
         /// <summary> Closes all child <see cref="DWindow"/>s and removes own reference from parent on exiting. </summary>
         void ExitAll(object s, EventArgs a) {
