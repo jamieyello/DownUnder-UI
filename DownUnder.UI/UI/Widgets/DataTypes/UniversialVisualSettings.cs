@@ -3,20 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
 
 namespace DownUnder.UI.Widgets.DataTypes
 {
     public class UniversialVisualSettings
     {
-        /// <summary> Defines the behavior of <see cref="Widget"/>s when being used by <see cref="WidgetBehavior"/>s. </summary>
-        public enum VisualRoleType
-        {
-            default_widget = 0,
-            text_widget = 1,
-            text_edit_widget = 2,
-            header_widget = 3
-        }
-
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
         [DataMember]
         public VisualRoleType Role { get; set; } = VisualRoleType.default_widget;
