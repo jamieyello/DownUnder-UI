@@ -1,8 +1,8 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.Behaviors;
 
-namespace DownUnder.UI.Widgets.Actions
+namespace DownUnder.UI.UI.Widgets.Actions
 {
     /// <summary> Acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. Differs from <see cref="WidgetBehavior"/> as this removes itself on finishing execution. </summary>
     [DataContract] public abstract class WidgetAction : ICloneable {

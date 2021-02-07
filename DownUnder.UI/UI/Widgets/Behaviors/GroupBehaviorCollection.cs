@@ -1,15 +1,13 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.WidgetCoding;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     public class GroupBehaviorCollection : IList<GroupBehaviorPolicy>
     {

@@ -1,13 +1,15 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utilities;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 {
     public class DrawEditableText : WidgetBehavior, ISubWidgetBehavior<DrawText>
     {

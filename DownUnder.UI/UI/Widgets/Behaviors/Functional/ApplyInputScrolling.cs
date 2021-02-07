@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     public class ApplyInputScrolling : WidgetBehavior, ISubWidgetBehavior<ScrollBase>
     {

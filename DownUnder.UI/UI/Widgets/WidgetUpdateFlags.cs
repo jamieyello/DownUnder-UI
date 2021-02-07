@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DownUnder.UI.Widgets
+﻿namespace DownUnder.UI.UI.Widgets
 {
     public class WidgetUpdateFlags
     {

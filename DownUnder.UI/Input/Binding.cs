@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary> A single binding, contains all buttons an action is bound to. </summary>
     [Serializable]
     public sealed class Binding {

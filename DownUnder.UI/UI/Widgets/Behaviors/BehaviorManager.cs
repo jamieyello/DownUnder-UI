@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     [DataContract] public class BehaviorManager : IEnumerable<WidgetBehavior>
     {

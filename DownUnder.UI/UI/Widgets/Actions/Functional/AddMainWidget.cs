@@ -1,8 +1,8 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets.Actions.Functional {
+namespace DownUnder.UI.UI.Widgets.Actions.Functional {
     [DataContract] public sealed class AddMainWidget : WidgetAction {
         [DataMember] public Widget Widget { get; set; }
         [DataMember] public bool CloneWidgetOnAdd { get; set; } = true;

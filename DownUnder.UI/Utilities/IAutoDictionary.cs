@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     public interface IAutoDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {

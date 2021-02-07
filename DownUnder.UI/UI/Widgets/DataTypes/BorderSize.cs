@@ -1,4 +1,6 @@
-﻿namespace DownUnder.UI.Widgets.DataTypes {
+﻿using DownUnder.UI.Utilities.CommonNamespace;
+
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     public struct BorderSize {
         public float Top;
         public float Bottom;

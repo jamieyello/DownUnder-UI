@@ -1,11 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
+using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     public class UniversialVisualSettings
     {

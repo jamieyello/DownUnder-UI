@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     [Serializable]
     sealed class PlayerProfile {
         readonly string _name;

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static DownUnder.UI.Widgets.WidgetResponse;
+using static DownUnder.UI.UI.Widgets.Signals.WidgetResponse;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.Signals
 {
     public class WidgetSignal
     {

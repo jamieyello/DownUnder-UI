@@ -1,6 +1,6 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets {
+namespace DownUnder.UI.UI.Widgets {
     public class WidgetPostUpdateFlags
     {
         bool _send_to_back;

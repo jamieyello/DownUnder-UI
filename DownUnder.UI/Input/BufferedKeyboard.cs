@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     sealed class BufferedKeyboard {
         readonly List<BufferedBool> _keys = new List<BufferedBool>();
         KeyboardState _keyboard_state;

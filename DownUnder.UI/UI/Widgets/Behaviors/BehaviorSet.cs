@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     public class BehaviorSet : IList<WidgetBehavior>
     {

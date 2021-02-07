@@ -1,8 +1,8 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UI.Widgets.Behaviors.Format
+namespace DownUnder.UI.UI.Widgets.Behaviors.Format
 {
     [DataContract] public class SpacedListFormat : WidgetBehavior
     {

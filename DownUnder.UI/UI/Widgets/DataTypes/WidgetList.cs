@@ -1,12 +1,15 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Actions.Functional;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.Actions;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     [DataContract]

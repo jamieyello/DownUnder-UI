@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using DownUnder.Content.Utilities.Serialization;
-using DownUnder.UI.Widgets;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.WidgetCoding;
+using DownUnder.UI.Utilities.Serialization;
 
-namespace DownUnder.UIEditor.CodeGeneration
+namespace DownUnder.UI.Editor.CodeGeneration
 {
     public static class ProjectCodeInterface
     {

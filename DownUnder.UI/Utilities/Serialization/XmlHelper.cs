@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
-namespace DownUnder.Content.Utilities.Serialization
+namespace DownUnder.UI.Utilities.Serialization
 {
     public static class XmlHelper
     {

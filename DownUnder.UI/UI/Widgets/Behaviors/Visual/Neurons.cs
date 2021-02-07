@@ -1,14 +1,16 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Visual.NeuronsObjects;
-using DownUnder.UI.Widgets.DataTypes;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual.NeuronsObjects;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class Neurons : WidgetBehavior
     {

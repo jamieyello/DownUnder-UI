@@ -1,7 +1,8 @@
-﻿using MonoGame.Extended;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> Allows aligning a <see cref="WidgetList"/> in a grid pattern. </summary>
     public static class GridWriter

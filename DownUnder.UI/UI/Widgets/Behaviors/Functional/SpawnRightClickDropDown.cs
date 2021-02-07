@@ -1,9 +1,6 @@
-﻿using DownUnder.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     public class SpawnRightClickDropDown : WidgetBehavior
     {

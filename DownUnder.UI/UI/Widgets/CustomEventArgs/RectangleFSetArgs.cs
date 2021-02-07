@@ -1,7 +1,7 @@
-﻿using MonoGame.Extended;
-using System;
+﻿using System;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.CustomEventArgs
 {
     public class RectangleFSetArgs : EventArgs
     {

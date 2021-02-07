@@ -1,11 +1,7 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UIEditor.CodeGeneration;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DownUnder.UIEditor.Test;
+﻿using DownUnder.UI.Editor.Test;
+using DownUnder.UI.UI.Widgets;
 
-namespace DownUnder.UIEditor.Widgets
+namespace DownUnder.UI.Editor.Widgets
 {
     public class EditorTestWidgets
     {

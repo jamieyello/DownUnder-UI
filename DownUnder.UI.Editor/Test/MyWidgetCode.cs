@@ -1,10 +1,6 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.WidgetCoding;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DownUnder.UI.UI.Widgets.WidgetCoding;
 
-namespace DownUnder.UIEditor.Test
+namespace DownUnder.UI.Editor.Test
 {
     public partial class MyWidgetCode : WidgetCode
     {

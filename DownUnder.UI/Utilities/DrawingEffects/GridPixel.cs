@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using DownUnder.UI.Utilities.CommonNamespace;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
 
-namespace DownUnder.Utilities.DrawingEffects
+namespace DownUnder.UI.Utilities.DrawingEffects
 {
     public class GridPixel : ICloneable
     {

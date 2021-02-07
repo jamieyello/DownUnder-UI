@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace DownUnder.UI.Widgets.Actions.Functional
+namespace DownUnder.UI.UI.Widgets.Actions.Functional
 {
     [DataContract]
     public class DirectAction : WidgetAction

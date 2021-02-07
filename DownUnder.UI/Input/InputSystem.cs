@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary>
     /// A class meant to encompass the PlayerProfile class, integrating
     /// inputs from multiple different controllers.

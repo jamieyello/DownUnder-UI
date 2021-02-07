@@ -1,12 +1,13 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utilities;
+﻿using System;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     public class ScrollBase : WidgetBehavior
     {

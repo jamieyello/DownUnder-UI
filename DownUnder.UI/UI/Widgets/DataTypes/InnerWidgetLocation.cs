@@ -1,10 +1,10 @@
-﻿using DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations;
-using DownUnder.Utilities;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations;
+using DownUnder.UI.Utilities.CommonNamespace;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     [DataContract]
     public abstract class InnerWidgetLocation : ICloneable

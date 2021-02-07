@@ -1,15 +1,7 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utilities;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     /// <summary> Used to "pin" the widget's position/size to some position within the parent widget. </summary>
     public class PinWidget : WidgetBehavior

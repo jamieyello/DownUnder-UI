@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class MakeMousePointer : WidgetBehavior
     {

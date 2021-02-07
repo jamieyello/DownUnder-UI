@@ -1,11 +1,7 @@
-﻿using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
+namespace DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations
 {
     public class CenteredLocation : InnerWidgetLocation
     {

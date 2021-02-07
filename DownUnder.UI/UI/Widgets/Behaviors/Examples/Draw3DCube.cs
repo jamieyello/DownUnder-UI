@@ -1,10 +1,10 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
+﻿using System;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
-namespace DownUnder.UI.Widgets.Behaviors.Examples
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples
 {
     public class Draw3DCube : WidgetBehavior, IEditorDisplaySubBehaviors
     {

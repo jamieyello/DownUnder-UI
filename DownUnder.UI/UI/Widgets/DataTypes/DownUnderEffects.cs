@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace DownUnder.UI.Widgets.DataTypes {
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     public class DownUnderEffects {
         public Effect ShadingEffect { get; set; }
         public Effect BlurEffect { get; set; }

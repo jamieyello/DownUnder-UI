@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace DownUnder.UI.Widgets.Actions
+namespace DownUnder.UI.UI.Widgets.Actions
 {
     public class ActionSet : IList<WidgetAction>
     {

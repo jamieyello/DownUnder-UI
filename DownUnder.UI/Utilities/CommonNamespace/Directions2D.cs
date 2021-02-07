@@ -1,8 +1,8 @@
-﻿using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using MonoGame.Extended;
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.CommonNamespace
 {
     /// <summary> Represents four (up, down, left, right) directions. </summary>
     public struct Directions2D

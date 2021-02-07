@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> Allows reading of <see cref="WidgetList"/> in a grid pattern. </summary>
     public static class GridReader

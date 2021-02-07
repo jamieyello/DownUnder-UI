@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
 
-namespace DownUnder.Utilities.DrawingEffects
+namespace DownUnder.UI.Utilities.DrawingEffects
 {
     /// <summary> A resizable grid used for various special effects. </summary>
     public class PixelGrid

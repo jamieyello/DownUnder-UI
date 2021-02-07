@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Serialization;
+using DownUnder.UI.Utilities.CommonNamespace;
 
 // https://www.youtube.com/watch?v=J4nM-F1kxs8
 
-namespace DownUnder.UI.Widgets.Actions.Functional
+namespace DownUnder.UI.UI.Widgets.Actions.Functional
 {
     /// <summary> Transition a given property to a given value over time. </summary>
     /// <typeparam name="T"> Type of the targeted property. </typeparam>
