@@ -64,10 +64,11 @@ namespace DownUnder.UI.UI.Widgets.Actions
         protected abstract bool InterferesWith(WidgetAction action);
         protected abstract bool Matches(WidgetAction action);
 
-        object ICloneable.Clone() => InitialClone();
-        public virtual object InitialClone()
-        {
-            WidgetAction c = (WidgetAction)Activator.CreateInstance(GetType());
+        object ICloneable.Clone() =>
+            InitialClone();
+
+        public virtual object InitialClone() {
+            var c = (WidgetAction)Activator.CreateInstance(GetType());
             c.DuplicatePolicy = DuplicatePolicy;
             c.DuplicateDefinition = DuplicateDefinition;
             return c;

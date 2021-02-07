@@ -23,7 +23,8 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
         protected override void Initialize() {
             if (Parent.ParentDWindow is { })
                 AddWidget(this, EventArgs.Empty);
-            else Parent.OnParentWindowSet += AddWidget;
+            else
+                Parent.OnParentWindowSet += AddWidget;
         }
 
         protected override void ConnectEvents() {
@@ -42,20 +43,21 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
             EndAction();
         }
 
-        public override object InitialClone()
-        {
-            AddMainWidget c = (AddMainWidget)base.InitialClone();
-            if (CloneWidgetInClone) c.Widget = (Widget)Widget.Clone();
-            else c.Widget = Widget;
+        public override object InitialClone() {
+            var c = (AddMainWidget)base.InitialClone();
+
+            if (CloneWidgetInClone)
+                c.Widget = (Widget)Widget.Clone();
+            else
+                c.Widget = Widget;
+
             c.CloneWidgetOnAdd = CloneWidgetOnAdd;
             c.CloneWidgetInClone = CloneWidgetInClone;
             c.Location = (OverlayWidgetLocation)Location.Clone();
             return c;
         }
 
-        protected override bool Matches(WidgetAction action)
-        {
-            return action is AddMainWidget add_widget && add_widget.Widget == Widget;
-        }
+        protected override bool Matches(WidgetAction action) =>
+            action is AddMainWidget add_widget && add_widget.Widget == Widget;
     }
 }

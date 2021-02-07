@@ -1,49 +1,37 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.UI.Widgets.Actions.Functional
-{
+namespace DownUnder.UI.UI.Widgets.Actions.Functional {
     [DataContract]
-    public class DirectAction : WidgetAction
-    {
+    public sealed class DirectAction : WidgetAction {
         //[DataMember]
         public Action Action;
 
-        public DirectAction() { }
-        public DirectAction(Action action)
-        {
-            Action = action;
+        public DirectAction() {
         }
 
-        protected override void Initialize()
-        {
+        public DirectAction(Action action) =>
+            Action = action;
+
+        protected override void Initialize() {
             Action.Invoke();
             EndAction();
         }
 
-        protected override void ConnectEvents()
-        {
-
+        protected override void ConnectEvents() {
         }
 
-        protected override void DisconnectEvents()
-        {
-
+        protected override void DisconnectEvents() {
         }
 
-        protected override bool InterferesWith(WidgetAction action)
-        {
-            return action.GetType() == GetType();
-        }
+        protected override bool InterferesWith(WidgetAction action) =>
+            action.GetType() == GetType();
 
-        protected override bool Matches(WidgetAction action)
-        {
-            return action.GetType() == GetType();
-        }
+        protected override bool Matches(WidgetAction action) =>
+            action.GetType() == GetType();
 
-        public override object InitialClone()
-        {
-            DirectAction result = (DirectAction)base.InitialClone();
+        public override object InitialClone() {
+            var result = (DirectAction)base.InitialClone();
             result.Action = Action;
             return result;
         }
