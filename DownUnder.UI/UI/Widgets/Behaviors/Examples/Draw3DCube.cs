@@ -4,50 +4,40 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 // https://www.i-programmer.info/projects/119-graphics-and-games/1108-getting-started-with-3d-xna.html
-namespace DownUnder.UI.UI.Widgets.Behaviors.Examples
-{
-    public class Draw3DCube : WidgetBehavior, IEditorDisplaySubBehaviors
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
-
-        public Type[] BaseBehaviorPreviews { get; private set; } = new Type[] { typeof(CubeRotation), typeof(SpinOnHoverOnOff) };
-
-        public Vector3 Angle = new Vector3();
-
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples {
+    public sealed class Draw3DCube : WidgetBehavior, IEditorDisplaySubBehaviors {
+        public Vector3 Angle;
         BasicEffect basicEffect;
         VertexPositionNormalTexture[] cube;
 
-        protected override void Initialize()
-        {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
+        public Type[] BaseBehaviorPreviews { get; } = { typeof(CubeRotation), typeof(SpinOnHoverOnOff) };
+
+        protected override void Initialize() {
             Parent.DrawingMode = Widget.DrawingModeType.use_render_target;
-            if (Parent.IsGraphicsInitialized) InitializeCube(this, EventArgs.Empty);
+            if (Parent.IsGraphicsInitialized)
+                InitializeCube(this, EventArgs.Empty);
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() {
             Parent.OnGraphicsInitialized += InitializeCube;
             Parent.OnDrawOverlay += Draw;
             Parent.OnUpdate += Update;
         }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() {
             Parent.OnGraphicsInitialized -= InitializeCube;
             Parent.OnDrawOverlay -= Draw;
             Parent.OnUpdate -= Update;
         }
 
-        public override object Clone()
-        {
-            Draw3DCube c = new Draw3DCube();
-            return c;
-        }
+        public override object Clone() =>
+            new Draw3DCube();
 
-        protected void Update(object sender, EventArgs args)
-        {
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, Parent.Width / Parent.Height, 1f, 10f);
+        void Update(object sender, EventArgs args) {
+            var projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, Parent.Width / Parent.Height, 1f, 10f);
             basicEffect.Projection = projection;
-            Matrix V = Matrix.CreateTranslation(0f, 0f, -10f);
+            var V = Matrix.CreateTranslation(0f, 0f, -10f);
             basicEffect.View = V;
 
             if (Angle.X > 2 * Math.PI) Angle.X = 0;
@@ -59,13 +49,12 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Examples
             if (Angle.Z > 2 * Math.PI) Angle.Z = 0;
             if (Angle.Z < 0) Angle.Z = 2f * (float)Math.PI;
 
-            Matrix R = Matrix.CreateRotationY(Angle.Y) * Matrix.CreateRotationX(Angle.X) * Matrix.CreateRotationZ(Angle.Z);
-            Matrix T = Matrix.CreateTranslation(0.0f, 0f, 5f);
+            var R = Matrix.CreateRotationY(Angle.Y) * Matrix.CreateRotationX(Angle.X) * Matrix.CreateRotationZ(Angle.Z);
+            var T = Matrix.CreateTranslation(0.0f, 0f, 5f);
             basicEffect.World = R * T;
         }
 
-        private void InitializeCube(object sender, EventArgs args)
-        {
+        void InitializeCube(object sender, EventArgs args) {
             basicEffect = new BasicEffect(Parent.GraphicsDevice);
 
             basicEffect.AmbientLightColor = Vector3.One;
@@ -76,136 +65,128 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Examples
             basicEffect.LightingEnabled = true;
             basicEffect.AmbientLightColor = new Vector3(0.0f, 1.0f, 0.0f);
 
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, Parent.Width / Parent.Height, 1f, 10f);
+            var projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, Parent.Width / Parent.Height, 1f, 10f);
             basicEffect.Projection = projection;
-            Matrix V = Matrix.CreateTranslation(0f, 0f, -10f);
+            var V = Matrix.CreateTranslation(0f, 0f, -10f);
             basicEffect.View = V;
 
             cube = MakeCube();
         }
 
-        public void Draw(object sender, EventArgs args)
-        {
-            foreach (EffectPass pass in
-           basicEffect.CurrentTechnique.Passes)
-            {
+        public void Draw(object sender, EventArgs args) {
+            foreach (var pass in basicEffect.CurrentTechnique.Passes) {
                 pass.Apply();
-                Parent.GraphicsDevice.DrawUserPrimitives
-                  <VertexPositionNormalTexture>(
-                     PrimitiveType.TriangleList, cube,
-                                                0, 12);
+                Parent.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, cube, 0, 12);
             }
         }
 
-        protected VertexPositionNormalTexture[] MakeCube()
-        {
-            VertexPositionNormalTexture[] vertexes = new VertexPositionNormalTexture[36];
-            Vector2 Texcoords = new Vector2(0f, 0f);
+        static VertexPositionNormalTexture[] MakeCube() {
+            var vertexes = new VertexPositionNormalTexture[36];
+            var Texcoords = new Vector2(0f, 0f);
 
-            Vector3[] face = new Vector3[6];
+            var face = new Vector3[6] {
+                new Vector3(-1f, 1f, 0.0f),  // TopLeft
+                new Vector3(-1f, -1f, 0.0f), // BottomLeft
+                new Vector3(1f, 1f, 0.0f),   // TopRight
+                new Vector3(-1f, -1f, 0.0f), // BottomLeft
+                new Vector3(1f, -1f, 0.0f),  // BottomRight
+                new Vector3(1f, 1f, 0.0f)    // TopRight
+            };
 
-            //TopLeft
-            face[0] = new Vector3(-1f, 1f, 0.0f);
-            //BottomLeft
-            face[1] = new Vector3(-1f, -1f, 0.0f);
-            //TopRight
-            face[2] = new Vector3(1f, 1f, 0.0f);
-            //BottomLeft
-            face[3] = new Vector3(-1f, -1f, 0.0f);
-            //BottomRight
-            face[4] = new Vector3(1f, -1f, 0.0f);
-            //TopRight
-            face[5] = new Vector3(1f, 1f, 0.0f);
+            // front face
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i] = new VertexPositionNormalTexture(
+                    face[i] + Vector3.UnitZ,
+                    Vector3.UnitZ,
+                    Texcoords
+                );
 
-            //front face
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i] =
-                  new VertexPositionNormalTexture(
-                       face[i] + Vector3.UnitZ,
-                             Vector3.UnitZ, Texcoords);
-                vertexes[i + 3] =
-                  new VertexPositionNormalTexture(
-                       face[i + 3] + Vector3.UnitZ,
-                             Vector3.UnitZ, Texcoords);
+                vertexes[i + 3] = new VertexPositionNormalTexture(
+                    face[i + 3] + Vector3.UnitZ,
+                    Vector3.UnitZ,
+                    Texcoords
+                );
             }
 
-            //Back face
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i + 6] =
-                   new VertexPositionNormalTexture(
-                        face[2 - i] - Vector3.UnitZ,
-                            -Vector3.UnitZ, Texcoords);
-                vertexes[i + 6 + 3] =
-                   new VertexPositionNormalTexture(
-                        face[5 - i] - Vector3.UnitZ,
-                            -Vector3.UnitZ, Texcoords);
+            // Back face
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i + 6] = new VertexPositionNormalTexture(
+                    face[2 - i] - Vector3.UnitZ,
+                    -Vector3.UnitZ,
+                    Texcoords
+                );
+
+                vertexes[i + 6 + 3] = new VertexPositionNormalTexture(
+                    face[5 - i] - Vector3.UnitZ,
+                    -Vector3.UnitZ,
+                    Texcoords
+                );
             }
 
-            //left face
-            Matrix RotY90 = Matrix.CreateRotationY(
-                               -(float)Math.PI / 2f);
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i + 12] =
-                  new VertexPositionNormalTexture(
-                     Vector3.Transform(face[i], RotY90)
-                          - Vector3.UnitX,
-                            -Vector3.UnitX, Texcoords);
-                vertexes[i + 12 + 3] =
-                  new VertexPositionNormalTexture(
-                 Vector3.Transform(face[i + 3], RotY90)
-                         - Vector3.UnitX,
-                           -Vector3.UnitX, Texcoords);
+            // left face
+            var RotY90 = Matrix.CreateRotationY(-(float)Math.PI / 2f);
+
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i + 12] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[i], RotY90) - Vector3.UnitX,
+                    -Vector3.UnitX,
+                    Texcoords
+                );
+
+                vertexes[i + 12 + 3] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[i + 3], RotY90) - Vector3.UnitX,
+                    -Vector3.UnitX,
+                    Texcoords
+                );
             }
 
-            //Right face
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i + 18] =
-                  new VertexPositionNormalTexture(
-                   Vector3.Transform(face[2 - i], RotY90)
-                    - Vector3.UnitX,
-                     Vector3.UnitX, Texcoords);
-                vertexes[i + 18 + 3] =
-                  new VertexPositionNormalTexture(
-                  Vector3.Transform(face[5 - i], RotY90)
-                  - Vector3.UnitX,
-                     Vector3.UnitX, Texcoords);
+            // Right face
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i + 18] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[2 - i], RotY90) - Vector3.UnitX,
+                    Vector3.UnitX,
+                    Texcoords
+                );
+
+                vertexes[i + 18 + 3] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[5 - i], RotY90) - Vector3.UnitX,
+                    Vector3.UnitX,
+                    Texcoords
+                );
             }
 
-            //Top face
-            Matrix RotX90 = Matrix.CreateRotationX(
-                                -(float)Math.PI / 2f);
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i + 24] =
-                  new VertexPositionNormalTexture(
-                   Vector3.Transform(face[i], RotX90)
-                    + Vector3.UnitY,
-                    Vector3.UnitY, Texcoords);
-                vertexes[i + 24 + 3] =
-                  new VertexPositionNormalTexture(
-                   Vector3.Transform(face[i + 3], RotX90)
-                    + Vector3.UnitY,
-                    Vector3.UnitY, Texcoords);
-            }
-            //Bottom face
+            // Top face
+            var RotX90 = Matrix.CreateRotationX(-(float)Math.PI / 2f);
 
-            for (int i = 0; i <= 2; i++)
-            {
-                vertexes[i + 30] =
-                 new VertexPositionNormalTexture(
-                  Vector3.Transform(face[2 - i], RotX90)
-                   - Vector3.UnitY,
-                    -Vector3.UnitY, Texcoords);
-                vertexes[i + 30 + 3] =
-                 new VertexPositionNormalTexture(
-                  Vector3.Transform(face[5 - i], RotX90)
-                   - Vector3.UnitY,
-                    -Vector3.UnitY, Texcoords);
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i + 24] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[i], RotX90) + Vector3.UnitY,
+                    Vector3.UnitY,
+                    Texcoords
+                );
+
+                vertexes[i + 24 + 3] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[i + 3], RotX90) + Vector3.UnitY,
+                    Vector3.UnitY,
+                    Texcoords
+                );
             }
+
+            // Bottom face
+            for (var i = 0; i <= 2; i++) {
+                vertexes[i + 30] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[2 - i], RotX90) - Vector3.UnitY,
+                    -Vector3.UnitY,
+                    Texcoords
+                );
+
+                vertexes[i + 30 + 3] = new VertexPositionNormalTexture(
+                    Vector3.Transform(face[5 - i], RotX90) - Vector3.UnitY,
+                    -Vector3.UnitY,
+                    Texcoords
+                );
+            }
+
             return vertexes;
         }
     }

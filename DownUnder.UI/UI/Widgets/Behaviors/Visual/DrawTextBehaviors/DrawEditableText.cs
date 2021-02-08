@@ -1,162 +1,160 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes;
-using DownUnder.UI.UI.Widgets.CustomEventArgs;
-using DownUnder.UI.UI.Widgets.DataTypes;
-using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
-{
-    public class DrawEditableText : WidgetBehavior, ISubWidgetBehavior<DrawText>
-    {
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
+    public sealed class DrawEditableText : WidgetBehavior, ISubWidgetBehavior<DrawText> {
         public DrawText BaseBehavior => Parent.Behaviors.Get<DrawText>();
 
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
-        private bool Active => active_backing;
+        bool Active { get; set; }
 
         float caret_blink_time = 1f;
-        StringBuilder edit_text = new StringBuilder();
-        int caret_position = 0;
-        int highlight_start = 0;
-        int highlight_end = 0;
+        readonly StringBuilder edit_text = new StringBuilder();
+        int caret_position;
+        int highlight_start;
+        int highlight_end;
+
         /// <summary> If this is less than half _CaretBlinkTime then the caret won't be drawn. </summary>
-        float caret_blink_timer = 0f;
-        bool active_backing = false;
+        float caret_blink_timer;
+
         List<RectangleF> highlight_area;
         List<RectangleF> text_area;
-        bool allow_draw = false;
-        bool clicking = false;
+        bool allow_draw;
+        bool clicking;
         bool editing_enabled_backing = true;
 
-        public DrawEditableTextSettings Settings { get; set; } = new DrawEditableTextSettings();
+        public DrawEditableTextSettings Settings { get; } = new DrawEditableTextSettings();
 
-        public bool EditingEnabled
-        {
+        public bool EditingEnabled {
             get => editing_enabled_backing;
-            set
-            {
-                if (!value && Active)
-                {
+            set {
+                if (value || !Active) {
                     editing_enabled_backing = value;
-                    active_backing = value;
-                    DeactivateEditing();
                     return;
                 }
-                editing_enabled_backing = value;
+
+                editing_enabled_backing = false;
+                Active = false;
+                DeactivateEditing();
             }
         }
 
-        public void ActivateEditing()
-        {
-            if (active_backing) return;
+        public void ActivateEditing() {
+            if (Active)
+                return;
+
             edit_text.Clear();
             edit_text.Append(BaseBehavior.Text);
-            if (Settings.HighlightTextOnActivation) HighlightRange(0, edit_text.Length);
-            else MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
+
+            if (Settings.HighlightTextOnActivation)
+                HighlightRange(0, edit_text.Length);
+
+            else
+                MoveCaretTo(
+                    Parent.ParentDWindow.WindowFont.IndexFromPoint(
+                        edit_text.ToString(),
+                        Parent.CursorPosition,
+                        true
+                    )
+                );
+
             BaseBehavior.EnableDefaultDraw = false;
-            active_backing = true;
+            Active = true;
         }
 
-        public void DeactivateEditing(bool keep_changes = false)
-        {
-            if (!active_backing) return;
-            if (keep_changes) BaseBehavior.Text = edit_text.ToString();
+        public void DeactivateEditing(bool keep_changes = false) {
+            if (!Active)
+                return;
+
+            if (keep_changes)
+                BaseBehavior.Text = edit_text.ToString();
+
             //BaseBehavior.TextEntryRules.ApplyFinalCheck(edit_text); ??
+
             edit_text.Clear();
             BaseBehavior.EnableDefaultDraw = true;
-            active_backing = false;
+            Active = false;
             caret_blink_timer = 0f;
         }
 
         /// <summary> The start of the highlighted text (if active). </summary>
-        int _HighlightPosition => (highlight_start > highlight_end) ? highlight_end : highlight_start;
+        int _HighlightPosition => highlight_start > highlight_end
+            ? highlight_end
+            : highlight_start;
 
         /// <summary> The length of the highlighted text (if active). </summary>
-        int _HighlightLength => (highlight_start > highlight_end) ? highlight_start - highlight_end : highlight_end - highlight_start;
+        int _HighlightLength => highlight_start > highlight_end
+            ? highlight_start - highlight_end
+            : highlight_end - highlight_start;
 
         bool _CaretCurrentlyDrawn => caret_blink_timer / caret_blink_time < 0.5f;
 
-        int _CaretLine
-        {
-            get
-            {
-                if (caret_position == 0) return 0;
-                string source = edit_text.ToString().Substring(0, caret_position);
-                int count = 0;
-                foreach (char c in source)
-                    if (c == '\n') count++;
-                return count;
-            }
-        }
+        int _CaretLine { get {
+            if (caret_position == 0)
+                return 0;
+
+            return
+                edit_text
+                .ToString()
+                .Substring(0, caret_position)
+                .Count(c => c == '\n');
+        } }
 
         /// <summary> The number of lines in this text. </summary>
-        public int NumOfLines
-        {
-            get
-            {
-                string source = edit_text.ToString();
-                int count = 0;
-                foreach (char c in source)
-                    if (c == '\n') count++;
-                return count;
-            }
-        }
+        public int NumOfLines => edit_text.ToString().Count(c => c == '\n');
 
-        int _BeginningOfCurrentLine {
-            get {
-                for (int i = caret_position - 1; i >= 0; i--)
-                    if (edit_text[i] == '\n') return i + 1;
-                return 0;
-            }
-        }
+        int _BeginningOfCurrentLine { get {
+            for (var i = caret_position - 1; i >= 0; i--)
+                if (edit_text[i] == '\n')
+                    return i + 1;
+            return 0;
+        } }
 
-        int _EndOfCurrentLine {
-            get {
-                for (int i = caret_position; i < edit_text.Length; i++)
-                    if (edit_text[i] == '\n') return i;
-                return edit_text.Length;
-            }
-        }
+        int _EndOfCurrentLine { get {
+            for (var i = caret_position; i < edit_text.Length; i++)
+                if (edit_text[i] == '\n')
+                    return i;
+            return edit_text.Length;
+        } }
 
         /// <summary> Returns the start and end index of the word the caret is over. Includes the following space. </summary>
-        public Tuple<int, int> CurrentWord {
-            get {
-                int start = 0;
+        public (int Start, int Length) CurrentWord { get {
+            var start = 0;
 
-                for (int i = caret_position - 1; i >= 0; i--) {
-                    if (edit_text[i] == '\n' || edit_text[i] == ' ') {
-                        start = i + 1;
-                        break;
-                    }
-                }
+            for (var i = caret_position - 1; i >= 0; i--) {
+                if (edit_text[i] != '\n' && edit_text[i] != ' ')
+                    continue;
 
-                for (int i = caret_position; i < edit_text.Length; i++) {
-                    if (edit_text[i] == '\n' || edit_text[i] == ' ') {
-                        if (edit_text[i] == ' ') i++;
-                        return new Tuple<int, int>(start, i);
-                    }
-                }
-
-                return new Tuple<int, int>(start, edit_text.Length);
+                start = i + 1;
+                break;
             }
-        }
 
-        public DrawEditableText() : base() {
+            for (var i = caret_position; i < edit_text.Length; i++) {
+                if (edit_text[i] != '\n' && edit_text[i] != ' ')
+                    continue;
 
-        }
+                if (edit_text[i] == ' ')
+                    i++;
 
-        protected override void Initialize()
-        {
+                return (start, i);
+            }
+
+            return (start, edit_text.Length);
+        } }
+
+        protected override void Initialize() =>
             Parent.OnParentWindowSet += (s, a) => caret_blink_time = DWindow.OS.CaretBlinkTime;
-        }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() {
             Parent.OnUpdate += Update;
             Parent.OnDraw += Draw;
             Parent.OnClick += ClickAction;
@@ -166,8 +164,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             Parent.OnSelectOff += FocusOffAction;
         }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() {
             Parent.OnUpdate -= Update;
             Parent.OnDraw -= Draw;
             Parent.OnClick -= ClickAction;
@@ -177,45 +174,48 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
             Parent.OnSelectOff -= FocusOffAction;
         }
 
-        public override object Clone()
-        {
+        public override object Clone() =>
             throw new NotImplementedException();
-        }
 
-        public void Update(object sender, EventArgs args)
-        {
-            if (!Parent.UpdateData.UIInputState.PrimaryClick) clicking = false;
-            if (!Settings.RequireDoubleClick && Parent.IsPrimaryHovered) Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
-            if (!Active) return;
-            Vector2 offset = Parent.PositionInWindow.ToVector2().Floored();
-            UIInputState inp = Parent.UpdateData.UIInputState;
+        public void Update(object sender, EventArgs args) {
+            if (!Parent.UpdateData.UIInputState.PrimaryClick)
+                clicking = false;
 
-            if (clicking) MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
+            if (!Settings.RequireDoubleClick && Parent.IsPrimaryHovered)
+                Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
+
+            if (!Active)
+                return;
+
+            var offset = Parent.PositionInWindow.ToVector2().Floored();
+            var inp = Parent.UpdateData.UIInputState;
+
+            if (clicking)
+                MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
 
             // Movement of the caret
-            if (inp.TextCursorMovement.Left && caret_position != 0) MoveCaretTo(caret_position - 1);
-            if (inp.TextCursorMovement.Right && caret_position != edit_text.Length) MoveCaretTo(caret_position + 1);
+            if (inp.TextCursorMovement.Left && caret_position != 0)
+                MoveCaretTo(caret_position - 1);
+
+            if (inp.TextCursorMovement.Right && caret_position != edit_text.Length)
+                MoveCaretTo(caret_position + 1);
+
             if (inp.TextCursorMovement.Up)
-            {
-                if (_CaretLine == 0) MoveCaretTo(0);
+                if (_CaretLine == 0)
+                    MoveCaretTo(0);
                 else
-                {
                     MoveCaretTo(
-                        Parent.ParentDWindow.WindowFont.IndexFromPoint
-                        (
+                        Parent.ParentDWindow.WindowFont.IndexFromPoint(
                             edit_text.ToString(),
                             Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) - new Vector2(0f, Parent.ParentDWindow.WindowFont.MeasureString("|").Y),
                             true
                         )
                     );
-                }
-            }
 
-            if (inp.TextCursorMovement.Down)
-            {
-                if (_CaretLine == NumOfLines) MoveCaretTo(edit_text.Length);
+            if (inp.TextCursorMovement.Down) {
+                if (_CaretLine == NumOfLines)
+                    MoveCaretTo(edit_text.Length);
                 else
-                {
                     MoveCaretTo(
                         Parent.ParentDWindow.WindowFont.IndexFromPoint
                         (
@@ -224,121 +224,121 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
                             true
                         )
                     );
-                }
             }
 
-            if (inp.Home) MoveCaretTo(_BeginningOfCurrentLine);
-            if (inp.End) MoveCaretTo(_EndOfCurrentLine);
+            if (inp.Home)
+                MoveCaretTo(_BeginningOfCurrentLine);
+
+            if (inp.End)
+                MoveCaretTo(_EndOfCurrentLine);
 
             // Editing the text
-            bool text_changed = false;
-
+            var text_changed = false;
             if (inp.BackSpace)
-            {
                 if (_HighlightLength != 0)
-                {
                     text_changed |= DeleteHighlightedText();
-                }
-                else if (edit_text.Length > 0 && caret_position != 0)
-                {
+
+                else if (edit_text.Length > 0 && caret_position != 0) {
                     edit_text.Remove(caret_position - 1, 1);
                     MoveCaretTo(caret_position - 1);
                     text_changed = true;
                 }
-            }
 
             if (inp.Delete)
-            {
                 if (_HighlightLength != 0)
-                {
                     text_changed |= DeleteHighlightedText();
-                }
-                else if (edit_text.Length > 0 && caret_position != edit_text.Length)
-                {
+                else if (edit_text.Length > 0 && caret_position != edit_text.Length) {
                     edit_text.Remove(caret_position, 1);
                     MoveCaretTo(caret_position);
                     text_changed = true;
                 }
-            }
 
-            if (inp.SelectAll) HighlightRange(0, edit_text.Length);
+            if (inp.SelectAll)
+                HighlightRange(0, edit_text.Length);
 
-            if (inp.Copy || inp.Cut)
-            {
-                if (_HighlightLength > 0)
-                {
-                    char[] t = new char[_HighlightLength];
+            if (inp.Copy || inp.Cut) {
+                if (_HighlightLength > 0) {
+                    var t = new char[_HighlightLength];
                     edit_text.CopyTo(_HighlightPosition, t, 0, _HighlightLength);
                     DWindow.OS.CopyTextToClipBoard(new string(t));
                 }
-                if (inp.Cut) text_changed |= DeleteHighlightedText();
+
+                if (inp.Cut)
+                    text_changed |= DeleteHighlightedText();
             }
 
-            if (inp.Paste) text_changed |= InsertText(DWindow.OS.GetTextFromClipboard(), caret_position, true);
+            if (inp.Paste)
+                text_changed |= InsertText(DWindow.OS.GetTextFromClipboard(), caret_position, true);
 
             // Insert typed text
             text_changed |= InsertText(Parent.UpdateData.UIInputState.Text, caret_position, true);
 
-            if (text_changed)
-            {
-                if (Settings.LiveUpdate) BaseBehavior.Text = edit_text.ToString();
-            }
+            if (text_changed && Settings.LiveUpdate)
+                BaseBehavior.Text = edit_text.ToString();
 
             text_area = Parent.ParentDWindow.WindowFont.MeasureStringAreas(edit_text.ToString());
             highlight_area = Parent.ParentDWindow.WindowFont.MeasureSubStringAreas(edit_text.ToString(), _HighlightPosition, _HighlightLength, true);
             caret_blink_timer += Parent.UpdateData.ElapsedSeconds;
 
-            bool over_highlighted_text = false;
-            foreach (RectangleF text in highlight_area) {
+            var over_highlighted_text = false;
+            foreach (var text in highlight_area) {
                 text.Offset(offset);
-                if (text.Contains(Parent.CursorPosition)) over_highlighted_text = true;
+                if (text.Contains(Parent.CursorPosition))
+                    over_highlighted_text = true;
             }
 
-            if (Parent.IsPrimaryHovered && (!over_highlighted_text || clicking)) Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
-            if (caret_blink_timer >= caret_blink_time) caret_blink_timer -= caret_blink_time;
+            if (Parent.IsPrimaryHovered && (!over_highlighted_text || clicking))
+                Parent.ParentDWindow.UICursor = MouseCursor.IBeam;
+
+            if (caret_blink_timer >= caret_blink_time)
+                caret_blink_timer -= caret_blink_time;
 
             allow_draw = true;
         }
 
-        private void MoveCaretTo(int index, bool no_highlight = false)
-        {
-            if (caret_position != index) caret_blink_timer = 0f;
+        void MoveCaretTo(int index, bool no_highlight = false) {
+            if (caret_position != index)
+                caret_blink_timer = 0f;
+
             caret_position = index;
-            if (!Parent.UpdateData.UIInputState.Shift && !clicking || no_highlight) highlight_start = caret_position;
+
+            if (!Parent.UpdateData.UIInputState.Shift && !clicking || no_highlight)
+                highlight_start = caret_position;
+
             highlight_end = caret_position;
         }
 
-        private void HighlightRange(int start, int end)
-        {
+        void HighlightRange(int start, int end) {
             caret_position = end;
             highlight_start = start;
             highlight_end = end;
             caret_blink_timer = 0f;
         }
 
-        private bool InsertText(string text, int index, bool no_highlight = false)
-        {
-            bool text_changed = false;
-            if (text == "") return text_changed;
-            if (DeleteHighlightedText())
-            {
+        bool InsertText(string text, int index, bool no_highlight = false) {
+            if (text == "")
+                return false;
+
+            var did_some_deleting = false;
+            if (DeleteHighlightedText()) {
                 index = caret_position;
-                text_changed = true;
+                did_some_deleting = true;
             }
-            int added_chars = Settings.TextEntryRules.CheckAndInsert(edit_text, text, index);
-            if (added_chars != 0)
-            {
-                MoveCaretTo(index + added_chars, no_highlight);
-                text_changed = true;
-            }
-            return text_changed;
+
+            var added_chars = Settings.TextEntryRules.CheckAndInsert(edit_text, text, index);
+            if (added_chars == 0)
+                return did_some_deleting;
+
+            MoveCaretTo(index + added_chars, no_highlight);
+            return true;
         }
 
-        private bool DeleteHighlightedText()
-        {
-            int highlight_length = _HighlightLength;
-            if (highlight_length == 0) return false;
-            int highlight_position = _HighlightPosition;
+        bool DeleteHighlightedText() {
+            var highlight_length = _HighlightLength;
+            if (highlight_length == 0)
+                return false;
+
+            var highlight_position = _HighlightPosition;
             edit_text.Remove(highlight_position, highlight_length);
             highlight_start = highlight_position;
             highlight_end = highlight_position;
@@ -347,65 +347,54 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
         }
 
         /// <summary> Is called when the parent is clicked. </summary>
-        private void ClickAction(object sender, EventArgs args)
-        {
-            if (Active)
-            {
+        void ClickAction(object sender, EventArgs args) {
+            if (Active) {
                 MoveCaretTo(Parent.ParentDWindow.WindowFont.IndexFromPoint(edit_text.ToString(), Parent.CursorPosition, true));
                 clicking = true;
             }
 
-            if (!Settings.RequireDoubleClick) ActivateEditing();
+            if (!Settings.RequireDoubleClick)
+                ActivateEditing();
         }
 
         /// <summary> Is called when the parent is double clicked. </summary>
-        private void DoubleClickAction(object sender, EventArgs args)
-        {
-            if (!EditingEnabled) return;
+        void DoubleClickAction(object sender, EventArgs args) {
+            if (!EditingEnabled)
+                return;
 
-            if (Active)
-            {
+            if (Active) {
                 clicking = false;
-                Tuple<int, int> word = CurrentWord;
-                //Console.WriteLine(word);
-                HighlightRange(word.Item1, word.Item2);
+                var (start, length) = CurrentWord;
+                HighlightRange(start, length);
                 return;
             }
 
             ActivateEditing();
         }
 
-        private void ConfirmAction(object sender, EventArgs args)
-        {
-            DeactivateEditing(true);
-        }
-
-        private void FocusOffAction(object sender, EventArgs args)
-        {
-            DeactivateEditing(false);
-        }
+        void ConfirmAction(object sender, EventArgs args) => DeactivateEditing(keep_changes: true);
+        void FocusOffAction(object sender, EventArgs args) => DeactivateEditing();
 
         /// <summary> Is called when the parent is triple clicked. </summary>
-        private void TripleClickAction(object sender, EventArgs args)
-        {
-            if (Active)
-            {
-                clicking = false;
-                HighlightRange(_BeginningOfCurrentLine, _EndOfCurrentLine);
+        void TripleClickAction(object sender, EventArgs args) {
+            if (!Active)
                 return;
-            }
+
+            clicking = false;
+            HighlightRange(_BeginningOfCurrentLine, _EndOfCurrentLine);
         }
 
-        public void Draw(object sender, WidgetDrawArgs args)
-        {
-            if (!Active) return;
-            if (!allow_draw) return;
+        public void Draw(object sender, WidgetDrawArgs args) {
+            if (!Active)
+                return;
+
+            if (!allow_draw)
+                return;
+
             Vector2 offset = args.DrawingArea.Position.WithOffset(BaseBehavior.TextPosition).Floored();
 
-            if (_HighlightLength > 0)
-            {
-                foreach (var rect in highlight_area)
-                {
+            if (_HighlightLength > 0) {
+                foreach (var rect in highlight_area) {
                     rect.Offset(offset);
                     Parent.SpriteBatch.FillRectangle(rect, Color.LightBlue);
                 }
@@ -413,12 +402,12 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 
             BaseBehavior.ForceDrawText(args.DrawingArea.Position, edit_text.ToString());
 
-            if (_CaretCurrentlyDrawn)
-            {
-                Vector2 position = Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
-                Vector2 position2 = position + new Vector2(0, 20);
-                Parent.SpriteBatch.DrawLine(position, position2, Parent.VisualSettings.TextColor, 1);
-            }
+            if (!_CaretCurrentlyDrawn)
+                return;
+
+            var position = Parent.ParentDWindow.WindowFont.GetCharacterPosition(edit_text.ToString(), caret_position) + offset + new Vector2(1, 0);
+            var position2 = position + new Vector2(0, 20);
+            Parent.SpriteBatch.DrawLine(position, position2, Parent.VisualSettings.TextColor);
         }
     }
 }

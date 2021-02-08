@@ -2,61 +2,46 @@
 using System.Reflection;
 using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
-{
-    public class RepresentMember : WidgetBehavior, ISubWidgetBehavior<DrawText>
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
+    public sealed class RepresentMember : WidgetBehavior, ISubWidgetBehavior<DrawText> {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
         public DrawText BaseBehavior => Parent.Behaviors.Get<DrawText>();
 
-        private MemberInfo _member;
+        MemberInfo _member;
 
-        public string NameOfMember;
-        public object RepresentedObject;
+        readonly string _name_of_member;
+        readonly object _represented_object;
 
-        public RepresentMember() { }
-        public RepresentMember(object obj, string nameof_member)
-        {
-            RepresentedObject = obj;
-            NameOfMember = nameof_member;
+        public RepresentMember(object obj, string nameof_member) {
+            _represented_object = obj;
+            _name_of_member = nameof_member;
         }
 
-        protected override void Initialize()
-        {
-            _member = RepresentedObject.GetType().GetMember(NameOfMember)[0];
+        protected override void Initialize() {
+            _member = _represented_object.GetType().GetMember(_name_of_member)[0];
             UpdateText();
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             Parent.OnUpdate += UpdateText;
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             Parent.OnUpdate -= UpdateText;
-        }
 
-        public override object Clone()
-        {
-            return new RepresentMember(RepresentedObject, NameOfMember);
-        }
+        public override object Clone() =>
+            new RepresentMember(_represented_object, _name_of_member);
 
-        private void UpdateText(object sender, EventArgs args)
-        {
-            if (_member.GetParameters().Length != 0)
-            {
+        void UpdateText(object sender, EventArgs args) {
+            if (_member.GetParameters().Length != 0) {
                 BaseBehavior.Text = "Collection...";
                 return;
             }
 
-            BaseBehavior.Text = _member.GetValue(RepresentedObject)?.ToString() ?? "null";
+            BaseBehavior.Text = _member.GetValue(_represented_object)?.ToString() ?? "null";
         }
 
-        public void UpdateText()
-        {
+        public void UpdateText() =>
             UpdateText(this, EventArgs.Empty);
-        }
     }
 }

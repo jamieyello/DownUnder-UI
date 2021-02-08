@@ -1,14 +1,14 @@
 ﻿using System;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
-    public class DragAndDropSource : WidgetBehavior {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+    public sealed class DragAndDropSource : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
         public ICloneable DragObject;
 
-        protected override void Initialize()
-        {
+        public event EventHandler OnSetWindowClone;
 
+        protected override void Initialize() {
         }
 
         protected override void ConnectEvents() {
@@ -21,18 +21,17 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
             Parent.OnDrop -= DropObject;
         }
 
-        private void SetDragObject(object sender, EventArgs args) {
+        void SetDragObject(object sender, EventArgs args) {
             Parent.ParentDWindow.DraggingObject = DragObject?.Clone();
             OnSetWindowClone?.Invoke(this, EventArgs.Empty);
         }
-        private void DropObject(object sender, EventArgs args) => Parent.ParentDWindow.HoveredWidgets.Primary?.HandleDrop(Parent.ParentDWindow.DraggingObject);
 
-        public event EventHandler OnSetWindowClone;
+        void DropObject(object sender, EventArgs args) =>
+            Parent.ParentDWindow.HoveredWidgets.Primary?.HandleDrop(Parent.ParentDWindow.DraggingObject);
 
-        public override object Clone() {
-            DragAndDropSource c = new DragAndDropSource();
-            c.DragObject = (ICloneable)DragObject.Clone();
-            return c;
-        }
+        public override object Clone() =>
+            new DragAndDropSource {
+                DragObject = (ICloneable)DragObject.Clone()
+            };
     }
 }

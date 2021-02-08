@@ -1,35 +1,27 @@
 ﻿using System;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
-{
-    public class SpawnRightClickDropDown : WidgetBehavior
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
+    sealed class SpawnRightClickDropDown : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
-        protected override void Initialize() { }
+        protected override void Initialize() {
+        }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             Parent.OnRightClick += SpawnDropDown;
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             Parent.OnRightClick -= SpawnDropDown;
-        }
 
-        public override object Clone()
-        {
-            SpawnRightClickDropDown c = new SpawnRightClickDropDown();
-            return c;
-        }
+        public override object Clone() =>
+            new SpawnRightClickDropDown();
 
-        void SpawnDropDown(object sender, EventArgs args)
-        {
-            DropDownEntryList drop_downs = Parent.InvokeOnGetDropDownEntries();
-            if (drop_downs.Count == 0) return;
+        void SpawnDropDown(object sender, EventArgs args) {
+            var drop_downs = Parent.InvokeOnGetDropDownEntries();
+            if (drop_downs.Count == 0)
+                return;
 
-            Widget drop_down = CommonWidgets.DropDown(drop_downs);
+            var drop_down = CommonWidgets.DropDown(drop_downs);
             drop_down.Position = Parent.InputState.CursorPosition;
             Parent.ParentDWindow.MainWidget.Add(drop_down);
         }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Platforms>Any CPU</Platforms>
+    <Platform>Any CPU</Platform>
     <Configurations>Debug;Release</Configurations>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
