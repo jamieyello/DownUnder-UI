@@ -10,7 +10,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors
     [DataContract] public class BehaviorManager : IEnumerable<WidgetBehavior>
     {
         [DataMember] public Widget Parent { get; set; }
-        [DataMember] private List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
+        [DataMember] List<WidgetBehavior> _behaviors = new List<WidgetBehavior>();
         [DataMember] public GroupBehaviorManager GroupBehaviors { get; private set; }
 
         public BehaviorFinder Common;

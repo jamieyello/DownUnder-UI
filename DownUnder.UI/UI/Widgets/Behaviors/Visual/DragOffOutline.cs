@@ -1,22 +1,21 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
 using DownUnder.UI.Utilities.Extensions;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
-{
-    public class DragOffOutline : WidgetBehavior {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
+    public sealed class DragOffOutline : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
 
-        private ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
-        private ChangingValue<float> round_amount = new ChangingValue<float>(0f);
-        private ChangingValue<Color> rect_color = new ChangingValue<Color>();
-        private bool drag_rect_to_mouse = false;
-        private bool snap_rect_to_mouse = false;
-        private float circumference = 20f;
-        private float _expand_rect_on_release = 1f;
+        readonly ChangingValue<RectangleF> rect = new ChangingValue<RectangleF>();
+        readonly ChangingValue<float> round_amount = new ChangingValue<float>(0f);
+        readonly ChangingValue<Color> rect_color = new ChangingValue<Color>();
+        bool drag_rect_to_mouse;
+        bool snap_rect_to_mouse;
+        const float circumference = 20f;
+        float _expand_rect_on_release = 1f;
 
         public DragOffOutline() {
             round_amount.Interpolation = InterpolationType.fake_sin;
@@ -42,7 +41,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
             Parent.OnDrop -= EndAnimation;
         }
 
-        private void StartAnimation(object sender, EventArgs args) {
+        void StartAnimation(object sender, EventArgs args) {
             drag_rect_to_mouse = true;
             rect_color.SetTargetValue(new Color(0, 0, 0, 0), true);
             rect_color.TransitionSpeed = 4f;
@@ -51,19 +50,20 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
             round_amount.SetTargetValue(1f);
         }
 
-        private void EndAnimation(object sender, EventArgs args) {
+        void EndAnimation(object sender, EventArgs args) {
             drag_rect_to_mouse = false;
             snap_rect_to_mouse = false;
             round_amount.SetTargetValue(0f);
             rect_color.TransitionSpeed = 1f;
-            rect_color.SetTargetValue(new Color(0, 0, 0, 0), false);
-            rect.SetTargetValue(rect.Current.WithScaledSize(_expand_rect_on_release).WithCenter(rect.Current), false);
+            rect_color.SetTargetValue(new Color(0, 0, 0, 0));
+            rect.SetTargetValue(rect.Current.WithScaledSize(_expand_rect_on_release).WithCenter(rect.Current));
         }
 
-        private void Update(object sender, EventArgs args) {
+        void Update(object sender, EventArgs args) {
             if (drag_rect_to_mouse) {
-                bool? is_drop_acceptable = Parent.ParentDWindow.HoveredWidgets.Primary?.IsDropAcceptable(Parent.ParentDWindow.DraggingObject);
-                Widget victim = Parent.ParentDWindow.HoveredWidgets.Primary;
+                var is_drop_acceptable = Parent.ParentDWindow.HoveredWidgets.Primary?.IsDropAcceptable(Parent.ParentDWindow.DraggingObject);
+                var victim = Parent.ParentDWindow.HoveredWidgets.Primary;
+
                 if (Parent.ParentDWindow.DraggingObject is Widget dragging_widget && is_drop_acceptable != null && is_drop_acceptable.Value) {
                     // Set to new Widget area
                     rect.SetTargetValue(
@@ -84,13 +84,19 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
             round_amount.Update(Parent.UpdateData.ElapsedSeconds);
         }
 
-        private void DrawRect(object sender, EventArgs args) {
-            RectangleF r = rect.Current;
-            Parent.SpriteBatch.DrawRoundedRect(r, Math.Min(r.Width, r.Height) * 0.5f * round_amount.Current, rect_color.Current, 4f);
+        void DrawRect(object sender, EventArgs args) {
+            var r = rect.Current;
+            var radius = Math.Min(r.Width, r.Height) * 0.5f * round_amount.Current;
+
+            Parent.SpriteBatch.DrawRoundedRect(
+                r,
+                radius,
+                rect_color.Current,
+                4f
+            );
         }
 
-        public override object Clone() {
-            return new DragOffOutline();
-        }
+        public override object Clone() =>
+            new DragOffOutline();
     }
 }

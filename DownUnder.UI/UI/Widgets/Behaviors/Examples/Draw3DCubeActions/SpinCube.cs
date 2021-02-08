@@ -1,58 +1,53 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using DownUnder.UI.UI.Widgets.Actions;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
-using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
-{
-    public class SpinCube : WidgetAction
-    {
-        public Vector3 Direction = new Vector3();
-        public InterpolationSettings Interpolation = new InterpolationSettings() { Interpolation = InterpolationType.fake_sin, TransitionSpeed = 0.6f };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions {
+    public sealed class SpinCube : WidgetAction {
+        public Vector3 Direction;
+        InterpolationSettings _interpolation;
+        ChangingValue<Vector3> _inertia;
 
-        ChangingValue<Vector3> _inirtia;
+        public SpinCube() =>
+            _interpolation = new InterpolationSettings {
+                Interpolation = InterpolationType.fake_sin,
+                TransitionSpeed = 0.6f
+            };
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             Parent.OnUpdate += Update;
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             Parent.OnUpdate -= Update;
-        }
 
-        protected override void Initialize()
-        {
-            _inirtia = new ChangingValue<Vector3>(Direction, new Vector3(), Interpolation);
-        }
+        protected override void Initialize() =>
+            _inertia = new ChangingValue<Vector3>(Direction, new Vector3(), _interpolation);
 
-        protected override bool InterferesWith(WidgetAction action)
-        {
-            return false;
-        }
+        protected override bool InterferesWith(WidgetAction action) =>
+            false;
 
-        protected override bool Matches(WidgetAction action)
-        {
-            return action is SpinCube;
-        }
+        protected override bool Matches(WidgetAction action) =>
+            action is SpinCube;
 
-        public override object InitialClone()
-        {
-            SpinCube c = (SpinCube)base.InitialClone();
+        public override object InitialClone() {
+            var c = (SpinCube)base.InitialClone();
             c.Direction = Direction;
-            c.Interpolation = Interpolation;
+            c._interpolation = _interpolation;
             return c;
         }
 
-        private void Update(object sender, EventArgs args)
-        {
+        void Update(object sender, EventArgs args) {
             var cube = Parent.Behaviors.Get<Draw3DCube>();
-            if (cube == null) return;
-            cube.Angle += _inirtia.Current;
-            _inirtia.Update(Parent.UpdateData.ElapsedSeconds);
-            if (!_inirtia.IsTransitioning) EndAction();
+            if (cube == null)
+                return;
+
+            cube.Angle += _inertia.Current;
+            _inertia.Update(Parent.UpdateData.ElapsedSeconds);
+
+            if (!_inertia.IsTransitioning)
+                EndAction();
         }
     }
 }

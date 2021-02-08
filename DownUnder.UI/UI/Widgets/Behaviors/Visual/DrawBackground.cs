@@ -1,39 +1,33 @@
-﻿using DownUnder.UI.UI.Widgets.CustomEventArgs;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
-{
-    public class DrawBackground : WidgetBehavior
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.VISUAL_FUNCTION };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
+    public sealed class DrawBackground : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
-        protected override void Initialize()
-        {
-
+        protected override void Initialize() {
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             Parent.OnDrawBackground += Draw;
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             Parent.OnDrawBackground -= Draw;
-        }
 
-        public override object Clone()
-        {
-            return new DrawBackground();
-        }
+        public override object Clone() =>
+            new DrawBackground();
 
-        void Draw(object sender, WidgetDrawArgs args)
-        {
-            if (Parent.VisualSettings.DrawBackground)
-            {
-                args.SpriteBatch.FillRectangle(args.DrawingArea, Parent.IsHighlighted ? Color.Yellow : Parent.VisualSettings.BackgroundColor);
-            }
+        void Draw(object sender, WidgetDrawArgs args) {
+            if (!Parent.VisualSettings.DrawBackground)
+                return;
+
+            args.SpriteBatch.FillRectangle(
+                args.DrawingArea,
+                Parent.IsHighlighted
+                    ? Color.Yellow
+                    : Parent.VisualSettings.BackgroundColor
+            );
         }
     }
 }

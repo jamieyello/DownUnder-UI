@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Platforms>Any CPU</Platforms>
+    <Platform>Any CPU</Platform>
     <Configurations>Debug;Release</Configurations>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>

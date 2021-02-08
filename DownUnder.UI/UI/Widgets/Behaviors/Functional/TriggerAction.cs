@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Reflection;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
-{
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
     /// <summary> Used to "connect" <see cref="Action"/>s to widget event handlers. Used to trigger actions from user input. </summary>
-    public class TriggerAction : WidgetBehavior
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+    public sealed class TriggerAction : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
-        private EventInfo _event;
-        private Delegate _delegate;
+        EventInfo _event;
+        Delegate _delegate;
 
         /// <summary> The action that will be set off. </summary>
         public Action Action { get; set; }
@@ -20,41 +18,44 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
         /// <summary> When set to true, the given action will be cloned. </summary>
         public bool CloneAction { get; set; } = true;
 
-        public TriggerAction() { }
-        public TriggerAction(string nameof_eventhandler, Action action)
-        {
+        public TriggerAction() {
+        }
+
+        public TriggerAction(string nameof_eventhandler, Action action) {
             NameofEventHandler = nameof_eventhandler;
             Action = action;
         }
 
-        protected override void Initialize()
-        {
-            _event = Parent.GetType().GetEvent(NameofEventHandler);
-            _delegate = Delegate.CreateDelegate(_event.EventHandlerType, this, nameof(InvokeAction));
+        protected override void Initialize() {
+            var type = Parent.GetType();
+
+            _event = type.GetEvent(NameofEventHandler);
+            if (_event is null)
+                throw new InvalidOperationException($"Failed to find event of type '{NameofEventHandler}' on type '{type.Name}'.");
+
+            var maybe_event_type = _event.EventHandlerType;
+            if (!(maybe_event_type is { } event_type))
+                throw new InvalidOperationException($"Event '{_event.Name}' on type '{type.Name}' had no EventHandlerType.");
+
+            _delegate = Delegate.CreateDelegate(event_type, this, nameof(InvokeAction));
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             _event.AddEventHandler(Parent, _delegate);
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             _event.RemoveEventHandler(Parent, _delegate);
-        }
 
-        public override object Clone()
-        {
-            TriggerAction c = new TriggerAction();
-            if (Action != null) c.Action = Action;
+        public override object Clone() {
+            var c = new TriggerAction();
+            if (Action is { })
+                c.Action = Action;
             c.NameofEventHandler = NameofEventHandler;
             c.CloneAction = CloneAction;
             return c;
         }
 
-        public void InvokeAction(object sender, EventArgs args)
-        {
+        public void InvokeAction(object sender, EventArgs args) =>
             Action.Invoke();
-        }
     }
 }

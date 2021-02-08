@@ -2,20 +2,18 @@
 using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
-{
-    public class CenterContent : WidgetBehavior
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
+    public class CenterContent : WidgetBehavior {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
-        protected override void Initialize()
-        {
+        Point2 NeededScroll => Parent.Children.Count == 0 ? new Point2() : (Point2)(Parent.Size.DividedBy(2) - Parent.Children.AreaCoverage!.Value.SizeOnly().Center);
+
+        protected override void Initialize() {
             SetScroll(this, EventArgs.Empty);
             Parent.Behaviors.GroupBehaviors.AcceptancePolicy += GroupBehaviorAcceptancePolicy.NoUserScrolling;
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() {
             Parent.OnAreaChange += SetScroll;
             Parent.OnAddChild += SetScroll;
             Parent.OnRemoveChild += SetScroll;
@@ -23,8 +21,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
             Parent.OnChildAreaChange += SetScroll;
         }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() {
             Parent.OnAreaChange -= SetScroll;
             Parent.OnAddChild -= SetScroll;
             Parent.OnRemoveChild -= SetScroll;
@@ -32,16 +29,10 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
             Parent.OnChildAreaChange += SetScroll;
         }
 
-        public override object Clone()
-        {
-            return new CenterContent();
-        }
+        public override object Clone() =>
+            new CenterContent();
 
-        private void SetScroll(object sender, EventArgs args)
-        {
+        void SetScroll(object sender, EventArgs args) =>
             Parent.Scroll = NeededScroll;
-        }
-
-        private Point2 NeededScroll => Parent.Children.Count == 0 ? new Point2() : (Point2)(Parent.Size.DividedBy(2) - Parent.Children.AreaCoverage.Value.SizeOnly().Center);
     }
 }

@@ -1,50 +1,39 @@
 ﻿using System;
-using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions;
 using Microsoft.Xna.Framework;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
-{
-    public class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
-    {
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors {
+    public sealed class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior<Draw3DCube> {
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
-        public Type BaseWidgetBehavior { get; private set; } = typeof(Draw3DCube);
+        public Type BaseWidgetBehavior { get; } = typeof(Draw3DCube);
 
         public Draw3DCube BaseBehavior => Parent.Behaviors.Get<Draw3DCube>();
 
-        public SpinCube Spin = new SpinCube()
-        {
+        public SpinCube Spin = new SpinCube {
             DuplicatePolicy = Actions.WidgetAction.DuplicatePolicyType.parallel,
             Direction = new Vector3(0.1f, 0f,0f)
         };
 
-        protected override void Initialize()
-        {
-
+        protected override void Initialize() {
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() {
             Parent.OnHover += ApplySpin;
             Parent.OnHoverOff += ApplySpin;
         }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() {
             Parent.OnHover += ApplySpin;
             Parent.OnHoverOff += ApplySpin;
         }
 
-        public override object Clone()
-        {
-            SpinOnHoverOnOff c = new SpinOnHoverOnOff();
-            c.Spin = (SpinCube)Spin.InitialClone();
-            return c;
-        }
+        public override object Clone() =>
+            new SpinOnHoverOnOff {
+                Spin = (SpinCube)Spin.InitialClone()
+            };
 
-        private void ApplySpin(object sender, EventArgs args)
-        {
+        void ApplySpin(object sender, EventArgs args) =>
             Parent.Actions.Add((SpinCube)Spin.InitialClone());
-        }
     }
 }

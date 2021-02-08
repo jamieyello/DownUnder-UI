@@ -1,41 +1,24 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
-{
-    public class CubeRotation : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
-    {
-        public Vector3 Rotation = new Vector3();
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors {
+    public sealed class CubeRotation : WidgetBehavior, ISubWidgetBehavior<Draw3DCube> {
+        public Vector3 Rotation;
 
-        public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
+        public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
         public Draw3DCube BaseBehavior => Parent.Behaviors.Get<Draw3DCube>();
 
-        public override object Clone()
-        {
-            CubeRotation c = new CubeRotation();
-            c.Rotation = Rotation;
-            return c;
-        }
+        public override object Clone() =>
+            new CubeRotation {
+                Rotation = Rotation
+            };
 
-        protected override void ConnectEvents()
-        {
-            Parent.OnUpdate += Update;
-        }
+        protected override void ConnectEvents() => Parent.OnUpdate += Update;
+        protected override void DisconnectEvents() => Parent.OnUpdate -= Update;
+        protected override void Initialize() { }
 
-        protected override void DisconnectEvents()
-        {
-            Parent.OnUpdate -= Update;
-        }
-
-        protected override void Initialize()
-        {
-
-        }
-
-        private void Update(object sender, EventArgs args)
-        {
+        void Update(object sender, EventArgs args) =>
             BaseBehavior.Angle += Rotation;
-        }
     }
 }
