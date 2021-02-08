@@ -1,7 +1,5 @@
-﻿namespace DownUnder.UI.UI.Widgets.Behaviors
-{
-    public static class DownUnderBehaviorIDs
-    {
+﻿namespace DownUnder.UI.UI.Widgets.Behaviors {
+    public static class DownUnderBehaviorIDs {
         public const string NONE = null;
         public const string SCROLL_FUNCTION = "DownUnderBehaviorID SCROLL_FUNCTION";
         public const string VISUAL_FUNCTION = "DownUnderBehaviorID VISUAL_FUNCTION";

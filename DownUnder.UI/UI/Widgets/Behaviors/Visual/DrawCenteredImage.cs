@@ -11,6 +11,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
     public sealed class DrawCenteredImage : WidgetBehavior {
         [DataMember] string image;
         Texture2D texture;
+
         [DataMember] public float SizeModifier { get; set; }
 
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.VISUAL_FUNCTION };

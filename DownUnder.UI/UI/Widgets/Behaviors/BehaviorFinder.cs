@@ -6,16 +6,12 @@ using DownUnder.UI.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
 
-namespace DownUnder.UI.UI.Widgets.Behaviors
-{
-    public class BehaviorFinder
-    {
-        BehaviorManager _behaviors;
+namespace DownUnder.UI.UI.Widgets.Behaviors {
+    public sealed class BehaviorFinder {
+        readonly BehaviorManager _behaviors;
 
-        public BehaviorFinder(BehaviorManager behaviors)
-        {
+        public BehaviorFinder(BehaviorManager behaviors) =>
             _behaviors = behaviors;
-        }
 
         // Visual
         public DrawText DrawText => _behaviors.Get<DrawText>();

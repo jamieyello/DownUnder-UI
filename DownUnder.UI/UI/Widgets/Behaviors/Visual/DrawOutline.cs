@@ -8,8 +8,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.VISUAL_FUNCTION };
 
         /// <summary> How thick the outline should be. 1 by default. </summary>
-        [DataMember]
-        public float OutlineThickness { get; set; } = 1f;
+        [DataMember] public float OutlineThickness { get; set; } = 1f;
 
         protected override void Initialize() {
         }

@@ -29,7 +29,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
         public int Diameter { get; set; } = 1024;
         public InterpolationSettings ShineSpeed = InterpolationSettings.Faster;
         public InterpolationSettings ShineOffSpeed = InterpolationSettings.Default;
-        public MouseGlowActivationPolicy ActivationPolicy = MouseGlowActivationPolicy.primary_hovered;
+        public MouseGlowActivationPolicy ActivationPolicy = primary_hovered;
         public bool ScaleWithSize = true;
 
         protected override void Initialize() {
