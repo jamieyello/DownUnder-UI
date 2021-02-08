@@ -1,10 +1,9 @@
-﻿using DownUnder.Content.Utilities.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using DownUnder.UI.Utilities.Serialization;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     public class Internal
     {

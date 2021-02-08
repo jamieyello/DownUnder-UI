@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     public enum InterpolationType
     {

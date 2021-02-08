@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
-using DownUnder.UI.Widgets.WidgetCoding;
+using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.WidgetCoding
 {
     [DataContract(IsReference = true)]
     public abstract class WidgetCode : IWidget

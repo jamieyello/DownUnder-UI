@@ -1,10 +1,8 @@
-﻿using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class DrawSwitchGraphic : WidgetBehavior
     {

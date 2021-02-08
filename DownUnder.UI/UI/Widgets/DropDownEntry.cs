@@ -1,13 +1,8 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using DownUnder.UI.UI.Widgets.Actions;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     [DataContract]
     public class DropDownEntry : ICloneable

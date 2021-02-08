@@ -1,9 +1,8 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     [DataContract] public class GroupBehaviorManager
     {

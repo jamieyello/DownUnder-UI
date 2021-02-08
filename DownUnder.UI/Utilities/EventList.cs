@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DownUnder.UI.Utilities.CustomEventArgs;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     /// <summary> A list that invokes OnAdd and OnRemove <see cref="EventHandler"/>s. </summary>
     public class EventList<T> : IList<T>

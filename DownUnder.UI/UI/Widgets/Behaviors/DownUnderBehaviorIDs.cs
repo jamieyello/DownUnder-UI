@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.Widgets.Behaviors
+﻿namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     public static class DownUnderBehaviorIDs
     {

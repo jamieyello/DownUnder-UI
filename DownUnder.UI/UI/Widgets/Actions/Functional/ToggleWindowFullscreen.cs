@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.Widgets.Actions.Functional
+﻿namespace DownUnder.UI.UI.Widgets.Actions.Functional
 {
     public class ToggleWindowFullscreen : WidgetAction
     {

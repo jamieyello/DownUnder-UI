@@ -1,8 +1,8 @@
-﻿using MonoGame.Extended;
-using System;
-using System.Runtime.Serialization;
+﻿using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations
+namespace DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations
 {
     public class CorneredLocation : InnerWidgetLocation
     {

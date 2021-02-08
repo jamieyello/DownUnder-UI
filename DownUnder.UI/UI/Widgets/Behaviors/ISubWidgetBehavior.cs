@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DownUnder.UI.Widgets.Behaviors
+﻿namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     public interface ISubWidgetBehavior<out TBase> where TBase : WidgetBehavior
     {

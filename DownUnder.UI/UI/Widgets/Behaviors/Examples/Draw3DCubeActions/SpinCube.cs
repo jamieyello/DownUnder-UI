@@ -1,9 +1,10 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.Utilities;
+﻿using System;
+using DownUnder.UI.UI.Widgets.Actions;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
-using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions
 {
     public class SpinCube : WidgetAction
     {

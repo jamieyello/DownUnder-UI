@@ -1,5 +1,5 @@
 ﻿// More or less sloppy/unnecessary than a tuple<ControllerType, int>
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     public sealed class Controller {
         public ControllerType Type { get; } = ControllerType.null_;
         public int Index { get; }

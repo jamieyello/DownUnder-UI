@@ -1,7 +1,7 @@
 ﻿using System;
 
 // Return value used by Action.GetButton
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     public sealed class PseudoButton {
         readonly bool _pressed;
         readonly float _analog;

@@ -1,10 +1,9 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using DownUnder.UI.Utilities;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     public class FileBarEntries : ICloneable, IEnumerable<AutoDictionary<string, DropDownEntry>>
     {

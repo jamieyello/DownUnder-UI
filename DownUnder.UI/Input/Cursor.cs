@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     public sealed class Cursor {
         public bool Triggered { get; set; }
         public bool HeldDown { get; set; }

@@ -1,8 +1,9 @@
-﻿using DownUnder.Utilities;
+﻿using System.Runtime.Serialization;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
-using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations
+namespace DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations
 {
     [DataContract] public class SideOfParent : OverlayWidgetLocation
     {

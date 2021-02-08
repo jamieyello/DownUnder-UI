@@ -1,9 +1,7 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using DownUnder.UI.UI.Widgets.Behaviors;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.CustomEventArgs
 {
     public class WidgetBehaviorArgs : EventArgs
     {

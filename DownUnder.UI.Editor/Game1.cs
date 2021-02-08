@@ -1,15 +1,10 @@
-﻿using DownUnder;
-using DownUnder.UI;
-using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Visual;
+﻿using DownUnder.UI.UI;
+using DownUnder.UI.UI.Widgets.Behaviors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
-using System.Linq;
 
-namespace DownUnder.UIEditor
+namespace DownUnder.UI.Editor
 {
     public class Game1 : Game
     {

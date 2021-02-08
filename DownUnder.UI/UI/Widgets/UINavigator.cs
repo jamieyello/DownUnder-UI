@@ -1,10 +1,8 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.DataTypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     public class UINavigator
     {

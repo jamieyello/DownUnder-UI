@@ -1,6 +1,6 @@
 ﻿using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets.CustomEventArgs
 {
     public class Point2SetOverrideArgs : Point2SetArgs
     {

@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using DownUnder.UI.UI.DataTypes;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using DownUnder.UI.DataTypes;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using static DownUnder.Directions2D;
+using static DownUnder.UI.Utilities.CommonNamespace.Directions2D;
 using static Microsoft.Xna.Framework.Input.MouseCursor;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI.UI {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
     public class DWindow : IParent, IDisposable {
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>

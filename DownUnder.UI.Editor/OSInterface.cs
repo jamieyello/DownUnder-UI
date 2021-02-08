@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
+using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UIEditor
+namespace DownUnder.UI.Editor
 {
     class OSInterface : IOSInterface
     {

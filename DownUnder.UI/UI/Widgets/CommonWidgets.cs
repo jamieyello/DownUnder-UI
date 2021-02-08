@@ -1,20 +1,21 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
-using DownUnder.Utilities;
-using MonoGame.Extended;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using static DownUnder.UI.Widgets.Behaviors.Visual.DrawText;
-using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
+using DownUnder.UI.UI.Widgets.Actions;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
+using MonoGame.Extended;
+using static DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawText;
+using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     public static class CommonWidgets
     {

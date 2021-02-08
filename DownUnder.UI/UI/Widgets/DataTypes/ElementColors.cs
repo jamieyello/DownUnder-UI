@@ -1,9 +1,10 @@
-﻿using DownUnder.Utilities;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
+using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> The color settings of any UI element. </summary>
     [DataContract] public class ElementColors : ICloneable

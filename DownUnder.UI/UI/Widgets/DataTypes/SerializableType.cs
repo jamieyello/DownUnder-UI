@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     // https://stackoverflow.com/questions/12306/can-i-serialize-a-c-sharp-type-object
     // a version of System.Type that can be serialized

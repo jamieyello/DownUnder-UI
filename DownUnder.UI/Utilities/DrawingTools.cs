@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.Utilities.CommonNamespace;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     public static class DrawingTools
     {

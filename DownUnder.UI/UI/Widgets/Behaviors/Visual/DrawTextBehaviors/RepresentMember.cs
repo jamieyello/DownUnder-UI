@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
 {
     public class RepresentMember : WidgetBehavior, ISubWidgetBehavior<DrawText>
     {

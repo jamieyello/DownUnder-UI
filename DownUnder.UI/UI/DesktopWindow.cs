@@ -1,13 +1,14 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utilities;
+﻿using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
-using static DownUnder.UI.DesktopWindow.TopBarPolicyType;
+using static DownUnder.UI.UI.DesktopWindow.TopBarPolicyType;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI.UI {
     public sealed class DesktopWindow : DWindow {
         readonly BorderFormat _border_format = new BorderFormat();
         TopBarPolicyType _top_bar_policy;

@@ -1,18 +1,22 @@
-﻿using DownUnder.Content.Utilities.Serialization;
-using DownUnder.UI.Widgets.Actions;
-using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.Utilities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
+using DownUnder.UI.UI.Widgets.Actions;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using DownUnder.UI.Utilities.Serialization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 // tip;
 // https://social.msdn.microsoft.com/Forums/en-US/08c5860e-1a04-40bd-9706-41d2a03066d3/expandcollapse-regions-all-at-once?forum=csharpide
@@ -29,7 +33,7 @@ using System.Threading;
 // Add ICloneable and INeedsParent to BehaviorCollection
 // IsHoveredOver is antiquated
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     /// <summary> A visible window object. </summary>
     [DataContract(IsReference = true)]

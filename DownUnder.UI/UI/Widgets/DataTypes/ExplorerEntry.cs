@@ -1,13 +1,12 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Linq;
+using System.Runtime.Serialization;
+using DownUnder.UI.Utilities;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     [DataContract]
     public class ExplorerEntry : IAutoDictionary<string, ExplorerEntry>

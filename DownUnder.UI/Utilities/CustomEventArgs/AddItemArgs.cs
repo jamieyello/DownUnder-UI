@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities.CustomEventArgs
 {
     public class AddItemArgs<T> : EventArgs
     {

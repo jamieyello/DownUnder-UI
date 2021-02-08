@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 // credit: https://stackoverflow.com/a/491486/7572353
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     public static class PropertyHelper<T>
     {

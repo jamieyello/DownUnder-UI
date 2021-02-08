@@ -1,9 +1,10 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
+﻿using System;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.Extensions
 {
     public static class RectangleFExtensions {
         public static Rectangle ToRectangle(this RectangleF r, bool round) =>

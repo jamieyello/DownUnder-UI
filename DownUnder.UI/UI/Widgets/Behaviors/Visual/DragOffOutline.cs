@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using DownUnder.Utilities;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class DragOffOutline : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };

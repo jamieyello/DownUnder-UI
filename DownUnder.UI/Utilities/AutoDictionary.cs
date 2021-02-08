@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace DownUnder.Utilities
+namespace DownUnder.UI.Utilities
 {
     /// <summary> A <see cref="Dictionary{TKey, TValue}"/> that automatically creates new entries on reading nonexistent ones. </summary>
     [DataContract] public class AutoDictionary<TKey, TValue>

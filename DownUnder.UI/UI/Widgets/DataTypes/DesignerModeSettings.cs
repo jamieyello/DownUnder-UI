@@ -1,10 +1,11 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
     public class DesignerModeSettings {

@@ -1,4 +1,4 @@
-﻿namespace DownUnder.Input {
+﻿namespace DownUnder.UI.Input {
     /// <summary> A settings class for InputSystem. </summary>
     public sealed class InputMode {
         public bool append_new_players;

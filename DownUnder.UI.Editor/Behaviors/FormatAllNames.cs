@@ -1,9 +1,10 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
 
-namespace DownUnder.UIEditor.Behaviors
+namespace DownUnder.UI.Editor.Behaviors
 {
     public class FormatAllNames : WidgetBehavior
     {

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary> Not to be confused with "the other" DInput, this Direct Input accesses input directly. </summary>
     public static class DirectInput {
         public static PseudoButton GetPressedButton(

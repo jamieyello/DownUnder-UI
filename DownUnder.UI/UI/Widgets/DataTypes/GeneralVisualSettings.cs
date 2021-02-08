@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using DownUnder.UI.Utilities.CommonNamespace;
+using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     public class GeneralVisualSettings
     {

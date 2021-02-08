@@ -1,4 +1,4 @@
-﻿namespace DownUnder
+﻿namespace DownUnder.UI.Utilities.CommonNamespace
 {
     public interface IOSInterface
     {

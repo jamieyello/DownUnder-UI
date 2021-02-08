@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using DownUnder.UI.Utilities.CommonNamespace;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.Extensions
 {
     public static class DrawingExtensions
     {

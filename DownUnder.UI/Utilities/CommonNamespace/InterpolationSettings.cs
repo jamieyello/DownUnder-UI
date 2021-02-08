@@ -1,8 +1,6 @@
-﻿using DownUnder.Utilities;
-using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.CommonNamespace
 {
     [DataContract] public struct InterpolationSettings
     {

@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using DownUnder.UI.Widgets;
-using DownUnder.Utilities;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.Utilities;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI.UI {
     [DataContract]
     public sealed class DropDownEntryList : IAutoDictionary<string, DropDownEntry> {
         [DataMember] readonly IAutoDictionary<string, DropDownEntry> _entries;
