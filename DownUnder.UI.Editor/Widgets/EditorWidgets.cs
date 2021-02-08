@@ -1,22 +1,21 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Examples;
-using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UIEditor.Behaviors;
-using DownUnder.UIEditor.CodeGeneration;
-using DownUnder.UIEditor.DataTypes;
-using DownUnder.Utilities;
+﻿using System;
+using DownUnder.UI.Editor.Behaviors;
+using DownUnder.UI.Editor.DataTypes;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.Utilities;
+using DownUnder.UI.Utilities.CommonNamespace;
 using MonoGame.Extended;
-using System;
-using System.Diagnostics;
-using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
-using static DownUnder.UI.Widgets.Widget;
+using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
+using static DownUnder.UI.UI.Widgets.Widget;
 
-namespace DownUnder.UIEditor.Widgets
+namespace DownUnder.UI.Editor.Widgets
 {
     public static class EditorWidgets
     {

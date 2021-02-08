@@ -1,12 +1,4 @@
-﻿using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyNameSpace
+﻿namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     class TemplateBehavior : WidgetBehavior
     {

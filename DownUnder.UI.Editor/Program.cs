@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.UIEditor
+namespace DownUnder.UI.Editor
 {
     public static class Program
     {

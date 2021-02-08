@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     public class ProxListPosition
     {

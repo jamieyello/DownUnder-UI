@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DownUnder.UI.DataTypes {
+namespace DownUnder.UI.UI.DataTypes {
     /// <summary> Used by a DWindow to hold textures used by contained widgets. Loads from disk on creation. </summary>
     public sealed class UIImages : IDisposable {
         /// <summary> Icon for adding a folder. </summary>

@@ -1,8 +1,7 @@
-﻿using DownUnder.UI.Widgets.Actions;
-using System;
+﻿using System;
 using System.Reflection;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     /// <summary> Used to "connect" <see cref="Action"/>s to widget event handlers. Used to trigger actions from user input. </summary>
     public class TriggerAction : WidgetBehavior

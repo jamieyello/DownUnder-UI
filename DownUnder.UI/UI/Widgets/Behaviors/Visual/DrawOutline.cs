@@ -1,8 +1,9 @@
-﻿using DownUnder.Utilities;
+﻿using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.Utilities;
 using MonoGame.Extended;
-using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class DrawOutline : WidgetBehavior
     {

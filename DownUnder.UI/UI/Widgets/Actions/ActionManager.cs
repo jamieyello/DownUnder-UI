@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using static DownUnder.UI.Widgets.Actions.WidgetAction;
+using static DownUnder.UI.UI.Widgets.Actions.WidgetAction;
 
-namespace DownUnder.UI.Widgets.Actions {
+namespace DownUnder.UI.UI.Widgets.Actions {
     [DataContract] public class ActionManager
     {
         public Widget Parent { get; set; }

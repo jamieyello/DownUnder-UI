@@ -1,12 +1,13 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Functional;
-using MonoGame.Extended;
-using System;
-using System.Globalization;
-using System.Linq;
+﻿using System;
 using System.Runtime.Serialization;
 using System.Text;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     [DataContract]
     public class DrawText : WidgetBehavior

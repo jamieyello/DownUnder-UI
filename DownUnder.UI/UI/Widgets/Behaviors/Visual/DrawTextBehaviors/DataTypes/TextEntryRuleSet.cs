@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes
 {
     public class TextEntryRuleSet : ITextEntryRuleset
     {

@@ -1,8 +1,9 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     /// <summary> Used by <see cref="WidgetBehavior"/>s to keep track of <see cref="Widgets.Widget"/>s. Call <see cref="Forget"/> on discarding to avoid cluttering used <see cref="Widget"/>s with tag information. </summary>
     public class WidgetTracker {

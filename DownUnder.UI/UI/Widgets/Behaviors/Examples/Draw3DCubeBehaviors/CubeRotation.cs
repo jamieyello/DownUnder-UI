@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 {
     public class CubeRotation : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
     {

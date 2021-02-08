@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary> A list of "Bindings"s, one for each controller. </summary>
     [Serializable]
     public sealed class BindingsSet {

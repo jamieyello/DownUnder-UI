@@ -1,9 +1,12 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.Behaviors.Format
+namespace DownUnder.UI.UI.Widgets.Behaviors.Format
 {
     [DataContract] public class BorderFormat : WidgetBehavior
     {

@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using MonoGame.Extended.Collections;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     public class ProxList
     {

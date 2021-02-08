@@ -1,11 +1,12 @@
-﻿using DownUnder.Input;
+﻿using System.Diagnostics;
+using DownUnder.UI.Input;
+using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using System.Diagnostics;
 
 //Todo: Trigger inputs shopuld not have set parameters
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> Used to communicate to widgets input. Can be updated or set manually. </summary>
     public class UIInputState {

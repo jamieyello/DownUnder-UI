@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     /// <summary> Used to determine which slots to invoke. </summary>
     public enum FocusType {

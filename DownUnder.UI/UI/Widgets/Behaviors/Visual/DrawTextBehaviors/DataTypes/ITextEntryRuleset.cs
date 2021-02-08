@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes
 {
     /// <summary> Controls what text is entered from the text the user gives. </summary>
     public interface ITextEntryRuleset : ICloneable

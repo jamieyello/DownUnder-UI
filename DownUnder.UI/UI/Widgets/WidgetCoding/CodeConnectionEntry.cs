@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace DownUnder.UI.Widgets.WidgetCoding
+namespace DownUnder.UI.UI.Widgets.WidgetCoding
 {
     public class CodeConnectionEntry
     {

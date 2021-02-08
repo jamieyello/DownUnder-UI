@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary> Applies an alternating true/false pattern to an input. Used to convert a key press into a usable text entry input. </summary>
     sealed class BufferedBool {
         float _initial_timer;

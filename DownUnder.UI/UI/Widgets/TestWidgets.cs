@@ -1,19 +1,16 @@
-﻿using DownUnder;
-using DownUnder.Content.Utilities.Serialization;
-using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.DataTypes;
-using DownUnder.UI.Widgets.DataTypes.AnimatedGraphics;
-using DownUnder.UI.Widgets.WidgetCoding;
-using MonoGame.Extended;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics;
+using DownUnder.UI.UI.Widgets.Signals;
+using DownUnder.UI.Utilities.CommonNamespace;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     public static class TestWidgets
     {

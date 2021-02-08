@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary>
     /// If you have used monogame before, (and most likely you have)
     /// this class handles updating GamePadStates and KeyboardStates.

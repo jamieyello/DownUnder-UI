@@ -1,20 +1,20 @@
-﻿using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Behaviors.Examples;
-using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Format.GridFormatBehaviors;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
-using DownUnder.UI.Widgets.DataTypes.InnerWidgetLocations;
-using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Format.GridFormatBehaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
+using DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations;
+using DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.Behaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors
 {
     /// <summary> A <see cref="WidgetBehavior"/> acts as a plugin for a <see cref="Widget"/>. Adds additional behaviors to the <see cref="Widget"/>'s <see cref="EventHandler"/>s. </summary>
     [DataContract]

@@ -1,9 +1,8 @@
-﻿using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using DownUnder.UI.Utilities.Extensions;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional
 {
     public class CenterContent : WidgetBehavior
     {

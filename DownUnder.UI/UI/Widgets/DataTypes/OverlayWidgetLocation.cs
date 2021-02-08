@@ -1,9 +1,10 @@
-﻿using DownUnder.UI.Widgets.DataTypes.OverlayWidgetLocations;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations;
+using DownUnder.UI.Utilities.CommonNamespace;
+using MonoGame.Extended;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     [DataContract]
     public abstract class OverlayWidgetLocation : ICloneable

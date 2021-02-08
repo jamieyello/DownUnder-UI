@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Functional {
+namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
     public class DragAndDropSource : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
 

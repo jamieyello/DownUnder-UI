@@ -1,16 +1,16 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DownUnder.UI.UI.Widgets.DataTypes;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 // Todo: Duplicate RectanglF extensions for Rectangle
 // Todo: Turn some extensions to properties when C# 8 arrives
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.Extensions
 {
     public static class Extensions
     {

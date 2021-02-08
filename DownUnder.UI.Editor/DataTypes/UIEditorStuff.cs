@@ -1,16 +1,14 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UIEditor.Behaviors;
-using DownUnder.UIEditor.CodeGeneration;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-using DownUnder.UIEditor.Test;
+using DownUnder.UI.Editor.Behaviors;
+using DownUnder.UI.Editor.CodeGeneration;
+using DownUnder.UI.Editor.Test;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.Utilities.CommonNamespace;
+using MonoGame.Extended;
 
-namespace DownUnder.UIEditor.DataTypes
+namespace DownUnder.UI.Editor.DataTypes
 {
     public class UIEditorStuff
     {

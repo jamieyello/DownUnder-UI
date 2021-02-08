@@ -1,10 +1,6 @@
-﻿using DownUnder.UI.Widgets;
-using DownUnder.UI.Widgets.Behaviors;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DownUnder.UI.UI.Widgets.Behaviors;
 
-namespace DownUnder.UIEditor.Behaviors
+namespace DownUnder.UI.Editor.Behaviors
 {
     public static class GroupBehaviors
     {

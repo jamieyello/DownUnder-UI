@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     /// <summary> A list of "Binding"s, one for each action. </summary>
     [Serializable]
     public sealed class Bindings : IEnumerable<Binding> {

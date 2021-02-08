@@ -1,4 +1,4 @@
-﻿namespace DownUnder.Input {
+﻿namespace DownUnder.UI.Input {
     /// <summary> User defined actions. Used to request input. </summary>
     public enum ActionType {
         error,

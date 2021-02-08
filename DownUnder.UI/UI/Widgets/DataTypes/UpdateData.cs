@@ -1,8 +1,7 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Widgets {
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     [DataContract] public class UpdateData {
         public UIInputState UIInputState { get; set; }
         public GameTime GameTime { get; internal set; }

@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
-using static DownUnder.UI.Widgets.DataTypes.GeneralVisualSettings;
+using DownUnder.UI.Utilities.Extensions;
+using Microsoft.Xna.Framework;
+using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 
-namespace DownUnder.UI.Widgets.DataTypes
+namespace DownUnder.UI.UI.Widgets.DataTypes
 {
     [DataContract] public class BaseColorScheme : ICloneable {
         /// <summary> A reference to the widget that owns this palette. </summary>

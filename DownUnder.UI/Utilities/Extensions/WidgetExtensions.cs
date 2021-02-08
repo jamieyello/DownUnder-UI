@@ -1,9 +1,10 @@
-﻿using DownUnder.UI.Widgets.DataTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Utilities.Extensions
 {
     // Things that were worth making but not worth putting in Widget
     public static class WidgetExtensions {

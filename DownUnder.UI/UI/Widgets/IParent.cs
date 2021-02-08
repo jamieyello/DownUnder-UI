@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI.UI.Widgets {
     /// <summary> An object that can own a widget. Typically a <see cref="DWindow"/> or a <see cref="Widget"/>. </summary>
     public interface IParent {
         SpriteFont WindowFont { get; }

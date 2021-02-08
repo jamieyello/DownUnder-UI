@@ -1,5 +1,5 @@
 ﻿// Enums are usually pretty self-explanitory.
-namespace DownUnder.Input {
+namespace DownUnder.UI.Input {
     public enum ControllerType {
         null_ = 0,
         xbox = 1,

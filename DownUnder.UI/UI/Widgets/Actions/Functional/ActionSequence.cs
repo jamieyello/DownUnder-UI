@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DownUnder.UI.Widgets.Actions.Functional {
+namespace DownUnder.UI.UI.Widgets.Actions.Functional {
     sealed class ActionSequence : WidgetAction {
         int _current_action = 0;
         readonly List<WidgetAction> _actions = new List<WidgetAction>();

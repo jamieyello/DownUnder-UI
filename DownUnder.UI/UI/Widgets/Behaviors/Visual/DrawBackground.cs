@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace DownUnder.UI.Widgets.Behaviors.Visual
+namespace DownUnder.UI.UI.Widgets.Behaviors.Visual
 {
     public class DrawBackground : WidgetBehavior
     {

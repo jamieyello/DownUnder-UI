@@ -1,11 +1,11 @@
-﻿using DownUnder.UI.Widgets.Actions.Functional;
-using DownUnder.UI.Widgets.Behaviors;
-using DownUnder.UI.Widgets.Behaviors.Format;
-using DownUnder.UI.Widgets.Behaviors.Functional;
-using DownUnder.UI.Widgets.Behaviors.Visual;
-using DownUnder.UI.Widgets.DataTypes;
+﻿using DownUnder.UI.UI.Widgets.Actions.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors;
+using DownUnder.UI.UI.Widgets.Behaviors.Format;
+using DownUnder.UI.UI.Widgets.Behaviors.Functional;
+using DownUnder.UI.UI.Widgets.Behaviors.Visual;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.UI.Widgets
 {
     public static class InternalWidgets
     {

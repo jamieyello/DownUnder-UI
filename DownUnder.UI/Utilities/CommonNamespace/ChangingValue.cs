@@ -1,8 +1,7 @@
-﻿using DownUnder.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace DownUnder
+namespace DownUnder.UI.Utilities.CommonNamespace
 {
     /// <summary> Value designed to smoothly transition between two states. </summary>
     public class ChangingValue<T> : ICloneable

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DownUnder.UI.UI.Widgets;
 
-namespace DownUnder.UI.Widgets
+namespace DownUnder.UI.Utilities.CommonNamespace
 {
     public interface IWidget
     {

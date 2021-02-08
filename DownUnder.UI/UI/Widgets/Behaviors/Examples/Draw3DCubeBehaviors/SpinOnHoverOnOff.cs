@@ -1,8 +1,8 @@
-﻿using DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeActions;
+﻿using System;
+using DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeActions;
 using Microsoft.Xna.Framework;
-using System;
 
-namespace DownUnder.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
+namespace DownUnder.UI.UI.Widgets.Behaviors.Examples.Draw3DCubeBehaviors
 {
     public class SpinOnHoverOnOff : WidgetBehavior, ISubWidgetBehavior<Draw3DCube>
     {

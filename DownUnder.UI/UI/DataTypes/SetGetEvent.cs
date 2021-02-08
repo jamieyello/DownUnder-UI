@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.DataTypes {
+﻿namespace DownUnder.UI.UI.DataTypes {
     sealed class SetGetEvent<T> {
         public bool Completed { get; set; }
         public T Value { get; }
