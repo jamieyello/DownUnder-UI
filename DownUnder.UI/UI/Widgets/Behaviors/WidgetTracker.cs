@@ -74,10 +74,13 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
         public void Forget() =>
             Widget = null;
 
-        void AddHandler(
+        void MaybeAddHandler(
             string nameof_event,
             Delegate handler
         ) {
+            if (_widget is null)
+                return;
+
             var type = _widget.GetType();
             var maybe_event = type.GetEvent(nameof_event);
             if (!(maybe_event is { } @event))
@@ -94,10 +97,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
                 _persistent_events.Add(nameof_event, handler);
             }
 
-            if (_widget is null)
-                return;
-
-            AddHandler(nameof_event, handler);
+            MaybeAddHandler(nameof_event, handler);
         }
 
         public void AddPersistentEvent(string nameof_event, Action<object, RectangleFSetArgs> action) {
@@ -108,7 +108,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
                 _persistent_resize_events.Add(nameof_event, handler);
             }
 
-            AddHandler(nameof_event, handler);
+            MaybeAddHandler(nameof_event, handler);
         }
 
         public void AddPersistentEvent(string nameof_event, Action<object, Point2SetArgs> action) {
@@ -119,20 +119,20 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
                 _persistent_point2set_events.Add(nameof_event, handler);
             }
 
-            AddHandler(nameof_event, handler);
+            MaybeAddHandler(nameof_event, handler);
         }
 
         // TODO: concat these collections somehow?
         void AddAllPersistentEvents() {
-            foreach (var (name, action) in _persistent_events) AddHandler(name, action);
-            foreach (var (name, action) in _persistent_resize_events) AddHandler(name, action);
-            foreach (var (name, action) in _persistent_point2set_events) AddHandler(name, action);
+            foreach (var (name, action) in _persistent_events) MaybeAddHandler(name, action);
+            foreach (var (name, action) in _persistent_resize_events) MaybeAddHandler(name, action);
+            foreach (var (name, action) in _persistent_point2set_events) MaybeAddHandler(name, action);
         }
 
         void RemoveAllPersistentEvents() {
-            foreach (var (name, action) in _persistent_events) AddHandler(name, action);
-            foreach (var (name, action) in _persistent_resize_events) AddHandler(name, action);
-            foreach (var (name, action) in _persistent_point2set_events) AddHandler(name, action);
+            foreach (var (name, action) in _persistent_events) MaybeAddHandler(name, action);
+            foreach (var (name, action) in _persistent_resize_events) MaybeAddHandler(name, action);
+            foreach (var (name, action) in _persistent_point2set_events) MaybeAddHandler(name, action);
         }
     }
 }
