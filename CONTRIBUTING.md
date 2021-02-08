@@ -1,10 +1,12 @@
 Basic Program Structure Overview and Design Philosophy
   - 
-  DownUnder UI (name WIP?) is yet another GUI designer program. The goal of this project is to overtake all other GUI designers in visual appeal that wouldn't be possible with any other designer. This is why DownUnder is based on the game development oriented framework MonoGame, which leaves optimized special effects easily implemented. All elements of the framework need to be visually appealing past the bar set by other frameworks if this project is to compete.
+  DownUnder UI is yet another GUI designer program. The goal of this project is to overtake all other GUI designers in visual appeal that wouldn't be possible with any other designer. This is why DownUnder is based on the game development oriented framework MonoGame, which leaves optimized special effects easily implemented. Built in visual behaviors should be easy to enable and disable universially.
   
   A wide selection of special effects are planned. Nearly everything that moves or changes should have some kind of interpolation (implemented through the ChangingValue<> class), if even just a couple frames. Things in real life don't just pop into existence, why should they on your screen?
   
-  For familiarity the framework is designed to resemble Microsoft's Visual Forms and Qt as closely as possible. DWindow is the base abstract class for all windows created, Widget is the base abstract class for all modular parts of the window, as per the traditional format. A new DWindow project will create a something that resembles a new MonoGame project very closely as well, as a DWindow inherits MonoGame's default Game class. As a result the framework does not interfere with or alter a MonoGame developer's normal workflow.
+  For familiarity the framework is designed to resemble Microsoft's Visual Forms and Qt as closely as possible. DWindow is the base abstract class for all windows created, Widget is the base abstract class for all modular parts of the window, as per the traditional format. The ECS (Entity Component System) is WidgetBehavior (continuous behavior), and WidgetAction (immediate action).
+
+Development is discussed on our [Discord Server](https://discord.com/invite/bEZPvQE)
 
 Formatting
   -
