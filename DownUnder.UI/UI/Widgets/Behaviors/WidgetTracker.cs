@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.UI.Widgets.DataTypes;
 
@@ -77,6 +78,18 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
         void MaybeAddHandler(
             string nameof_event,
             Delegate handler
+        ) =>
+            MaybeDoHandler(nameof_event, e => e.AddEventHandler(_widget, handler));
+
+        void MaybeRemoveHandler(
+            string nameof_event,
+            Delegate handler
+        ) =>
+            MaybeDoHandler(nameof_event, e => e.RemoveEventHandler(_widget, handler));
+
+        void MaybeDoHandler(
+            string nameof_event,
+            Action<EventInfo> eventAction
         ) {
             if (_widget is null)
                 return;
@@ -86,7 +99,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
             if (!(maybe_event is { } @event))
                 throw new InvalidOperationException($"Failed to find event of name '{nameof_event}' on type '{type.Name}'.");
 
-            @event.AddEventHandler(_widget, handler);
+            eventAction(@event);
         }
 
         public void AddPersistentEvent(string nameof_event, Action<object, EventArgs> action) {
@@ -130,9 +143,9 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
         }
 
         void RemoveAllPersistentEvents() {
-            foreach (var (name, action) in _persistent_events) MaybeAddHandler(name, action);
-            foreach (var (name, action) in _persistent_resize_events) MaybeAddHandler(name, action);
-            foreach (var (name, action) in _persistent_point2set_events) MaybeAddHandler(name, action);
+            foreach (var (name, action) in _persistent_events) MaybeRemoveHandler(name, action);
+            foreach (var (name, action) in _persistent_resize_events) MaybeRemoveHandler(name, action);
+            foreach (var (name, action) in _persistent_point2set_events) MaybeRemoveHandler(name, action);
         }
     }
 }
