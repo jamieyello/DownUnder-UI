@@ -11,8 +11,6 @@ Formatting
   - int is not used for fields/properties defining anything spacial. float should be used due to scaling.
   - All values representing size/space are relative to pixels on a 1080p monitor. All values representing time are relative to a second.
   - All fields need to be protected/private, only public properties/methods.
-  - No fields should be serializable/included in Clone().
   - A (single line /// \<summary\>) comment is always prefered over no comment. All public items should have a comment.
   - Methods should be static if they do not access anything not passed to them.
   - MonoGame.Extended.Size2 is generally never used due to being more incomplete than MonoGame.Extended.Point2 while having the same functionality. Vector2 is generally never used for class items either.
-  - Opening brackets shouldn't get a line to themselves.
