@@ -1,14 +1,10 @@
 ﻿using System;
 
-namespace DownUnder.UI.UI.Widgets.CustomEventArgs
-{
-    public class WidgetArgs : EventArgs
-    {
-        public readonly Widget Widget;
+namespace DownUnder.UI.UI.Widgets.CustomEventArgs {
+    public sealed class WidgetArgs : EventArgs {
+        public Widget Widget { get; }
 
-        public WidgetArgs(Widget widget)
-        {
+        public WidgetArgs(Widget widget) =>
             Widget = widget;
-        }
     }
 }

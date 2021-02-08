@@ -1,14 +1,12 @@
 ﻿using System;
-using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.UI.Widgets.CustomEventArgs
-{
-    public class WidgetDrawArgs : EventArgs
-    {
-        private readonly Widget _caller;
+namespace DownUnder.UI.UI.Widgets.CustomEventArgs {
+    public sealed class WidgetDrawArgs : EventArgs {
+        readonly Widget _caller;
         public readonly SpriteBatch SpriteBatch;
         public readonly RectangleF AreaInRender;
         public readonly RectangleF DrawingArea;
@@ -17,8 +15,14 @@ namespace DownUnder.UI.UI.Widgets.CustomEventArgs
         public readonly GraphicsDevice GraphicsDevice;
 
         // Child area in render should be "area" normally
-        public WidgetDrawArgs(Widget caller, GraphicsDevice graphics, RectangleF drawing_area, RectangleF area_in_render, SpriteBatch sprite_batch, Point2 cursor_position)
-        {
+        public WidgetDrawArgs(
+            Widget caller,
+            GraphicsDevice graphics,
+            RectangleF drawing_area,
+            RectangleF area_in_render,
+            SpriteBatch sprite_batch,
+            Point2 cursor_position
+        ) {
             _caller = caller;
             AreaInRender = area_in_render;
             DrawingArea = drawing_area;
@@ -29,37 +33,28 @@ namespace DownUnder.UI.UI.Widgets.CustomEventArgs
         }
 
         /// <summary> Used to prevent <see cref="Effect"/>s from affecting further drawing. </summary>
-        public void RestartDefault()
-        {
+        public void RestartDefault() {
             SpriteBatch.End();
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
         }
 
-        public void StartDraw()
-        {
+        public void StartDraw() =>
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
-        }
 
-        public void RestartImmediate()
-        {
+        public void RestartImmediate() {
             EndDraw();
             StartImmediate();
         }
 
-        public void StartImmediate()
-        {
+        public void StartImmediate() =>
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
-        }
 
-        public void EndDraw()
-        {
+        public void EndDraw() =>
             SpriteBatch.End();
-        }
 
-        public RenderTarget2D GetBackgroundRender()
-        {
+        public RenderTarget2D GetBackgroundRender() {
             RestartImmediate();
-            Rectangle scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
+            var scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
             _caller.ParentDWindow.SwapBackBuffer(GraphicsDevice, SpriteBatch);
             SpriteBatch.GraphicsDevice.ScissorRectangle = scissor_area;
             RestartDefault();
@@ -67,24 +62,25 @@ namespace DownUnder.UI.UI.Widgets.CustomEventArgs
         }
 
         /// <summary> Get the projection <see cref="Matrix"/> of the given <see cref="Widget"/> to draw graphics inside of. </summary>
-        public Matrix GetStretchedProjection()
-        {
-            Vector2 target_size = ((Texture2D)SpriteBatch.GraphicsDevice.GetRenderTargets()[0].RenderTarget).Bounds.Size.ToVector2();
-            Vector2 area_size = DrawingArea.Size;
+        public Matrix GetStretchedProjection() {
+            var target_size = ((Texture2D)SpriteBatch.GraphicsDevice.GetRenderTargets()[0].RenderTarget).Bounds.Size.ToVector2();
+            var area_size = (Vector2)DrawingArea.Size;
 
-            Vector2 window_offset = AreaInRender.Position.ToVector2() * 2 / target_size - new Vector2(1f, 1f);
-            Vector2 area_offset = area_size / target_size;
-            Vector2 resize = area_size / target_size;
+            var window_offset = AreaInRender.Position.ToVector2() * 2 / target_size - new Vector2(1f, 1f);
+            var area_offset = area_size / target_size;
+            var resize = area_size / target_size;
 
             return
                 Matrix.CreateScale(
-                resize.X,
-                resize.Y,
-                1f)
-            * Matrix.CreateTranslation(
-                area_offset.X + window_offset.X,
-                -area_offset.Y - window_offset.Y,
-                0f);
+                    resize.X,
+                    resize.Y,
+                    1f
+                )
+                * Matrix.CreateTranslation(
+                    area_offset.X + window_offset.X,
+                    -area_offset.Y - window_offset.Y,
+                    0f
+                );
         }
     }
 }
