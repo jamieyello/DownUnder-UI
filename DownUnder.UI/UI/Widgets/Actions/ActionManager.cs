@@ -1,46 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using static DownUnder.UI.UI.Widgets.Actions.WidgetAction;
 
 namespace DownUnder.UI.UI.Widgets.Actions {
-    [DataContract] public class ActionManager
-    {
-        public Widget Parent { get; set; }
-        [DataMember] private readonly List<WidgetAction> _actions = new List<WidgetAction>();
+    [DataContract]
+    public sealed class ActionManager {
+        [DataMember] readonly List<WidgetAction> _actions = new List<WidgetAction>();
+        readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
 
-        public ActionManager(Widget parent) => Parent = parent;
-        private readonly List<WidgetAction> _qued_actions = new List<WidgetAction>();
         public WidgetAction this[int index] { get => ((IList<WidgetAction>)_actions)[index]; set => ((IList<WidgetAction>)_actions)[index] = value; }
-        public int Count => ((IList<WidgetAction>)_actions).Count;
-        public bool IsReadOnly => ((IList<WidgetAction>)_actions).IsReadOnly;
+
+        public Widget Parent { get; set; }
+        public int Count => _actions.Count;
+        public bool IsReadOnly => false;
+
+        public ActionManager(Widget parent) =>
+            Parent = parent;
 
         public void UpdateQuedActions() {
-            for (int q = _qued_actions.Count - 1; q >= 0; q--) {
-                bool add = true;
-                for (int a = 0; a < _actions.Count; a++) {
-                    if (_qued_actions[q].IsDuplicate(_actions[a])) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    _qued_actions[q].Parent = Parent;
-                    ((IList<WidgetAction>)_actions).Add(_qued_actions[q]);
-                    _qued_actions.RemoveAt(q);
-                }
+            for (var q = _qued_actions.Count - 1; q >= 0; q--) {
+                var qued_action = _qued_actions[q];
+
+                var any_duplicate = _actions.Any(qued_action.IsDuplicate);
+                if (any_duplicate)
+                    continue;
+
+                qued_action.Parent = Parent;
+                ((IList<WidgetAction>)_actions).Add(qued_action);
+                _qued_actions.RemoveAt(q);
             }
         }
 
-        public void Add<T>(T action, out T added_action)
-        {
-            if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a { nameof(WidgetAction) }.");
-            Add(action_);
+        public void Add<TAction>(TAction action, out TAction added_action)
+        where TAction : WidgetAction {
+            Add(action);
             added_action = action;
         }
 
         public void Add(WidgetAction action) {
-            if (action.DuplicatePolicy == DuplicatePolicyType.parallel) { }
+            if (action.DuplicatePolicy == DuplicatePolicyType.parallel) {
+                // do nothing?
+            }
             else if (action.DuplicatePolicy == DuplicatePolicyType.wait) {
                 if (SeesDuplicate(action)) {
                     _qued_actions.Add(action);
@@ -48,69 +50,55 @@ namespace DownUnder.UI.UI.Widgets.Actions {
                 }
             }
             else if (action.DuplicatePolicy == DuplicatePolicyType.cancel) {
-                if (SeesDuplicate(action)) return;
+                if (SeesDuplicate(action))
+                    return;
             }
             else if (action.DuplicatePolicy == DuplicatePolicyType.@override) {
-                for (int i = _actions.Count - 1; i >= 0; i--) {
-                    if (_actions[i].IsDuplicate(action))
-                    {
+                for (var i = _actions.Count - 1; i >= 0; i--) {
+                    if (_actions[i].IsDuplicate(action)) {
                         action.OverrodeAction = _actions[i];
                         _actions.RemoveAt(i);
                     }
                 }
-            } else throw new System.Exception($"DuplicatePolicy {action.DuplicatePolicy} not supported.");
+            } else
+                throw new Exception($"DuplicatePolicy {action.DuplicatePolicy} not supported.");
 
             _actions.Add(action);
             action.Parent = Parent;
-
-            return;
         }
 
-        public void Add(IEnumerable<WidgetAction> actions)
-        {
-            foreach (var action in actions) Add(action);
+        public void Add(IEnumerable<WidgetAction> actions) {
+            foreach (var action in actions)
+                Add(action);
         }
 
-        private bool SeesDuplicate(WidgetAction action)
-        {
-            for (int i = 0; i < _actions.Count; i++)
-            {
-                if (action.IsDuplicate(_actions[i])) return true;
-            }
+        bool SeesDuplicate(WidgetAction action) =>
+            _actions.Any(action.IsDuplicate);
 
-            return false;
-        }
-
-        public void Insert(int index, WidgetAction item)
-        {
-            throw new System.Exception($"Inserting {nameof(WidgetAction)}s is not supported.");
-            item.Parent = Parent;
-            ((IList<WidgetAction>)_actions).Insert(index, item);
-        }
+        public void Insert(int index, WidgetAction item) =>
+            throw new Exception($"Inserting {nameof(WidgetAction)}s is not supported.");
+        // item.Parent = Parent;
+        // ((IList<WidgetAction>)_actions).Insert(index, item);
 
         public void AddRange(IEnumerable<WidgetAction> actions) {
-            foreach (WidgetAction action in actions) Add(action);
+            foreach (var action in actions)
+                Add(action);
         }
 
-        public void Clear() {
+        public void Clear() =>
             throw new Exception($"Cannot clear an {nameof(ActionManager)}.");
-            //foreach (WidgetAction action in _actions) action.DisconnectFromParent();
-            //((IList<WidgetAction>)_actions).Clear();
-        }
+        //foreach (WidgetAction action in _actions) action.DisconnectFromParent();
+        //((IList<WidgetAction>)_actions).Clear();
 
         public bool Contains(WidgetAction item) => ((IList<WidgetAction>)_actions).Contains(item);
         public void CopyTo(WidgetAction[] array, int arrayIndex) => ((IList<WidgetAction>)_actions).CopyTo(array, arrayIndex);
         public IEnumerator<WidgetAction> GetEnumerator() => ((IList<WidgetAction>)_actions).GetEnumerator();
         public int IndexOf(WidgetAction item) => ((IList<WidgetAction>)_actions).IndexOf(item);
+        public bool Remove(WidgetAction item) => _actions.Remove(item);
 
-        public bool Remove(WidgetAction item) {
-            return _actions.Remove(item);
-        }
-
-        public void RemoveAt(int index) {
+        public void RemoveAt(int index) =>
             throw new Exception($"Cannot remove an item from an {nameof(ActionManager)}.");
-            //((IList<WidgetAction>)_actions)[index].DisconnectFromParent();
-            //((IList<WidgetAction>)_actions).RemoveAt(index);
-        }
+        //((IList<WidgetAction>)_actions)[index].DisconnectFromParent();
+        //((IList<WidgetAction>)_actions).RemoveAt(index);
     }
 }

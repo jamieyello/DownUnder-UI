@@ -4,8 +4,7 @@ using DownUnder.UI.Utilities.CommonNamespace;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.UI.Widgets.Actions.Functional {
-    public class ReplaceWidget : WidgetAction
-    {
+    public sealed class ReplaceWidget : WidgetAction {
         DiagonalDirections2D _new_widget_snapping_policy_prev;
         PropertyTransitionAction<RectangleF> _new_widget_area;
         PropertyTransitionAction<RectangleF> _old_widget_area;
@@ -16,7 +15,7 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
         public InterpolationSettings NewWidgetMovement { get; set; }
         public InterpolationSettings OldWidgetMovement { get; set; }
 
-        bool DisposeOld = true;
+        bool DisposeOld;
 
         public ReplaceWidget(
             Widget new_widget,
@@ -24,8 +23,8 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
             InnerWidgetLocation old_widget_end,
             InterpolationSettings? new_widget_movement = null,
             InterpolationSettings? old_widget_movement = null,
-            bool dispose_old = true)
-        {
+            bool dispose_old = true
+        ) {
             NewWidget = new_widget;
             NewWidgetStart = new_widget_start;
             OldWidgetEnd = old_widget_end;
@@ -34,18 +33,28 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
             DisposeOld = dispose_old;
         }
 
-        public ReplaceWidget(Widget new_widget, WidgetTransitionAnimation animation, bool dispose_old = true)
-            : this(new_widget, animation.NewWidgetStart, animation.OldWidgetEnd, animation.NewWidgetMovement, animation.OldWidgetMovement, dispose_old) { }
+        public ReplaceWidget(
+            Widget new_widget,
+            WidgetTransitionAnimation animation,
+            bool dispose_old = true
+        ) : this(
+            new_widget,
+            animation.NewWidgetStart,
+            animation.OldWidgetEnd,
+            animation.NewWidgetMovement,
+            animation.OldWidgetMovement,
+            dispose_old
+        ) {
+        }
 
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             Parent.SendToContainer();
             Parent.ParentWidget.Insert(0, NewWidget);
 
             _new_widget_snapping_policy_prev = NewWidget.SnappingPolicy;
             NewWidget.SnappingPolicy = DiagonalDirections2D.None;
 
-            RectangleF new_widget_target_area = NewWidget.Area;
+            var new_widget_target_area = NewWidget.Area;
             NewWidget.Area = NewWidgetStart.GetLocation(Parent, NewWidget);
 
             _old_widget_area = new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), OldWidgetEnd.GetLocation(Parent, Parent), OldWidgetMovement);
@@ -55,29 +64,20 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
             NewWidget.Actions.Add(_new_widget_area);
         }
 
-        protected override void ConnectEvents()
-        {
+        protected override void ConnectEvents() =>
             Parent.OnUpdate += Update;
-        }
 
-        protected override void DisconnectEvents()
-        {
+        protected override void DisconnectEvents() =>
             Parent.OnUpdate -= Update;
-        }
 
-        protected override bool InterferesWith(WidgetAction action)
-        {
-            return action.GetType() == action.GetType();
-        }
+        protected override bool InterferesWith(WidgetAction action) =>
+            GetType() == action.GetType();
 
-        protected override bool Matches(WidgetAction action)
-        {
-            return action.GetType() == action.GetType();
-        }
+        protected override bool Matches(WidgetAction action) =>
+            GetType() == action.GetType();
 
-        public override object InitialClone()
-        {
-            ReplaceWidget c = (ReplaceWidget)base.InitialClone();
+        public override object InitialClone() {
+            var c = (ReplaceWidget)base.InitialClone();
             c.NewWidget = (Widget)NewWidget?.Clone();
             c.NewWidgetStart = (InnerWidgetLocation)NewWidgetStart?.Clone();
             c.OldWidgetEnd = (InnerWidgetLocation)OldWidgetEnd?.Clone();
@@ -87,15 +87,15 @@ namespace DownUnder.UI.UI.Widgets.Actions.Functional {
             return c;
         }
 
-        void Update(object sender, EventArgs args)
-        {
-            if (_old_widget_area.IsCompleted && _new_widget_area.IsCompleted) Complete();
+        void Update(object sender, EventArgs args) {
+            if (_old_widget_area.IsCompleted && _new_widget_area.IsCompleted)
+                Complete();
         }
 
-        void Complete()
-        {
+        void Complete() {
             NewWidget.SnappingPolicy = _new_widget_snapping_policy_prev;
-            if (!DisposeOld) if (!Parent.ParentWidget.Remove(Parent)) throw new Exception();
+            if (!DisposeOld && !Parent.ParentWidget.Remove(Parent))
+                throw new Exception();
             NewWidget.ReplaceContainer();
             EndAction();
         }
