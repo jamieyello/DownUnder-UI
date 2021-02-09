@@ -1,36 +1,41 @@
 ﻿using System;
 using System.Reflection;
+using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.UI.Widgets.WidgetCoding
-{
-    public class CodeConnectionEntry
-    {
-        public Widget Widget { get; private set; }
-        EventInfo _event;
-        MethodInfo _method;
+namespace DownUnder.UI.UI.Widgets.WidgetCoding {
+    public sealed class CodeConnectionEntry {
+        readonly EventInfo _event;
+        readonly MethodInfo _method;
         Delegate _delegate;
-        WidgetCode _code;
+        readonly WidgetCode _code;
+
+        public Widget Widget { get; }
 
         public bool Connected { get; private set; }
 
-        public CodeConnectionEntry(WidgetCode code, Widget widget, EventInfo @event, MethodInfo method)
-        {
+        public CodeConnectionEntry(
+            WidgetCode code,
+            Widget widget,
+            EventInfo @event,
+            MethodInfo method
+        ) {
             Widget = widget;
             _event = @event;
             _method = method;
             _code = code;
         }
 
-        public void Connect()
-        {
-            _delegate = Delegate.CreateDelegate(_event.EventHandlerType, _code, _method);
-            _event.GetAddMethod().Invoke(Widget, new object[] { _delegate });
+        public void Connect() {
+            if (!(_event.EventHandlerType is { } handler_type))
+                throw new InvalidOperationException($"Event '{_event.Name}' had no EventHandlerType.");
+
+            _delegate = Delegate.CreateDelegate(handler_type, _code, _method);
+            _event.GetAddMethodOrThrow().Invoke(Widget, new object[] { _delegate });
             Connected = true;
         }
 
-        public void Disconnect()
-        {
-            _event.GetRemoveMethod().Invoke(Widget, new object[] { _delegate });
+        public void Disconnect() {
+            _event.GetRemoveMethodOrThrow().Invoke(Widget, new object[] { _delegate });
             Connected = false;
         }
     }

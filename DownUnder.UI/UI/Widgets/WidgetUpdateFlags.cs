@@ -1,21 +1,18 @@
-﻿namespace DownUnder.UI.UI.Widgets
-{
-    public class WidgetUpdateFlags
-    {
-        public bool clicked_on;
-        public bool right_clicked_on;
-        public bool clicked_off;
-        public bool double_clicked;
-        public bool triple_clicked;
-        public bool added_to_focused;
-        public bool set_as_focused;
-        public bool hovered_over;
-        public bool drag;
-        public bool drop;
-        public bool long_hover;
+﻿namespace DownUnder.UI.UI.Widgets {
+    public sealed class WidgetUpdateFlags {
+        public bool clicked_on { get; set; }
+        public bool right_clicked_on { get; set; }
+        public bool clicked_off { get; set; }
+        public bool double_clicked { get; set; }
+        public bool triple_clicked { get; set; }
+        public bool added_to_focused { get; set; }
+        public bool set_as_focused { get; set; }
+        public bool hovered_over { get; set; }
+        public bool drag { get; set; }
+        public bool drop { get; set; }
+        public bool long_hover { get; set; }
 
-        public void Reset()
-        {
+        public void Reset() {
             clicked_on = false;
             right_clicked_on = false;
             double_clicked = false;

@@ -1,7 +1,5 @@
-﻿namespace DownUnder.UI.UI.Widgets
-{
-    public interface IPropertyGridHeader
-    {
+﻿namespace DownUnder.UI.UI.Widgets {
+    public interface IPropertyGridHeader {
         Widget PropertyGridHeader { get; }
     }
 }
