@@ -1,114 +1,60 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     // https://stackoverflow.com/questions/12306/can-i-serialize-a-c-sharp-type-object
     // a version of System.Type that can be serialized
     [DataContract]
-    public class SerializableType
-    {
+    public sealed class SerializableType {
         public Type type;
 
         // when serializing, store as a string
         [DataMember]
-        string TypeString
-        {
-            get
-            {
-                if (type == null)
-                    return null;
-                return type.FullName;
-            }
-            set
-            {
-                if (value == null)
-                    type = null;
-                else
-                {
-                    type = Type.GetType(value);
-                }
-            }
+        string TypeString {
+            get => type?.FullName;
+            set => type = value == null ? null : Type.GetType(value);
         }
 
         // constructors
-        public SerializableType()
-        {
-            type = null;
+        public SerializableType() {
         }
-        public SerializableType(Type t)
-        {
+
+        public SerializableType(Type t) {
             type = t;
         }
 
         // allow SerializableType to implicitly be converted to and from System.Type
-        static public implicit operator Type(SerializableType stype)
-        {
-            return stype.type;
-        }
-        static public implicit operator SerializableType(Type t)
-        {
-            return new SerializableType(t);
-        }
+        public static implicit operator Type(SerializableType stype) => stype.type;
+        public static implicit operator SerializableType(Type t) => new SerializableType(t);
 
         // overload the == and != operators
-        public static bool operator ==(SerializableType a, SerializableType b)
-        {
+        public static bool operator ==(SerializableType a, SerializableType b) {
             // If both are null, or both are same instance, return true.
-            if (System.Object.ReferenceEquals(a, b))
-            {
+            if (ReferenceEquals(a, b))
                 return true;
-            }
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
-            {
+            if (a == null || b == null)
                 return false;
-            }
 
             // Return true if the fields match:
             return a.type == b.type;
         }
-        public static bool operator !=(SerializableType a, SerializableType b)
-        {
-            return !(a == b);
-        }
+
+        public static bool operator !=(SerializableType a, SerializableType b) => !(a == b);
+
         // we don't need to overload operators between SerializableType and System.Type because we already enabled them to implicitly convert
 
-        public override int GetHashCode()
-        {
-            return type.GetHashCode();
-        }
+        // TODO: can be problems if the hashcode can vary
+        // TODO: changing the hash will change the bucket that the object is supposed to be in
+        // TODO: so a dictionary will have problems and possibly lose the object
+        public override int GetHashCode() =>
+            type.GetHashCode();
 
-        // overload the .Equals method
-        public override bool Equals(System.Object obj)
-        {
-            // If parameter is null return false.
-            if (obj == null)
-            {
-                return false;
-            }
+        public override bool Equals(object obj) =>
+            obj != null && obj is SerializableType st && type == st.type;
 
-            // If parameter cannot be cast to SerializableType return false.
-            SerializableType p = obj as SerializableType;
-            if ((System.Object)p == null)
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return (type == p.type);
-        }
-        public bool Equals(SerializableType p)
-        {
-            // If parameter is null return false:
-            if ((object)p == null)
-            {
-                return false;
-            }
-
-            // Return true if the fields match:
-            return (type == p.type);
-        }
+        public bool Equals(SerializableType st) =>
+            st != null && type == st.type;
     }
 }

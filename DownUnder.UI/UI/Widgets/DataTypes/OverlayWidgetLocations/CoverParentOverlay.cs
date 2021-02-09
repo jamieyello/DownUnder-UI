@@ -1,30 +1,27 @@
 ﻿using System.Runtime.Serialization;
-using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
+using DownUnder.UI.Utilities.Extensions;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations
-{
+namespace DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations {
     [DataContract]
-    public class CoverParentOverlay : OverlayWidgetLocation
-    {
-        [DataMember] int ParentUp { get; set; } = 0;
+    public sealed class CoverParentOverlay : OverlayWidgetLocation {
+        [DataMember] int ParentUp { get; set; }
 
-        public CoverParentOverlay() { }
-        public CoverParentOverlay(int parent_up)
-        {
+        public CoverParentOverlay() {
+        }
+
+        public CoverParentOverlay(int parent_up) =>
             ParentUp = parent_up;
-        }
 
-        public override RectangleF GetLocation(Widget spawner, Widget widget)
-        {
-            return spawner.GetParentUp(ParentUp).AreaInWindow;
-        }
+        public override RectangleF GetLocation(
+            Widget spawner,
+            Widget widget
+        ) =>
+            spawner.GetParentUp(ParentUp).AreaInWindow;
 
-        public override object Clone()
-        {
-            CoverParentOverlay c = new CoverParentOverlay();
-            c.ParentUp = ParentUp;
-            return c;
-        }
+        public override object Clone() =>
+            new CoverParentOverlay {
+                ParentUp = ParentUp
+            };
     }
 }

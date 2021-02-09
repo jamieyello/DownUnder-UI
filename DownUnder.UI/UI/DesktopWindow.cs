@@ -1,11 +1,11 @@
-﻿using DownUnder.UI.UI.Widgets;
+﻿using Microsoft.Xna.Framework;
+using DownUnder.UI.UI.Widgets;
 using DownUnder.UI.UI.Widgets.Behaviors;
 using DownUnder.UI.UI.Widgets.Behaviors.Format;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
-using Microsoft.Xna.Framework;
 using static DownUnder.UI.UI.DesktopWindow.TopBarPolicyType;
 
 namespace DownUnder.UI.UI {
@@ -51,40 +51,46 @@ namespace DownUnder.UI.UI {
             _border_format.TopBorder = InternalWidgets.WindowHandle(MainWidget);
             _border_format.TopBorder.ParentDWindow.OnToggleFullscreen += (s, a) => ToggleTopBarWithFullscreen();
 
-            _border_format.Center = new Widget { };
-            _border_format.Center.VisualSettings = GeneralVisualSettings.Invisible;
+            _border_format.Center = new Widget {
+                VisualSettings = GeneralVisualSettings.Invisible
+            };
+
             _border_format.Center.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
 
             _initialized = true;
 
-            DisplayWidget = display_widget ?? new Widget { };
+            DisplayWidget = display_widget ?? new Widget();
             DisplayWidget.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
             TopBarPolicy = disable;
             _border_format.BorderOccupy.Up.ForceComplete();
             if (group_behaviors != null) MainWidget.Behaviors.GroupBehaviors.ImplementPolicy(group_behaviors);
         }
 
-        public override Widget DisplayWidget
-        {
+        public override Widget DisplayWidget {
             get => _border_format.Center.Children.Count == 0 ? null : _border_format.Center.Children[0];
-            set
-            {
-                if (_border_format.Center.Children.Count != 0) _border_format.Center.RemoveAt(0);
+            set {
+                if (_border_format.Center.Children.Count != 0)
+                    _border_format.Center.RemoveAt(0);
+
                 value.SnappingPolicy = DiagonalDirections2D.All;
                 _border_format.Center.Add(value);
             }
         }
 
-        void ToggleTopBarWithFullscreen()
-        {
-            if (TopBarPolicy != TopBarPolicyType.fullscreen_toggle) return;
-            if (_border_format.TopBorder.ParentDWindow.IsFullscreen) DisableTopBar();
-            else EnableTopBar();
+        void ToggleTopBarWithFullscreen() {
+            if (TopBarPolicy != fullscreen_toggle)
+                return;
+
+            if (_border_format.TopBorder.ParentDWindow.IsFullscreen)
+                DisableTopBar();
+            else
+                EnableTopBar();
         }
 
-        void EnableTopBar()
-        {
-            if (!_initialized) return;
+        void EnableTopBar() {
+            if (!_initialized)
+                return;
+
             _border_format.BorderOccupy.Up.SetTargetValue(1f);
             _border_format.TopBorder.VisualSettings.DrawOutline = true;
             _border_format.TopBorder.VisualSettings.DrawBackground = true;
@@ -93,9 +99,10 @@ namespace DownUnder.UI.UI {
             MainWidget.VisualSettings.DrawOutline = true;
         }
 
-        void DisableTopBar()
-        {
-            if (!_initialized) return;
+        void DisableTopBar() {
+            if (!_initialized)
+                return;
+
             _border_format.BorderOccupy.Up.SetTargetValue(0f);
             _border_format.TopBorder.VisualSettings.DrawOutline = false;
             _border_format.TopBorder.VisualSettings.DrawBackground = false;

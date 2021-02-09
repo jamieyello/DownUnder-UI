@@ -2,33 +2,35 @@
 using Microsoft.Xna.Framework;
 using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
-    public class UniversialVisualSettings
-    {
+namespace DownUnder.UI.UI.Widgets.DataTypes {
+    public sealed class UniversialVisualSettings {
         /// <summary> What this <see cref="Widget"/> should be regarded as regarding several <see cref="WidgetBehavior"/>. </summary>
-        [DataMember]
-        public VisualRoleType Role { get; set; } = VisualRoleType.default_widget;
+        [DataMember] public VisualRoleType Role { get; set; } = VisualRoleType.default_widget;
 
         /// <summary> The color palette of this <see cref="Widget"/>. </summary>
-        [DataMember]
-        public BaseColorScheme Theme { get; set; } = BaseColorScheme.Dark;
+        [DataMember] public BaseColorScheme Theme { get; set; } = BaseColorScheme.Dark;
 
         public Color TextColor => Theme.GetText(Role).CurrentColor;
         public Color BackgroundColor => Theme.GetBackground(Role).CurrentColor;
         public Color OutlineColor => Theme.GetOutline(Role).CurrentColor;
 
-        public void Update(float step, bool change_color_on_mouseover, bool is_hovered)
-        {
-            Theme.Update(Role, step, change_color_on_mouseover, is_hovered);
+        public UniversialVisualSettings() {
         }
 
-        public object Clone()
-        {
-            UniversialVisualSettings result = new UniversialVisualSettings();
-            result.Role = Role;
-            result.Theme = (BaseColorScheme)Theme.Clone();
-            return result;
+        UniversialVisualSettings(
+            UniversialVisualSettings source
+        ) {
+            Role = source.Role;
+            Theme = (BaseColorScheme)source.Theme.Clone();
         }
+
+        public void Update(
+            float step,
+            bool change_color_on_mouseover,
+            bool is_hovered
+        ) =>
+            Theme.Update(Role, step, change_color_on_mouseover, is_hovered);
+
+        public UniversialVisualSettings Clone() => new UniversialVisualSettings(this);
     }
 }

@@ -1,14 +1,14 @@
-﻿namespace DownUnder.UI.UI.Widgets.DataTypes
-{
-    public struct GridSettings
-    {
-        public enum AlignmentType
-        {
+﻿namespace DownUnder.UI.UI.Widgets.DataTypes {
+    public readonly struct GridSettings {
+        public static readonly GridSettings Default = new GridSettings(AlignmentType.auto_align);
+
+        public enum AlignmentType {
             auto_align
         }
 
-        public AlignmentType Alignment;
+        public AlignmentType Alignment { get; }
 
-        public static GridSettings Default => new GridSettings() { Alignment = AlignmentType.auto_align };
+        public GridSettings(AlignmentType alignment) =>
+            Alignment = alignment;
     }
 }

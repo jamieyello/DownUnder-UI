@@ -5,47 +5,46 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using DownUnder.UI.Utilities;
+using static DownUnder.UI.UI.Widgets.DataTypes.ExplorerEntry.ExplorerEntryType;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     [DataContract]
-    public class ExplorerEntry : IAutoDictionary<string, ExplorerEntry>
-    {
-        public enum ExplorerEntryType
-        {
+    public sealed class ExplorerEntry : IAutoDictionary<string, ExplorerEntry> {
+        public enum ExplorerEntryType {
             file,
             folder
         }
 
         [DataMember] public ExplorerEntryType EntryType { get; set; }
-        [DataMember] public AutoDictionary<string, ExplorerEntry> ChildEntries = new AutoDictionary<string, ExplorerEntry>();
+        [DataMember] public AutoDictionary<string, ExplorerEntry> ChildEntries { get; } = new AutoDictionary<string, ExplorerEntry>();
 
-        public ExplorerEntry() { }
-        public ExplorerEntry(IEnumerable<KeyValuePair<string, ExplorerEntry>> files)
-        {
-            EntryType = ExplorerEntryType.folder;
+        public ExplorerEntry() {
+        }
+
+        public ExplorerEntry(
+            IEnumerable<KeyValuePair<string, ExplorerEntry>> files
+        ) {
+            EntryType = folder;
             ChildEntries = new AutoDictionary<string, ExplorerEntry>(files);
         }
 
         public ExplorerEntry GetDirectories() =>
-            new ExplorerEntry(
-                from KeyValuePair<string, ExplorerEntry> entry in this
-                where entry.Value.EntryType == ExplorerEntryType.folder
-                select entry);
+            new ExplorerEntry(this.Where(entry => entry.Value.EntryType == folder));
 
         public ExplorerEntry GetFiles() =>
-            new ExplorerEntry(
-                from KeyValuePair<string, ExplorerEntry> entry in this
-                where entry.Value.EntryType == ExplorerEntryType.file
-                select entry);
+            new ExplorerEntry(this.Where(entry => entry.Value.EntryType == file));
 
-        public static ExplorerEntry FromFolder(string path)
-        {
-            if (!Directory.Exists(path)) throw new Exception("Not a valid path.");
-            ExplorerEntry result = new ExplorerEntry() { EntryType = ExplorerEntryType.folder };
+        public static ExplorerEntry FromFolder(string path) {
+            if (!Directory.Exists(path))
+                throw new Exception("Not a valid path.");
 
-            foreach (string entry in Directory.GetDirectories(path)) result[Path.GetFileName(entry)] = FromFolder(entry);
-            foreach (string entry in Directory.GetFiles(path)) result[Path.GetFileName(entry)].EntryType = ExplorerEntryType.file;
+            var result = new ExplorerEntry { EntryType = folder };
+
+            foreach (var entry in Directory.GetDirectories(path))
+                result[Path.GetFileName(entry)] = FromFolder(entry);
+
+            foreach (var entry in Directory.GetFiles(path))
+                result[Path.GetFileName(entry)].EntryType = file;
 
             return result;
         }

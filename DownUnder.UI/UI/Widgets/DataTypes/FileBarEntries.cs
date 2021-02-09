@@ -1,35 +1,30 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DownUnder.UI.Utilities;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
-    public class FileBarEntries : ICloneable, IEnumerable<AutoDictionary<string, DropDownEntry>>
-    {
-        AutoDictionary<string, AutoDictionary<string, DropDownEntry>> file_bar_entries = new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>();
+namespace DownUnder.UI.UI.Widgets.DataTypes {
+    public sealed class FileBarEntries : ICloneable, IEnumerable<AutoDictionary<string, DropDownEntry>> {
+        readonly AutoDictionary<string, AutoDictionary<string, DropDownEntry>> file_bar_entries = new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>();
 
-        public AutoDictionary<string, DropDownEntry> this[string entry]
-            => file_bar_entries[entry];
+        public AutoDictionary<string, DropDownEntry> this[string entry] => file_bar_entries[entry];
+
+        public FileBarEntries() {
+        }
+
+        public FileBarEntries(
+            FileBarEntries source
+        ) =>
+            file_bar_entries = AutoDictionary.Create(source.file_bar_entries);
+
+        public bool Remove(string key) =>
+            file_bar_entries.Remove(key);
 
         object ICloneable.Clone() => Clone();
-        public FileBarEntries Clone()
-        {
-            FileBarEntries c = new FileBarEntries();
-            c.file_bar_entries =  new AutoDictionary<string, AutoDictionary<string, DropDownEntry>>(file_bar_entries);
-            return c;
-        }
+        public FileBarEntries Clone() => new FileBarEntries(this);
 
-        public bool Remove(string key) => file_bar_entries.Remove(key);
-
-        public IEnumerator<AutoDictionary<string, DropDownEntry>> GetEnumerator()
-        {
-            return ((IEnumerable<AutoDictionary<string, DropDownEntry>>)file_bar_entries).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)file_bar_entries).GetEnumerator();
-        }
+        public IEnumerator<AutoDictionary<string, DropDownEntry>> GetEnumerator() => file_bar_entries.Select(kvp => kvp.Value).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

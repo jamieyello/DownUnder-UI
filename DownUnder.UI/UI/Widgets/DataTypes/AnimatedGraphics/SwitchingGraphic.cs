@@ -5,50 +5,47 @@ using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics
-{
-    public sealed class SwitchingGraphic : ICloneable
-    {
+namespace DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics {
+    public sealed class SwitchingGraphic : ICloneable {
         public ChangingValue<float> Progress { get; private set; } = new ChangingValue<float>(0f);
         public bool IsInitialized { get; private set; }
         BasicEffect basicEffect;
 
-        VertexPositionColor[] StartingVertex;
-        VertexPositionColor[] EndingVertex;
+        readonly VertexPositionColor[] StartingVertex;
+        readonly VertexPositionColor[] EndingVertex;
 
         ChangingValue<Color> color = new ChangingValue<Color>(Color.White);
 
-        public SwitchingGraphic(VertexPositionColor[] starting_vertex, VertexPositionColor[] ending_vertex)
-        {
+        public SwitchingGraphic(
+            VertexPositionColor[] starting_vertex,
+            VertexPositionColor[] ending_vertex
+        ) {
             StartingVertex = starting_vertex;
             EndingVertex = ending_vertex;
         }
 
-        public void Initialize(GraphicsDevice gd)
-        {
+        public void Initialize(GraphicsDevice gd) {
             basicEffect = new BasicEffect(gd);
             IsInitialized = true;
         }
 
-        internal void Update(float step)
-        {
+        internal void Update(float step) {
             Progress.Update(step);
             color.Update(step);
         }
 
-        internal void Draw(WidgetDrawArgs args)
-        {
-            float progress = Progress.Current;
+        internal void Draw(WidgetDrawArgs args) {
+            var progress = Progress.Current;
 
-            VertexPositionColor[] vert = new VertexPositionColor[StartingVertex.Length];
-            for (int i = 0; i < vert.Length; i++) vert[i] = StartingVertex[i].Lerp(EndingVertex[i], progress);
+            var vert = new VertexPositionColor[StartingVertex.Length];
+            for (var i = 0; i < vert.Length; i++)
+                vert[i] = StartingVertex[i].Lerp(EndingVertex[i], progress);
 
             basicEffect.Projection = args.GetStretchedProjection();
 
             args.RestartImmediate();
 
-            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
-            {
+            foreach (var effectPass in basicEffect.CurrentTechnique.Passes) {
                 effectPass.Apply();
                 args.GraphicsDevice.DrawUserPrimitives(
                     PrimitiveType.TriangleList, vert, 0, vert.Length / 3);
@@ -57,20 +54,15 @@ namespace DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics
             args.RestartDefault();
         }
 
-        public void SetStateStart()
-        {
+        public void SetStateStart() =>
             Progress.SetTargetValue(0f);
-        }
 
-        public void SetStateEnd()
-        {
+        public void SetStateEnd() =>
             Progress.SetTargetValue(1f);
-        }
 
-        private static VertexPositionColor[] PauseVertex(float pause_gap, Color? color = null)
-        {
-            VertexPositionColor[] vert = new VertexPositionColor[12];
-            float pg = pause_gap / 2f;
+        static VertexPositionColor[] PauseVertex(float pause_gap, Color? color = null) {
+            var vert = new VertexPositionColor[12];
+            var pg = pause_gap / 2f;
 
             // TL
             vert[0].Position = new Vector3(-1f, -1f, 0f);
@@ -92,14 +84,14 @@ namespace DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics
             vert[10].Position = new Vector3(pg, 1f, 0f);
             vert[9].Position = new Vector3(pg, -1f, 0f);
 
-            for (int i = 0; i < vert.Length; i++) vert[i].Color = color ?? Color.White;
+            for (var i = 0; i < vert.Length; i++)
+                vert[i].Color = color ?? Color.White;
 
             return vert;
         }
 
-        private static VertexPositionColor[] PlayVertex(Color? color = null)
-        {
-            VertexPositionColor[] vert = new VertexPositionColor[12];
+        static VertexPositionColor[] PlayVertex(Color? color = null) {
+            var vert = new VertexPositionColor[12];
 
             // TL
             vert[0].Position = new Vector3(-1f, -1f, 0f);
@@ -121,32 +113,34 @@ namespace DownUnder.UI.UI.Widgets.DataTypes.AnimatedGraphics
             vert[10].Position = new Vector3(1f, 1f, 0f);
             vert[9].Position = new Vector3(1f, -1f, 0f);
 
-            for (int i = 0; i < vert.Length; i++) vert[i].Color = color ?? Color.White;
+            for (var i = 0; i < vert.Length; i++)
+                vert[i].Color = color ?? Color.White;
 
             return vert;
         }
 
-        public static SwitchingGraphic PausePlayGraphic(float pause_gap = 0.8f)
-        {
-            SwitchingGraphic result = new SwitchingGraphic(PauseVertex(pause_gap), PlayVertex());
+        public static SwitchingGraphic PausePlayGraphic(float pause_gap = 0.8f) {
+            var result = new SwitchingGraphic(PauseVertex(pause_gap), PlayVertex());
             result.Progress.InterpolationSettings = InterpolationSettings.Faster;
             return result;
         }
 
-        object ICloneable.Clone() => Clone();
-        public SwitchingGraphic Clone()
-        {
-            VertexPositionColor[] starting_vertex_c = new VertexPositionColor[StartingVertex.Length];
-            for (int i = 0; i < StartingVertex.Length; i++) starting_vertex_c[i] = StartingVertex[i];
+        object ICloneable.Clone() =>
+            Clone();
 
-            VertexPositionColor[] ending_vertex_c = new VertexPositionColor[EndingVertex.Length];
-            for (int i = 0; i < EndingVertex.Length; i++) ending_vertex_c[i] = EndingVertex[i];
+        public SwitchingGraphic Clone() {
+            var starting_vertex_c = new VertexPositionColor[StartingVertex.Length];
+            for (var i = 0; i < StartingVertex.Length; i++)
+                starting_vertex_c[i] = StartingVertex[i];
 
-            SwitchingGraphic result = new SwitchingGraphic(starting_vertex_c, ending_vertex_c);
-            result.color = color.Clone(true);
-            result.Progress = Progress.Clone(true);
+            var ending_vertex_c = new VertexPositionColor[EndingVertex.Length];
+            for (var i = 0; i < EndingVertex.Length; i++)
+                ending_vertex_c[i] = EndingVertex[i];
 
-            return result;
+            return new SwitchingGraphic(starting_vertex_c, ending_vertex_c) {
+                color = color.Clone(true),
+                Progress = Progress.Clone(true)
+            };
         }
     }
 }

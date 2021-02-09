@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using DownUnder.UI.UI.Widgets.Actions;
 using DownUnder.UI.UI.Widgets.Actions.Functional;
@@ -9,149 +10,159 @@ using DownUnder.UI.Utilities.CommonNamespace;
 using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     /// <summary> A class to make interfacing with a List<Widget> easier. </summary>
     [DataContract]
-    public class WidgetList : IEnumerable<Widget>
-    {
+    public sealed class WidgetList : IEnumerable<Widget> {
         Widget _parent;
+        [DataMember] List<Widget> _widgets = new List<Widget>();
+
+        public Widget LastAddedWidget { get; private set; }
+        public Widget LastRemovedWidget { get; private set; }
 
         [DataMember]
-        private List<Widget> _widgets = new List<Widget>();
-
-        public Widget LastAddedWidget;
-        public Widget LastRemovedWidget;
-
-        [DataMember]
-        public Widget Parent
-        {
+        public Widget Parent {
             get => _parent;
-            set
-            {
+            set {
                 _parent = value;
-                foreach (Widget widget in _widgets) widget.Parent = _parent;
+                foreach (var widget in _widgets)
+                    widget.Parent = _parent;
             }
         }
 
-        public WidgetList() { IsReadOnly = false; }
-        public WidgetList(Widget parent) { Parent = parent; }
-        public WidgetList(bool is_read_only = false) { IsReadOnly = is_read_only; }
-        public WidgetList(Widget parent, List<Widget> widget_list, bool is_read_only = false) {
+        public WidgetList() =>
+            IsReadOnly = false;
+
+        public WidgetList(Widget parent) =>
+            Parent = parent;
+
+        public WidgetList(
+            bool is_read_only = false
+        ) =>
+            IsReadOnly = is_read_only;
+
+        public WidgetList(
+            Widget parent,
+            IEnumerable<Widget> widgets,
+            bool is_read_only = false
+        ) {
             _parent = parent;
-            foreach (Widget widget in widget_list) ((IList<Widget>)_widgets).Add(widget);
+            foreach (var widget in widgets)
+                _widgets.Add(widget);
             IsReadOnly = is_read_only;
         }
 
         [OnDeserializing]
-        void OnDeserialize(StreamingContext context)
-        {
+        void OnDeserialize(StreamingContext context) =>
             _widgets = new List<Widget>();
-        }
 
-        private void OnRemove(Widget removed)
-        {
+        void OnRemove(Widget removed) {
             Parent?.InvokeOnRemove();
             Parent?.InvokeOnRemoveAny(new WidgetArgs(removed));
         }
-        private void OnAdd(Widget added)
-        {
+
+        void OnAdd(Widget added) {
             Parent?.InvokeOnAdd();
             Parent?.InvokeOnAddAny(new WidgetArgs(added));
         }
-        private void OnListChange() { Parent?.InvokeOnListChange(); }
 
-        public List<RectangleF> GetHorizontalWrapAreas(float width, float spacing)
-        {
+        void OnListChange() =>
+            Parent?.InvokeOnListChange();
+
+        public List<RectangleF> GetHorizontalWrapAreas(float width, float spacing) {
             // Read the areas of the widgets just once (areas)
-            List<RectangleF> areas = new List<RectangleF>();
-            List<RectangleF> new_areas = new List<RectangleF>();
-            foreach (Widget widget in _widgets) areas.Add(widget.Area);
-            foreach (RectangleF area in areas) new_areas.Add(area);
-            float max_height = 0;
-            float max_width = 0;
 
-            foreach (RectangleF area in areas) max_height = Math.Max(max_height, area.Height);
-            foreach (RectangleF area in areas) max_width = Math.Max(max_width, area.Width);
+            var areas =
+                _widgets
+                .Select(widget => widget.Area)
+                .ToList();
 
-            int widgets_per_line = (int)(width / (max_width + spacing));
-            if (widgets_per_line <= 0) widgets_per_line = 1;
+            var new_areas = areas.ToList();
+            var max_height = areas.Select(area => area.Height).Append(0f).Max();
+            var max_width = areas.Select(area => area.Width).Append(0f).Max();
 
-            float x_spacing = (width - max_width * widgets_per_line) / (widgets_per_line + 1);
+            var widgets_per_line = (int)(width / (max_width + spacing));
 
-            for (int i = 0; i < _widgets.Count; i++)
-            {
-                int x = (i % widgets_per_line);
+            if (widgets_per_line <= 0)
+                widgets_per_line = 1;
+
+            var x_spacing = (width - max_width * widgets_per_line) / (widgets_per_line + 1f);
+
+            for (var i = 0; i < _widgets.Count; i++) {
+                var x = i % widgets_per_line;
+
                 new_areas[i] = new RectangleF(
                     x * x_spacing + x * max_width + spacing,
                     i / widgets_per_line * (max_height + spacing) + spacing,
                     areas[i].Width,
-                    areas[i].Height);
+                    areas[i].Height
+                );
             }
 
             return new_areas;
         }
 
-        public void SetAreas(List<RectangleF> areas, InterpolationSettings? interpolation = null)
-        {
-            if (interpolation == null) {
-                for (int i = 0; i < areas.Count; i++) _widgets[i].Area = areas[i];
-            }
+        public void SetAreas(
+            List<RectangleF> areas,
+            InterpolationSettings? interpolation = null
+        ) {
+            if (interpolation == null)
+                for (var i = 0; i < areas.Count; i++)
+                    _widgets[i].Area = areas[i];
             else {
-                for (int i = 0; i < areas.Count; i++) _widgets[i].Actions.Add(new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation)
-                {
-                    DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override
-                    , DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
-                });
+                for (var i = 0; i < areas.Count; i++) {
+                    var action = new PropertyTransitionAction<RectangleF>(nameof(Widget.Area), areas[i], interpolation) {
+                        DuplicatePolicy = WidgetAction.DuplicatePolicyType.@override,
+                        DuplicateDefinition = WidgetAction.DuplicateDefinitionType.interferes_with
+                    };
+
+                    _widgets[i].Actions.Add(action);
+                }
             }
         }
 
         /// <summary> Returns the <see cref="Point2.Max"/> result of all <see cref="Widget"/>'s sizes. </summary>
-        public Point2 SizeMax {
-            get {
-                Point2 max_size = new Point2();
-                foreach (Widget widget in _widgets) max_size = max_size.Max(widget.Size);
-                return max_size;
-            }
-        }
+        public Point2 SizeMax { get {
+            var max_size = new Point2();
+            foreach (var widget in _widgets)
+                max_size = max_size.Max(widget.Size);
+            return max_size;
+        } }
 
         /// <summary> Returns the <see cref="Point2.Min"/> result of all <see cref="Widget"/>'s sizes. </summary>
-        public Point2 SizeMin {
-            get {
-                if (_widgets.Count == 0) return new Point2();
-                Point2 min_size = _widgets[0].Size;
-                for (int i = 1; i < _widgets.Count; i++) min_size = min_size.Min(_widgets[i].Size);
-                return min_size;
-            }
-        }
+        public Point2 SizeMin { get {
+            if (_widgets.Count == 0)
+                return new Point2();
+
+            var min_size = _widgets[0].Size;
+            for (var i = 1; i < _widgets.Count; i++)
+                min_size = min_size.Min(_widgets[i].Size);
+            return min_size;
+        } }
 
         /// <summary> Get the maximum allowed <see cref="Widget.MinimumSize"/> for this group of <see cref="Widget"/>s. </summary>
-        public Point2 MinimumWidgetSize
-        {
-            get {
-                Point2 min_size = new Point2();
-                for (int i = 0; i < _widgets.Count; i++) min_size = min_size.Max(_widgets[i].MinimumSize);
-                return min_size;
-            }
-        }
+        public Point2 MinimumWidgetSize { get {
+            var min_size = new Point2();
+            for (var i = 0; i < _widgets.Count; i++)
+                min_size = min_size.Max(_widgets[i].MinimumSize);
+            return min_size;
+        } }
 
         /// <summary> Get the maximum allowed <see cref="Widget.MinimumWidth"/> for this group of <see cref="Widget"/>s. </summary>
-        public float MinimumWidgetWidth {
-            get {
-                float min_width = 0f;
-                for (int i = 0; i < _widgets.Count; i++) min_width = Math.Max(min_width, _widgets[i].MinimumWidth);
-                return min_width;
-            }
-        }
+        public float MinimumWidgetWidth { get {
+            var min_width = 0f;
+            for (var i = 0; i < _widgets.Count; i++)
+                min_width = Math.Max(min_width, _widgets[i].MinimumWidth);
+            return min_width;
+        } }
 
         /// <summary> Get the maximum allowed <see cref="Widget.MinimumHeight"/> for this group of <see cref="Widget"/>s. </summary>
-        public float MinimumWidgetHeight {
-            get {
-                float min_height = 0f;
-                for (int i = 0; i < _widgets.Count; i++) min_height = Math.Max(min_height, _widgets[i].MinimumHeight);
-                return min_height;
-            }
-        }
+        public float MinimumWidgetHeight { get {
+            var min_height = 0f;
+            for (var i = 0; i < _widgets.Count; i++)
+                min_height = Math.Max(min_height, _widgets[i].MinimumHeight);
+            return min_height;
+        } }
 
         // Widget doesn't implement max size yet
         //public Point2 MaximumWidgetSize
@@ -165,60 +176,65 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         //    }
         //}
 
-        public RectangleF? AreaCoverage {
-            get {
-                if (Count == 0) return null;
-                RectangleF result = _widgets[0].Area;
-                for (int i = 1; i < _widgets.Count; i++) result = result.Union(_widgets[i].Area);
-                return result;
-            }
-        }
+        public RectangleF? AreaCoverage { get {
+            if (Count == 0)
+                return null;
 
-        public float CombinedHeight {
-            get {
-                float result = 0f;
-                foreach (Widget widget in _widgets) result += widget.Height;
-                return result;
-            }
-        }
+            var result = _widgets[0].Area;
+            for (var i = 1; i < _widgets.Count; i++)
+                result = result.Union(_widgets[i].Area);
+            return result;
+        } }
 
-        public float CombinedWidth {
-            get {
-                float result = 0f;
-                foreach (Widget widget in _widgets) result += widget.Width;
-                return result;
-            }
-        }
+        public float CombinedHeight { get {
+            var result = 0f;
+            foreach (var widget in _widgets)
+                result += widget.Height;
+            return result;
+        } }
+
+        public float CombinedWidth { get {
+            var result = 0f;
+            foreach (var widget in _widgets)
+                result += widget.Width;
+            return result;
+        } }
 
         public void SetParent(IParent parent) {
-            foreach (Widget widget in _widgets) widget.Parent = parent;
+            foreach (var widget in _widgets)
+                widget.Parent = parent;
         }
 
         public void ExpandAll(float modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.WithScaledSize(modifier);
+            foreach (var widget in _widgets)
+                widget.Area = widget.Area.WithScaledSize(modifier);
         }
 
         public void ExpandAll(Point2 modifier) {
-            foreach (Widget widget in _widgets) widget.Area = widget.Area.WithScaledSize(modifier);
+            foreach (var widget in _widgets)
+                widget.Area = widget.Area.WithScaledSize(modifier);
         }
 
-        public void ResizeBy(BorderSize border_size, bool uniform_minimum_size = false) {
-            if (uniform_minimum_size) {
-                for (int i = 0; i < _widgets.Count; i++) _widgets[i].Area = _widgets[i].Area.ResizedBy(border_size, MinimumWidgetSize);
-            }
-            else {
-                for (int i = 0; i < _widgets.Count; i++) _widgets[i].Area = _widgets[i].Area.ResizedBy(border_size);
-            }
+        public void ResizeBy(
+            BorderSize border_size,
+            bool uniform_minimum_size = false
+        ) {
+            foreach (var w in _widgets)
+                w.Area = w.Area.ResizedBy(border_size, uniform_minimum_size ? MinimumWidgetSize : (Point2?)null);
         }
 
-        public void ResizeBy(float amount, Directions2D directions, bool uniform_minimum_size = false) =>
+        public void ResizeBy(
+            float amount,
+            Directions2D directions,
+            bool uniform_minimum_size = false
+        ) =>
             ResizeBy(new BorderSize(amount, directions), uniform_minimum_size);
 
         /// <summary> Set all the widget's width values to match each other. </summary>
         public void AutoSizeWidth() {
-            float new_width = SizeMax.X;
+            var new_width = SizeMax.X;
 
-            foreach (Widget widget in _widgets) {
+            foreach (var widget in _widgets) {
                 if (widget.IsFixedWidth) {
                     new_width = widget.Width;
                     break;
@@ -230,9 +246,9 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
 
         /// <summary> Set all the widget's height values to match each other. </summary>
         public void AutoSizeHeight() {
-            float new_height = SizeMax.Y;
+            var new_height = SizeMax.Y;
 
-            foreach (Widget widget in _widgets) {
+            foreach (var widget in _widgets) {
                 if (widget.IsFixedHeight) {
                     new_height = widget.Height;
                     break;
@@ -243,30 +259,35 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         }
 
         public void SetAllWidth(float width) {
-            foreach (Widget widget in _widgets) widget.Width = width;
+            foreach (var widget in _widgets)
+                widget.Width = width;
         }
 
         public void SetAllHeight(float height) {
-            foreach (Widget widget in _widgets) widget.Height = height;
+            foreach (var widget in _widgets)
+                widget.Height = height;
         }
 
-        public void SendWidgetToBack(Widget widget)
-        {
-            int index = IndexOf(widget);
-            if (index == -1) throw new Exception($"{nameof(Widget)} not found.");
+        public void SendWidgetToBack(Widget widget) {
+            var index = IndexOf(widget);
+            if (index == -1)
+                throw new Exception($"{nameof(Widget)} not found.");
+
             _widgets.RemoveAt(index);
             _widgets.Insert(0, widget);
         }
 
-        public void SendWidgetToFront(Widget widget)
-        {
-            int index = IndexOf(widget);
-            if (index == -1) throw new Exception($"{nameof(Widget)} not found.");
+        public void SendWidgetToFront(Widget widget) {
+            var index = IndexOf(widget);
+            if (index == -1)
+                throw new Exception($"{nameof(Widget)} not found.");
+
             _widgets.RemoveAt(index);
             _widgets.Add(widget);
         }
 
-        private void ThrowReadOnlyException() => throw new Exception($"This {GetType().Name} is read only.");
+        void ThrowReadOnlyException() =>
+            throw new Exception($"This {GetType().Name} is read only.");
 
         #region IList Implementation
 
@@ -278,20 +299,15 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
             }
         }
 
-        public Widget this[string name]
-        {
-            get
-            {
-                for (int i = 0; i < _widgets[i].Count; i++)
-                {
-                    if (_widgets[i].Name == name) return _widgets[i];
-                }
-                return null;
-            }
-        }
+        public Widget this[string name] { get {
+            for (var i = 0; i < _widgets[i].Count; i++)
+                if (_widgets[i].Name == name)
+                    return _widgets[i];
+
+            return null;
+        } }
 
         public int Count => _widgets.Count;
-
         public bool IsReadOnly { get; }
 
         public static implicit operator List<Widget>(WidgetList v) => new List<Widget>(v);
@@ -299,8 +315,11 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         public void Add(Widget widget) => Insert(Count, widget);
 
         public void Clear() {
-            if (IsReadOnly) ThrowReadOnlyException();
-            for (int i = _widgets.Count - 1; i >= 0; i--) RemoveAt(i);
+            if (IsReadOnly)
+                ThrowReadOnlyException();
+
+            for (var i = _widgets.Count - 1; i >= 0; i--)
+                RemoveAt(i);
         }
 
         public bool Contains(Widget widget) => _widgets.Contains(widget);
@@ -309,8 +328,12 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         public int IndexOf(Widget widget) => _widgets.IndexOf(widget);
 
         public void Insert(int index, Widget widget) {
-            if (IsReadOnly) ThrowReadOnlyException();
-            if (_parent != null) widget.Parent = _parent;
+            if (IsReadOnly)
+                ThrowReadOnlyException();
+
+            if (_parent != null)
+                widget.Parent = _parent;
+
             _widgets.Insert(index, widget);
             LastAddedWidget = widget;
             OnAdd(widget);
@@ -318,21 +341,30 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         }
 
         public bool Remove(Widget widget) {
-            if (IsReadOnly) ThrowReadOnlyException();
-            if (_widgets.Remove(widget)) {
-                if (_parent != null) widget.Parent = null;
-                LastRemovedWidget = widget;
-                OnRemove(widget);
-                OnListChange();
-                return true;
-            }
-            return false;
+            if (IsReadOnly)
+                ThrowReadOnlyException();
+
+            if (!_widgets.Remove(widget))
+                return false;
+
+            if (_parent is { })
+                widget.Parent = null;
+
+            LastRemovedWidget = widget;
+            OnRemove(widget);
+            OnListChange();
+            return true;
         }
 
         public void RemoveAt(int index) {
-            if (IsReadOnly) ThrowReadOnlyException();
+            if (IsReadOnly)
+                ThrowReadOnlyException();
+
             LastRemovedWidget = _widgets[index];
-            if (_parent != null) _widgets[index].Parent = null;
+
+            if (_parent is { })
+                _widgets[index].Parent = null;
+
             _widgets.RemoveAt(index);
             OnRemove(LastRemovedWidget);
             OnListChange();
@@ -341,14 +373,15 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
         IEnumerator IEnumerable.GetEnumerator() => _widgets.GetEnumerator();
 
         public void AddRange(IEnumerable<Widget> widgets) {
-            if (IsReadOnly) ThrowReadOnlyException();
-            foreach (Widget widget in widgets)
-            {
+            if (IsReadOnly)
+                ThrowReadOnlyException();
+
+            foreach (var widget in widgets)
                 Add(widget);
-            }
         }
 
-        public WidgetList GetRange(int index, int count) => new WidgetList(null, _widgets.GetRange(index, count));
+        public WidgetList GetRange(int index, int count) =>
+            new WidgetList(null, _widgets.GetRange(index, count));
 
         #endregion
     }

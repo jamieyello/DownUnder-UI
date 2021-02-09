@@ -1,75 +1,74 @@
 ﻿using System.Diagnostics;
-using DownUnder.UI.Input;
-using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using DownUnder.UI.Input;
+using DownUnder.UI.Utilities.CommonNamespace;
 
 //Todo: Trigger inputs shopuld not have set parameters
-namespace DownUnder.UI.UI.Widgets.DataTypes
-{
+namespace DownUnder.UI.UI.Widgets.DataTypes {
     /// <summary> Used to communicate to widgets input. Can be updated or set manually. </summary>
-    public class UIInputState {
-        private Vector2 _previous_mouse_wheel_scroll = new Vector2(Mouse.GetState().HorizontalScrollWheelValue, Mouse.GetState().ScrollWheelValue);
-        private MouseState _mouse_state = Mouse.GetState();
-        private MouseState _previous_mouse_state = Mouse.GetState();
-        private KeyboardState _keyboard_state = Keyboard.GetState();
-        private KeyboardState _previous_keyboard_state = Keyboard.GetState();
-        private BufferedKeyboard buffered_keyboard = new BufferedKeyboard();
-        private bool _insert_key_down = false;
-        private bool _previous_insert_key_down = false;
+    public sealed class UIInputState {
+        Vector2 _previous_mouse_wheel_scroll = new Vector2(Mouse.GetState().HorizontalScrollWheelValue, Mouse.GetState().ScrollWheelValue);
+        MouseState _mouse_state = Mouse.GetState();
+        MouseState _previous_mouse_state = Mouse.GetState();
+        KeyboardState _keyboard_state = Keyboard.GetState();
+        KeyboardState _previous_keyboard_state = Keyboard.GetState();
+        readonly BufferedKeyboard buffered_keyboard = new BufferedKeyboard();
+        bool _insert_key_down;
+        bool _previous_insert_key_down;
 
         /// <summary> True when primary input is held down./ </summary>
-        public bool PrimaryClick { get; set; } = false;
+        public bool PrimaryClick { get; set; }
         /// <summary> True the frame primary input is held down./ </summary>
-        public bool PrimaryClickTriggered { get; set; } = false;
+        public bool PrimaryClickTriggered { get; set; }
         /// <summary> Used when secondary input is held down. </summary>
-        public bool SecondaryClick { get; set; } = false;
+        public bool SecondaryClick { get; set; }
         /// <summary> True the frame secondary input is held down. </summary>
-        public bool SecondaryClickTriggered { get; set; } = false;
+        public bool SecondaryClickTriggered { get; set; }
         /// <summary> Used for selecting multiple widgets. </summary>
-        public bool Control { get; set; } = false;
+        public bool Control { get; set; }
         /// <summary> Used to move the cursor. </summary>
-        public Directions2D TextCursorMovement = new Directions2D() { DisallowOpposites = true };
+        public Directions2D TextCursorMovement = new Directions2D { DisallowOpposites = true };
         /// <summary> Used for backspacing text. </summary>
-        public bool BackSpace { get; set; } = false;
+        public bool BackSpace { get; set; }
         /// <summary> Used to represent the Enter key. </summary>
-        public bool Enter { get; set; } = false;
+        public bool Enter { get; set; }
         /// <summary> The mouse position relative to the parent window. </summary>
-        public Point2 CursorPosition { get; set; } = new Point2();
+        public Point2 CursorPosition { get; set; }
         /// <summary> Used for text input. </summary>
         public string Text { get; set; } = "";
-        public Vector2 Scroll { get; set; } = new Vector2();
+        public Vector2 Scroll { get; set; }
         /// <summary> Represents the shift key./ </summary>
-        public bool Shift { get; set; } = false;
+        public bool Shift { get; set; }
         /// <summary> Represents the DEL delete key. </summary>
-        public bool Delete { get; set; } = false;
+        public bool Delete { get; set; }
         /// <summary> Represents the INS insert key. </summary>
-        public bool Insert { get; set; } = false;
+        public bool Insert { get; set; }
         /// <summary> Represents the home key. </summary>
-        public bool Home { get; set; } = false;
+        public bool Home { get; set; }
         /// <summary> Represents the end key. </summary>
-        public bool End { get; set; } = false;
+        public bool End { get; set; }
         /// <summary> Represents the state of Caps Lock. </summary>
-        public bool CapsLock { get; set; } = false;
+        public bool CapsLock { get; set; }
         /// <summary> Represents the state of Num Lock. </summary>
-        public bool NumLock { get; set; } = false;
+        public bool NumLock { get; set; }
         /// <summary> Used to select all items/text. </summary>
-        public bool SelectAll { get; set; } = false;
+        public bool SelectAll { get; set; }
         /// <summary> Used to copy items/text. </summary>
-        public bool Copy { get; set; } = false;
+        public bool Copy { get; set; }
         /// <summary> Used to cut items/text. </summary>
-        public bool Cut { get; set; } = false;
+        public bool Cut { get; set; }
         /// <summary> Used to paste items/text. </summary>
-        public bool Paste { get; set; } = false;
+        public bool Paste { get; set; }
         /// <summary> Used to save the current state/project to file. (ctrl + s) </summary>
-        public bool Save { get; set; } = false;
+        public bool Save { get; set; }
         /// <summary> Used to create a new project. </summary>
-        public bool New { get; set; } = false;
+        public bool New { get; set; }
         /// <summary> Used to undo changes to items/text. </summary>
-        public bool Undo { get; set; } = false;
+        public bool Undo { get; set; }
         /// <summary> Used to redo changes to items/text. </summary>
-        public bool Redo { get; set; } = false;
+        public bool Redo { get; set; }
         /// <summary> Used to jump between controls. </summary>
         public bool Tab { get; set; }
 
@@ -121,6 +120,7 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
             New = false;
             Undo = false;
             Redo = false;
+
             foreach (char c in dwindow.CommandText.ToString()) {
                 //Console.WriteLine((int)c);
                 if (c == 1) SelectAll = true;
@@ -137,7 +137,8 @@ namespace DownUnder.UI.UI.Widgets.DataTypes
 
             _previous_insert_key_down = _insert_key_down;
             _insert_key_down = buffered_keyboard.IsKeyTriggered(Keys.Insert);
-            if (_insert_key_down && !_previous_insert_key_down) Insert = !Insert;
+            if (_insert_key_down && !_previous_insert_key_down)
+                Insert = !Insert;
         }
     }
 }
