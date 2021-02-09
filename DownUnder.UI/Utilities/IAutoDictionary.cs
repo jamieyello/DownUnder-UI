@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace DownUnder.UI.Utilities
-{
-    public interface IAutoDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
-    {
+namespace DownUnder.UI.Utilities {
+    public interface IAutoDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> {
         TValue this[TKey key] { get; set; }
         void Add(TKey key, TValue value, bool replace = false);
         void Add(KeyValuePair<TKey, TValue> pair, bool replace = false);

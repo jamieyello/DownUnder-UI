@@ -2,7 +2,8 @@
 using Microsoft.Xna.Framework;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes {
-    [DataContract] public class UpdateData {
+    [DataContract]
+    public sealed class UpdateData {
         public UIInputState UIInputState { get; set; }
         public GameTime GameTime { get; internal set; }
         /// <summary> Slightly faster version of <see cref="GameTime.GetElapsedSeconds()"/> </summary>
