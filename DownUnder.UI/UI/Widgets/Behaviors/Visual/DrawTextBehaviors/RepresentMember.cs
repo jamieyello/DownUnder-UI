@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.Serialization;
 using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
+    [DataContract]
     public sealed class RepresentMember : WidgetBehavior, ISubWidgetBehavior<DrawText> {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
@@ -10,7 +12,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
 
         MemberInfo _member;
 
-        readonly string _name_of_member;
+        [DataMember] readonly string _name_of_member;
         readonly object _represented_object;
 
         public RepresentMember(object obj, string nameof_member) {
@@ -43,5 +45,13 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
 
         public void UpdateText() =>
             UpdateText(this, EventArgs.Empty);
+
+        [OnDeserialized]
+        void ThrowDeserializeError(StreamingContext context) =>
+            throw new NotImplementedException();
+
+        [OnSerialized]
+        void ThrowSerializeError(StreamingContext context) =>
+            throw new NotImplementedException();
     }
 }

@@ -27,5 +27,10 @@
   <ItemGroup>
     <ProjectReference Include="..\DownUnder.UI\DownUnder.UI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Test\MyWidgetCode.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="..\DownUnder.UI.Content\DownUnder.UI.Content.projitems" Label="Shared" />
 </Project>

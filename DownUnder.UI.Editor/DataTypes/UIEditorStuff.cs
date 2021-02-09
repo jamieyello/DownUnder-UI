@@ -89,6 +89,7 @@ namespace DownUnder.UI.Editor.DataTypes
         {
             WorkingProject.DesignerObjects.IsEditModeEnabled = false;
             WorkingProject.Position = new Point2(0f, 0f);
+            WorkingProject.Behaviors.RemoveType(typeof(FormatAllNames));
 
             try {
                 WorkingProject.Behaviors.GroupBehaviors.RemovePolicy(GroupBehaviors.EditModeBehaviors);
@@ -100,6 +101,7 @@ namespace DownUnder.UI.Editor.DataTypes
                 File.WriteAllText(WorkingDUWDFile, ProjectCodeInterface.MakeDuwdCode(WorkingProject, widget_code_namespace, widget_code_class));
             } catch (Exception ex) { MessageBox.Show("Failed to save project. Error;\n\n" + ex.Message); }
 
+            WorkingProject.Behaviors.Add(new FormatAllNames());
             WorkingProject.DesignerObjects.IsEditModeEnabled = true;
             WorkingProject.Position = new Point2(20f, 20f);
         }
