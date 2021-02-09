@@ -1,8 +1,8 @@
-﻿using DownUnder.UI.UI.Widgets.DataTypes;
+﻿using System.Linq;
+using DownUnder.UI.UI.Widgets.DataTypes;
 
 namespace DownUnder.UI.UI.Widgets {
-    public class WidgetPostUpdateFlags
-    {
+    public sealed class WidgetPostUpdateFlags {
         bool _send_to_back;
         bool _send_to_front;
 
@@ -10,22 +10,22 @@ namespace DownUnder.UI.UI.Widgets {
         public bool Delete { get; set; }
         public bool Cut { get; set; }
         public bool Copy { get; set; }
-        public bool SendToBack
-        {
+
+        public bool SendToBack {
             get => _send_to_back;
-            set
-            {
+            set {
                 _send_to_back = value;
-                if (value) _send_to_front = false;
+                if (value)
+                    _send_to_front = false;
             }
         }
-        public bool SendToFront
-        {
+
+        public bool SendToFront {
             get => _send_to_front;
-            set
-            {
+            set {
                 _send_to_front = value;
-                if (value) _send_to_back = false;
+                if (value)
+                    _send_to_back = false;
             }
         }
 
@@ -38,18 +38,12 @@ namespace DownUnder.UI.UI.Widgets {
             _send_to_front = false;
         }
 
-        internal static void SetUpdatedFlagsToFalse(WidgetList widgets)
-        {
-            for (int i = 0; i < widgets.Count; i++) widgets[i]._post_update_flags._updated = false;
+        internal static void SetUpdatedFlagsToFalse(WidgetList widgets) {
+            foreach (var w in widgets)
+                w._post_update_flags._updated = false;
         }
 
-        internal static bool UpdatedFlagsAreTrue(WidgetList widgets)
-        {
-            for (int i = 0; i < widgets.Count; i++)
-            {
-                if (!widgets[i]._post_update_flags._updated) return false;
-            }
-            return true;
-        }
+        internal static bool UpdatedFlagsAreTrue(WidgetList widgets) =>
+            widgets.All(w => w._post_update_flags._updated);
     }
 }

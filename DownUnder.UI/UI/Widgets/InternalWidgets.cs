@@ -5,19 +5,16 @@ using DownUnder.UI.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.UI.Widgets
-{
-    public static class InternalWidgets
-    {
-        public static Widget WindowHandle(Widget handle)
-        {
-            Widget bar = new Widget();
+namespace DownUnder.UI.UI.Widgets {
+    public static class InternalWidgets {
+        public static Widget WindowHandle(Widget handle) {
+            var bar = new Widget();
             bar.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(DownUnderBehaviorIDs.SCROLL_FUNCTION);
 
-            Widget x_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window X", 0.5f);
-            Widget __button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window _", 0.5f);
-            Widget rect_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window Rect", 0.5f);
-            Widget control_grid = new Widget() { Size = new MonoGame.Extended.Point2(70,70) };
+            var x_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window X", 0.5f);
+            var __button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window _", 0.5f);
+            var rect_button = CommonWidgets.ImageButton("DownUnder Native Content/Images/Window Rect", 0.5f);
+            var control_grid = new Widget { Size = new MonoGame.Extended.Point2(70,70) };
 
             control_grid.Add(__button);
             control_grid.Add(rect_button);
@@ -36,11 +33,8 @@ namespace DownUnder.UI.UI.Widgets
             x_button.VisualSettings.DrawBackground = false;
             control_grid.VisualSettings.DrawBackground = false;
 
-            Widget back_button = CommonWidgets.Button("Back");
-            back_button.OnClick += (s, a) =>
-            {
-                back_button.ParentDWindow.Navigation.NavigateBack();
-            };
+            var back_button = CommonWidgets.Button("Back");
+            back_button.OnClick += (s, a) => back_button.ParentDWindow.Navigation.NavigateBack();
             bar.Add(back_button);
 
             bar.Add(control_grid);
@@ -54,7 +48,7 @@ namespace DownUnder.UI.UI.Widgets
 
             x_button.OnClick += (s, a) => { handle.Delete(); };
             rect_button.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnClick), new ToggleWindowFullscreen()));
-            control_grid.Behaviors.Add(new PinWidget() { Pin = InnerWidgetLocation.InsideTopRight });
+            control_grid.Behaviors.Add(new PinWidget { Pin = InnerWidgetLocation.InsideTopRight });
             bar.Behaviors.Add(new TriggerWidgetAction(nameof(Widget.OnDoubleClick), new ToggleWindowFullscreen()));
 
             return bar;

@@ -2,32 +2,27 @@
 using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UI.UI.Widgets
-{
-    public class UINavigator
-    {
-        DWindow parent;
+namespace DownUnder.UI.UI.Widgets {
+    public sealed class UINavigator {
+        readonly DWindow _parent;
+        readonly Stack<Widget> _underlying_widgets = new Stack<Widget>();
 
-        Stack<Widget> underlying_widgets = new Stack<Widget>();
+        public WidgetTransitionAnimation DefaultTransition { get; } = WidgetTransitionAnimation.Slide(Direction2D.left);
+        public WidgetTransitionAnimation DefaultBackTransition { get; } = WidgetTransitionAnimation.Slide(Direction2D.right);
 
-        public WidgetTransitionAnimation DefaultTransition = WidgetTransitionAnimation.Slide(Direction2D.left);
-        public WidgetTransitionAnimation DefaultBackTransition = WidgetTransitionAnimation.Slide(Direction2D.right);
+        public UINavigator(DWindow parent) =>
+            _parent = parent;
 
-        public UINavigator(DWindow parent)
-        {
-            this.parent = parent;
+        public void NavigateTo(Widget widget) {
+            _underlying_widgets.Push(_parent.DisplayWidget);
+            _parent.DisplayWidget.AnimatedReplace(widget, DefaultTransition, false);
         }
 
-        public void NavigateTo(Widget widget)
-        {
-            underlying_widgets.Push(parent.DisplayWidget);
-            parent.DisplayWidget.AnimatedReplace(widget, DefaultTransition, false);
-        }
+        public void NavigateBack() {
+            if (_underlying_widgets.Count == 0)
+                return;
 
-        public void NavigateBack()
-        {
-            if (underlying_widgets.Count == 0) return;
-            parent.DisplayWidget.AnimatedReplace(underlying_widgets.Pop(), DefaultBackTransition);
+            _parent.DisplayWidget.AnimatedReplace(_underlying_widgets.Pop(), DefaultBackTransition);
         }
     }
 }

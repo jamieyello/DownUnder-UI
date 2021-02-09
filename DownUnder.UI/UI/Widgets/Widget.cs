@@ -797,7 +797,7 @@ namespace DownUnder.UI.UI.Widgets
         {
             _update_flags.Reset();
 
-            RectangleF visible_area = VisibleArea;
+            var visible_area = VisibleArea;
 
             if (!UpdateData.UIInputState.PrimaryClick)
             {
@@ -1294,7 +1294,7 @@ namespace DownUnder.UI.UI.Widgets
         public event EventHandler<WidgetArgs> OnAddChildAny;
         /// <summary> Invoked when a child <see cref="Widget"/> is removed from this. (See removed <see cref="Widget"/> in <see cref="LastRemovedWidget"/>.) </summary>
         public event EventHandler OnRemoveChild;
-        public event EventHandler<WidgetArgs> OnRemoveChildAny;
+        public event EventHandler<WidgetArgs> OnRemoveChildAny = (s, e) => { };
         /// <summary> Invoked when a child is added or removed from this <see cref="Widget"/>. </summary>
         public event EventHandler OnListChange;
         /// <summary> Invoked when this <see cref="Widget"/> is disposed. </summary>
