@@ -302,10 +302,10 @@ namespace DownUnder.UI.UI.Widgets
             get => _minimum_size_backing;
             set {
                 if (value.X < 1) 
-                    throw new Exception("Minimum area width must be at least 1.");
+                    throw new Exception($"{nameof(MinimumSize)} width must be at least 1.");
 
                 if (value.Y < 1) 
-                    throw new Exception("Minimum area height must be at least 1.");
+                    throw new Exception($"{nameof(MinimumSize)} height must be at least 1.");
 
                 if (value == _minimum_size_backing) 
                     return;
@@ -333,6 +333,12 @@ namespace DownUnder.UI.UI.Widgets
             set {
                 if (value == _maximum_size_backing) 
                     return;
+
+                if (value.X > MAXIMUM_WIDGET_SIZE)
+                    throw new Exception($"{nameof(MaximumSize)} width cannot exceed {nameof(MAXIMUM_WIDGET_SIZE)}. ({MAXIMUM_WIDGET_SIZE})");
+
+                if (value.Y > MAXIMUM_WIDGET_SIZE)
+                    throw new Exception($"{nameof(MaximumSize)} height cannot exceed {nameof(MAXIMUM_WIDGET_SIZE)}. ({MAXIMUM_WIDGET_SIZE})");
 
                 Point2 _previous_maximum_size = _maximum_size_backing;
                 _maximum_size_backing = value;
@@ -740,7 +746,6 @@ namespace DownUnder.UI.UI.Widgets
             _allowed_resizing_directions_backing = Directions2D.All;
 
             Size = new Point2(10, 10);
-            //Theme = BaseColorScheme.Dark;
             Name = GetType().Name;
             BehaviorTags = new AutoDictionary<SerializableType, AutoDictionary<string, string>>();
             Behaviors = new BehaviorManager(this);
