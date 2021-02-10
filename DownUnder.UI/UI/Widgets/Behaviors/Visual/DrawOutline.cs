@@ -2,6 +2,7 @@
 using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
     public sealed class DrawOutline : WidgetBehavior {
@@ -27,7 +28,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
                 return;
 
             DrawingTools.DrawBorder(
-                Parent._white_dot,
+                DWindow.WhiteDotTexture,
                 args.SpriteBatch,
                 args.DrawingArea.ToRectangle(),
                 OutlineThickness,
