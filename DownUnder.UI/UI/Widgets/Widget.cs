@@ -26,12 +26,8 @@ using MonoGame.Extended;
 
 // tip: Always remember to update Clone.
 
-// DrawingArea doesn't have consistent size between drawing modes. (?)
-// SpacedList is uneven.
 // Improve DrawingExtensions._DrawCircleQuarter by making accuracy exponential
 // Convert RectangleF.DistanceFrom to float
-// Add ICloneable and INeedsParent to BehaviorCollection
-// IsHoveredOver is antiquated
 
 namespace DownUnder.UI.UI.Widgets
 {
@@ -101,19 +97,19 @@ namespace DownUnder.UI.UI.Widgets
         bool _previous_is_hovered_over_backing;
         [DataMember] Widget _parent_widget_backing;
         DWindow _parent_window_backing;
-        bool _allow_highlight_backing;
+        [DataMember] bool _allow_highlight_backing;
         [DataMember] Directions2D _allowed_resizing_directions_backing;
-        bool _allow_delete_backing;
-        bool _allow_copy_backing;
-        bool _allow_cut_backing;
+        [DataMember] bool _allow_delete_backing;
+        [DataMember] bool _allow_copy_backing;
+        [DataMember] bool _allow_cut_backing;
         [DataMember] UserResizePolicyType _user_resize_policy_backing = UserResizePolicyType.disallow;
         [DataMember] UserResizePolicyType _user_reposition_policy_backing = UserResizePolicyType.disallow;
-        bool _accepts_drops_backing;
+        [DataMember] bool _accepts_drops_backing;
         List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
         [DataMember] BehaviorManager _behaviors_backing;
         ActionManager _actions_backing;
-        bool _fit_to_content_area_backing;
-        bool _active_backing;
+        [DataMember] bool _fit_to_content_area_backing;
+        [DataMember] bool _active_backing;
 
         public enum DrawingModeType
         {
@@ -368,7 +364,6 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can delete this <see cref="Widget"/> with the defined <see cref="UIInputState.Delete"/> or <see cref="UIInputState.BackSpace"/> (when highlighted). </summary>
-        [DataMember]
         public bool AllowDelete
         {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowDelete : _allow_delete_backing;
@@ -376,7 +371,6 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can copy this <see cref="Widget"/> with the defined <see cref="UIInputState.Copy"/> (when highlighted). </summary>
-        [DataMember]
         public bool AllowCopy
         {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCopy : _allow_copy_backing;
@@ -384,7 +378,6 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> When enabled (along with <see cref="AllowHighlight"/>), the user can cut this <see cref="Widget"/> with the defined <see cref="UIInputState.Cut"/> (when highlighted). </summary>
-        [DataMember]
         public bool AllowCut
         {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AllowCut : _allow_cut_backing;
@@ -393,7 +386,6 @@ namespace DownUnder.UI.UI.Widgets
 
         /// <summary> Whether or not this <see cref="Widget"/> will accept drag and drops. </summary>
         // If developer mode is enabled, this implementation will forwarded to DeveloperObjects.
-        [DataMember]
         public bool AcceptsDrops
         {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptsDrops : _accepts_drops_backing;
@@ -401,7 +393,6 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> The <see cref="Type"/>s of <see cref="object"/>s this <see cref="Widget"/> will accept in a drag and drop. </summary>
-        [DataMember]
         public List<SerializableType> AcceptedDropTypes
         {
             get => DesignerObjects.IsEditModeEnabled ? DesignerObjects.AcceptedDropTypes : _accepted_drop_types_backing;
@@ -409,7 +400,6 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> When set to true this <see cref="Widget"/> will try to resize itself to contain all content. </summary>
-        [DataMember]
         public bool FitToContentArea
         {
             get => _fit_to_content_area_backing;
