@@ -95,6 +95,7 @@ namespace DownUnder.UI.UI.Widgets
         [DataMember] RectangleF _area_backing;
         [DataMember] float _double_click_timing_backing;
         [DataMember] Point2 _minimum_size_backing;
+        [DataMember] Point2 _maximum_size_backing;
         [DataMember] WidgetList _children_backing;
         SpriteFont _sprite_font_backing;
         GraphicsDevice _graphics_backing;
@@ -262,8 +263,10 @@ namespace DownUnder.UI.UI.Widgets
             get => _area_backing;
             set
             {
+                value = value.WithMaximumSize(MaximumSize).WithMinimumSize(MinimumSize);
                 if (IsFixedWidth) value.Width = _area_backing.Width;
                 if (IsFixedHeight) value.Height = _area_backing.Height;
+                
                 RectangleF previous_area = _area_backing;
                 _area_backing = value.WithMinimumSize(MinimumSize);
                 if (_area_backing == previous_area) return;
@@ -297,24 +300,58 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         /// <summary> Minimum size allowed when setting this <see cref="Widget"/>'s area. (in terms of pixels on a 1080p monitor) </summary>
-        public Point2 MinimumSize
-        {
+        public Point2 MinimumSize {
             get => _minimum_size_backing;
-            set
-            {
-                if (value.X < 1) throw new Exception("Minimum area width must be at least 1.");
-                if (value.Y < 1) throw new Exception("Minimum area height must be at least 1.");
-                if (value == _minimum_size_backing) return;
+            set {
+                if (value.X < 1) 
+                    throw new Exception("Minimum area width must be at least 1.");
+
+                if (value.Y < 1) 
+                    throw new Exception("Minimum area height must be at least 1.");
+
+                if (value == _minimum_size_backing) 
+                    return;
+
                 Point2 _previous_minimum_size = _minimum_size_backing;
                 _minimum_size_backing = value;
 
                 Point2SetOverrideArgs args = new Point2SetOverrideArgs(_previous_minimum_size);
                 OnMinimumSizeSetPriority?.Invoke(this, args);
-                if (args.Override != null) _minimum_size_backing = args.Override.Value;
+                if (args.Override != null)
+                    _minimum_size_backing = args.Override.Value;
 
-                if (_minimum_size_backing == _previous_minimum_size) return;
-                if (Area.WithMinimumSize(value) != Area) Area = Area.WithMinimumSize(value);
-                if (_minimum_size_backing != _previous_minimum_size) OnMinimumSizeSet?.Invoke(this, new Point2SetArgs(_previous_minimum_size));
+                if (_minimum_size_backing == _previous_minimum_size) 
+                    return;
+
+                if (Area.WithMinimumSize(value) != Area) 
+                    Area = Area.WithMinimumSize(value);
+
+                OnMinimumSizeSet?.Invoke(this, new Point2SetArgs(_previous_minimum_size));
+            }
+        }
+
+        public Point2 MaximumSize {
+            get => _maximum_size_backing;
+            set {
+                if (value == _maximum_size_backing) 
+                    return;
+
+                Point2 _previous_maximum_size = _maximum_size_backing;
+                _maximum_size_backing = value;
+
+                Point2SetOverrideArgs args = new Point2SetOverrideArgs(_previous_maximum_size);
+                OnMaximumSizeSetPriority?.Invoke(this, args);
+
+                if (args.Override != null) 
+                    _maximum_size_backing = args.Override.Value;
+
+                if (_maximum_size_backing == _previous_maximum_size) 
+                    return;
+
+                if (Area.WithMaximumSize(value) != Area) 
+                    Area = Area.WithMaximumSize(value);
+
+                OnMaximumSizeSet?.Invoke(this, new Point2SetArgs(_previous_maximum_size));
             }
         }
 
@@ -701,6 +738,7 @@ namespace DownUnder.UI.UI.Widgets
             _area_backing = new RectangleF();
             _double_click_timing_backing = 0.5f;
             _minimum_size_backing = new Point2(15f, 15f);
+            _maximum_size_backing = new Point2(MAXIMUM_WIDGET_SIZE, MAXIMUM_WIDGET_SIZE);
             _allowed_resizing_directions_backing = Directions2D.All;
 
             Size = new Point2(10, 10);
@@ -1301,8 +1339,12 @@ namespace DownUnder.UI.UI.Widgets
         public event EventHandler OnDispose;
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MinimumSize"/> is set to something new. </summary>
         public event EventHandler<Point2SetArgs> OnMinimumSizeSet;
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MaximumSize"/> is set to something new. </summary>
+        public event EventHandler<Point2SetArgs> OnMaximumSizeSet;
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MinimumSize"/> is set to something new. Use this with <see cref="Point2SetOverrideArgs"/> to override the set size. </summary>
         public event EventHandler<Point2SetOverrideArgs> OnMinimumSizeSetPriority;
+        /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="MaximumSize"/> is set to something new. Use this with <see cref="Point2SetOverrideArgs"/> to override the set size. </summary>
+        public event EventHandler<Point2SetOverrideArgs> OnMaximumSizeSetPriority;
         /// <summary> Invoked after this <see cref="Widget"/> is deleted by <see cref="Delete"/>. </summary>
         public event EventHandler OnDelete;
         /// <summary> Invoked when this <see cref="Widget"/>'s <see cref="Widget.ParentDWindow"/> value is set. (to a non-null value) </summary>
