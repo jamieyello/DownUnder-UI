@@ -7,6 +7,7 @@ using DownUnder.UI.UI.DataTypes;
 using DownUnder.UI.UI.Widgets;
 using DownUnder.UI.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
 using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
@@ -19,44 +20,40 @@ using static Microsoft.Xna.Framework.Input.MouseCursor;
 namespace DownUnder.UI.UI {
     /// <summary> The class used to represent this Window. Inherits <see cref="Game"/>. </summary>
     public class DWindow : IParent, IDisposable {
+        /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
+        public delegate void WindowCreate(Type window_type, DWindow parent = null);
+
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         const int _WAIT_TIME = 5;
-
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
         const int _WAIT_TIME_WARNING_THRESOLD = 100;
 
         public readonly Game ParentGame;
-        //public GraphicsDevice GraphicsDevice;
-
-        /// <summary> This <see cref="Delegate"/> is meant to grant the main thread's method to spawn new <see cref="DWindow"/>s. </summary>
-        public delegate void WindowCreate(Type window_type, DWindow parent = null);
+        public static IOSInterface OS { get; private set; }
 
         /// <summary> The <see cref="GraphicsDeviceManager"/> used by this <see cref="DWindow"/>. Is initiated on creation. </summary>
         public readonly GraphicsDeviceManager GraphicsManager;
-
-        /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
-        int _spawned_window_is_active = -1;
+        /// <summary> Used by some drawing code. </summary>
+        public static Texture2D WhiteDotTexture { get; private set; }
+        readonly RenderTarget2D[] _back_buffer = new RenderTarget2D[2];
+        int _current_back_buffer;
 
         /// <summary> Used to keep track of this <see cref="DWindow"/>'s thread. </summary>
-        int _thread_id;
+        readonly int _thread_id;
         readonly Dictionary<int, SetGetEvent<RectangleF>> _area_set_events = new Dictionary<int, SetGetEvent<RectangleF>>();
-
         /// <summary> While true, event queues should not be modified. </summary>
         bool _event_queue_is_processing;
-
         /// <summary> Set to true once the <see cref="DWindow"/> has updated once. </summary>
         bool _first_update;
+        /// <summary> Used to communicate with a spawned window in CreateWindow(). Set to 0 when child window is spawned, 1 after it activates, and -1 once the operation is completed. </summary>
+        int _spawned_window_is_active = -1;
 
         Widget _widget_backing;
         Point2 _minimum_size_backing;
         bool _is_user_resizing_backing;
 
-        readonly RenderTarget2D[] _back_buffer = new RenderTarget2D[2];
-        int _current_back_buffer;
-
-        public static IOSInterface OS;
-
         #region Properties
+
         #region Auto Properties
 
         /// <summary> A reference to each of this window's children. </summary>
@@ -259,6 +256,11 @@ namespace DownUnder.UI.UI {
             IOSInterface os_interface
         ) {
             GraphicsManager = graphics;
+            if (WhiteDotTexture == null) {
+                WhiteDotTexture = new Texture2D(graphics.GraphicsDevice, 1, 1);
+                WhiteDotTexture.SetData(new[] { Color.White });
+            }
+
             _thread_id = Thread.CurrentThread.ManagedThreadId;
             ParentGame = parent;
             Navigation = new UINavigator(this);
@@ -274,14 +276,10 @@ namespace DownUnder.UI.UI {
             _back_buffer[0] = new RenderTarget2D(graphics.GraphicsDevice, (int)Area.Width, (int)Area.Height);
             _back_buffer[1] = new RenderTarget2D(graphics.GraphicsDevice, (int)Area.Width, (int)Area.Height);
 
-            // unneeded possibly
-            OnFirstUpdate += (sender, args) => _thread_id = Thread.CurrentThread.ManagedThreadId;
-
             ParentGame.Window.ClientSizeChanged += ResetBuffers;
             //ParentGame.Window.TextInput += ProcessKeys;
             ParentGame.Exiting += ExitAll;
 
-            //GraphicsManager = ParentGame.Components.;
             ParentGame.Window.AllowUserResizing = true;
             ParentGame.IsMouseVisible = true;
 

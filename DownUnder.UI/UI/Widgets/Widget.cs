@@ -44,8 +44,6 @@ namespace DownUnder.UI.UI.Widgets
 
         #region Fields/Delegates/Enums
 
-        /// <summary> Used by some drawing code. </summary>
-        public Texture2D _white_dot;
         /// <summary> The render target this Widget uses to draw to. </summary>
         RenderTarget2D _render_target;
         SpriteBatch _local_sprite_batch;
@@ -79,8 +77,8 @@ namespace DownUnder.UI.UI.Widgets
         /// <summary> Used to time long-hover events. </summary>
         WidgetHoverTimer _long_hover_timer;
 
-        /// <summary> The maximum size of a widget. (Every Widget uses a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
-        public static int MAXIMUM_WIDGET_SIZE = 2048;
+        /// <summary> The maximum size of a widget. (Every Widget may use a RenderTarget2D to render its contents to, this is the maximum resolution imposed by that.) </summary>
+        public const int MAXIMUM_WIDGET_SIZE = 2048;
         /// <summary> Interval (in milliseconds) the program will wait before checking to see if a seperate process is completed. </summary>
         const int _WAIT_TIME = 5;
         /// <summary> How long (in milliseconds) the program will wait for a seperate process before outputting hanging warnings. </summary>
@@ -784,7 +782,6 @@ namespace DownUnder.UI.UI.Widgets
         void Dispose(bool disposing)
         {
             OnDispose?.Invoke(this, EventArgs.Empty);
-            _white_dot?.Dispose();
             _render_target?.Dispose();
             _local_sprite_batch?.Dispose();
             foreach (Widget child in Children) child.Dispose(true);
@@ -1209,7 +1206,6 @@ namespace DownUnder.UI.UI.Widgets
             if (GraphicsDevice == null) throw new Exception($"GraphicsDevice cannot be null.");
 
             _local_sprite_batch = new SpriteBatch(GraphicsDevice);
-            _white_dot = DrawingTools.WhiteDot(GraphicsDevice);
             IsGraphicsInitialized = true;
             OnGraphicsInitialized?.Invoke(this, EventArgs.Empty);
             UpdateRenderTargetSize(Size);

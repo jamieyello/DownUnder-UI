@@ -13,8 +13,6 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
     public sealed class ScrollBar : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.SCROLL_FUNCTION };
 
-        Texture2D _white_dot;
-
         ChangingValue<float> X { get; } = new ChangingValue<float>(0f);
         ChangingValue<float> Y { get; } = new ChangingValue<float>(0f);
         readonly ChangingValue<float> SideBarWidth = new ChangingValue<float>();
@@ -83,27 +81,21 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
         protected override void ConnectEvents() {
             Parent.OnUpdate += Update;
             Parent.OnDrawOverlay += Draw;
-            if (Parent.IsGraphicsInitialized) InitializeGraphics(this, EventArgs.Empty);
-            else Parent.OnGraphicsInitialized += InitializeGraphics;
         }
 
         protected override void DisconnectEvents() {
             Parent.OnUpdate -= Update;
             Parent.OnDrawOverlay -= Draw;
-            Parent.OnGraphicsInitialized -= InitializeGraphics;
         }
 
-        void InitializeGraphics(object sender, EventArgs args) =>
-            _white_dot = DrawingTools.Dot(Parent.GraphicsDevice, Color.White);
-
         void Draw(object sender, EventArgs args) {
-            Parent.SpriteBatch.Draw(_white_dot, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
-            Parent.SpriteBatch.Draw(_white_dot, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
+            Parent.SpriteBatch.Draw(DWindow.WhiteDotTexture, _outer_side_bar_area.ToRectangle(), SideOuterBarPalette.CurrentColor);
+            Parent.SpriteBatch.Draw(DWindow.WhiteDotTexture, _inner_side_bar_area.ToRectangle(), SideInnerBarPalette.CurrentColor);
 
-            Parent.SpriteBatch.Draw(_white_dot, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
-            Parent.SpriteBatch.Draw(_white_dot, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
+            Parent.SpriteBatch.Draw(DWindow.WhiteDotTexture, _outer_bar_bottom_area.ToRectangle(), BottomOuterBarPalette.CurrentColor);
+            Parent.SpriteBatch.Draw(DWindow.WhiteDotTexture, _inner_bottom_bar_area.ToRectangle(), BottomInnerBarPalette.CurrentColor);
 
-            if (_SideVisible || _BottomVisible) Parent.SpriteBatch.Draw(_white_dot, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
+            if (_SideVisible || _BottomVisible) Parent.SpriteBatch.Draw(DWindow.WhiteDotTexture, _bottom_right_square_area.ToRectangle(), BottomRightSquarePalette.CurrentColor);
         }
 
         void Update(object sender, EventArgs args) {
