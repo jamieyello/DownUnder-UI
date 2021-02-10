@@ -136,7 +136,7 @@ namespace DownUnder.UI.Editor.Widgets
             });
             add_widget_button.OnClick += (obj, args) => {
                 Widget dock_widget = DockWidget();
-                dock_widget.Position = spaced_list[spaced_list.Count - 1].Position;
+                dock_widget.Position = spaced_list[^1].Position;
                 spaced_list.Insert(spaced_list.Count - 1, dock_widget);
             };
 

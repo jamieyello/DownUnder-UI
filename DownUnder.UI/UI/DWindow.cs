@@ -385,7 +385,7 @@ namespace DownUnder.UI.UI {
             } while (_spawned_window_is_active != 1);
             Console.WriteLine($"{GetType().Name}: Waiting done");
 
-            return Children[Children.Count - 1];
+            return Children[^1];
         }
 
         public void LoadDWindow() {

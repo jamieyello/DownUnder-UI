@@ -127,7 +127,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
                 result.Behaviors.Add(new DragOffOutline());
             }
 
-            if (this is IEditorDisplaySubBehaviors b_this) {
+            if (this is IEditorDisplaySubBehaviors) {
                 result.Behaviors.Add(new TriggerWidgetAction(
                     nameof(Widget.OnDoubleClick),
                     new AddMainWidget {

@@ -8,7 +8,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
     [DataContract]
     public sealed class GroupBehaviorManager {
         [DataMember] GroupBehaviorAcceptancePolicy _common_behavior_rules_backing = new GroupBehaviorAcceptancePolicy();
-        [DataMember] List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
+        [DataMember] readonly List<GroupBehaviorPolicy> _behavior_policies = new List<GroupBehaviorPolicy>();
 
         [DataMember] Widget Parent { get; set; }
 
@@ -34,18 +34,6 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
                 _policy.Behavior.GetType() == policy.Behavior.GetType()
                 && _policy.NecessaryVisualRole == policy.NecessaryVisualRole
             );
-
-        //public void AddPolicy(IEnumerable<GroupBehaviorPolicy> policies)
-        //{
-        //    foreach (GroupBehaviorPolicy policy in policies) AddPolicy(policy);
-        //}
-
-        //public void AddPolicy(GroupBehaviorPolicy policy)
-        //{
-        //    //if (GetMatchingPolicy(policy) != null) return;
-        //    //_behavior_policies.Add(policy);
-        //    ImplementPolicy(policy);
-        //}
 
         public void RemovePolicy(
             IEnumerable<GroupBehaviorPolicy> policies,

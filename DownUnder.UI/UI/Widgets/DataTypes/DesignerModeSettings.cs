@@ -9,40 +9,31 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>
     public sealed class DesignerModeSettings {
         bool _is_developer_mode_enabled_backing;
-        Widget _parent_backing;
+        readonly Widget _parent;
 
-        public DesignerModeSettings() {
-            AcceptsDrops = true;
+        public DesignerModeSettings(Widget parent) {
+            if (parent is not { })
+                throw new Exception($"{nameof(DesignerModeSettings)} parent cannot be null.");
+
+            _parent = parent;
+
+            _parent.OnAddChild += (s, e) => {
+                if (IsEditModeEnabled)
+                    _parent.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
+            };
+
             AcceptedDropTypes.Add(typeof(Widget));
             AcceptedDropTypes.Add(typeof(WidgetBehavior));
         }
 
         public float AddWidgetSpacing { get; } = 8f;
 
-        public Widget Parent {
-            get => _parent_backing;
-            set {
-                if (_parent_backing == value)
-                    return;
-
-                if (_parent_backing is { })
-                    throw new Exception("DeveloperObjects cannot be reused.");
-
-                _parent_backing = value;
-
-                _parent_backing.OnAddChild += (s, e) => {
-                    if (IsEditModeEnabled)
-                        _parent_backing.LastAddedWidget.DesignerObjects.IsEditModeEnabled = true;
-                };
-            }
-        }
-
         public bool IsEditModeEnabled {
             get => _is_developer_mode_enabled_backing;
             set {
                 _is_developer_mode_enabled_backing = value;
 
-                foreach (var child in Parent.Children)
+                foreach (var child in _parent)
                     child.DesignerObjects.IsEditModeEnabled = value;
             }
         }
@@ -57,17 +48,17 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
 
         #region IAcceptsDrops Implementation
 
-        public bool AcceptsDrops { get; }
+        public bool AcceptsDrops { get; } = true;
         public List<SerializableType> AcceptedDropTypes { get; } = new List<SerializableType>();
 
         public void HandleDrop(object drop) {
             if (drop is Widget w_drop) {
                 w_drop.Area = GetAddWidgetArea(w_drop);
-                Parent.Add(w_drop);
+                _parent.Add(w_drop);
             }
 
             if (drop is WidgetBehavior b_drop)
-                Parent.Behaviors.TryAdd(b_drop);
+                _parent.Behaviors.TryAdd(b_drop);
         }
 
         /// <summary> Get the area to be set of a <see cref="Widget"/> being dropped onto this <see cref="Widget"/> at a certain position. </summary>
@@ -77,14 +68,14 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
             Widget dragging_widget,
             Point2? center = null
         ) {
-            center ??= Parent.CursorPosition;
+            center ??= _parent.CursorPosition;
 
             return
                 dragging_widget
                .Area
                .SizeOnly()
                .WithCenter(center.Value)
-               .Rounded(Parent.DesignerObjects.AddWidgetSpacing);
+               .Rounded(_parent.DesignerObjects.AddWidgetSpacing);
         }
 
         #endregion

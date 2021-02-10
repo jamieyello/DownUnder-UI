@@ -766,8 +766,7 @@ namespace DownUnder.UI.UI.Widgets
             Children = new WidgetList(this);
             Actions = new ActionManager(this);
             UpdateData = new UpdateData();
-            DesignerObjects = new DesignerModeSettings();
-            DesignerObjects.Parent = this;
+            DesignerObjects = new DesignerModeSettings(this);
             OnAddChild += (s, a) =>
             {
                 LastAddedWidget.EmbedIn(this);
@@ -1511,7 +1510,7 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         public Widget WithAddedBehavior<T>(T behavior, out T added_behavior) {
-            if (!(behavior is WidgetBehavior behavior_))
+            if (behavior is not WidgetBehavior behavior_)
                 throw new Exception($"Given item is not a {nameof(WidgetBehavior)}.");
 
             Behaviors.Add(behavior_);
@@ -1530,7 +1529,7 @@ namespace DownUnder.UI.UI.Widgets
         }
 
         public Widget WithAddedAction<T>(T action, out T added_action) {
-            if (!(action is WidgetAction action_)) throw new Exception($"Given item is not a {nameof(WidgetAction)}.");
+            if (action is not WidgetAction action_) throw new Exception($"Given item is not a {nameof(WidgetAction)}.");
             Actions.Add(action_);
             added_action = action;
             return this;
@@ -1684,28 +1683,30 @@ namespace DownUnder.UI.UI.Widgets
 
         #region ICloneable Implementation
 
-        public object Clone() {
+        object ICloneable.Clone() => 
+            Clone();
+
+        public Widget Clone() {
             if (!IsCloningSupported)
                 throw new Exception($"Cloning was flagged as unsupported with this {nameof(Widget)}. ({nameof(IsCloningSupported)} == false)");
 
             var c = new Widget();
             for (var i = 0; i < Children.Count; i++)
-                c.Children.Add((Widget)Children[i].Clone());
+                c.Children.Add(Children[i].Clone());
 
             c.FitToContentArea = FitToContentArea;
-
             c.Name = Name;
-            c.VisualSettings = (GeneralVisualSettings)VisualSettings.Clone();
-
+            c.VisualSettings = VisualSettings.Clone();
             c.EnterConfirms = EnterConfirms;
             c.MinimumSize = MinimumSize;
+            c.MaximumSize = MaximumSize;
             c.SnappingPolicy = SnappingPolicy;
             c.DoubleClickTiming = DoubleClickTiming;
             c.Spacing = Spacing;
             c.Area = Area;
             c.IsFixedWidth = IsFixedWidth;
             c.IsFixedHeight = IsFixedHeight;
-            c.VisualSettings = (GeneralVisualSettings)VisualSettings.Clone();
+            c.VisualSettings = VisualSettings.Clone();
             c.DrawingMode = DrawingMode;
             c.debug_output = debug_output;
             c.PassthroughMouse = PassthroughMouse;
