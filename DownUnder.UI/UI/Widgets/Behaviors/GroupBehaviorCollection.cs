@@ -36,7 +36,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors {
             };
 
         static GroupBehaviorCollection PlasmaOverrides { get {
-            var glow = MouseGlow.SubtleGray;
+            var glow = MouseGlow.SubtleGray();
             glow.ActivationPolicy = MouseGlow.MouseGlowActivationPolicy.hovered_over;
 
             var blue = ShadingBehavior.SubtleBlue;

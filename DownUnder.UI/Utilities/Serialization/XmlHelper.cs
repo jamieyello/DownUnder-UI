@@ -18,6 +18,7 @@ namespace DownUnder.UI.Utilities.Serialization
         public static void ToXmlFile(Object obj, string filePath, IEnumerable<Type> known_types = null) {
             var xs = new DataContractSerializer(obj.GetType(), Settings(known_types));
             using FileStream writer = new FileStream(filePath, FileMode.Create);
+
             xs.WriteObject(writer, obj);
         }
 
@@ -27,8 +28,7 @@ namespace DownUnder.UI.Utilities.Serialization
             using var fs = new FileStream(fileName, FileMode.Open);
             using var reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
             
-            T result = (T)ser.ReadObject(reader, true);
-            return result;
+            return (T)ser.ReadObject(reader, true);
         }
 
         /// <summary> Serializes an object to an XML string. </summary>
@@ -40,8 +40,8 @@ namespace DownUnder.UI.Utilities.Serialization
 
             memStm.Seek(0, SeekOrigin.Begin);
             using var streamReader = new StreamReader(memStm);
-            string result = streamReader.ReadToEnd();
-            return result;
+
+            return streamReader.ReadToEnd();
         }
 
         /// <summary> Deserializes an object from an XML string. </summary>
@@ -50,8 +50,7 @@ namespace DownUnder.UI.Utilities.Serialization
             using var ms = new MemoryStream(Encoding.ASCII.GetBytes(xml));
             using var reader = XmlDictionaryReader.CreateTextReader(ms, new XmlDictionaryReaderQuotas());
 
-            T result = (T)ser.ReadObject(reader, true);
-            return result;
+            return (T)ser.ReadObject(reader, true);
         }
     }
 }

@@ -19,6 +19,9 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
         /// <summary> When set to true, the given action will be cloned. </summary>
         public bool CloneAction { get; set; } = true;
 
+        /// <summary> If will not trigger <see cref="Action"/> if <see cref="Widget.IsActive"/> is false. false by default. </summary>
+        public bool RespectActivation { get; set; } = false;
+
         public TriggerWidgetAction() {
         }
 
@@ -55,10 +58,12 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Functional {
 
             c.NameofEventHandler = NameofEventHandler;
             c.CloneAction = CloneAction;
+            c.RespectActivation = RespectActivation;
             return c;
         }
 
         public void AddAction(object sender, EventArgs args) {
+            if (RespectActivation && !Parent.IsActive) return;
             if (CloneAction)
                 Parent.Actions.Add((WidgetAction)Action.InitialClone());
             else

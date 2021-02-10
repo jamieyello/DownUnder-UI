@@ -101,7 +101,7 @@ namespace DownUnder.UI.UI.Widgets
         bool _previous_is_hovered_over_backing;
         [DataMember] Widget _parent_widget_backing;
         DWindow _parent_window_backing;
-        bool _allow_highlight_backing = false;
+        bool _allow_highlight_backing;
         [DataMember] Directions2D _allowed_resizing_directions_backing;
         bool _allow_delete_backing;
         bool _allow_copy_backing;
@@ -112,7 +112,8 @@ namespace DownUnder.UI.UI.Widgets
         List<SerializableType> _accepted_drop_types_backing = new List<SerializableType>();
         [DataMember] BehaviorManager _behaviors_backing;
         ActionManager _actions_backing;
-        bool _fit_to_content_area_backing = false;
+        bool _fit_to_content_area_backing;
+        bool _active_backing;
 
         public enum DrawingModeType
         {
@@ -416,6 +417,15 @@ namespace DownUnder.UI.UI.Widgets
             {
                 if (value && !_fit_to_content_area_backing && Children != null && Children.Count != 0) Size = ContentArea.Size;
                 _fit_to_content_area_backing = value;
+            }
+        }
+
+        public bool IsActive {
+            get => _active_backing;
+            set {
+                if (value == _active_backing) return;
+                if (value) OnReActivate?.Invoke(this, EventArgs.Empty);
+                if (!value) OnDeActivate?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -763,6 +773,7 @@ namespace DownUnder.UI.UI.Widgets
             _dragging_in = false;
             _dragging_off = false;
             _has_updated = false;
+            _active_backing = true;
 
             _post_update_flags = new WidgetPostUpdateFlags();
             _update_flags = new WidgetUpdateFlags();
@@ -1002,10 +1013,16 @@ namespace DownUnder.UI.UI.Widgets
             {
                 if (_update_flags.added_to_focused) AddToFocused();
                 if (_update_flags.set_as_focused) SetAsFocused();
-                if (_update_flags.clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
-                if (_update_flags.right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
-                if (_update_flags.double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
-                if (_update_flags.triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                if (IsActive) {
+                    if (_update_flags.clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags.right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags.double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
+                    if (_update_flags.triple_clicked) OnTripleClick?.Invoke(this, EventArgs.Empty);
+                }
+                else {
+                    if (_update_flags.clicked_on) OnClickPrivate?.Invoke(this, EventArgs.Empty);
+                }
+                
                 if (_update_flags.long_hover) OnLongHover?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -1367,6 +1384,13 @@ namespace DownUnder.UI.UI.Widgets
         public event EventHandler<WidgetBehaviorArgs> OnRemoveBehavior;
         /// <summary> Invoked when this <see cref="Widget"/> is gathering <see cref="DropDownEntry"/>s for the dropdown menu. (The right-click menu) </summary>
         public event EventHandler<GetDropDownEntriesArgs> OnGetDropDownEntries;
+        /// <summary> Invoked when this <see cref="Widget"/> is activated after being deactive. </summary>
+        public event EventHandler OnReActivate;
+        /// <summary> Invoked when this <see cref="Widget"/> is deactivated. </summary>
+        public event EventHandler OnDeActivate;
+
+        /// <summary> Invoked regardless if <see cref="IsActive"/>. </summary>
+        event EventHandler OnClickPrivate;
 
         /// <summary> Method that will get a list of dropdowns to display. Intended to be called by <see cref="WidgetBehavior"/>s that implement a visual drop down menu. </summary>
         public DropDownEntryList InvokeOnGetDropDownEntries()
@@ -1724,6 +1748,7 @@ namespace DownUnder.UI.UI.Widgets
             c._allow_delete_backing = _allow_delete_backing;
             c._allow_copy_backing = _allow_copy_backing;
             c._allow_cut_backing = _allow_cut_backing;
+            c._active_backing = _active_backing;
 
             foreach (Type type in _accepted_drop_types_backing)
                 c._accepted_drop_types_backing.Add(type);

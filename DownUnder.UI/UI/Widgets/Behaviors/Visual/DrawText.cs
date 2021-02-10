@@ -192,7 +192,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
                 Parent.WindowFont,
                 text,
                 origin.WithOffset(TextPosition).Floored(),
-                Parent.VisualSettings.TextColor
+                Parent.VisualSettings.TextColor.ShiftBrightness(Parent.IsActive ? 1f : 0.5f)
             );
     }
 }

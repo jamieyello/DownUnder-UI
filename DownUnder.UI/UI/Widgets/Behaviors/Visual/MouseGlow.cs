@@ -5,8 +5,10 @@ using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities.CommonNamespace;
 using DownUnder.UI.Utilities.Extensions;
 using static DownUnder.UI.UI.Widgets.Behaviors.Visual.MouseGlow.MouseGlowActivationPolicy;
+using System.Runtime.Serialization;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
+    [DataContract]
     public sealed class MouseGlow : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.COSMETIC_MID_PERFORMANCE };
         Texture2D _circle;
@@ -25,12 +27,14 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
             primary_hovered
         }
 
-        public Color Color = new Color(70, 70, 70, 255);
-        public int Diameter { get; set; } = 1024;
-        public InterpolationSettings ShineSpeed = InterpolationSettings.Faster;
-        public InterpolationSettings ShineOffSpeed = InterpolationSettings.Default;
-        public MouseGlowActivationPolicy ActivationPolicy = primary_hovered;
-        public bool ScaleWithSize = true;
+        [DataMember] public Color Color { get; set; } = new Color(70, 70, 70, 255);
+        [DataMember] public int Diameter { get; set; } = 1024;
+        [DataMember] public InterpolationSettings ShineSpeed { get; set; } = InterpolationSettings.Faster;
+        [DataMember] public InterpolationSettings ShineOffSpeed { get; set; } = InterpolationSettings.Default;
+        [DataMember] public MouseGlowActivationPolicy ActivationPolicy { get; set; } = primary_hovered;
+        [DataMember] public bool ScaleWithSize { get; set; } = true;
+        /// <summary> If true this will deactivate if <see cref="Widget.IsActive"/> is false. true by default. </summary>
+        [DataMember] public bool RespectActivation { get; set; } = true;
 
         protected override void Initialize() {
             if (Parent.ParentDWindow == null)
@@ -69,6 +73,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
                 ActivationPolicy == primary_hovered && Parent.IsPrimaryHovered
                 || ActivationPolicy == hovered_over && Parent.IsHoveredOver
                 || ActivationPolicy == always_active;
+            _follow &= Parent.IsActive || !RespectActivation;
 
             _draw_color.InterpolationSettings = _follow ? ShineSpeed : ShineOffSpeed;
 
@@ -99,9 +104,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
             );
         }
 
-        // TODO: this instantiates a new instance on every read; if that's what it's supposed to do it should be a method
-        // TODO: or if it's a reusable "constant" value, there should be one accessible instance
-        public static MouseGlow SubtleGray =>
+        public static MouseGlow SubtleGray() =>
             new MouseGlow {
                 Diameter = 6000,
                 Color = new Color(30, 30, 30, 30)
