@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 using static DownUnder.UI.UI.Widgets.Behaviors.Visual.MouseGlow.MouseGlowActivationPolicy;
 using System.Runtime.Serialization;
 

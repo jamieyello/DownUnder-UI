@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors.DataTypes;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
     public sealed class DrawEditableText : WidgetBehavior, ISubWidgetBehavior<DrawText> {

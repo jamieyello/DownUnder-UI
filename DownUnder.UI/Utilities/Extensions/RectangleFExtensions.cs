@@ -6,7 +6,7 @@ using MonoGame.Extended;
 using static DownUnder.UI.Utilities.CommonNamespace.Direction2D;
 using static DownUnder.UI.Utilities.CommonNamespace.DiagonalDirection2D;
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     public static class RectangleFExtensions {
         public static Rectangle ToRectangle(
             this RectangleF me,

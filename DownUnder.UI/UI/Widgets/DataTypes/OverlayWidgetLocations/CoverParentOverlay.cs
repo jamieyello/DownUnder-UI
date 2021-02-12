@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using MonoGame.Extended;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations {
     [DataContract]

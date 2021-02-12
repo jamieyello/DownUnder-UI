@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Serialization;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
     [DataContract]

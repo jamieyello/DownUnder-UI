@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     public static class EventInfoExtensions {
         public static MethodInfo GetAddMethodOrThrow(
             this EventInfo me

@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Utilities.Extensions;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations {
     public sealed class CenteredLocation : InnerWidgetLocation {

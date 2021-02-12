@@ -7,7 +7,6 @@ using DownUnder.UI.UI.Widgets.Actions;
 using DownUnder.UI.UI.Widgets.Actions.Functional;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes {

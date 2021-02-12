@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual;
 using DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Format.GridFormatBehaviors {
     public sealed class MemberViewer : WidgetBehavior, ISubWidgetBehavior<GridFormat> {

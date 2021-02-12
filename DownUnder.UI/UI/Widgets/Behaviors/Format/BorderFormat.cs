@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Format {

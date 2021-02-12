@@ -7,7 +7,6 @@ using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
     [DataContract]

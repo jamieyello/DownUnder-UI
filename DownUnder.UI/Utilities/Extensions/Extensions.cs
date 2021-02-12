@@ -11,7 +11,7 @@ using static System.Reflection.BindingFlags;
 // Todo: Duplicate RectanglF extensions for Rectangle
 // Todo: Turn some extensions to properties when C# 8 arrives
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     public static class Extensions {
         /// <summary> Returns true if this <see cref="Point2"/>'s X or Y field is larger than the given one's. </summary>
         public static bool IsLargerThan(this Point2 p, Point2 p2) =>

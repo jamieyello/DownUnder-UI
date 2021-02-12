@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
-using DownUnder.UI.Utilities.Extensions;
 using System.Runtime.Serialization;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {

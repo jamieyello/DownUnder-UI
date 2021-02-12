@@ -3,7 +3,6 @@ using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities;
 using Microsoft.Xna.Framework.Graphics;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
     public sealed class DrawOutline : WidgetBehavior {

@@ -4,7 +4,7 @@ using System.Linq;
 using DownUnder.UI.UI.Widgets;
 using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     // Things that were worth making but not worth putting in Widget
     public static class WidgetExtensions {
         /// <summary> Get this <see cref="Widget"/>'s <see cref="Widget.Children"/> ordered by depth. </summary>

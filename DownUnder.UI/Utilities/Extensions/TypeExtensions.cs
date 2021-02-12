@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     public static class TypeExtensions {
         public static Type GetEventHandlerTypeOrThrow(
             this Type me,

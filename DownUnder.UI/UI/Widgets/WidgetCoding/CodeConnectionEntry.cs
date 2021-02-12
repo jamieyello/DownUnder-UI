@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.WidgetCoding {
     public sealed class CodeConnectionEntry {

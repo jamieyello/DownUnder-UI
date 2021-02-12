@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using DownUnder.UI.Utilities.Extensions;
 using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings.VisualRoleType;
 

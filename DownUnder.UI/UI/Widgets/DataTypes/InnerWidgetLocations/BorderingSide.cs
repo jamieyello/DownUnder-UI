@@ -1,6 +1,5 @@
 ﻿using MonoGame.Extended;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes.InnerWidgetLocations {
     public sealed class BorderingSide : InnerWidgetLocation {

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace DownUnder.UI.Utilities.Extensions
+namespace DownUnder.UI
 {
     public static class ConversionExtensions
     {

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
     public sealed class DragOffOutline : WidgetBehavior {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MonoGame.Extended;
 using DownUnder.UI.UI.Widgets.Behaviors;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.DataTypes {
     /// <summary> When enabled the parent <see cref="Widget"/> will foward certain bahaviors to this object to force the parent <see cref="Widget"/> to be editable. </summary>

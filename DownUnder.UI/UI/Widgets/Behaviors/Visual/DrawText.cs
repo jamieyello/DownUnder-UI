@@ -4,7 +4,6 @@ using System.Text;
 using DownUnder.UI.UI.Widgets.Behaviors.Functional;
 using DownUnder.UI.UI.Widgets.CustomEventArgs;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {

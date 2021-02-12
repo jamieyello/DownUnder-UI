@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using DownUnder.UI.Utilities.Extensions;
 
 namespace DownUnder.UI.UI.Widgets.CustomEventArgs {
+    /// <summary> Provides some utilities to be used while drawing. </summary>
     public sealed class WidgetDrawArgs : EventArgs {
         readonly Widget _caller;
         public readonly SpriteBatch SpriteBatch;
@@ -41,20 +41,20 @@ namespace DownUnder.UI.UI.Widgets.CustomEventArgs {
         public void StartDraw() =>
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
 
-        public void RestartImmediate() {
+        public void RestartImmediate(Effect effect = null) {
             EndDraw();
-            StartImmediate();
+            StartImmediate(effect);
         }
 
-        public void StartImmediate() =>
-            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState);
+        public void StartImmediate(Effect effect = null) =>
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, _caller.ParentDWindow.RasterizerState, effect);
 
         public void EndDraw() =>
             SpriteBatch.End();
 
-        /// <summary> Return the render target to the default state without clearing graphics. </summary>
+        /// <summary> Complete the current <see cref="SpriteBatch.Draw()"/> and return the render target to the default state without clearing graphics. </summary>
         public void ResetRenderTarget() =>
-            GetBackgroundRender();
+            GetBackgroundRender(); // Calling this is the same performace-wise
 
         /// <summary> Complete the current <see cref="SpriteBatch.Draw()"/> and return the current buffer. </summary>
         public RenderTarget2D GetBackgroundRender() {

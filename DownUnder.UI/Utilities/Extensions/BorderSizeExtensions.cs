@@ -1,6 +1,6 @@
 ﻿using DownUnder.UI.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI.Utilities.Extensions {
+namespace DownUnder.UI {
     public static class BorderSizeExtensions {
         public static BorderSize SetTop(this BorderSize me, float value) => new BorderSize(value, me.Bottom, me.Left, me.Right);
         public static BorderSize SetBottom(this BorderSize me, float value) => new BorderSize(me.Top, value, me.Left, me.Right);

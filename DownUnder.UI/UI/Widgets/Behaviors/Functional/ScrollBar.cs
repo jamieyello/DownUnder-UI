@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
-using DownUnder.UI.Utilities.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
