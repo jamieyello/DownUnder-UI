@@ -5,16 +5,16 @@ using DownUnder.UI.Utilities.Serialization;
 
 namespace DownUnder.UI.UI.Widgets {
     public sealed class Internal {
-        const string DUWDL_PATH = "WidgetIndexer.duwdl";
+        const string _DUWDL_PATH = "WidgetIndexer.duwdl";
 
-        public static readonly ReadOnlyDictionary<string, string> WidgetXMLLocations = new ReadOnlyDictionary<string, string>(XmlHelper.FromXmlFile<Dictionary<string, string>>(DUWDL_PATH));
+        private static readonly ReadOnlyDictionary<string, string> widget_xml_locations = new ReadOnlyDictionary<string, string>(XmlHelper.FromXmlFile<Dictionary<string, string>>(_DUWDL_PATH));
 
-        public static bool TryGetWidgetXMLLocation(
+        public static bool TryGetWidgetXmlLocation(
             Type widget_code_type,
             out string value
         ) {
             var key = widget_code_type.Namespace + " " + widget_code_type.Name;
-            return WidgetXMLLocations.TryGetValue(key, out value);
+            return widget_xml_locations.TryGetValue(key, out value);
         }
     }
 }

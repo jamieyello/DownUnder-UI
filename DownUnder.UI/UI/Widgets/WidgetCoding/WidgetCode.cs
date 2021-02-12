@@ -16,7 +16,7 @@ namespace DownUnder.UI.UI.Widgets.WidgetCoding {
         Widget IWidget.Widget => Base;
 
         protected WidgetCode() {
-            if (!Internal.TryGetWidgetXMLLocation(GetType(), out var xml_path))
+            if (!Internal.TryGetWidgetXmlLocation(GetType(), out var xml_path))
                 throw new Exception($"No matching xml file was found for this {nameof(WidgetCode)}. Running the Widget Editor tool on the .duwd file can update references.");
 
             Base = Widget.LoadFromXML(xml_path);

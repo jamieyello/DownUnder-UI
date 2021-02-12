@@ -52,6 +52,11 @@ namespace DownUnder.UI.UI.Widgets.CustomEventArgs {
         public void EndDraw() =>
             SpriteBatch.End();
 
+        /// <summary> Return the render target to the default state without clearing graphics. </summary>
+        public void ResetRenderTarget() =>
+            GetBackgroundRender();
+
+        /// <summary> Complete the current <see cref="SpriteBatch.Draw()"/> and return the current buffer. </summary>
         public RenderTarget2D GetBackgroundRender() {
             RestartImmediate();
             var scissor_area = SpriteBatch.GraphicsDevice.ScissorRectangle;
