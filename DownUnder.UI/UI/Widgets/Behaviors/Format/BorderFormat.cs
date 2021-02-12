@@ -32,7 +32,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
                     value.SnappingPolicy = DiagonalDirections2D.None;
 
                 _center.Widget = value;
-                _Align();
+                Align();
                 value?.SendToBack();
             }
         }
@@ -44,7 +44,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
                     value.SnappingPolicy = DiagonalDirections2D.None;
 
                 _top_border.Widget = value;
-                _Align();
+                Align();
             }
         }
 
@@ -55,7 +55,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
                     value.SnappingPolicy = DiagonalDirections2D.None;
 
                 _bottom_border.Widget = value;
-                _Align();
+                Align();
             }
         }
 
@@ -66,7 +66,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
                     value.SnappingPolicy = DiagonalDirections2D.None;
 
                 _left_border.Widget = value;
-                _Align();
+                Align();
             }
         }
 
@@ -77,7 +77,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
                     value.SnappingPolicy = DiagonalDirections2D.None;
 
                 _right_border.Widget = value;
-                _Align();
+                Align();
             }
         }
 
@@ -119,7 +119,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
             _bottom_border.FindIn(Parent.Children);
             _left_border.FindIn(Parent.Children);
             _right_border.FindIn(Parent.Children);
-            _Align();
+            Align();
         }
 
         protected override void ConnectEvents() {
@@ -144,13 +144,13 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
             BorderOccupy.Left.Update(Parent.UpdateData.ElapsedSeconds);
             BorderOccupy.Right.Update(Parent.UpdateData.ElapsedSeconds);
 
-            if (align) _Align();
+            if (align) Align();
         }
 
         void Align(object sender, RectangleFSetArgs args) =>
-            _Align();
+            Align();
 
-        void _Align() {
+        void Align() {
             if (_disable_align)
                 return;
 

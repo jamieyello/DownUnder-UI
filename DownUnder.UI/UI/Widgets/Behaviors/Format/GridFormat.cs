@@ -277,7 +277,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
             var temp = _enable_internal_align;
             _enable_internal_align = false;
 
-            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing, Parent?.debug_output ?? false);
+            GridWriter.Align(Parent.Children, Width, Height, Parent.Area.SizeOnly(), Spacing);
             SetSizeToContent();
 
             _enable_internal_align = temp;

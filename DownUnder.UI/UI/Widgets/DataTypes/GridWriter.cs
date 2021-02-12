@@ -20,14 +20,13 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
             int width,
             int height,
             RectangleF new_area,
-            Point2? spacing = null,
-            bool debug = false
+            Point2? spacing = null
         ) {
             if (width == 0 || height == 0)
                 return;
 
             AutoSizeAllWidgets(widgets, width, height);
-            SetSize(widgets, width, height, new_area.Size, debug, spacing); // expand
+            SetSize(widgets, width, height, new_area.Size, spacing); // expand
             AutoSpaceAllWidgets(widgets, width, height, new_area.Position, spacing);
         }
 
@@ -123,8 +122,7 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
             int width,
             int height,
             Point2 new_size,
-            bool debug = false,
-            Point2? spacing = null // TODO: what does null spacing mean? is it different from zero spacing?
+            Point2? spacing = null // if left as null, no spacing between Widgets will be applied
         ) {
             if (spacing.HasValue)
                 new_size -= TotalSpacingOffset(width, height, spacing.Value);

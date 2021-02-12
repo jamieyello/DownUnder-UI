@@ -45,7 +45,7 @@ namespace DownUnder.UI.Utilities {
                 if (!has_parameterless)
                     throw new Exception($"Value not found, no create_default_value parameter was given, and {typeof(TValue).Name} does not have a parameterless constructor.");
 
-                if (!(Activator.CreateInstance(typeof(TValue)) is TValue new_entry))
+                if (Activator.CreateInstance(typeof(TValue)) is not TValue new_entry)
                     throw new Exception($"Failed to create an instance of type '{typeof(TValue).Name}'.");
 
                 _tags.Add(key, new_entry);

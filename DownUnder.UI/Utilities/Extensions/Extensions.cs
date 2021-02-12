@@ -156,7 +156,7 @@ namespace DownUnder.UI {
 
                     // If this is the line where the end trim is
                     if (line.Length + length_processed >= text.Length - rtrim) {
-                        area.Width -= sprite_font.MeasureString(text.Substring(text.Length - rtrim).Split(new char[] { '\n' })[0]).X;
+                        area.Width -= sprite_font.MeasureString(text[^rtrim..].Split(new char[] { '\n' })[0]).X;
                         result.Add(area);
                         break;
                     }

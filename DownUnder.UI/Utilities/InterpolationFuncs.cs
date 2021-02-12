@@ -5,8 +5,7 @@ using MonoGame.Extended;
 
 namespace DownUnder.UI.Utilities
 {
-    public enum InterpolationType
-    {
+    public enum InterpolationType {
         /// <summary> x = x </summary>
         linear,
         /// <summary> x = x * x </summary>
@@ -23,8 +22,7 @@ namespace DownUnder.UI.Utilities
         fake_sin
     }
 
-    public static class InterpolationFuncs
-    {
+    public static class InterpolationFuncs {
         private static readonly Func<object, object, float, object> color_lerp = (io, to, p) => Color.Lerp((Color)io, (Color)to, p);
         private static readonly Func<object, object, float, object> rectanglf_lerp = (io, to, p) => ((RectangleF)io).Lerp((RectangleF)to, p);
         private static readonly Func<object, object, float, object> point2_lerp = (io, to, p) => ((Point2)io).Lerp((Point2)to, p);
@@ -41,26 +39,24 @@ namespace DownUnder.UI.Utilities
         private static readonly Func<float, float> exponential6_plot = x => x * x * x * x * x * x;
         private static readonly Func<float, float> fake_sin_plot = x => (float)Math.Sin(x * Math.PI / 2);
 
-        static float FloatLerp(float initial_object, float target_object, float progress) => initial_object + target_object - initial_object * progress;
+        static float FloatLerp(float initial_object, float target_object, float progress) => 
+            initial_object + target_object - initial_object * progress;
 
-        public static Func<object, object, float, object> GetLerpFunc<T>()
-        {
-            switch (typeof(T))
-            {
-                case Type _ when typeof(T).IsAssignableFrom(typeof(Color)): return color_lerp;
-                case Type _ when typeof(T).IsPrimitive: return float_lerp;
-                case Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)): return rectanglf_lerp;
-                case Type _ when typeof(T).IsAssignableFrom(typeof(Point2)): return point2_lerp;
-                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)): return vector2_lerp;
-                case Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)): return vector3_lerp;
-                case Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)): return vector_position_color_lerp;
-                default: throw new Exception($"{nameof(T)} interpolation is not supported.");
-            }
-        }
+        public static Func<object, object, float, object> GetLerpFunc<T>() =>
+            (typeof(T)) switch {
+                Type _ when typeof(T).IsAssignableFrom(typeof(Color)) => color_lerp,
+                Type _ when typeof(T).IsPrimitive => float_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(RectangleF)) => rectanglf_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Point2)) => point2_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Vector2)) => vector2_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(Vector3)) => vector3_lerp,
+                Type _ when typeof(T).IsAssignableFrom(typeof(VertexPositionColor)) => vector_position_color_lerp,
+                _ => throw new Exception($"{nameof(T)} interpolation is not supported."),
+            };
+        
 
         public static Func<float, float> GetPlotFunc(InterpolationType type) =>
-            type switch
-            {
+            type switch {
                 InterpolationType.linear => linear_plot,
                 InterpolationType.squared => squared_plot,
                 InterpolationType.cubed => cubed_plot,
