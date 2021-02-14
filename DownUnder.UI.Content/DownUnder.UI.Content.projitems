@@ -9,9 +9,19 @@
     <Import_RootNamespace>DownUnder.UI.Content</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Content\" />
+    <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Blur.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Gradient.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Effects\Lens.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\SpriteFonts\Default Font.spritefont" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Blurred Circle 512.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Tiny Circle.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Window Rect.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Window X.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\DownUnder Native Content\Images\Window _.png" />
   </ItemGroup>
 </Project>
