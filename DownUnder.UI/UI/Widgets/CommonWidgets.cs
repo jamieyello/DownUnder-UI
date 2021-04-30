@@ -19,6 +19,8 @@ using static DownUnder.UI.UI.Widgets.Behaviors.DownUnderBehaviorIDs;
 
 namespace DownUnder.UI.UI.Widgets {
     public static class CommonWidgets {
+        public static Widget Button(string text, float x, float y) => Button(text, new RectangleF(x, y, 0f, 0f));
+
         public static Widget Button(
             string text,
             RectangleF? area = null

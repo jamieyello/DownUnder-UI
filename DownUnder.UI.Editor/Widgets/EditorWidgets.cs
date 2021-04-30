@@ -180,5 +180,10 @@ namespace DownUnder.UI.Editor.Widgets
 
             return project;
         }
+
+        public static Widget UIEditor2()
+        {
+
+        }
     }
 }

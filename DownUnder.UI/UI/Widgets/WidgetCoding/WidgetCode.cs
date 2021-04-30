@@ -14,14 +14,21 @@ namespace DownUnder.UI.UI.Widgets.WidgetCoding {
         List<CodeConnectionEntry> connections = new List<CodeConnectionEntry>();
 
         Widget IWidget.Widget => Base;
+        public UINavigator Navigation => Base.ParentDWindow.Navigation;
 
-        protected WidgetCode() {
-            if (!Internal.TryGetWidgetXmlLocation(GetType(), out var xml_path))
-                throw new Exception($"No matching xml file was found for this {nameof(WidgetCode)}. Running the Widget Editor tool on the .duwd file can update references.");
-
-            Base = Widget.LoadFromXML(xml_path);
+        protected WidgetCode(bool load_xml = true, bool connect = true) {
+            if (load_xml)
+            {
+                if (!Internal.TryGetWidgetXmlLocation(GetType(), out var xml_path)) throw new Exception($"No matching xml file was found for this {nameof(WidgetCode)}. Running the Widget Editor tool on the .duwd file can update references.");
+                Base = Widget.LoadFromXML(xml_path);
+            }
+            else
+            { 
+                Base = new Widget();
+                Base.VisualSettings.ChangeColorOnMouseOver = false;
+            }
             SetNonSerialized();
-            Connect(Base);
+            if (connect) Connect(Base);
         }
 
         [OnDeserialized]
@@ -33,7 +40,20 @@ namespace DownUnder.UI.UI.Widgets.WidgetCoding {
             connections = new List<CodeConnectionEntry>();
         }
 
-        public void Connect(Widget widget) {
+        public void Connect() => Connect(Base);
+        public void Disconnect() => Disconnect(Base);
+
+        void Connect(Widget widget)
+        {
+            foreach (var w in widget.AllContainedWidgets) ConnectSingle(w);
+        }
+
+        void Disconnect(Widget widget)
+        {
+            foreach (var w in widget.AllContainedWidgets) DisconnectSingle(w);
+        }
+
+        void ConnectSingle(Widget widget) {
             foreach (var match in GetMatches(widget)) {
                 var connection = new CodeConnectionEntry(this, widget, match.Key, match.Value);
                 connection.Connect();
@@ -41,7 +61,7 @@ namespace DownUnder.UI.UI.Widgets.WidgetCoding {
             }
         }
 
-        public void Disconnect(Widget widget) {
+        void DisconnectSingle(Widget widget) {
             var list = new List<CodeConnectionEntry>(from c in connections where c.Widget == widget select c);
             foreach (var connection in list) {
                 connection.Disconnect();

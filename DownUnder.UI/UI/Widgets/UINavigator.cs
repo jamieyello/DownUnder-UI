@@ -13,9 +13,9 @@ namespace DownUnder.UI.UI.Widgets {
         public UINavigator(DWindow parent) =>
             _parent = parent;
 
-        public void NavigateTo(Widget widget) {
+        public void NavigateTo(IWidget widget) {
             _underlying_widgets.Push(_parent.DisplayWidget);
-            _parent.DisplayWidget.AnimatedReplace(widget, DefaultTransition, false);
+            _parent.DisplayWidget.AnimatedReplace(widget.Widget, DefaultTransition, false);
         }
 
         public void NavigateBack() {

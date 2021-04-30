@@ -471,6 +471,7 @@ namespace DownUnder.UI.UI.Widgets
         public bool IsGraphicsInitialized { get; private set; } = false;
         /// <summary> The area of this <see cref="Widget"/> relative to its window. </summary>
         public RectangleF AreaInWindow => Area.WithPosition(PositionInWindow);
+        public UINavigator Navigation => ParentDWindow?.Navigation;
 
         /// <summary> The position of this <see cref="Widget"/> relative to its window. </summary>
         public Point2 PositionInWindow
@@ -1555,6 +1556,11 @@ namespace DownUnder.UI.UI.Widgets
 
         public Widget WithAddedAction(IEnumerable<WidgetAction> actions) {
             Actions.AddRange(actions);
+            return this;
+        }
+
+        public Widget WithName(string name) {
+            Name = name;
             return this;
         }
 
