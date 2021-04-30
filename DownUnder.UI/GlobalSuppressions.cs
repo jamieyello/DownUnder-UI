@@ -9,3 +9,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "This suggestion doesn't work", Scope = "member", Target = "~M:DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawBackground.Clone~System.Object")]
 [assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "This suggestion doesn't work", Scope = "member", Target = "~M:DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawOutline.Clone~System.Object")]
 [assembly: SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "It is used through its methods", Scope = "member", Target = "~F:DownUnder.UI.UI.Widgets.Behaviors.Visual.NeuronsObjects.NeuronsCircle._list")]
+[assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>", Scope = "member", Target = "~M:DownUnder.UI.UI.Widgets.Behaviors.Visual.BlurBackground.Clone~System.Object")]

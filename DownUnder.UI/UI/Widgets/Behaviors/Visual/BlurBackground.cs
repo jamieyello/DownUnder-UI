@@ -11,6 +11,8 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.COSMETIC_HIGH_PERFORMANCE };
 
         Effect effect;
+        /// <summary> If true then disable <see cref="Widget.VisualSettings"/> DrawBackground. true by default. </summary>
+        bool DisableDrawBackground = true;
 
         protected override void Initialize() {
             Parent.VisualSettings.DrawBackground = false;
@@ -28,8 +30,12 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual {
             Parent.OnParentWindowSet -= LoadEffect;
         }
 
-        public override object Clone() =>
-            new BlurBackground();
+        public override object Clone()
+        {
+            var c = new BlurBackground();
+            c.DisableDrawBackground = DisableDrawBackground;
+            return c;
+        }
 
         void LoadEffect(object sender, EventArgs args) =>
             effect ??= Parent.ParentDWindow.ParentGame.Content.Load<Effect>("DownUnder Native Content/Effects/Blur");

@@ -8,6 +8,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.FUNCTION };
 
         public DrawText BaseBehavior => Parent.Behaviors.Get<DrawText>();
+        internal bool UpdateTextInternal { get; set; } = true;
 
         MemberInfo _member;
 
@@ -25,15 +26,25 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
         }
 
         protected override void ConnectEvents() =>
-            Parent.OnUpdate += UpdateText;
+            Parent.OnUpdate += Update;
 
         protected override void DisconnectEvents() =>
-            Parent.OnUpdate -= UpdateText;
+            Parent.OnUpdate -= Update;
 
-        public override object Clone() =>
-            new RepresentMember(_represented_object, _name_of_member);
+        public override object Clone()
+        {
+            var c = new RepresentMember(_represented_object, _name_of_member);
+            c.UpdateTextInternal = UpdateTextInternal;
+            return c;
+        }
 
-        void UpdateText(object sender, EventArgs args) {
+
+        void Update(object sender, EventArgs args)
+        {
+            if (UpdateTextInternal) UpdateText();
+        }
+
+        void UpdateText() {
             if (_member.GetParameters().Length != 0) {
                 BaseBehavior.Text = "Collection...";
                 return;
@@ -41,9 +52,6 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawTextBehaviors {
 
             BaseBehavior.Text = _member.GetValue(_represented_object)?.ToString() ?? "null";
         }
-
-        public void UpdateText() =>
-            UpdateText(this, EventArgs.Empty);
 
         [OnDeserialized]
         void ThrowDeserializeError(StreamingContext context) =>
