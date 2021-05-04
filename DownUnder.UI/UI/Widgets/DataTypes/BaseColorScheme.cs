@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using DownUnder.UI;
+using DownUnder.UI.UI.Widgets.DataTypes;
 using Microsoft.Xna.Framework;
-using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
-using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings.VisualRoleType;
+using static DownUnder.GeneralVisualSettings;
+using static DownUnder.GeneralVisualSettings.VisualRoleType;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes {
+namespace DownUnder {
     [DataContract]
     public sealed class BaseColorScheme : ICloneable {
         /// <summary> A reference to the widget that owns this palette. </summary>
-        [DataMember] public ElementColors[] BackGroundColors { get; set; }
-        [DataMember] public ElementColors[] TextColors { get; set; }
-        [DataMember] public ElementColors[] OutlineColors { get; set; }
+        [DataMember] internal ElementColors[] BackGroundColors { get; set; }
+        [DataMember] internal ElementColors[] TextColors { get; set; }
+        [DataMember] internal ElementColors[] OutlineColors { get; set; }
         [DataMember] public ElementColors SideInnerScrollBar { get; set; }
         [DataMember] public ElementColors SideOuterScrollBar { get; set; }
         [DataMember] public ElementColors BottomInnerScrollBar { get; set; }
@@ -29,6 +31,10 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
         public ElementColors GetBackground(VisualRoleType category) => BackGroundColors[(int)category];
         public ElementColors GetText(VisualRoleType category) => TextColors[(int)category];
         public ElementColors GetOutline(VisualRoleType category) => OutlineColors[(int)category];
+
+        public void SetBackground(VisualRoleType category, ElementColors colors) => BackGroundColors[(int)category] = colors;
+        public void SetText(VisualRoleType category, ElementColors colors) => TextColors[(int)category] = colors;
+        public void SetOutline(VisualRoleType category, ElementColors colors) => OutlineColors[(int)category] = colors;
 
         public void Update(
             VisualRoleType profile,
@@ -133,13 +139,13 @@ namespace DownUnder.UI.UI.Widgets.DataTypes {
             var r = new BaseColorScheme();
 
             // default_widget theme
-            r.OutlineColors[(int)default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.6f), Color.Red.ShiftBrightness(0.2f));
-            r.BackGroundColors[(int)default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.07f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
-            r.TextColors[(int)default_widget] = new ElementColors(Color.White.ShiftBrightness(0.75f), Color.White, Color.White);
+            r.OutlineColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.6f), Color.Red.ShiftBrightness(0.2f));
+            r.BackGroundColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.Black.ShiftBrightness(1.07f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
+            r.TextColors[(int)VisualRoleType.default_widget] = new ElementColors(Color.White.ShiftBrightness(0.75f), Color.White, Color.White);
 
             // text_widget theme
-            r.OutlineColors[(int)text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.5f), Color.Red.ShiftBrightness(0.2f));
-            r.BackGroundColors[(int)text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.1f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
+            r.OutlineColors[(int)VisualRoleType.text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.35f), Color.Black.ShiftBrightness(1.5f), Color.Red.ShiftBrightness(0.2f));
+            r.BackGroundColors[(int)VisualRoleType.text_widget] = new ElementColors(Color.Black.ShiftBrightness(1.1f), Color.Black.ShiftBrightness(1.15f), Color.Red.ShiftBrightness(0.4f));
             r.TextColors[(int)text_widget] = new ElementColors(Color.White, Color.White.ShiftBrightness(0.75f), Color.White);
 
             // text_edit_widget theme

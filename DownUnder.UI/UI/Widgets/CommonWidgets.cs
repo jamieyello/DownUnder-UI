@@ -14,10 +14,11 @@ using DownUnder.UI.UI.Widgets.DataTypes.OverlayWidgetLocations;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
 using static DownUnder.UI.UI.Widgets.Behaviors.Visual.DrawText;
-using static DownUnder.UI.UI.Widgets.DataTypes.GeneralVisualSettings;
 using static DownUnder.UI.UI.Widgets.Behaviors.DownUnderBehaviorIDs;
+using DownUnder.UI.UI.Widgets;
+using static DownUnder.GeneralVisualSettings;
 
-namespace DownUnder.UI.UI.Widgets {
+namespace DownUnder {
     public static class CommonWidgets {
         public static Widget Button(string text, float x, float y) => Button(text, new RectangleF(x, y, 0f, 0f));
 
@@ -60,7 +61,7 @@ namespace DownUnder.UI.UI.Widgets {
         }
 
         public static Widget Label(
-            string text,
+            object text,
             RectangleF? area = null,
             XTextPositioningPolicy x_positioning = XTextPositioningPolicy.left,
             YTextPositioningPolicy y_positioning = YTextPositioningPolicy.center
@@ -68,7 +69,7 @@ namespace DownUnder.UI.UI.Widgets {
             var result = new Widget(area);
             result.VisualSettings.DrawBackground = false;
             result.VisualSettings.DrawOutline = false;
-            result.Behaviors.Add(new DrawText { Text = text, XTextPositioning = x_positioning, YTextPositioning = y_positioning });
+            result.Behaviors.Add(new DrawText { Text = text.ToString(), XTextPositioning = x_positioning, YTextPositioning = y_positioning });
             result.Behaviors.GroupBehaviors.AcceptancePolicy.DisallowedIDs.Add(SCROLL_FUNCTION);
             return result;
         }
@@ -255,6 +256,13 @@ namespace DownUnder.UI.UI.Widgets {
             result.AddRange(widgets);
             result.Behaviors.Add(new GridFormat(1, widgets.Count));
             return result;
+        }
+
+        public static Widget BorderlessNoColorChange() {
+            var r = new Widget();
+            r.VisualSettings.ChangeColorOnMouseOver = false;
+            r.VisualSettings.DrawOutline = false;
+            return r;
         }
     }
 }

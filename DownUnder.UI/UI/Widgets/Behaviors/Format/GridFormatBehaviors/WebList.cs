@@ -5,15 +5,15 @@ using System.Text;
 
 namespace DownUnder.UI.UI.Widgets.Behaviors.Format.GridFormatBehaviors
 {
-    class WebList : WidgetBehavior, ISubWidgetBehavior<GridFormat>
+    public class WebList : WidgetBehavior, ISubWidgetBehavior<GridFormat>
     {
         public override string[] BehaviorIDs { get; protected set; } = new string[] { DownUnderBehaviorIDs.FUNCTION };
         public GridFormat BaseBehavior => Parent.Behaviors.Get<GridFormat>();
         List<Widget> pre_load;
         SerializableType web_list_access_type;
 
-        IWebListAccesPoint web_list_acces_point_backing;
-        IWebListAccesPoint WebListAccesPoint 
+        IWebList web_list_acces_point_backing;
+        IWebList WebListAccesPoint 
         { 
             get => web_list_acces_point_backing;
             set
@@ -23,9 +23,9 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format.GridFormatBehaviors
             }
         }
 
-        public WebList(Type i_web_list_access)
+        public WebList(Type i_web_list_access, params object[] parameters)
         {
-            WebListAccesPoint = (IWebListAccesPoint)Activator.CreateInstance(i_web_list_access);
+            WebListAccesPoint = (IWebList)Activator.CreateInstance(i_web_list_access, parameters);
             pre_load = WebListAccesPoint.GetWeblistWidgets(0);
         }
 
@@ -36,17 +36,17 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format.GridFormatBehaviors
 
         protected override void ConnectEvents()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void DisconnectEvents()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override object Clone()
         {
-            var c = new WebList();
+            var c = new WebList(WebListAccesPoint.GetType());
             return c;
         }
     }

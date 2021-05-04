@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using DownUnder.UI.Utilities;
 using DownUnder.UI.Utilities.CommonNamespace;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes {
+namespace DownUnder {
     /// <summary> The color settings of any UI element. </summary>
     [DataContract]
     public sealed class ElementColors : ICloneable {

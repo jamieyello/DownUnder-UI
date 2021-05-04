@@ -1,8 +1,9 @@
 ﻿using System.Runtime.Serialization;
+using DownUnder.UI.UI.Widgets.DataTypes;
 using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 
-namespace DownUnder.UI.UI.Widgets.DataTypes {
+namespace DownUnder {
     public sealed class GeneralVisualSettings {
         /// <summary> Defines the behavior of <see cref="Widget"/>s when being used by <see cref="WidgetBehavior"/>s. </summary>
         public enum VisualRoleType {
