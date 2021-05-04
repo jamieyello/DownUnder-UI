@@ -16,7 +16,7 @@ namespace DownUnder.UI.UI.Widgets.WidgetCoding {
         Widget IWidget.Widget => Base;
         public UINavigator Navigation => Base.ParentDWindow.Navigation;
 
-        protected WidgetCode(bool load_xml = true, bool connect = true) {
+        protected WidgetCode(bool load_xml = false, bool connect = true) {
             if (load_xml)
             {
                 if (!Internal.TryGetWidgetXmlLocation(GetType(), out var xml_path)) throw new Exception($"No matching xml file was found for this {nameof(WidgetCode)}. Running the Widget Editor tool on the .duwd file can update references.");

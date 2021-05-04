@@ -150,7 +150,7 @@ namespace DownUnder.UI.UI.Widgets.Behaviors.Format {
         }
 
         public void AddColumn(IEnumerable<Widget> widgets = null) =>
-            InsertRow(Width, widgets);
+            InsertColumn(Width, widgets);
 
         public void AddColumn(Widget widget) {
             if (Dimensions.Y > 1)
