@@ -1,5 +1,4 @@
 ﻿using System;
-using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -41,7 +40,7 @@ namespace DownUnder.UI.Utilities.DrawingEffects
         public object Clone()
         {
             GridPixel c = new GridPixel();
-            c.ChangingColor = (ChangingValue<Color>)ChangingColor.Clone();
+            c.ChangingColor = ChangingColor.Clone();
             c.Position = Position;
             c.Size = Size;
             return c;

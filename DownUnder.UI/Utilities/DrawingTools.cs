@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.Utilities.CommonNamespace;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DownUnder.UI.Utilities

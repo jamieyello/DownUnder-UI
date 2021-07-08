@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using DownUnder.UI.UI.Widgets;
-using DownUnder.UI.UI.Widgets.WidgetCoding;
+using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.WidgetCoding;
 using DownUnder.UI.Utilities.Serialization;
 
 namespace DownUnder.UI.Editor.CodeGeneration {

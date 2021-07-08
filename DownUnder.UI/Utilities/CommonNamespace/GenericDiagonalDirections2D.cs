@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Utilities.CommonNamespace
+namespace DownUnder.UI
 {
     class GenericDiagonalDirections2D<T>
     {

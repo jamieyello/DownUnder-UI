@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using MonoGame.Extended;
 
-namespace DownUnder.UI.Utilities.CommonNamespace
+namespace DownUnder.UI
 {
     /// <summary> Represents four (up, down, left, right) directions. </summary>
     public struct Directions2D

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DownUnder.UI.UI.Widgets.DataTypes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -259,6 +258,9 @@ namespace DownUnder.UI {
         /// <summary> Returns new Point2 with the sum of each. </summary>
         public static Point2 WithOffset(this Point2 p1, Point2 p2) =>
             new Point2(p1.X + p2.X, p1.Y + p2.Y);
+
+        public static Point2 WithOffset(this Point2 p1, float x, float y) =>
+            new Point2(p1.X + x, p1.Y + y);
 
         public static Point2 WithXOffset(this Point2 p, float x) =>
             new Point2(p.X + x, p.Y);

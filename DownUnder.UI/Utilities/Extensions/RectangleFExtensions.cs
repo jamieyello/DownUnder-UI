@@ -1,12 +1,11 @@
 ﻿using System;
-using DownUnder.UI.UI.Widgets.DataTypes;
-using DownUnder.UI.Utilities.CommonNamespace;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using static DownUnder.UI.Utilities.CommonNamespace.Direction2D;
-using static DownUnder.UI.Utilities.CommonNamespace.DiagonalDirection2D;
+using static DownUnder.UI.Direction2D;
+using static DownUnder.UI.DiagonalDirection2D;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI
+{
     public static class RectangleFExtensions {
         public static Rectangle ToRectangle(
             this RectangleF me,

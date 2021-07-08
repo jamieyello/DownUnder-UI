@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DownUnder.UI.UI.Widgets;
-using DownUnder.UI.UI.Widgets.DataTypes;
+using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.DataTypes;
 
-namespace DownUnder.UI {
+namespace DownUnder.UI
+{
     // Things that were worth making but not worth putting in Widget
     public static class WidgetExtensions {
         /// <summary> Get this <see cref="Widget"/>'s <see cref="Widget.Children"/> ordered by depth. </summary>

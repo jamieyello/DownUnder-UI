@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DownUnder.UI.Utilities.CustomEventArgs
+namespace DownUnder.UI
 {
     public class RemoveItemArgs<T> : EventArgs
     {

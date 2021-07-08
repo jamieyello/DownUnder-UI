@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.Utilities.CommonNamespace
+﻿namespace DownUnder.UI
 {
     public enum DiagonalDirection2D
     {

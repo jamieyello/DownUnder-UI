@@ -1,6 +1,6 @@
-﻿using DownUnder.UI.UI.Widgets;
+﻿using DownUnder.UI.Widgets;
 
-namespace DownUnder.UI.Utilities.CommonNamespace
+namespace DownUnder.UI
 {
     public interface IWidget
     {

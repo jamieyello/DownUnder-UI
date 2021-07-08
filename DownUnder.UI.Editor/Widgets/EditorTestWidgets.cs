@@ -1,5 +1,5 @@
 ﻿using DownUnder.UI.Editor.Test;
-using DownUnder.UI.UI.Widgets;
+using DownUnder.UI.Widgets;
 
 namespace DownUnder.UI.Editor.Widgets
 {

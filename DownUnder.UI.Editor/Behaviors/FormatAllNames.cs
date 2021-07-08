@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DownUnder.UI.UI.Widgets;
-using DownUnder.UI.UI.Widgets.Behaviors;
-using DownUnder.UI.UI.Widgets.CustomEventArgs;
+using DownUnder.UI.Widgets;
+using DownUnder.UI.Widgets.Behaviors;
 
 namespace DownUnder.UI.Editor.Behaviors
 {

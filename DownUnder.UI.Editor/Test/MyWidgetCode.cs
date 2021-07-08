@@ -1,4 +1,4 @@
-﻿using DownUnder.UI.UI.Widgets.WidgetCoding;
+﻿using DownUnder.UI.Widgets.WidgetCoding;
 
 namespace DownUnder.UI.Editor.Test
 {
