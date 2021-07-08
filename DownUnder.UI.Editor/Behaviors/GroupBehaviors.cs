@@ -1,4 +1,4 @@
-﻿using DownUnder.UI.UI.Widgets.Behaviors;
+﻿using DownUnder.UI.Widgets.Behaviors;
 
 namespace DownUnder.UI.Editor.Behaviors
 {

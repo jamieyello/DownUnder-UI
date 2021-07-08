@@ -1,6 +1,4 @@
-﻿using DownUnder.UI.UI;
-using DownUnder.UI.UI.Widgets.Behaviors;
-using DownUnder.UI.UI.Widgets.CustomEventArgs;
+﻿using DownUnder.UI.Widgets.Behaviors;
 
 namespace DownUnder.UI.Editor.Behaviors
 {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DownUnder.UI.Utilities.CommonNamespace {
+namespace DownUnder.UI {
     [DataContract] public class GenericDirections2D <T> : ICloneable, IEnumerable<T>
     {
         T up_backing;

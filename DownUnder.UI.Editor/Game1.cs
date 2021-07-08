@@ -1,5 +1,4 @@
-﻿using DownUnder.UI.UI;
-using DownUnder.UI.UI.Widgets.Behaviors;
+﻿using DownUnder.UI.Widgets.Behaviors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

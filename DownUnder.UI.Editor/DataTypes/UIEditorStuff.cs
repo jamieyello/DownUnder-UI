@@ -4,8 +4,7 @@ using System.Windows.Forms;
 using DownUnder.UI.Editor.Behaviors;
 using DownUnder.UI.Editor.CodeGeneration;
 using DownUnder.UI.Editor.Test;
-using DownUnder.UI.UI.Widgets;
-using DownUnder.UI.Utilities.CommonNamespace;
+using DownUnder.UI.Widgets;
 using MonoGame.Extended;
 
 namespace DownUnder.UI.Editor.DataTypes

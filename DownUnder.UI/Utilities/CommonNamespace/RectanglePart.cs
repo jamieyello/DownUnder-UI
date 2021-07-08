@@ -1,4 +1,4 @@
-﻿namespace DownUnder.UI.Utilities.CommonNamespace
+﻿namespace DownUnder.UI
 {
     /// <summary> Represents a (percentage-wise) indent of a rectangle. </summary>
     public class RectanglePart
