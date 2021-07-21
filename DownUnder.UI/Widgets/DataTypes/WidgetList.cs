@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using DownUnder.UI.Widgets.Actions;
@@ -298,10 +299,9 @@ namespace DownUnder.UI.Widgets.DataTypes
         }
 
         public Widget this[string name] { get {
-            for (var i = 0; i < _widgets[i].Count; i++)
-                if (_widgets[i].Name == name)
-                    return _widgets[i];
-
+                for (var i = 0; i < _widgets.Count; i++) {
+                    if (_widgets[i].Name == name) return _widgets[i];
+                }
             return null;
         } }
 

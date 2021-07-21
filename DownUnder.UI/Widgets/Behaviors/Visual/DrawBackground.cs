@@ -7,7 +7,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
     [DataContract]
     public sealed class DrawBackground : WidgetBehavior {
         public override string[] BehaviorIDs { get; protected set; } = { DownUnderBehaviorIDs.VISUAL_FUNCTION };
-        /// <summary> If true this will dim the color if <see cref="Widget.IsActive"/> is false. true by default. </summary>
+        /// <summary> If true this will dim the color if <see cref="Widget.Enabled"/> is false. true by default. </summary>
         [DataMember] public bool RespectActivation { get; set; } = true;
 
         protected override void Initialize() {
@@ -33,7 +33,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual
                 args.DrawingArea,
                 Parent.IsHighlighted
                     ? Color.Yellow
-                    : !Parent.IsActive && RespectActivation
+                    : !Parent.Enabled && RespectActivation
                         ? Parent.VisualSettings.BackgroundColor.ShiftBrightness(0.5f)
                         : Parent.VisualSettings.BackgroundColor
             );

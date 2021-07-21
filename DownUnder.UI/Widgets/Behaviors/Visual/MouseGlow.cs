@@ -30,7 +30,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual {
         [DataMember] public InterpolationSettings ShineOffSpeed { get; set; } = InterpolationSettings.Default;
         [DataMember] public MouseGlowActivationPolicy ActivationPolicy { get; set; } = primary_hovered;
         [DataMember] public bool ScaleWithSize { get; set; } = true;
-        /// <summary> If true this will deactivate if <see cref="Widget.IsActive"/> is false. true by default. </summary>
+        /// <summary> If true this will deactivate if <see cref="Widget.Enabled"/> is false. true by default. </summary>
         [DataMember] public bool RespectActivation { get; set; } = true;
 
         protected override void Initialize() {
@@ -70,7 +70,7 @@ namespace DownUnder.UI.Widgets.Behaviors.Visual {
                 ActivationPolicy == primary_hovered && Parent.IsPrimaryHovered
                 || ActivationPolicy == hovered_over && Parent.IsHoveredOver
                 || ActivationPolicy == always_active;
-            _follow &= Parent.IsActive || !RespectActivation;
+            _follow &= Parent.Enabled || !RespectActivation;
 
             _draw_color.InterpolationSettings = _follow ? ShineSpeed : ShineOffSpeed;
 

@@ -106,7 +106,7 @@ namespace DownUnder.UI.Widgets
         [DataMember] BehaviorManager _behaviors_backing;
         ActionManager _actions_backing;
         [DataMember] bool _fit_to_content_area_backing;
-        [DataMember] bool _active_backing;
+        [DataMember] bool _enabled_backing;
 
         public enum DrawingModeType
         {
@@ -404,12 +404,13 @@ namespace DownUnder.UI.Widgets
             }
         }
 
-        public bool IsActive {
-            get => _active_backing;
+        public bool Enabled {
+            get => _enabled_backing;
             set {
-                if (value == _active_backing) return;
-                if (value) OnReActivate?.Invoke(this, EventArgs.Empty);
-                if (!value) OnDeActivate?.Invoke(this, EventArgs.Empty);
+                if (value == _enabled_backing) return;
+                _enabled_backing = value;
+                if (value) OnEnable?.Invoke(this, EventArgs.Empty);
+                if (!value) OnDisable?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -758,7 +759,7 @@ namespace DownUnder.UI.Widgets
             _dragging_in = false;
             _dragging_off = false;
             _has_updated = false;
-            _active_backing = true;
+            _enabled_backing = true;
 
             _post_update_flags = new WidgetPostUpdateFlags();
             _update_flags = new WidgetUpdateFlags();
@@ -863,7 +864,7 @@ namespace DownUnder.UI.Widgets
             if (visible_area.Contains(UpdateData.UIInputState.CursorPosition) && !PassthroughMouse)
             {
                 _update_flags.hovered_over = true;
-                if (UpdateData.UIInputState.PrimaryClickTriggered) _update_flags.clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
+                if (_enabled_backing && UpdateData.UIInputState.PrimaryClickTriggered) _update_flags.clicked_on = true; // Set clicked to only be true on the frame the cursor clicks.
                 if (UpdateData.UIInputState.SecondaryClickTriggered) _update_flags.right_clicked_on = true;
                 _previous_cursor_position = UpdateData.UIInputState.CursorPosition;
 
@@ -998,7 +999,7 @@ namespace DownUnder.UI.Widgets
             {
                 if (_update_flags.added_to_focused) AddToFocused();
                 if (_update_flags.set_as_focused) SetAsFocused();
-                if (IsActive) {
+                if (Enabled) {
                     if (_update_flags.clicked_on) OnClick?.Invoke(this, EventArgs.Empty);
                     if (_update_flags.right_clicked_on) OnRightClick?.Invoke(this, EventArgs.Empty);
                     if (_update_flags.double_clicked) OnDoubleClick?.Invoke(this, EventArgs.Empty);
@@ -1370,11 +1371,11 @@ namespace DownUnder.UI.Widgets
         /// <summary> Invoked when this <see cref="Widget"/> is gathering <see cref="DropDownEntry"/>s for the dropdown menu. (The right-click menu) </summary>
         public event EventHandler<GetDropDownEntriesArgs> OnGetDropDownEntries;
         /// <summary> Invoked when this <see cref="Widget"/> is activated after being deactive. </summary>
-        public event EventHandler OnReActivate;
+        public event EventHandler OnEnable;
         /// <summary> Invoked when this <see cref="Widget"/> is deactivated. </summary>
-        public event EventHandler OnDeActivate;
+        public event EventHandler OnDisable;
 
-        /// <summary> Invoked regardless if <see cref="IsActive"/>. </summary>
+        /// <summary> Invoked regardless if <see cref="Enabled"/>. </summary>
         event EventHandler OnClickPrivate;
 
         /// <summary> Method that will get a list of dropdowns to display. Intended to be called by <see cref="WidgetBehavior"/>s that implement a visual drop down menu. </summary>
@@ -1739,7 +1740,7 @@ namespace DownUnder.UI.Widgets
             c._allow_delete_backing = _allow_delete_backing;
             c._allow_copy_backing = _allow_copy_backing;
             c._allow_cut_backing = _allow_cut_backing;
-            c._active_backing = _active_backing;
+            c._enabled_backing = _enabled_backing;
 
             foreach (Type type in _accepted_drop_types_backing)
                 c._accepted_drop_types_backing.Add(type);

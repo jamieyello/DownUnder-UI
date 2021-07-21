@@ -14,6 +14,7 @@ namespace DownUnder.UI.Widgets.WidgetCoding {
 
         Widget IWidget.Widget => Base;
         public UINavigator Navigation => Base.ParentDWindow.Navigation;
+        public Widget this[string name] => Base[name];
 
         protected WidgetCode(bool load_xml = false, bool connect = true) {
             if (load_xml)
